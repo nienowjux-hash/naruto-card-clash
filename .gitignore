@@ -1,0 +1,8 @@
+# scripts temporarios usados para editar o jogo
+patch*.js
+splice*.js
+sheet-patch.js
+chars-*.js
+chars2.js
+head-new.js
+node_modules/
