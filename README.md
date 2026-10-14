@@ -25,6 +25,8 @@ Opção 2: com Node instalado, rode `node serve.js` e abra http://localhost:8123
 
 - Dano persistente: cada golpe deixa marcas no corpo (sangue, cortes, hematomas, queimaduras, roupa rasgada e chamuscada), e o rosto fica machucado. O Amaterasu continua queimando até resetar, tirando vida aos poucos.
 
+- Turnos: depois da sua carta, o Naruto contra-ataca sozinho (Rasengan ou Kage Bunshin). As cartas gastam chakra e o chakra volta um pouco a cada turno. Se a vida do Sasuke zerar, aparece o K.O. do Naruto.
+
 ## Versões antigas
 
 A pasta `versions/` guarda os estágios anteriores do visual (pixel art, HD, chibi, etc.) para comparação.
