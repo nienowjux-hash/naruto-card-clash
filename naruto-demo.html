@@ -119,7 +119,7 @@ function ik(sx,sy,hx,hy,l1,l2,dir){let dx=hx-sx,dy=hy-sy,d=Math.hypot(dx,dy);con
  const a=(l1*l1-l2*l2+d*d)/(2*d),h=Math.sqrt(Math.max(0,l1*l1-a*a));const px=sx+dx*a/d,py=sy+dy*a/d;return{ex:px+(-dy/d)*h*dir,ey:py+(dx/d)*h*dir,hx,hy}}
 const BS=1.42;let HEADS=.6;
 function rig(P){
- const cr=P.crouch*1.15,fk=1.0;
+ const cr=P.crouch*1.15,fk=.85;
  const Hp=[P.lean*.35,-21.4+cr],hip=[Hp[0],Hp[1]+2];
  const S=[P.lean,Hp[1]-13.4];
  const lf=ik(hip[0]+1,hip[1],P.ffx*fk,P.ffy,10.2,10.2,-1),lb=ik(hip[0]-1,hip[1],P.fbx*fk,P.fby,10.2,10.2,-1);
@@ -135,6 +135,7 @@ function rigW(P){const r=rig(P),Hp=r.Hp,t=P.tilt||0,cs=Math.cos(t),sn=Math.sin(t
  return{S:m(rot(r.S)),Hp:m(r.Hp),hip:m(r.hip),sh:m(rot(r.sh)),shF:m(rot(r.shF)),shB:m(rot(r.shB)),C:m(rot(r.C)),lf:ml(r.lf,0),lb:ml(r.lb,0),hf:ml(r.hf,1),hb:ml(r.hb,1)};}
 const SW=170,SH=140,OXU=85,OYU=118;
 const sp=document.createElement('canvas');sp.width=Math.round(SW*RES);sp.height=Math.round(SH*RES);const sc=sp.getContext('2d');
+const rimc=document.createElement('canvas');rimc.width=sp.width;rimc.height=sp.height;const rimx=rimc.getContext('2d');
 
 const INK=[12,8,38];
 const outC=(col,a=1)=>css(mix(col,INK,.8),1,a);
@@ -279,7 +280,10 @@ function drawHead(c,d,P,r,time){
  c.save();c.translate(C[0],C[1]);c.rotate(P.hr);c.scale(HEADS,HEADS);
  const lockFill=(bx,by,tx,ty,dark)=>{const g2=c.createLinearGradient(bx,by,tx,ty);g2.addColorStop(0,css(d.hair,dark?.45:.62));g2.addColorStop(.55,css(d.hair,dark?.8:1.05));g2.addColorStop(1,css(mix(d.hair,d.hairHi,dark?.3:.62),1));return g2;};
  const wp=(x,y)=>{const k=Math.max(0,-x-2)/17;return[x-wind*k*9,y-wind*k*3+Math.sin(time*(wind>.5?18:2.4)+y*.7)*wind*k*(wind>.5?1:.55)];};
- const L=(a,dark)=>{const t=wp(a[2],a[3]);lock(c,a[0],a[1],t[0],t[1],a[4]*1.3,a[5]*1.25,lockFill(a[0],a[1],t[0],t[1],dark),hairO,css(d.hairHi,1),dark?.45:.85);};
+  const L=(a,dark)=>{const t=wp(a[2],a[3]);lock(c,a[0],a[1],t[0],t[1],a[4]*1.3,a[5]*1.25,lockFill(a[0],a[1],t[0],t[1],dark),hairO,css(d.hairHi,1),dark?.45:.85);
+  const dx=t[0]-a[0],dy=t[1]-a[1],len=Math.hypot(dx,dy)||1,ang=Math.atan2(dy,dx);
+  for(const j of [-1,1]){const bx=a[0]+dx*.2,by=a[1]+dy*.2,l2=len*.6,an2=ang+j*.4,tx2=bx+Math.cos(an2)*l2,ty2=by+Math.sin(an2)*l2,tt=wp(tx2,ty2);
+   lock(c,bx,by,tt[0],tt[1],a[4]*.55,a[5]*.4*j,lockFill(bx,by,tt[0],tt[1],dark),hairO,css(d.hairHi,1),dark?.3:.6);}};
  // headband tails
  const wv=Math.sin(time*5)*1.2+wind*3;
  poly(c,[[-6.5,-3],[-12+wv*.3,-2.4],[-17-wv*1.4,1.2-wind*2],[-12.5,.4],[-15-wv*1.6,4-wind*1.6],[-9,1.2],[-6.5,0]],css(d.band,1),outC(d.band),.55);
@@ -334,7 +338,7 @@ function drawHead(c,d,P,r,time){
  const topL=isS?[[0,-10,-6,-16,5.4,-1.2],[3,-10,2,-17,5.2,.4],[6,-9,10,-14.5,4.6,1],[-4,-9,-11,-13.5,5,-1.2]]
   :[[-3,-8,-6.5,-16.5,5.4,-.8],[1,-9,.5,-18.5,5.8,.2],[4.5,-8.5,8,-17,5.4,.8],[7.4,-7,12.5,-12.5,4.8,1.2],[-5.5,-6,-10,-12,5,-1.2]];
  for(const a of topL)L(a,false);
- const fr=isS?[[-1.5,-8,-3,-3.8,3.2,-.4],[2.4,-8,1.6,-3.6,3.2,.3],[5.8,-8,7,-4.2,3,.5]]:[[-2,-8,-3,-4.6,3,-.3],[5,-8,6.4,-4.6,3,.3]];
+ const fr=isS?[[-1.5,-8,-3,-3.8,3.2,-.4],[2.4,-8,1.6,-3.6,3.2,.3],[5.8,-8,7,-4.2,3,.5],[-4,-8,-5.4,-4.4,2.6,-.3]]:[[-2,-8,-3,-4.6,3,-.3],[1.5,-8,1.6,-4.4,2.8,.2],[5,-8,6.4,-4.6,3,.3]];
  for(const a of fr)L(a,false);
  // headband
  c.lineCap='butt';c.strokeStyle=outC(d.band);c.lineWidth=3.4;c.beginPath();c.moveTo(-7,-3.4);c.quadraticCurveTo(1,-6.4,9,-3.6);c.stroke();
@@ -361,10 +365,17 @@ function blit(x,y,flip,d,P,time,o){o=o||{};
  sg=sc.createLinearGradient(0,(OYU-96)*RES,0,OYU*RES);sg.addColorStop(0,'rgba(120,150,255,0)');sg.addColorStop(1,'rgba(10,30,90,.30)');sc.fillStyle=sg;sc.fillRect(0,0,sp.width,sp.height);
  if(o.light){const L=o.light,px=(OXU+L.x)*RES,py=(OYU+L.y)*RES,rr=L.r*RES;sg=sc.createRadialGradient(px,py,0,px,py,rr);sg.addColorStop(0,css(L.col,1,L.k));sg.addColorStop(1,css(L.col,1,0));sc.fillStyle=sg;sc.fillRect(0,0,sp.width,sp.height);}
  if(o.tint){sc.fillStyle=css(o.tint,1,o.tk);sc.fillRect(0,0,sp.width,sp.height);}
+ const rims=[{dx:1,dy:-.55,col:[255,226,184],a:.5,d:1.0}];
+ for(const Lt of fxLights){const dxw=Lt.x-x,dyw=Lt.y-(y-34),dist=Math.hypot(dxw,dyw)||1;if(dist<Lt.r){const a=Lt.k*(1-dist/Lt.r);if(a>.03)rims.push({dx:dxw*(flip?-1:1)/dist,dy:dyw/dist,col:Lt.col,a:Math.min(1,a*1.5),d:1.5});}}
+ for(const R2 of rims){const n=Math.hypot(R2.dx,R2.dy)||1,lx=R2.dx/n,ly=R2.dy/n,px=R2.d*RES;
+  rimx.setTransform(1,0,0,1,0,0);rimx.globalCompositeOperation='source-over';rimx.clearRect(0,0,sp.width,sp.height);rimx.drawImage(sp,0,0);
+  rimx.globalCompositeOperation='destination-out';rimx.drawImage(sp,-lx*px,-ly*px);
+  rimx.globalCompositeOperation='source-in';rimx.fillStyle=css(R2.col,1,1);rimx.fillRect(0,0,sp.width,sp.height);
+  sc.globalCompositeOperation='source-atop';sc.globalAlpha=R2.a;sc.drawImage(rimc,0,0);sc.globalAlpha=1;}
  sc.globalCompositeOperation='source-over';
  const al=o.alpha==null?1:o.alpha;
- if(!o.noRefl){g.save();g.translate(x,GY);g.scale((flip?-1:1)*sxq,-.5*syq);g.globalAlpha=.16*al;g.drawImage(sp,-OXU,-OYU,SW,SH);g.restore();}
- g.save();g.translate(x,y);g.scale((flip?-1:1)*sxq,syq);g.globalAlpha=al;g.drawImage(sp,-OXU,-OYU,SW,SH);g.restore();
+ if(!o.noRefl&&!o.rot){g.save();g.translate(x,GY);g.scale((flip?-1:1)*sxq,-.5*syq);g.globalAlpha=.16*al;g.drawImage(sp,-OXU,-OYU,SW,SH);g.restore();}
+ g.save();g.translate(x,y);if(o.rot){g.translate(0,-30);g.rotate(o.rot*(flip?-1:1));g.translate(0,30);}g.scale((flip?-1:1)*sxq,syq);g.globalAlpha=al;g.drawImage(sp,-OXU,-OYU,SW,SH);g.restore();
  return r;
 }
 
@@ -486,7 +497,7 @@ function evalPose(keys,t){const A=interp(keys,t,true),B=interp(keys,t-.04,true),
  o.fby=Math.min(0,o.fby);o.ffy=Math.min(0,o.ffy);return o;}
 const ANIMS={
  chidori:{dur:4.7,hold:2.58,
-  sP:[[0,READY],[.45,READY],[.55,SEAL_A],[.85,SEAL_B],[1.15,SEAL_C],[1.4,PREP],[1.6,CHARGE],[2.0,CHARGE],[2.15,COIL],[2.33,DASH],[2.55,DASH],[2.58,HIT],[3.1,HIT],[3.35,HOP],[3.85,READY],[4.4,READY]],
+  sP:[[0,READY],[.45,READY],[.55,SEAL_A],[.85,SEAL_B],[1.15,SEAL_C],[1.4,PREP],[1.6,CHARGE],[2.0,CHARGE],[2.15,COIL],[2.33,DASH],[2.55,DASH],[2.58,HIT],[3.1,HIT],[3.3,HOP],[3.55,HOP],[3.68,READY],[4.4,READY]],
   nP:[[0,N_READY],[2.12,N_READY],[2.28,N_SURP],[2.42,N_GUARD],[2.55,N_GUARD],[2.58,N_HIT],[3.0,N_HIT],[3.4,N_STAG],[4.0,N_READY]],
   nX:[[0,288],[2.55,288],[2.58,290],[3.0,318],[3.5,312],[4.2,288]],
   cam:[[0,{z:1,cx:192,cy:108}],[.4,{z:1,cx:192,cy:108}],[.9,{z:1.3,cx:100,cy:120}],[1.4,{z:1.5,cx:104,cy:124}],[2.1,{z:1.55,cx:108,cy:124}],[2.2,{z:1.25,cx:150,cy:122}],[2.5,{z:1.3,cx:240,cy:124}],[2.58,{z:1.5,cx:262,cy:124}],[3.0,{z:1.4,cx:266,cy:124}],[3.5,{z:1.1,cx:200,cy:114}],[4.0,{z:1,cx:192,cy:108}]],
@@ -501,9 +512,18 @@ const ANIMS={
 const HS=.09;
 function warp(type,raw){const h=ANIMS[type].hold;if(raw<h)return raw;if(raw<h+HS)return h+(raw-h)*.06;return raw-HS*.94;}
 function sasX(type,t){if(type==='chidori'){if(t<2.15)return 96;if(t<2.55){const k=(t-2.15)/.4;return 96+(246-96)*Math.pow(k,1.7);}if(t<3.1)return 246;
-  if(t<3.7){const k=(t-3.1)/.6;const e=k*k*(3-2*k);return 246+(96-246)*e;}return 96;}return 96;}
-function sasY(type,t){if(type==='chidori'&&t>3.1&&t<3.7)return -Math.sin((t-3.1)/.6*Math.PI)*16;return 0;}
-
+  if(t<3.58){const k=(t-3.1)/.48,e=k*k*(3-2*k);return 246+(132-246)*e;}
+  if(t<4.25){const k=(t-3.58)/.67,e=k*k*(3-2*k);return 132+(96-132)*e;}return 96;}return 96;}
+function sasY(type,t){if(type==='chidori'&&t>3.1&&t<3.58)return -Math.sin((t-3.1)/.48*Math.PI)*24;return 0;}
+function sRotF(type,t){if(type==='chidori'&&t>3.12&&t<3.56){const k=(t-3.12)/.44,e=k*k*(3-2*k);return -TAU*e;}return 0;}
+function nY(type,t){const h=ANIMS[type].hitT;if(t>h&&t<h+.5){return -Math.sin((t-h)/.5*Math.PI)*10;}return 0;}
+function gait(P,x,face,v,ground,time,idle,ph0){
+ const o=Object.assign({},P),amt=clamp((Math.abs(v)-6)/30,0,1)*ground;
+ if(amt>0){const ph=(x*face)/6.5,s1=Math.sin(ph),c1=Math.cos(ph);
+  o.ffx+=s1*6*amt;o.fbx-=s1*6*amt;o.ffy-=Math.max(0,c1)*5*amt;o.fby-=Math.max(0,-c1)*5*amt;o.crouch+=Math.abs(s1)*1.4*amt;o.tilt+=(v*face>0?.07:-.05)*amt;}
+ else if(idle){const ph=time*3.4+ph0,s1=Math.sin(ph),c1=Math.cos(ph);o.ffy-=Math.max(0,c1)*1.1;o.fby-=Math.max(0,-c1)*1.1;o.ffx+=s1*.8;o.fbx-=s1*.8;}
+ return o;}
+let fxLights=[];
 /* ---------- state ---------- */
 let anim=null,frozen=null,hp={s:100,n:100},ck={s:100,n:100},sound=true,pending=[];
 function setBars(){$('hpS').style.width=hp.s+'%';$('hpSg').style.width=hp.s+'%';$('hpN').style.width=hp.n+'%';$('hpNg').style.width=hp.n+'%';$('ckS').style.width=ck.s+'%';$('ckN').style.width=ck.n+'%';}
@@ -585,6 +605,10 @@ function render(ts){
  else{sP=Object.assign({},READY);nP=Object.assign({},N_READY);}
  sP=Object.assign({},sP);nP=Object.assign({},nP);
  if(!A||t<.4||t>3.8){sP.crouch+=bob;nP.crouch+=Math.sin(time*3+1)*.7;}
+ let ny0=0,sRot=0;if(A){ny0=nY(type,t);sRot=sRotF(type,t);}
+ const idleMv=!A||t<.42||t>4.1;
+ const vS=A?(sasX(type,t+.02)-sasX(type,t-.02))/.04:0,vN=A?(interp(A.nX,t+.02)-interp(A.nX,t-.02))/.04:0;
+ sP=gait(sP,sx0,1,vS,sy0<-1?0:1,time,idleMv,0);nP=gait(nP,nx0,-1,vN,ny0<-1?0:1,time,idleMv,1.7);
  let power=0;
  if(type==='chidori'){if(t<1.35)power=0;else if(t<2.0)power=Math.pow((t-1.35)/.65,.8);else if(t<2.58)power=1+.15*scaleAt(0,1,2.0,2.55,t);else if(t<3.0)power=1.15;else if(t<3.25)power=1.15*(1-(t-3)/.25);}
  if(power>0&&t<2.15){sP.lean+=Math.sin(time*70)*.22*power;sP.crouch+=Math.sin(time*55)*.2*power;}
@@ -597,13 +621,19 @@ function render(ts){
  let nOpt={};
  if(type==='chidori'&&t>2.58&&t<3.0&&((Math.floor(t*30)%3)===0))nOpt={tint:[255,255,255],tk:.85};
  if(type==='katon'&&t>2.4&&t<3.15)nOpt={tint:[255,120,30],tk:.3+.2*Math.sin(t*50)};
- blit(nx0,GY,true,NARUTO,nP,time,nOpt);
  const rS=rigW(sP);
  const hw=[sx0+rS.hf.hx,GY+sy0+rS.hf.hy];
+ fxLights=[];
+ if(type==='chidori'){if(power>0&&t<3.2)fxLights.push({x:hw[0],y:hw[1],col:[130,205,255],r:150,k:.95*Math.min(1,power)});
+  const a0=t-2.58;if(a0>=0&&a0<.7)fxLights.push({x:nx0-6,y:GY-42,col:[190,230,255],r:170,k:.95*(1-a0/.7)});}
+ if(type==='katon'){const mth=[sx0+rS.C[0]+3.4,GY+sy0+rS.C[1]+4.2],tx0=nx0-6,ty0=GY-42;
+  if(t>=1.82&&t<2.4){const kk=(t-1.82)/.58,ee=kk*kk*.7+kk*.3;fxLights.push({x:mth[0]+(tx0-mth[0])*ee,y:mth[1]+(ty0-mth[1])*ee,col:[255,150,50],r:150,k:.85});}
+  const a0=t-2.4;if(a0>=0&&a0<1.2)fxLights.push({x:tx0,y:ty0,col:[255,150,50],r:190,k:.9*(1-a0/1.2)});}
+ blit(nx0,GY+ny0,true,NARUTO,nP,time,nOpt);
  const sOpt={};
  if(power>0)sOpt.light={x:rS.hf.hx,y:rS.hf.hy,r:34,col:[110,185,255],k:.75*Math.min(1,power)};
  if(type==='katon'&&t>1.82&&t<2.4)sOpt.light={x:rS.C[0]+5,y:rS.C[1]+4,r:28,col:[255,150,50],k:.7};
- blit(sx0,GY+sy0,false,SASUKE,sP,time,sOpt);
+ sOpt.rot=sRot;blit(sx0,GY+sy0,false,SASUKE,sP,time,sOpt);
 
  /* ---- FX ---- */
  if(type==='chidori'){
