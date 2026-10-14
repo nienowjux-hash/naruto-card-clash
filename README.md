@@ -13,15 +13,15 @@ Opção 2: com Node instalado, rode `node serve.js` e abra http://localhost:8123
 
 ## Controles
 
-- Clique numa carta, ou tecle `1` (Chidori) e `2` (Katon).
-- As cartas 3 e 4 (Kawarimi e Amaterasu) ainda não têm animação.
+- Clique numa carta, ou tecle `1` (Chidori), `2` (Katon), `3` (Kawarimi) ou `4` (Amaterasu).
+- Zerando a vida do Naruto aparece o K.O., com Sasuke em pose de vitória. Use "Resetar luta" para recomeçar.
 
 ## O que já existe
 
 - Personagens: Sasuke e Naruto (Parte 1), com corpo, mãos, cabelo e expressões desenhados por código.
 - Cenário do Vale do Fim animado (cachoeira, névoa, lua, estátuas).
 - Câmera dinâmica, hitstop, tremor de tela e brilho (bloom).
-- Golpes: Chidori (corrida, rastro, impacto) e Katon (bola de fogo e explosão).
+- Golpes: Chidori (corrida, rastro, pássaros de raio, impacto), Katon (bola de fogo, ondas de fogo), Kawarimi (tronco, fumaça e contra-ataque) e Amaterasu (Mangekyō e chamas negras).
 
 ## Versões antigas
 
