@@ -23,6 +23,8 @@ Opção 2: com Node instalado, rode `node serve.js` e abra http://localhost:8123
 - Câmera dinâmica, hitstop, tremor de tela e brilho (bloom).
 - Golpes: Chidori (corrida, rastro, pássaros de raio, impacto), Katon (bola de fogo, ondas de fogo), Kawarimi (tronco, fumaça e contra-ataque) e Amaterasu (Mangekyō e chamas negras).
 
+- Dano persistente: cada golpe deixa marcas no corpo (sangue, cortes, hematomas, queimaduras, roupa rasgada e chamuscada), e o rosto fica machucado. O Amaterasu continua queimando até resetar, tirando vida aos poucos.
+
 ## Versões antigas
 
 A pasta `versions/` guarda os estágios anteriores do visual (pixel art, HD, chibi, etc.) para comparação.
