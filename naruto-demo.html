@@ -968,7 +968,7 @@ ANIMS.kunai.L={g:true,dur:7.7,koAt:7.1,bannerAt:6.3,banner:['必','FATALITY','Ku
  nX:[[0,288],[99,288]],
  cam:[[0,{z:1.04,cx:192,cy:116}],[.4,{z:1.04,cx:192,cy:116}],[.65,{z:1.5,cx:128,cy:126}],[.85,{z:2.0,cx:116,cy:122}],[1.0,{z:1.8,cx:150,cy:122}],[1.15,{z:1.9,cx:226,cy:120}],[1.25,{z:2.7,cx:274,cy:118}],[2.0,{z:2.7,cx:282,cy:124}],[2.6,{z:1.9,cx:290,cy:132}],[3.3,{z:1.5,cx:292,cy:142}],[3.9,{z:1.2,cx:240,cy:125}],[4.2,{z:1.04,cx:192,cy:116}]],
  nRot:t=>{const k=scaleAt(0,1,2.1,3.0,t);return -1.45*k*k;},
- nY:t=>{const k=scaleAt(0,1,2.1,3.0,t);return 27*k*k;},
+ nY:t=>{const k=scaleAt(0,1,2.1,3.0,t);return 32*k*k;},
  stat:{nx0:292,nP:N_FZ2},
  env:(raw,t)=>{const a=raw-2.6,E={};if(a>0&&a<1.4)E.shk=8*Math.pow(1-a/1.4,1.4)*(a<.4?1.3:1);if(a>=0&&a<.04)E.flash=.9;else if(a>=.04&&a<.14)E.flash=.45;else if(a>=.14&&a<.3)E.flash=.15;
   E.dim=.45*scaleAt(0,1,.4,.85,t)*(1-.4*scaleAt(0,1,5.2,6.4,raw)-.6*scaleAt(0,1,7.1,7.7,raw));E.bars=14*scaleAt(0,1,.4,.8,t)*(1-scaleAt(0,1,7.1,7.7,raw));
@@ -1660,6 +1660,7 @@ function render(ts){
   sP.crouch+=bs*.45+Math.sin(time*.85+1.3)*.25;sP.lean+=bs*.15;sP.hyF-=bs*.25;sP.hyB-=bs*.25;
   nP.crouch+=bn*.6+Math.sin(time*1.25+.4)*.3;nP.lean+=bn*.2;nP.hyF-=bn*.3;nP.hyB-=bn*.3;}
  let ny0=0,sRot=0;if(A){ny0=nY(type,t);sRot=sRotF(type,t);}
+ else if(fatalKind&&outcome==='S'&&ANIMS[fatalKind].L.nY)ny0=ANIMS[fatalKind].L.nY(99); /* corpo deitado depois do fatality: mesma altura do fim da animacao, senao fica no ar */
  if(LC(type)&&t>2.62&&t<3.7)ny0=-3*scaleAt(0,1,2.62,2.8,t)*(1-scaleAt(0,1,3.56,3.7,t)); /* o braco do Sasuke levanta o Naruto do chao */
  if(LC(type)&&t>=3.58)chestHole=1;
  if(LK(type)&&t>=5.2)burnt=1;
