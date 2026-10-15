@@ -186,7 +186,7 @@ function tap(c,a,b,wa,wb,col,k,o){o=o||{};
 function handDraw(c,x,y,ang,type,d,k){
  /* mao desenhada no referencial do antebraco: +x = direcao dos dedos, y = largura da palma */
  const sk=css(d.skin,k),sd=css(mix(d.skin,[90,40,80],.35),k),oc=css([112,56,58],1);
- c.save();c.translate(x,y);c.scale(1.18,1.18);c.rotate(ang);c.lineCap='round';c.lineJoin='round';
+ c.save();c.translate(x,y);c.scale(.82,.82);c.rotate(ang);c.lineCap='round';c.lineJoin='round';
  const parts=[],cap=(x0,y0,x1,y1,w)=>parts.push([0,x0,y0,x1,y1,w]),rr=(x0,y0,w,h,r)=>parts.push([1,x0,y0,w,h,r]);
  const fin=(bx,by,a,l1,l2,bend,w)=>{const x1=bx+Math.cos(a)*l1,y1=by+Math.sin(a)*l1,a2=a+bend;cap(bx,by,x1,y1,w);cap(x1,y1,x1+Math.cos(a2)*l2,y1+Math.sin(a2)*l2,w*.9);};
  const lines=[];const ln=(x0,y0,x1,y1)=>lines.push([x0,y0,x1,y1]);
