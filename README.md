@@ -45,7 +45,7 @@ Projeto de fã, sem fins comerciais. Naruto e seus personagens pertencem aos seu
 | Shishi Rendan | 25 | 36 | Combo aereo de taijutsu copiado de Rock Lee |
 | Selo Amaldicoado (Nivel 1) | 20 | 0 | Perde 8 de vida. Por 3 turnos: +30% de dano, +10 de chakra por turno, 30% de chance de desviar (custa 2 de vida por turno). Marcas pretas tribais, sem Chidori roxo (esse fica para a transformacao total) |
 | Selo Amaldicoado (Nivel 2) | 40 | 0 | Transformacao: perde 15 de vida. Por 3 turnos: +60% de dano, +15 de chakra por turno, 40% de chance de desviar (custa 3 de vida por turno). Transformacao completa, sem as marcas do Nivel 1: pele azul-acinzentada, cabelo azul-grisalho e duas maos gigantes saindo das costas. Libera o Chidori Sombrio |
-| Chidori Sombrio (Nivel 2) | 35 | 44 | So aparece com o Nivel 2 ativo. Chidori negro e roxo. Fatality: perfura, as marcas se espalham pelo Naruto e ele vira pedra negra e se despedaca |
+| Chidori Sombrio (Nivel 2) | 35 | 44 | So aparece com o Nivel 2 ativo. Chidori negro e roxo. Fatality: igual ao do Chidori normal (perfura o peito e arranca o braco), mas com energia roxa e negra, buraco bem maior e muito mais sangue |
 | Copiar Tecnica (Sharingan) | 8 | 0 | Gasta o turno. Copia a ultima tecnica do inimigo (so Rasengan ou Kage Bunshin) |
 | Copia: Rasengan | 18 | 22 | 60% do chakra e 75% do dano do original (30 de chakra, 30 de dano). Uso unico |
 | Copia: Kage Bunshin | 15 | 24 | 60% do chakra e 75% do dano do original (25 de chakra, 32 de dano). Uso unico |
