@@ -13,7 +13,7 @@ Opção 2: com Node instalado, rode `node serve.js` e abra http://localhost:8123
 
 ## Controles
 
-- Menu de comandos (teclas 1 a 4): **Atacar** (1 Kunai, 2 Shuriken, 3 Soco, 4 Chute, sem custo de chakra), **Jutsu** (abre as técnicas: 1 Chidori, 2 Katon, 3 Kawarimi, 4 Amaterasu, 5 Sōshūken no Jutsu, 6 Shuriken Kage no Jutsu; Esc volta), **Defender** (próximo dano pela metade) e **Concentrar** (+25 de chakra).
+- Menu de comandos (teclas 1 a 4): **Atacar** (1 Kunai, 2 Shuriken, 3 Soco, 4 Chute, sem custo de chakra), **Jutsu** (abre as técnicas; Esc volta), **Defender** (próximo dano pela metade) e **Concentrar** (+25 de chakra).
 - Zerando a vida do Naruto aparece o K.O., com Sasuke em pose de vitória. Use "Resetar luta" para recomeçar.
 
 ## O que já existe
@@ -35,4 +35,17 @@ A pasta `versions/` guarda os estágios anteriores do visual (pixel art, HD, chi
 
 Projeto de fã, sem fins comerciais. Naruto e seus personagens pertencem aos seus criadores e detentores de direitos.
 
-- Fatalities: quando o golpe zera a vida do Naruto, cada um dos 10 golpes tem uma morte propria (Chidori, Katon, Kawarimi, Amaterasu, Soushuken, Shuriken Kage, Kunai, Shuriken, Soco e Chute), em camera lenta.
+- Fatalities: quando o golpe zera a vida do Naruto, cada golpe tem uma morte propria (Chidori, Katon, Kawarimi, Amaterasu, Soushuken, Shuriken Kage, Genjutsu Sharingan, Shishi Rendan, Selo Amaldicoado, copias do Rasengan e do Kage Bunshin, Kunai, Shuriken, Soco e Chute), em camera lenta.
+
+## Tecnicas do Sasuke e balanceamento
+
+| Tecnica | Chakra | Dano | Observacao |
+|---|---|---|---|
+| Genjutsu Sharingan | 12 | 14 | O inimigo perde o proximo turno |
+| Shishi Rendan | 25 | 36 | Combo aereo de taijutsu copiado de Rock Lee |
+| Selo Amaldicoado: Chidori | 35 | 48 | Perde 10 de vida; por 2 turnos os jutsus causam +25% e o selo custa 3 de vida por turno |
+| Copiar Tecnica (Sharingan) | 8 | 0 | Gasta o turno. Copia a ultima tecnica do inimigo (so Rasengan ou Kage Bunshin) |
+| Copia: Rasengan | 18 | 22 | 60% do chakra e 75% do dano do original (30 de chakra, 30 de dano). Uso unico |
+| Copia: Kage Bunshin | 15 | 24 | 60% do chakra e 75% do dano do original (25 de chakra, 32 de dano). Uso unico |
+
+Cada uma tem um fatality diferente: Tsukuyomi (Genjutsu), calcanhar que crava a cabeca na agua (Shishi Rendan), o Naruto vira pedra negra e se despedaca (Selo), a espiral que tritura em fatias (Rasengan copiado) e seis clones que lancam kunais (Kage Bunshin copiado).
