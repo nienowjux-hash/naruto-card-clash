@@ -13,7 +13,7 @@ Opção 2: com Node instalado, rode `node serve.js` e abra http://localhost:8123
 
 ## Controles
 
-- Menu de comandos (teclas 1 a 3): **Jutsu** (abre as técnicas: 1 Chidori, 2 Katon, 3 Kawarimi, 4 Amaterasu; Esc volta), **Defender** (próximo dano pela metade) e **Concentrar** (+25 de chakra).
+- Menu de comandos (teclas 1 a 4): **Atacar** (1 Kunai, 2 Shuriken, 3 Soco, 4 Chute, sem custo de chakra), **Jutsu** (abre as técnicas: 1 Chidori, 2 Katon, 3 Kawarimi, 4 Amaterasu; Esc volta), **Defender** (próximo dano pela metade) e **Concentrar** (+25 de chakra).
 - Zerando a vida do Naruto aparece o K.O., com Sasuke em pose de vitória. Use "Resetar luta" para recomeçar.
 
 ## O que já existe
@@ -34,3 +34,5 @@ A pasta `versions/` guarda os estágios anteriores do visual (pixel art, HD, chi
 ## Aviso
 
 Projeto de fã, sem fins comerciais. Naruto e seus personagens pertencem aos seus criadores e detentores de direitos.
+
+- Fatalities: quando o golpe zera a vida do Naruto, cada um dos 8 golpes tem uma morte propria (Chidori, Katon, Kawarimi, Amaterasu, Kunai, Shuriken, Soco e Chute), em camera lenta.
