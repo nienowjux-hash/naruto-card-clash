@@ -184,22 +184,34 @@ function tap(c,a,b,wa,wb,col,k,o){o=o||{};
  c.restore();
  pf(0,0);c.strokeStyle=o.oc||outC(col);c.lineWidth=.72;c.lineJoin='round';c.stroke();}
 function handDraw(c,x,y,ang,type,d,k){
+ /* mao desenhada no referencial do antebraco: +x = direcao dos dedos, y = largura da palma */
  const sk=css(d.skin,k),sd=css(mix(d.skin,[90,40,80],.35),k),oc=css([112,56,58],1);
- c.save();c.translate(x,y);c.scale(1.22,1.22);c.lineCap='round';c.lineJoin='round';
- const fx=Math.cos(ang),fy=Math.sin(ang),px=-fy,py=fx;
- const parts=[];const cir=(ox,oy,r)=>parts.push([0,ox,oy,r]);const seg=(x0,y0,x1,y1,w)=>parts.push([1,x0,y0,x1,y1,w]);
- const at=(f,p)=>[fx*f+px*p,fy*f+py*p];
- const fin=(f0,p0,a,l1,l2,bend,w)=>{const q=at(f0,p0);const x1=q[0]+Math.cos(a)*l1,y1=q[1]+Math.sin(a)*l1;const a2=a+bend;seg(q[0],q[1],x1,y1,w);seg(x1,y1,x1+Math.cos(a2)*l2,y1+Math.sin(a2)*l2,w*.88);};
- if(type===1){cir(0,0,1.5);for(let i=0;i<4;i++){const p=-1.05+i*.7;fin(.9,p,ang+(-.5+i*.34),2.2,1.7,(i<2?-.22:.2),.8);}fin(0,1.2,ang+1.0,1.8,1.4,-.3,.85);}
- else if(type===2){cir(0,0,1.5);const up=-Math.PI/2;fin(.2,-.5,up-.06,2.6,1.9,-.05,.85);fin(.2,.45,up+.06,2.9,2.0,.05,.85);cir(.7,-.3,.65);cir(.9,.5,.6);seg(-.3,.9,.7,.4,.8);}
- else if(type===3){cir(0,0,2.0);for(let i=0;i<4;i++){const q=at(1.3,-1.2+i*.8);cir(q[0],q[1],.7);}const th=at(.2,1.3);seg(th[0],th[1],th[0]+fx*1.6,th[1]+fy*1.6,.8);}
- else{cir(0,0,1.7);for(let i=0;i<4;i++){const q=at(1.4,-1.2+i*.8);cir(q[0],q[1],.72);}const th=at(.5,1.4);seg(th[0],th[1],th[0]+fx*1.8-px*.5,th[1]+fy*1.8-py*.5,.85);}
+ c.save();c.translate(x,y);c.scale(1.18,1.18);c.rotate(ang);c.lineCap='round';c.lineJoin='round';
+ const parts=[],cap=(x0,y0,x1,y1,w)=>parts.push([0,x0,y0,x1,y1,w]),rr=(x0,y0,w,h,r)=>parts.push([1,x0,y0,w,h,r]);
+ const fin=(bx,by,a,l1,l2,bend,w)=>{const x1=bx+Math.cos(a)*l1,y1=by+Math.sin(a)*l1,a2=a+bend;cap(bx,by,x1,y1,w);cap(x1,y1,x1+Math.cos(a2)*l2,y1+Math.sin(a2)*l2,w*.9);};
+ const lines=[];const ln=(x0,y0,x1,y1)=>lines.push([x0,y0,x1,y1]);
+ if(type===1){ /* mao aberta */
+  rr(-.5,-1.75,3.7,3.5,1.1);
+  const fy=[-1.25,-.42,.42,1.25],fa=[-.34,-.11,.11,.34],l1=[1.7,2.0,1.9,1.5],l2=[1.3,1.6,1.5,1.1];
+  for(let i=0;i<4;i++)fin(2.8,fy[i],fa[i],l1[i],l2[i],fa[i]*.35,.98);
+  fin(.7,-1.5,-1.0,1.4,1.2,.3,1.15);
+  ln(.6,-.8,2.4,-.6);ln(.6,.5,2.4,.4);}
+ else if(type===2){ /* selo: indicador e medio em pe, resto fechado */
+  rr(-.5,-1.75,3.5,3.5,1.1);cap(2.7,.9,3.3,.9,1.0);cap(2.7,1.55,3.2,1.55,.9);
+  const up=-Math.PI/2-ang;fin(2.5,-.55,up,2.1,1.8,-.04,1.0);fin(2.5,.35,up+.05,2.3,1.9,.04,1.0);
+  cap(1.2,-1.5,2.7,-.95,1.05);}
+ else{ /* punho (0 = relaxado, 3 = cerrado com forca) */
+  const big=type===3?1.12:1;
+  rr(-.5,-1.85*big,3.9*big,3.7*big,1.25);
+  for(let i=0;i<4;i++)cap(3.0*big,(-1.35+i*.9)*big,3.5*big,(-1.35+i*.9)*big,1.0);
+  cap(1.5,-1.7*big,3.2*big,-.5*big,1.15);
+  ln(2.2*big,-.9,3.4*big,-.9);ln(2.2*big,0,3.4*big,0);ln(2.2*big,.9,3.4*big,.9);}
  c.strokeStyle=oc;c.fillStyle=oc;
- for(const p of parts){if(p[0]===0){c.beginPath();c.arc(p[1],p[2],p[3]+.4,0,TAU);c.fill();}else{c.lineWidth=p[5]+.8;c.beginPath();c.moveTo(p[1],p[2]);c.lineTo(p[3],p[4]);c.stroke();}}
+ for(const p of parts){if(p[0]===0){c.lineWidth=p[5]+.85;c.beginPath();c.moveTo(p[1],p[2]);c.lineTo(p[3],p[4]);c.stroke();}else{c.beginPath();c.roundRect(p[1]-.42,p[2]-.42,p[3]+.84,p[4]+.84,p[5]+.4);c.fill();}}
  c.strokeStyle=sk;c.fillStyle=sk;
- for(const p of parts){if(p[0]===0){c.beginPath();c.arc(p[1],p[2],p[3],0,TAU);c.fill();}else{c.lineWidth=p[5];c.beginPath();c.moveTo(p[1],p[2]);c.lineTo(p[3],p[4]);c.stroke();}}
- c.fillStyle=sd;c.globalAlpha=.45;c.beginPath();c.arc(.4,.7,1.0,0,TAU);c.fill();c.globalAlpha=1;
- c.fillStyle='rgba(255,255,255,'+(.4*k)+')';c.beginPath();c.arc(-.4,-.6,.5,0,TAU);c.fill();
+ for(const p of parts){if(p[0]===0){c.lineWidth=p[5];c.beginPath();c.moveTo(p[1],p[2]);c.lineTo(p[3],p[4]);c.stroke();}else{c.beginPath();c.roundRect(p[1],p[2],p[3],p[4],p[5]);c.fill();}}
+ c.strokeStyle=sd;c.globalAlpha=.55;c.lineWidth=.3;for(const l of lines){c.beginPath();c.moveTo(l[0],l[1]);c.lineTo(l[2],l[3]);c.stroke();}
+ c.fillStyle=sd;c.globalAlpha=.3;c.beginPath();c.ellipse(1.1,.9,1.6,.9,0,0,TAU);c.fill();c.globalAlpha=.4*k;c.fillStyle='#fff';c.beginPath();c.ellipse(1.3,-1.0,.8,.35,0,0,TAU);c.fill();c.globalAlpha=1;
  c.restore();}
 function drawFig(c,d,P,time){
  const r=rig(P),S=r.S,Hp=r.Hp,tw=P.tw,sw=5.7*tw,wind=P.wind;
