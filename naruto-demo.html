@@ -949,7 +949,7 @@ function sfxFatalK(){
  nz(.45,'lowpass',2200,150,.85,2.4);tone('sine',120,30,1.3,.8,2.42);nz(1.6,'bandpass',500,2600,.42,2.4);
  nz(5.2,'lowpass',950,500,.26,2.55);
  [2.9,3.1,3.35,3.6,3.9,4.2,4.5,4.9,5.3,5.8,6.2].forEach(a=>nz(.06,'highpass',3000,7000,.3,a));
- tone('sawtooth',620,980,1.6,.13,2.6,9);tone('sawtooth',980,760,1.4,.11,4.1,11);tone('sawtooth',700,260,1.3,.1,5.4,7);
+ nz(2.6,'bandpass',700,1800,.18,2.6);nz(2.8,'bandpass',900,1400,.14,5.0);nz(2.2,'highpass',2500,5000,.07,3.0);
  tone('sine',90,32,.5,.7,7.9);nz(.5,'lowpass',1500,150,.6,7.9);nz(1.6,'highpass',4000,7000,.1,8.0);}
 /* Efeitos de "lente" do fatality(em pixels da tela): linhas de velocidade, vinheta de batimento e sangue escorrendo na camera. */
 function fatalLens(g,raw,t,time,ccx,ccy,z,nx0){
