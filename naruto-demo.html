@@ -546,13 +546,13 @@ function chestPos(P){const r=rig(P),S=r.S,Hp=r.Hp,mid=(S[1]+Hp[1])*.5,cx=S[0]+.6
 function blit(x,y,flip,d,P,time,o){o=o||{};if(o.lv2>0&&d.style==='s')d=lvDef(o.lv2);
  const cq=clamp(P.crouch-3,-4,6),fast=(P.tilt||0)>.25?1:0,sxq=1+cq*.006+fast*.045,syq=1-cq*.007-fast*.025;
  sc.setTransform(1,0,0,1,0,0);sc.clearRect(0,0,sp.width,sp.height);sc.globalCompositeOperation='source-over';
- if(o.lv2>0)drawWings(sc,P,o.lv2,time);sc.setTransform(RES,0,0,RES,OXU*RES,OYU*RES);const r=drawFig(sc,d,P,time);drawDecals(sc,d,P,time);
+ if(o.lv2>0)drawWings(sc,P,o.lv2h!=null?o.lv2h:o.lv2,time);sc.setTransform(RES,0,0,RES,OXU*RES,OYU*RES);const r=drawFig(sc,d,P,time);drawDecals(sc,d,P,time);
  sc.setTransform(1,0,0,1,0,0);sc.globalCompositeOperation='source-atop';
  let sg=sc.createLinearGradient(0,0,sp.width,0);sg.addColorStop(0,'rgba(10,8,50,.34)');sg.addColorStop(.5,'rgba(10,8,50,.08)');sg.addColorStop(1,'rgba(255,190,140,0)');sc.fillStyle=sg;sc.fillRect(0,0,sp.width,sp.height);
  sg=sc.createLinearGradient(0,(OYU-96)*RES,0,OYU*RES);sg.addColorStop(0,'rgba(120,150,255,0)');sg.addColorStop(1,'rgba(10,30,90,.30)');sc.fillStyle=sg;sc.fillRect(0,0,sp.width,sp.height);
  if(o.light){const L=o.light,px=(OXU+L.x)*RES,py=(OYU+L.y)*RES,rr=L.r*RES;sg=sc.createRadialGradient(px,py,0,px,py,rr);sg.addColorStop(0,css(L.col,1,L.k));sg.addColorStop(1,css(L.col,1,0));sc.fillStyle=sg;sc.fillRect(0,0,sp.width,sp.height);}
  if(o.tint){sc.fillStyle=css(o.tint,1,o.tk);sc.fillRect(0,0,sp.width,sp.height);}
- if(o.cracks>0)charCracks(sc,P,o.cracks,time);if(o.curse>0)curseMarks(sc,P,o.curse,time);if(o.lv2>0)curseMarks2(sc,P,o.lv2,time);
+ if(o.cracks>0)charCracks(sc,P,o.cracks,time);if(o.curse>0)curseMarks(sc,P,o.curse,time);
  const rims=[{dx:1,dy:-.55,col:[255,226,184],a:.5,d:1.0}];
  for(const Lt of fxLights){const dxw=Lt.x-x,dyw=Lt.y-(y-34),dist=Math.hypot(dxw,dyw)||1;if(dist<Lt.r){const a=Lt.k*(1-dist/Lt.r);if(a>.03)rims.push({dx:dxw*(flip?-1:1)/dist,dy:dyw/dist,col:Lt.col,a:Math.min(1,a*1.5),d:1.5});}}
  for(const R2 of rims){const n=Math.hypot(R2.dx,R2.dy)||1,lx=R2.dx/n,ly=R2.dy/n,px=R2.d*RES;
@@ -1492,22 +1492,34 @@ function tribal(sc,A,B,k,seed,wd,spacing){
   sc.beginPath();const p0=P(cx,cy),pm=P(mx,my),pe=P(ex,ey);sc.moveTo(p0[0],p0[1]);sc.quadraticCurveTo(pm[0],pm[1],pe[0],pe[1]);sc.lineWidth=w*RES;sc.stroke();
   if(rn()<.55){const q=P(cx+Math.cos(ca+side*.5)*L*.5,cy+Math.sin(ca+side*.5)*L*.5);sc.beginPath();sc.moveTo(p0[0],p0[1]);sc.quadraticCurveTo(q[0],q[1],q[0]+side*RES,q[1]-RES*.6);sc.lineWidth=w*.6*RES;sc.stroke();}}
  const a=P(A[0],A[1]);sc.beginPath();sc.moveTo(a[0],a[1]);const b=P(A[0]+dx*Math.min(1,k),A[1]+dy*Math.min(1,k));sc.lineTo(b[0],b[1]);sc.lineWidth=wd*.38*RES;sc.stroke();}
-function lvDef(p){const d=Object.assign({},SASUKE);d.skin=mix(SASUKE.skin,[150,160,198],p);d.fore=d.skin;d.shin=d.skin;d.hair=mix(SASUKE.hair,[72,90,132],p);d.hairHi=mix(SASUKE.hairHi,[172,192,228],p);d.longHair=p;d.lv2=p;d.eyeH=SASUKE.eyeH*(1-.12*p);return d;}
-function wingHand(c,len,flex,seed){c.lineCap='round';c.lineJoin='round';const ol='#241816';
- const ag=c.createLinearGradient(0,-5,0,5);ag.addColorStop(0,'#b2a194');ag.addColorStop(1,'#6a5a54');
- c.strokeStyle=ol;c.lineWidth=11;c.beginPath();c.moveTo(-len*.62,0);c.lineTo(-len*.02,0);c.stroke();c.strokeStyle=ag;c.lineWidth=9.2;c.stroke();
- c.fillStyle='rgba(255,235,220,.25)';c.beginPath();c.ellipse(-len*.3,-2.4,len*.28,1.1,0,0,TAU);c.fill();
- c.beginPath();c.ellipse(len*.14,0,len*.2,len*.19,0,0,TAU);c.fillStyle=ag;c.fill();c.strokeStyle=ol;c.lineWidth=1.1;c.stroke();
- const fingers=[[-.95,.68,.5],[-.45,.9,.55],[0,1,.6],[.45,.9,.55],[.9,.7,.5]];
- fingers.forEach((fg,i)=>{const base=[len*.3,fg[0]*len*.17],a0=fg[0]*.55-.05,seg=[len*.34*fg[1],len*.27*fg[1],len*.2*fg[1]],curl=(flex*.55+Math.sin(seed+i)*.12)*(fg[0]<0?1:.9);
-  let x=base[0],y=base[1],a=a0;const pts=[[x,y]];for(let j=0;j<3;j++){a+=curl*(j+.6)*(fg[0]>=0?-.55:.55)*.9;x+=Math.cos(a)*seg[j];y+=Math.sin(a)*seg[j];pts.push([x,y]);}
-  c.strokeStyle=ol;c.lineWidth=4.6;c.beginPath();pts.forEach((p,j)=>j?c.lineTo(p[0],p[1]):c.moveTo(p[0],p[1]));c.stroke();
-  c.strokeStyle=ag;c.lineWidth=3.2;c.stroke();c.fillStyle='#2a1c1a';c.beginPath();c.arc(pts[3][0],pts[3][1],1.5,0,TAU);c.fill();});
- const th=[len*.2,len*.17];c.strokeStyle=ol;c.lineWidth=4.6;c.beginPath();c.moveTo(th[0],th[1]);c.quadraticCurveTo(th[0]+len*.1,th[1]+len*.18,th[0]+len*.28,th[1]+len*.2);c.stroke();c.strokeStyle=ag;c.lineWidth=3.2;c.stroke();}
-function drawWings(sc,P,k,time){const grow=clamp((k-.5)/.5,0,1);if(grow<=0)return;const rg=rigW(P),S=rg.S,t0=P.tilt||0;
- sc.save();sc.setTransform(RES,0,0,RES,OXU*RES,OYU*RES);sc.globalAlpha=Math.min(1,grow*1.4);
- const defs=[{ang:-2.3,dx:-4,dy:-1,len:38,seed:1},{ang:-1.9,dx:-1.5,dy:-3,len:35,seed:2}];
- for(const w of defs){sc.save();sc.translate(S[0]+w.dx,S[1]+w.dy);sc.rotate(w.ang+t0+Math.sin(time*1.6+w.seed)*.05);wingHand(sc,w.len*grow,.55+.35*Math.sin(time*2.1+w.seed),w.seed);sc.restore();}
+function lvDef(p){const d=Object.assign({},SASUKE);d.skin=mix(SASUKE.skin,[168,176,208],p);d.fore=d.skin;d.shin=d.skin;d.hair=mix(SASUKE.hair,[72,90,132],p);d.hairHi=mix(SASUKE.hairHi,[172,192,228],p);d.longHair=p*.5;d.lv2=p;d.eyeH=SASUKE.eyeH*(1-.12*p);return d;}
+function giantHand(c,w,h,flex,seed,mir){
+ c.save();if(mir)c.scale(-1,1);c.lineJoin='round';c.lineCap='round';const ol='#2a1c18';
+ const g1=c.createLinearGradient(-w*.5,-h*.5,w*.5,h*.5);g1.addColorStop(0,'#b9a89c');g1.addColorStop(.5,'#8f7e74');g1.addColorStop(1,'#5a4a44');
+ const g2=c.createLinearGradient(0,-h*.6,0,h*.2);g2.addColorStop(0,'#a8978b');g2.addColorStop(1,'#6e5d55');
+ // antebraco grosso que desce por tras do corpo
+ c.beginPath();c.moveTo(-w*.3,h*.3);c.lineTo(-w*.4,h*1.1);c.lineTo(w*.4,h*1.1);c.lineTo(w*.3,h*.3);c.closePath();c.fillStyle=g1;c.fill();c.strokeStyle=ol;c.lineWidth=1.3;c.stroke();
+ // polegar
+ c.strokeStyle=ol;c.lineWidth=w*.25+1.4;c.beginPath();c.moveTo(-w*.4,h*.14);c.quadraticCurveTo(-w*.66,h*.02,-w*.62,-h*.26);c.stroke();c.strokeStyle='#8f7e74';c.lineWidth=w*.25;c.stroke();
+ // quatro dedos grossos e curtos, com nos dos dedos
+ const fw=w*.215,xs=[-.34,-.115,.115,.34],len=[.44,.5,.47,.38];
+ for(let i=0;i<4;i++){const cx=xs[i]*w,sp=(i-1.5)*.1*(1+flex*.6),L1=h*len[i]*.58,L2=h*len[i]*.42,cur=flex*.42*(i<2?-1:1)*.7,by=-h*.16;
+  const k1=[cx+Math.sin(sp)*L1,by-Math.cos(sp)*L1],k2=[k1[0]+Math.sin(sp+cur)*L2,k1[1]-Math.cos(sp+cur)*L2];
+  c.strokeStyle=ol;c.lineWidth=fw+1.5;c.beginPath();c.moveTo(cx,by);c.lineTo(k1[0],k1[1]);c.lineTo(k2[0],k2[1]);c.stroke();
+  c.strokeStyle=g2;c.lineWidth=fw;c.stroke();
+  c.strokeStyle='rgba(30,18,14,.55)';c.lineWidth=.9;c.beginPath();c.moveTo(k1[0]-fw*.4,k1[1]);c.lineTo(k1[0]+fw*.4,k1[1]+.4);c.stroke();
+  c.fillStyle='rgba(205,190,178,.45)';c.beginPath();c.arc(k1[0]-fw*.12,k1[1]-fw*.1,fw*.3,0,TAU);c.fill();
+  c.fillStyle='rgba(40,26,22,.5)';c.beginPath();c.arc(k2[0],k2[1]-fw*.1,fw*.34,0,TAU);c.fill();}
+ // palma (costas da mao) por cima da base dos dedos
+ c.beginPath();c.roundRect(-w*.47,-h*.2,w*.94,h*.6,w*.17);c.fillStyle=g1;c.fill();c.strokeStyle=ol;c.lineWidth=1.4;c.stroke();
+ c.strokeStyle='rgba(30,18,14,.4)';c.lineWidth=.9;for(let i=0;i<4;i++){c.beginPath();c.moveTo(xs[i]*w,-h*.12);c.quadraticCurveTo(xs[i]*w*.75,h*.1,xs[i]*w*.55,h*.34);c.stroke();}
+ c.strokeStyle='rgba(215,200,188,.35)';c.lineWidth=1.1;c.beginPath();c.moveTo(-w*.38,-h*.1);c.quadraticCurveTo(-w*.1,-h*.16,w*.2,-h*.12);c.stroke();
+ c.strokeStyle='rgba(30,18,14,.45)';c.lineWidth=1;c.beginPath();c.arc(0,h*.4,w*.34,Math.PI*1.08,Math.PI*1.92);c.stroke();c.beginPath();c.arc(0,h*.5,w*.3,Math.PI*1.1,Math.PI*1.9);c.stroke();
+ c.restore();}
+function drawWings(sc,P,k,time){if(k<=0)return;const rg=rigW(P),S=rg.S,t0=P.tilt||0;sc.save();sc.setTransform(RES,0,0,RES,OXU*RES,OYU*RES);
+ const g=k*(1+.1*Math.sin(Math.min(1,k)*Math.PI));sc.globalAlpha=Math.min(1,k*1.6);
+ const hands=[{dx:-17,dy:-12,rot:-.42,w:30,h:34,mir:false,seed:1},{dx:-3,dy:-28,rot:-.08,w:33,h:37,mir:true,seed:2}];
+ for(const hd of hands){sc.save();sc.translate(S[0]+hd.dx*g,S[1]+hd.dy*g);sc.rotate(hd.rot+t0+Math.sin(time*1.3+hd.seed)*.035);sc.scale(g*(1+.02*Math.sin(time*1.9+hd.seed)),g);giantHand(sc,hd.w,hd.h,.45+.25*Math.sin(time*1.7+hd.seed),hd.seed,hd.mir);sc.restore();}
  sc.restore();}
 function curseMarks2(sc,P,k,time){if(k<=0)return;const rg=rigW(P),E=o=>[o.ex,o.ey],H=o=>[o.hx,o.hy],nk=[rg.S[0]+.7,rg.S[1]-3.4],C=rg.C,Hp=rg.Hp;
  sc.save();sc.setTransform(1,0,0,1,0,0);sc.globalCompositeOperation='source-atop';sc.lineCap='round';sc.lineJoin='round';sc.strokeStyle='rgba(8,4,16,.98)';
@@ -2402,7 +2414,7 @@ function render(ts){
  if(power>0)sOpt.light={x:rS.hf.hx,y:rS.hf.hy,r:34,col:[110,185,255],k:.75*Math.min(1,power)};
  if(type==='katon'&&t>1.82&&t<2.4)sOpt.light={x:rS.C[0]+3.2,y:rS.C[1]+2.6,r:28,col:[255,150,50],k:.7};
  const sFlip=(type==='kawarimi'&&t>1.9&&(LW(type)||t<3.2))||(LC(type)&&t>6.7)||(decap&&!A&&outcome==='S');
- {const l2=(type==='selo2')?scaleAt(0,1,1.0,2.4,t):(type==='selochidori'?1:(seal2T>0?1:0));const cs=(l2>0)?0:(type==='selo'?scaleAt(0,1,.8,2.0,t):(sealT>0?1:0));if(l2>0){sOpt.lv2=l2;if(type==='selochidori'){sOpt.tint=[50,20,90];sOpt.tk=.2;}}else if(cs>0)sOpt.curse=cs;}
+ {const l2=(type==='selo2')?scaleAt(0,1,1.0,2.4,t):(type==='selochidori'?1:(seal2T>0?1:0));const cs=(l2>0)?0:(type==='selo'?scaleAt(0,1,.8,2.0,t):(sealT>0?1:0));if(l2>0){sOpt.lv2=l2;sOpt.lv2h=(type==='selo2')?scaleAt(0,1,2.35,2.95,t):1;if(type==='selochidori'){sOpt.tint=[50,20,90];sOpt.tk=.2;}}else if(cs>0)sOpt.curse=cs;}
  sOpt.rot=sRot;blit(sx0,GY+sy0,sFlip,SASUKE,sP,time,sOpt);
  if(pierce){drawN(); /* o braco entra no peito do Naruto: ele e desenhado por cima do Sasuke e so a parte de fora da frente do corpo reaparece */
   const o2=Object.assign({},sOpt,{noRefl:true});
