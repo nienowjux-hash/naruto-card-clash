@@ -328,7 +328,46 @@ function lock(c,bx,by,tx,ty,w,bend,fill,out,hi,hiA){
  c.beginPath();c.moveTo(bx+nx*w/2,by+ny*w/2);c.quadraticCurveTo(mx+nx*w*.3,my+ny*w*.3,tx,ty);c.quadraticCurveTo(mx-nx*w*.3,my-ny*w*.3,bx-nx*w/2,by-ny*w/2);c.closePath();
  c.fillStyle=fill;c.fill();c.strokeStyle=out;c.lineWidth=.6;c.lineJoin='round';c.stroke();
  if(hi){c.strokeStyle=hi;c.globalAlpha=hiA==null?.55:hiA;c.lineWidth=.42;c.lineCap='round';c.beginPath();c.moveTo(bx+(tx-bx)*.28+nx*w*.12,by+(ty-by)*.28+ny*w*.12);c.quadraticCurveTo(mx+nx*w*.14,my+ny*w*.14,bx+(tx-bx)*.9+nx*w*.02,by+(ty-by)*.9+ny*w*.02);c.stroke();c.globalAlpha=1;}}
+/* Cabeca de frente (usada quando o tronco esta virado para a camera): rosto simetrico, franja, protetor de testa, bigodes, hematomas e sangue. */
+function drawHeadFront(c,d,P,r,time){
+ const C=r.C,isS=d.style==='s',e=Math.round(P.expr),hairO=outC(d.hair),skinO=css([112,54,56],1),X=1.4;
+ c.save();c.translate(C[0],C[1]);c.rotate(P.hr);c.scale(HEADS,HEADS);c.lineJoin='round';c.lineCap='round';
+ const hg=c.createLinearGradient(-8,-18,9,-2);hg.addColorStop(0,css(d.hairHi,1));hg.addColorStop(.5,css(d.hair,1.05));hg.addColorStop(1,css(d.hair,.72));
+ const wv=P.wind*1.4+P.hix*.25,sp=isS?[[-7.2,-2,-10.5,-9,-6.2,-6],[-6,-6,-9,-15,-3.2,-9.5],[-2.6,-9,-4.4,-17,.4,-10.5],[1.4,-10,2.2,-18.5,4.4,-10.5],[4.6,-9,8.4,-16.5,7.2,-8.8],[7.2,-6,11.4,-12,9.2,-4.6],[8.6,-2,12,-6,8.8,-.2]]
+  :[[-7.4,-2,-12,-7,-6.5,-6],[-6.2,-6,-11,-14,-3.6,-9],[-3,-9,-6,-18,0,-10.5],[1.4,-10,1.4,-20,4,-10.5],[4.5,-9,8.6,-18.5,7,-9],[7.2,-6,12.2,-14,9.2,-5],[8.6,-2,13,-7.5,8.8,-.5]];
+ for(const s of sp){const dx=wv*.3;c.beginPath();c.moveTo(s[0],s[1]);c.lineTo(s[2]+dx,s[3]);c.lineTo(s[4],s[5]);c.closePath();c.fillStyle=hg;c.fill();c.strokeStyle=hairO;c.lineWidth=.6;c.stroke();}
+ const ng=c.createLinearGradient(-1,0,5,0);ng.addColorStop(0,shC(d.skin,1));ng.addColorStop(1,css(d.skin,.96));c.fillStyle=ng;c.fillRect(X-2.4,6.5,4.8,9);
+ for(const sx of [-1,1]){c.beginPath();c.ellipse(X+sx*7,2,1.4,2.2,0,0,TAU);c.fillStyle=css(d.skin,.9);c.fill();c.strokeStyle=skinO;c.lineWidth=.5;c.stroke();}
+ const face=()=>{c.beginPath();c.moveTo(X-6.4,-4.5);c.bezierCurveTo(X-6.4,-10.5,X+6.4,-10.5,X+6.4,-4.5);c.bezierCurveTo(X+6.9,1,X+5.8,6.2,X+3.4,8.6);c.bezierCurveTo(X+2,9.9,X-2,9.9,X-3.4,8.6);c.bezierCurveTo(X-5.8,6.2,X-6.9,1,X-6.4,-4.5);c.closePath();};
+ face();const fg=c.createLinearGradient(X-7,-9,X+7,9);fg.addColorStop(0,css(d.skin,.92));fg.addColorStop(.5,css(d.skin,1.05));fg.addColorStop(1,css(d.skin,.86));c.fillStyle=fg;c.fill();
+ c.save();face();c.clip();c.fillStyle='rgba(80,30,60,.22)';c.fillRect(X-8,-10,3.2,22);c.fillRect(X+5,-10,3.2,22);c.fillStyle='rgba(70,30,60,.25)';c.beginPath();c.ellipse(X,10,5.2,2.4,0,0,TAU);c.fill();c.restore();
+ face();c.strokeStyle=skinO;c.lineWidth=.7;c.stroke();
+ /* olhos e sobrancelhas */
+ const ey=1.2;
+ for(const sx of [-1,1]){const x=X+sx*2.7;
+  if(e===3){c.strokeStyle='rgba(40,18,24,.95)';c.lineWidth=.75;c.beginPath();c.moveTo(x-sx*1.5,ey-1.2);c.lineTo(x+sx*1.2,ey+.15);c.lineTo(x-sx*1.5,ey+1.4);c.stroke();}
+  else{c.beginPath();c.ellipse(x,ey,1.6*d.eyeW,1.15*d.eyeH,0,0,TAU);c.fillStyle='#f4f1ea';c.fill();c.strokeStyle='rgba(30,16,24,.9)';c.lineWidth=.45;c.stroke();c.beginPath();c.arc(x,ey+.1,.95,0,TAU);c.fillStyle=css(d.iris,1);c.fill();c.fillStyle='#fff';c.fillRect(x-.2,ey-.5,.4,.4);}
+  c.strokeStyle=hairO;c.lineWidth=.7;c.beginPath();c.moveTo(x-sx*2,ey-2.6+(e===3?-.4:0));c.lineTo(x+sx*1.3,ey-(e===3?3.3:2.2));c.stroke();}
+ /* hematomas roxos em volta dos olhos */
+ for(const sx of [-1,1]){c.beginPath();c.ellipse(X+sx*2.7,ey+.5,2.5,1.9,0,0,TAU);c.fillStyle='rgba(105,45,140,.42)';c.fill();}
+ /* bigodes do Naruto */
+ if(!isS){c.strokeStyle='rgba(80,42,30,.85)';c.lineWidth=.38;for(const sx of [-1,1])for(let i=0;i<3;i++){c.beginPath();c.moveTo(X+sx*3.6,3+i*1.1);c.lineTo(X+sx*6.2,2.4+i*1.35);c.stroke();}}
+ c.strokeStyle='rgba(120,60,60,.7)';c.lineWidth=.4;c.beginPath();c.moveTo(X,3.2);c.lineTo(X+.4,4.2);c.lineTo(X-.3,4.4);c.stroke();
+ /* boca aberta, sangrando */
+ c.beginPath();c.ellipse(X,7,1.7,1.2+(e===3?.35:0),0,0,TAU);c.fillStyle='#4a0a14';c.fill();c.strokeStyle=skinO;c.lineWidth=.45;c.stroke();
+ c.fillStyle='rgba(200,18,28,.9)';c.beginPath();c.moveTo(X-.2,7.6);c.bezierCurveTo(X-.6,9,X-.1,10.5,X-.4,12);c.lineTo(X+.5,12);c.bezierCurveTo(X+.7,10,X+.9,8.6,X+.9,7.8);c.closePath();c.fill();
+ /* franja irregular */
+ const fr=[[X-6.6,-5],[X-6.9,-10],[X-3.6,-8],[X-2.2,-11.8],[X,-8.2],[X+2.3,-12],[X+3.8,-8],[X+7,-10.2],[X+6.6,-5],[X+5,-6.6],[X+3,-5.2],[X+1,-6.9],[X-1.4,-5.3],[X-3.4,-6.8],[X-5,-5.4]];
+ c.beginPath();fr.forEach((p,i)=>i?c.lineTo(p[0],p[1]):c.moveTo(p[0],p[1]));c.closePath();c.fillStyle=hg;c.fill();c.strokeStyle=hairO;c.lineWidth=.6;c.stroke();
+ /* protetor de testa */
+ c.fillStyle=css(d.band,1);c.fillRect(X-7,-5.2,14,2.9);c.strokeStyle=outC(d.band);c.lineWidth=.5;c.strokeRect(X-7,-5.2,14,2.9);
+ c.beginPath();c.roundRect(X-3.7,-5.8,7.4,4,.7);c.fillStyle=css(d.plate,1);c.fill();c.strokeStyle='rgba(30,30,60,.8)';c.lineWidth=.45;c.stroke();
+ c.strokeStyle='rgba(50,50,90,.9)';c.lineWidth=.4;c.beginPath();c.arc(X-.4,-3.8,1,.4,5.4);c.moveTo(X-.4,-3.8);c.lineTo(X+1.6,-3.8);c.stroke();
+ /* corte e sangue na testa */
+ c.strokeStyle='rgba(170,16,26,.95)';c.lineWidth=.7;c.beginPath();c.moveTo(X+1.8,-9);c.lineTo(X+2.4,-6);c.stroke();c.fillStyle='rgba(150,12,22,.85)';c.beginPath();c.ellipse(X+2.4,-5.8,.6,.9,0,0,TAU);c.fill();
+ c.restore();}
 function drawHead(c,d,P,r,time){
+ if((P.turn||0)>=.8){drawHeadFront(c,d,P,r,time);return;}
  const e=Math.round(P.expr),red=P.red>.5,wind=P.wind+.12,C=r.C,isS=d.style==='s';
  const WL=WOUNDS[isS?'s':'n'];
  const singe=Math.min(1,(WL.filter(w=>w.k==='burn'||w.k==='faceBurn').length+((burning&&!isS)?3:0))/6),bleed=Math.min(1,WL.filter(w=>w.k==='blood'||w.k==='puncture'||(w.part==='face'&&(w.k==='brow'||w.k==='lip'||w.k==='nose'))).length/5);
@@ -758,9 +797,9 @@ const CH_WIND=Object.assign({},HIT,{tilt:.5,lean:4,crouch:9,hxF:14,hyF:-3,hxB:-1
 const CH_RIP=mk({tilt:-.3,crouch:3,lean:-5,fbx:-9,ffx:6,hxF:7,hyF:-6,hxB:-7,hyB:6,red:1,expr:2,tw:.9,hr:-.22,hdx:-2,hdy:-1,wind:1});
 const CH_DRIP=mk({tilt:-.06,crouch:2,lean:-2,fbx:-6,ffx:5,hxF:4,hyF:11,hxB:5,hyB:8,red:1,expr:7,tw:.95,hr:-.1,hdy:-1});
 const N_IMP_B=Object.assign({},N_IMP,{tilt:-.3,lean:-4,hr:-.5,hdy:-1,hxF:-8,hyF:-1,hxB:-10,hyB:-2,expr:3});
-const N_JERK=mk({tilt:.08,lean:1,crouch:3,fbx:-5,ffx:5,hxF:1.5,hyF:12,hxB:-1.5,hyB:11,hdx:1,hdy:2,hr:.16,expr:3,tw:1,wind:.8,turn:.85,torn:1});
-const N_SWAY1=mk({tilt:0,lean:0,crouch:.5,fbx:-4,ffx:4,hxF:1.8,hyF:13,hxB:-1.8,hyB:13,hdx:0,hdy:.5,hr:.05,expr:3,tw:1,turn:1,torn:1});
-const N_SWAY2=mk({tilt:.02,lean:0,crouch:1,fbx:-4,ffx:4,hxF:1.8,hyF:13,hxB:-1.8,hyB:13,hdx:0,hdy:1.2,hr:.08,expr:3,tw:1,turn:1,torn:1});
+const N_JERK=mk({tilt:.08,lean:1,crouch:1.5,fbx:-5,ffx:5,hxF:1.5,hyF:12,hxB:-1.5,hyB:11,hdx:1,hdy:2,hr:.16,expr:3,tw:1,wind:.8,turn:.85,torn:1});
+const N_SWAY1=mk({tilt:0,lean:0,crouch:-.6,fbx:-4,ffx:4,hxF:1.8,hyF:13,hxB:-1.8,hyB:13,hdx:0,hdy:.5,hr:.05,expr:3,tw:1,turn:1,torn:1});
+const N_SWAY2=mk({tilt:.02,lean:0,crouch:-.5,fbx:-4,ffx:4,hxF:1.8,hyF:13,hxB:-1.8,hyB:13,hdx:0,hdy:1.2,hr:.08,expr:3,tw:1,turn:1,torn:1});
 const N_DOWN_T=Object.assign({},N_DOWN,{turn:.35,torn:1});
 ANIMS.chidori.L={dur:10.6,koAt:9.6,speakAt:7.4,bannerAt:8.6,line:'Você é fraco!',
  /* mapa raw->t: pausa no impacto, camera lenta com o braco cravado, lentissima no arranque, depois normal */
