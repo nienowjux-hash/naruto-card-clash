@@ -128,7 +128,7 @@ const SASUKE=mkDef({skin:'#f7d6b8',shirt:'#33449a',sleeve:'#33449a',fore:'#f7d6b
  hair:'#161a32',hairHi:'#5870c0',band:'#1f2d80',plate:'#d5dcec',iris:'#14141f',irisHi:'#47507a',eyeH:.86,eyeW:1.1,browW:.72,lidW:.95,lash:0,style:'s'});
 const NARUTO=mkDef({skin:'#fbd3a8',shirt:'#f58f1c',sleeve:'#f58f1c',fore:'#f58f1c',collar:'#2a4fb8',shorts:'#f27f12',shin:'#f27f12',wrap:'#efece2',wrapLen:.22,shoe:'#1d2d78',belt:'#2a4fb8',
  hair:'#ffcb24',hairHi:'#fff2a0',band:'#1f3fa0',plate:'#d5dcec',iris:'#1646d8',irisHi:'#86d4ff',eyeH:1.06,eyeW:1.02,browW:1.2,lidW:1.0,lash:0,style:'n'});
-const IDLE={lean:0,crouch:0,fbx:-5,fby:0,ffx:5,ffy:0,hxF:4,hyF:12,hxB:-1,hyB:12,hdx:0,hdy:0,hr:0,tilt:0,red:0,expr:0,hF:0,hB:0,tw:1,wind:0,hix:0,hiy:0,turn:0,torn:0,scream:0};
+const IDLE={lean:0,crouch:0,fbx:-5,fby:0,ffx:5,ffy:0,hxF:4,hyF:12,hxB:-1,hyB:12,hdx:0,hdy:0,hr:0,tilt:0,red:0,expr:0,hF:0,hB:0,tw:1,wind:0,hix:0,hiy:0,turn:0,torn:0,scream:0,nohead:0};
 const mk=o=>Object.assign({},IDLE,o);
 function ik(sx,sy,hx,hy,l1,l2,dir){let dx=hx-sx,dy=hy-sy,d=Math.hypot(dx,dy);const mx=(l1+l2)*.965;if(d>mx){dx*=mx/d;dy*=mx/d;d=mx;hx=sx+dx;hy=sy+dy}if(d<.01)d=.01;
  const a=(l1*l1-l2*l2+d*d)/(2*d),h=Math.sqrt(Math.max(0,l1*l1-a*a));const px=sx+dx*a/d,py=sy+dy*a/d;return{ex:px+(-dy/d)*h*dir,ey:py+(dx/d)*h*dir,hx,hy}}
@@ -296,7 +296,7 @@ function drawFig(c,d,P,time){
  else{c.beginPath();c.moveTo(S[0]-sw,S[1]+1);c.lineTo(S[0]-4*tw,S[1]-2.8);c.quadraticCurveTo(S[0]+.5,S[1]-3.8,S[0]+4.2*tw,S[1]-2.6);c.lineTo(S[0]+sw,S[1]+1);c.quadraticCurveTo(S[0],S[1]-.5,S[0]-sw,S[1]+1);c.closePath();c.fillStyle=css(d.collar,1);c.fill();c.strokeStyle=outC(d.collar);c.lineWidth=.75;c.stroke();c.strokeStyle=hiC(d.collar,1,.55);c.lineWidth=.38;c.beginPath();c.moveTo(S[0]-3.4,S[1]-1.6);c.quadraticCurveTo(S[0]+.5,S[1]-2.6,S[0]+3.4,S[1]-1.5);c.stroke();}
  });
  leg(r.hip,r.lf,1,true);
- up(()=>drawHead(c,d,P,r,time));
+ if(P.nohead>.5)up(()=>{const sx2=S[0],sy2=S[1]-3.4;c.fillStyle=css(d.skin,.95);c.fillRect(sx2-1.7,sy2,3.6,3.4);c.fillStyle='rgba(140,9,18,.9)';c.fillRect(sx2-1.7,sy2+1,3.6,5);c.beginPath();c.ellipse(sx2+.1,sy2,1.9,.85,0,0,TAU);c.fillStyle='#7a0a14';c.fill();c.beginPath();c.ellipse(sx2+.1,sy2-.05,1,.42,0,0,TAU);c.fillStyle='#d02634';c.fill();});else up(()=>drawHead(c,d,P,r,time));
  if(handsUp)up(()=>arm(r.hb,.74,hB,r.shB));
  up(()=>arm(r.hf,1,hF,r.shF));
  c.restore();
@@ -839,6 +839,32 @@ ANIMS.kawarimi={dur:5.2,hold:2.68,
   nX:[[0,288],[1.15,288],[1.3,270],[1.6,126],[2.65,126],[2.95,70],[3.45,62],[4.9,288]],
   cam:[[0,{z:1.04,cx:192,cy:116}],[.4,{z:1.04,cx:192,cy:116}],[.9,{z:1.3,cx:130,cy:128}],[1.3,{z:1.3,cx:200,cy:128}],[1.62,{z:1.55,cx:112,cy:130}],[2.1,{z:1.4,cx:140,cy:130}],[2.68,{z:1.6,cx:148,cy:130}],[3.4,{z:1.3,cx:120,cy:128}],[4.3,{z:1.04,cx:192,cy:116}],[5.2,{z:1.04,cx:192,cy:116}]],
   hitT:2.68,dmg:14,cost:10};
+/* ---- golpe final do Kawarimi: o Sasuke surge atras e decapita o Naruto com um kunai ---- */
+const LW=type=>type==='kawarimi'&&!!ANIMS.kawarimi.L&&((anim&&anim.lethal)||!!window.__LETHW);
+let decap=0;
+const SLASH=mk({tilt:.3,crouch:5,lean:3,fbx:-10,ffx:6,hxF:17,hyF:-1,hxB:-8,hyB:3,hdx:3,hdy:1,red:1,expr:2,tw:.85,hr:-.08,wind:.8});
+const SLASHF=mk({tilt:.2,crouch:4,lean:2,fbx:-9,ffx:6,hxF:8,hyF:5,hxB:-6,hyB:4,red:1,expr:1,tw:.9,hr:-.05,wind:.5});
+const FLICK=mk({tilt:.02,crouch:2,lean:0,fbx:-7,ffx:5,hxF:3,hyF:10,hxB:5,hyB:8,red:1,expr:7,tw:.95,hr:.05});
+const N_HL1=mk({tilt:-.04,lean:0,crouch:2,fbx:-8,ffx:6,hxF:6,hyF:2,hxB:5,hyB:6,expr:3,tw:1,nohead:1,wind:.4});
+const N_HL2=mk({tilt:.02,lean:0,crouch:2.5,fbx:-8,ffx:6,hxF:1,hyF:12,hxB:0,hyB:12,expr:3,tw:1,nohead:1});
+const N_HL3=mk({tilt:.18,lean:1,crouch:6,fbx:-9,ffx:6,hxF:0,hyF:13,hxB:-1,hyB:13,expr:3,tw:1,nohead:1});
+const N_HL4=mk({tilt:.5,lean:2,crouch:11,fbx:-10,ffx:6,hxF:1,hyF:13,hxB:0,hyB:13,expr:3,tw:1,nohead:1});
+const N_DOWN_H=Object.assign({},N_DOWN,{nohead:1});
+ANIMS.kawarimi.L={dur:9.8,koAt:8.9,bannerAt:8.0,banner:['斬','FATALITY','Kawarimi','#d9b878'],sfxFn:null,
+ /* mapa raw->t: pausa no corte, camera lenta com a cabeca voando e o corpo de pe, depois acelera na queda */
+ map:[[0,0],[2.68,2.68],[3.05,2.72],[5.5,3.9],[8.0,5.4],[99,96.4]],
+ sX:[[0,96],[1.58,96],[1.9,170],[2.6,152],[99,152]],
+ sP:ANIMS.kawarimi.sP.filter(k=>k[0]<=2.62).concat([[2.7,SLASH],[3.2,SLASH],[3.6,SLASHF],[4.2,FLICK],[5.2,VICTORY],[99,VICTORY]]),
+ nP:ANIMS.kawarimi.nP.filter(k=>k[0]<=2.64).concat([[2.66,N_SURP],[2.68,N_HL1],[3.6,N_HL2],[4.6,N_HL3],[5.1,N_HL3],[5.5,N_HL4],[5.9,N_DOWN_H],[99,N_DOWN_H]]),
+ nX:[[0,288],[1.15,288],[1.3,270],[1.6,126],[3.5,126],[4.6,122],[5.9,112],[99,112]],
+ cam:ANIMS.kawarimi.cam.filter(k=>k[0]<=2.1).concat([[2.5,{z:1.9,cx:140,cy:126}],[2.68,{z:2.5,cx:136,cy:118}],[3.0,{z:2.2,cx:124,cy:108}],[3.6,{z:2.0,cx:112,cy:128}],[4.4,{z:1.8,cx:128,cy:130}],[5.2,{z:2.0,cx:124,cy:140}],[6.0,{z:1.6,cx:135,cy:135}],[7.0,{z:1.25,cx:150,cy:125}],[7.4,{z:1.04,cx:192,cy:116}]])};
+const mapW=raw=>{const M=ANIMS.kawarimi.L.map;if(raw<=0)return raw;let i=0;while(i<M.length-2&&raw>M[i+1][0])i++;const a=M[i],b=M[i+1];return a[1]+(b[1]-a[1])*(raw-a[0])/(b[0]-a[0]);};
+const rawOfW=tt=>{let lo=0,hi=40;for(let i=0;i<40;i++){const m=(lo+hi)/2;if(mapW(m)<tt)lo=m;else hi=m;}return lo;};
+/* a cabeca decepada: parabola, giro e quiques na agua (simulacao simples, so depende do tempo desde o corte) */
+function headSim(x0,y0,age){let x=x0,y=y0,vx=-34,vy=-95,r=0,w=-9,t=0,b=0;const g0=260;while(t<age){const s=Math.min(.01,age-t);vy+=g0*s;x+=vx*s;y+=vy*s;r+=w*s;if(y>GY-3){y=GY-3;if(Math.abs(vy)>25&&b<3){vy*=-.32;vx*=.55;w*=.5;b++;}else{vy=0;vx=0;w=0;}}t+=s;}return{x,y,r,b};}
+{const rg=rigW(evalPose(ANIMS.kawarimi.L.nP,2.68));ANIMS.kawarimi.L.head0=[126-rg.C[0],GY+rg.C[1]];
+ let a=0,x=ANIMS.kawarimi.L.head0[0],y=ANIMS.kawarimi.L.head0[1],vy=-95;while(a<5){vy+=260*.01;y+=vy*.01;a+=.01;if(y>GY-3)break;}ANIMS.kawarimi.L.landAge=a;}
+ANIMS.kawarimi.L.sfxFn=sfxFatalW;
 ANIMS.amaterasu={dur:5.0,hold:2.0,
   sP:[[0,READY],[.45,READY],[.65,AMA_A],[1.0,AMA_CLUTCH],[1.55,AMA_CLUTCH],[1.9,AMA_A2],[3.6,AMA_A2],[4.3,READY],[5.0,READY]],
   nP:[[0,N_READY],[1.7,N_READY],[1.95,N_SURP],[2.05,N_BURN1],[2.35,N_BURN2],[2.65,N_BURN1],[2.95,N_BURN2],[3.3,N_BURN1],[3.9,N_STAG],[4.5,N_READY]],
@@ -891,15 +917,15 @@ function enemyTurn(){if(outcome||anim)return;const type=Math.random()<.5?'raseng
  A.hits.forEach((h,i)=>later(h.t*1000,()=>{hp.s=Math.max(0,hp.s-dm(h));setBars();dmgPop(dm(h),'S');applyDamageS(type,i);}));
  if(lethal)later((A.hits[A.hits.length-1].t+1.3)*1000,()=>{outcome='N';outcomeT=performance.now()/1000;showKO('N');setCards(false);});}
 const HS=.09;
-function warp(type,raw){if(LC(type))return mapL(raw);if(LK(type))return mapK(raw);const h=ANIMS[type].hold;if(raw<h)return raw;if(raw<h+HS)return h+(raw-h)*.06;return raw-HS*.94;}
+function warp(type,raw){if(LC(type))return mapL(raw);if(LK(type))return mapK(raw);if(LW(type))return mapW(raw);const h=ANIMS[type].hold;if(raw<h)return raw;if(raw<h+HS)return h+(raw-h)*.06;return raw-HS*.94;}
 const LC=type=>type==='chidori'&&!!ANIMS.chidori.L&&((anim&&anim.lethal)||!!window.__LETH);
-function sasX(type,t){{const a_=ANIMS[type];if(a_&&a_.sX)return interp(a_.sX,t);}if(LC(type)&&t>=2.55)return interp(ANIMS.chidori.L.sX,t);if(type==='kawarimi')return interp([[0,96],[1.58,96],[1.9,170],[3.0,150],[3.9,96]],t);if(type==='chidori'){if(t<2.15)return 96;if(t<2.55){const k=(t-2.15)/.4;return 96+(246-96)*Math.pow(k,1.7);}if(t<3.1)return 246;
+function sasX(type,t){{const a_=ANIMS[type];if(a_&&a_.sX)return interp(a_.sX,t);}if(LC(type)&&t>=2.55)return interp(ANIMS.chidori.L.sX,t);if(LW(type))return interp(ANIMS.kawarimi.L.sX,t);if(type==='kawarimi')return interp([[0,96],[1.58,96],[1.9,170],[3.0,150],[3.9,96]],t);if(type==='chidori'){if(t<2.15)return 96;if(t<2.55){const k=(t-2.15)/.4;return 96+(246-96)*Math.pow(k,1.7);}if(t<3.1)return 246;
   if(t<3.58){const k=(t-3.1)/.48,e=k*k*(3-2*k);return 246+(132-246)*e;}
   if(t<4.25){const k=(t-3.58)/.67,e=k*k*(3-2*k);return 132+(96-132)*e;}return 96;}return 96;}
 function sasY(type,t){if(LC(type)&&t>3.0)return 0;{const a_=ANIMS[type];if(a_&&a_.sArc){const q=a_.sArc;if(t>q[0]&&t<q[1])return -Math.sin((t-q[0])/(q[1]-q[0])*Math.PI)*q[2];return 0;}}if(type==='kawarimi'&&t>1.9&&t<2.12){const k=(t-1.9)/.22;return -48*(1-k)*(1-k);}if(type==='chidori'&&t>3.1&&t<3.58)return -Math.sin((t-3.1)/.48*Math.PI)*24;return 0;}
 function sRotF(type,t){if(LC(type)&&t>3.0)return 0;{const a_=ANIMS[type];if(a_&&a_.sSpin){const q=a_.sSpin;if(t>q[0]&&t<q[1]){const k=(t-q[0])/(q[1]-q[0]),e=k*k*(3-2*k);return q[2]*TAU*e;}return 0;}}if(type==='chidori'&&t>3.12&&t<3.56){const k=(t-3.12)/.44,e=k*k*(3-2*k);return -TAU*e;}return 0;}
-function nY(type,t){if(LC(type)||LK(type))return 0;{const a_=ANIMS[type];if(a_.enemy){const q=a_.nArc;if(q&&t>q[0]&&t<q[1])return -Math.sin((t-q[0])/(q[1]-q[0])*Math.PI)*q[2];return 0;}}const h=ANIMS[type].hitT;if(t>h&&t<h+.5){return -Math.sin((t-h)/.5*Math.PI)*(type==='chidori'?18:10);}return 0;}
-function nRotF(type,t){if(ANIMS[type].enemy||LC(type))return 0;const h=ANIMS[type].hitT;if((type==='chidori'||type==='kawarimi')&&t>h+.02&&t<h+.5){const k=(t-h-.02)/.48,e=k*k*(3-2*k);return (type==='chidori'?-1:1)*TAU*e;}return 0;}
+function nY(type,t){if(LC(type)||LK(type)||LW(type))return 0;{const a_=ANIMS[type];if(a_.enemy){const q=a_.nArc;if(q&&t>q[0]&&t<q[1])return -Math.sin((t-q[0])/(q[1]-q[0])*Math.PI)*q[2];return 0;}}const h=ANIMS[type].hitT;if(t>h&&t<h+.5){return -Math.sin((t-h)/.5*Math.PI)*(type==='chidori'?18:10);}return 0;}
+function nRotF(type,t){if(ANIMS[type].enemy||LC(type)||LW(type))return 0;const h=ANIMS[type].hitT;if((type==='chidori'||type==='kawarimi')&&t>h+.02&&t<h+.5){const k=(t-h-.02)/.48,e=k*k*(3-2*k);return (type==='chidori'?-1:1)*TAU*e;}return 0;}
 /* Passos com o pe preso ao chao: durante o apoio o pe anda para tras na mesma velocidade do corpo (sem patinar);
    na passada ele sobe em arco e pousa na frente. Cada pouso gera uma ondulacao na agua. */
 const STRIDE=18,STEPS=[],GSTATE=[{c:null},{c:null}];
@@ -918,6 +944,60 @@ function gait(P,x,face,v,ground,time,idle,ph0,gs){
   o.fby-=Math.max(0,s)*.7;o.ffy-=Math.max(0,-s)*.7;o.crouch+=s*.25;o.tilt+=s*.012;if(gs)gs.c=null;}
  else if(gs)gs.c=null;
  return o;}
+/* Fatality do Kawarimi: kunai, rastro do corte, fonte de sangue no pescoco, cabeca voando e caindo na agua. */
+function drawFlyHead(g,x,y,rot,P,time){
+ g.save();g.translate(x,y);g.rotate(rot);g.scale(-BS,BS);
+ const Pf=Object.assign({},P,{hr:0,hix:0,hiy:0,turn:0,nohead:0});drawHead(g,NARUTO,Pf,{C:[0,0]},time);
+ g.fillStyle='rgba(135,8,16,.95)';g.beginPath();g.ellipse(.6,6.6,2.1,.9,0,0,TAU);g.fill();g.fillStyle='rgba(205,30,40,.9)';g.beginPath();g.ellipse(.6,6.5,1.1,.45,0,0,TAU);g.fill();
+ g.restore();}
+function decapFX(f,t,raw,time,fr,nx0,sx0,sy0,nP){
+ const L=ANIMS.kawarimi.L,rn=R((fr>>1)*17+3),tipHand=tt=>{const rg=rigW(evalPose(L.sP,tt)),X=sasX('kawarimi',tt);return[X-rg.hf.hx,GY+rg.hf.hy,Math.atan2(rg.hf.hy-rg.hf.ey,-(rg.hf.hx-rg.hf.ex))];};
+ f.lineCap='round';f.lineJoin='round';
+ if(t>=2.3&&t<5.2){ /* kunai na mao do Sasuke e rastro do corte */
+  const h=tipHand(t),dx=Math.cos(h[2]),dy=Math.sin(h[2]),bl=t>2.72?.78:0;
+  if(t>2.6&&t<2.85){f.globalCompositeOperation='lighter';for(let i=0;i<16;i++){const a0=tipHand(t-i*.012),a1=tipHand(t-(i+1)*.012),k=1-i/16;f.strokeStyle=`rgba(235,245,255,${k*.9})`;f.lineWidth=3.2*k+.4;f.beginPath();f.moveTo(a0[0]+dx*8,a0[1]+dy*8);f.lineTo(a1[0]+dx*8,a1[1]+dy*8);f.stroke();}f.globalCompositeOperation='source-over';}
+  f.strokeStyle='#161624';f.lineWidth=1.3;f.beginPath();f.moveTo(h[0]-dx*2.6,h[1]-dy*2.6);f.lineTo(h[0]+dx*1.6,h[1]+dy*1.6);f.stroke();
+  f.strokeStyle='#8c8ca4';f.lineWidth=.5;f.beginPath();f.arc(h[0]-dx*3.4,h[1]-dy*3.4,1.1,0,TAU);f.stroke();
+  const nxp=-dy,nyp=dx;f.beginPath();f.moveTo(h[0]+dx*1.6+nxp*.9,h[1]+dy*1.6+nyp*.9);f.lineTo(h[0]+dx*10.5,h[1]+dy*10.5);f.lineTo(h[0]+dx*1.6-nxp*.9,h[1]+dy*1.6-nyp*.9);f.closePath();
+  const bg2=f.createLinearGradient(h[0],h[1],h[0]+dx*10,h[1]+dy*10);bg2.addColorStop(0,'#c8d2e0');bg2.addColorStop(1,'#f4f8ff');f.fillStyle=bg2;f.fill();f.strokeStyle='rgba(30,30,50,.8)';f.lineWidth=.35;f.stroke();
+  if(bl>0){f.fillStyle=`rgba(150,10,20,${bl})`;f.beginPath();f.moveTo(h[0]+dx*3+nxp*.8,h[1]+dy*3+nyp*.8);f.lineTo(h[0]+dx*10.3,h[1]+dy*10.3);f.lineTo(h[0]+dx*3-nxp*.8,h[1]+dy*3-nyp*.8);f.closePath();f.fill();
+   if(t>3.2)for(let i=0;i<4;i++){const ph=((t*.9+i*.27)%1);f.fillStyle=`rgba(150,10,20,${(1-ph)*.9})`;f.beginPath();f.ellipse(h[0]+dx*10.5+(i-1.5)*.4,h[1]+dy*10.5+2+ph*ph*(GY-h[1]-14),.7,1.1,0,0,TAU);f.fill();}}}
+ /* fonte de sangue no toco do pescoco: jatos no ritmo do coracao, enfraquecendo */
+ const rgN=rigW(nP),nk=[nx0-rgN.S[0],GY+rgN.S[1]-4.5],env=(t>=2.68&&t<5.6)?Math.pow(1-scaleAt(0,1,2.68,5.6,t),1.2):0;
+ if(env>0){const pulse=.5+.5*Math.max(0,Math.sin(time*9));for(let k=0;k<3;k++){const ak=((time*.9+k*.31)%.8);bloodSpray(f,nk[0],nk[1],ak,31+k,Math.round(20*env*(.55+.45*pulse))+4,.25*(k-1));}
+  f.strokeStyle=`rgba(130,8,16,${.8*env})`;for(let i=0;i<4;i++){const ph=((t*.8+i*.29)%1);f.lineWidth=1.1;f.beginPath();f.moveTo(nk[0]+(i-1.5)*1.4,nk[1]+1);f.lineTo(nk[0]+(i-1.5)*1.6,nk[1]+1+ph*(GY-nk[1]-3));f.stroke();}}
+ /* a cabeca: rastro de sangue, splash e mancha na agua ao cair */
+ if(t>=2.68){const age=t-2.68,hs=headSim(L.head0[0],L.head0[1],age);
+  for(let i=1;i<=12;i++){const a2=age-i*.035;if(a2<0)break;const q=headSim(L.head0[0],L.head0[1],a2);f.fillStyle=`rgba(150,10,20,${(1-i/13)*.85})`;f.beginPath();f.arc(q.x+(rn()-.5)*1.6,q.y+(rn()-.5)*1.6,1.2*(1-i/16)+.3,0,TAU);f.fill();}
+  const la=age-L.landAge;if(la>=0){const kk=Math.min(la,1.6);
+   if(la<1.2){waterColumn(f,hs.x,Math.min(la,.9),9,26);f.strokeStyle=`rgba(210,232,255,${1-la/1.2})`;f.lineWidth=.5;f.beginPath();f.ellipse(hs.x,GY+1,4+la*26,(4+la*26)*.24,0,0,TAU);f.stroke();}
+   f.fillStyle=`rgba(120,8,16,${Math.min(.55,la*1.2)})`;f.beginPath();f.ellipse(hs.x,GY+1.5,5+kk*10,(5+kk*10)*.24,0,0,TAU);f.fill();}}
+ /* gotas pesadas caindo do corpo e sangue espirrado no chao */
+ if(t>2.8&&t<5.8){for(let i=0;i<10;i++){const ph=((t*.7+i*.173)%1),x=nx0+Math.sin(i*5.7)*14,y=GY-60+ph*ph*58;f.fillStyle=`rgba(140,9,18,${(1-ph*.5)*.9*Math.max(.2,env)})`;f.beginPath();f.ellipse(x,y,.6,1,0,0,TAU);f.fill();}
+  const pr=Math.min(16,(t-2.9)*4.5);if(pr>0){f.fillStyle='rgba(112,6,14,.6)';f.beginPath();f.ellipse(nx0-2,GY+2,pr,pr*.24,0,0,TAU);f.fill();}}
+}
+/* efeitos de "lente" do corte: raio de luz horizontal, vinheta vermelha e respingos que escorrem */
+function decapLens(g,raw,ccx,ccy,z){
+ const syp=y=>(y-ccy)*K*z+PH/2,a=raw-2.66;
+ if(a>=0&&a<.4){const y=syp(GY-50),al=1-a/.4;g.save();g.globalCompositeOperation='lighter';const gr=g.createLinearGradient(0,y-7,0,y+7);gr.addColorStop(0,'rgba(255,255,255,0)');gr.addColorStop(.5,`rgba(255,255,255,${al})`);gr.addColorStop(1,'rgba(255,255,255,0)');g.fillStyle=gr;g.fillRect(0,y-7,PW,14);g.restore();}
+ const hv=scaleAt(0,1,2.7,3.3,raw)*(1-scaleAt(0,1,7.2,8.4,raw));
+ if(hv>0){const pulse=.5+.5*Math.pow(Math.max(0,Math.sin(raw*5.2)),4),vg=g.createRadialGradient(PW/2,PH/2,PH*.3,PW/2,PH/2,PW*.65);vg.addColorStop(0,'rgba(90,0,8,0)');vg.addColorStop(1,`rgba(110,0,10,${.55*hv*pulse+.1*hv})`);g.fillStyle=vg;g.fillRect(0,0,PW,PH);}
+ const SPL=[[2.72,.82,.25,56,1],[2.8,.18,.4,44,2],[2.95,.68,.78,38,3],[3.5,.35,.82,50,4],[3.9,.9,.5,34,5]];
+ const fade=1-scaleAt(0,1,8.4,9.6,raw);if(fade<=0)return;
+ for(const s of SPL){const age=raw-s[0];if(age<0)continue;const x=s[1]*PW,y=s[2]*PH+age*s[3]*.4*Math.min(1,age),sz=s[3]*(.55+Math.min(1,age*5)*.45);
+  const len=Math.min(age*s[3]*.9,s[3]*2.2);g.save();g.lineCap='round';g.strokeStyle=`rgba(104,4,12,${fade*.8})`;g.lineWidth=sz*.2;g.beginPath();g.moveTo(x,y);g.lineTo(x,y+len);g.stroke();
+  g.globalAlpha=fade*.88;g.translate(x,y);g.fillStyle='rgb(112,5,13)';blobPath(g,sz,s[4],.3);g.fill();g.fillStyle='rgba(165,15,24,.55)';g.translate(-sz*.12,-sz*.14);blobPath(g,sz*.45,s[4]+1,.3);g.fill();g.restore();}
+}
+/* Som do fatality do Kawarimi (segundos reais): corte, osso, jorro, splash da cabeca na agua, queda do corpo. */
+function sfxFatalW(){
+ const rl=rawOfW(2.68+ANIMS.kawarimi.L.landAge),rf=rawOfW(5.6);
+ nz(.28,'highpass',3000,9000,.45,2.6);tone('sine',2400,3600,.6,.07,2.64);
+ nz(.2,'lowpass',1600,200,.75,2.68);tone('sine',90,40,.45,.6,2.68);nz(.4,'bandpass',300,90,.6,2.72);
+ [3.4,4.0,4.6,5.2,5.8,6.4,7.0].forEach((a,i)=>nz(.35,'lowpass',700,150,.4-i*.03,a));
+ nz(1.6,'bandpass',500,2000,.07,3.0);
+ nz(.55,'lowpass',2600,300,.65,rl);tone('sine',140,50,.3,.4,rl);nz(.2,'lowpass',1800,300,.4,rl+.3);nz(.16,'lowpass',1500,300,.3,rl+.5);
+ tone('sine',85,30,.55,.65,rf);nz(.4,'lowpass',1500,150,.55,rf);
+ [rf+.8,rf+1.3,rf+1.9].forEach(a=>nz(.08,'bandpass',1200,500,.2,a));}
 /* Fatality do Katon: chamas por todo o corpo, brilho, faiscas e fumaca; depois vira cinza e brasa. */
 function burnFX(f,t,time,fr,nx0,ny0,P){
  const rg=rigW(P),inten=scaleAt(0,1,2.45,2.95,t)*(1-.72*scaleAt(0,1,5.2,6.4,t));
@@ -1158,6 +1238,11 @@ function render(ts){
   const ti=scaleAt(0,1,.8,1.4,t)*(1-scaleAt(0,1,2.9,3.6,t));if(ti>0)tint=`rgba(20,40,160,${.2*ti})`;}
  else if(type==='rasengan'||type==='bunshin'){const a=t-A.hitT;if(a>0&&a<.9)shk=6*(1-a/.9);if(a>=0&&a<.03)flashA=.45;else if(a>=.03&&a<.1)flashA=.18;for(const h of A.hits)if(t>h.t&&t<h.t+.22)shk=Math.max(shk,2.5);dim=.35*scaleAt(0,1,.4,.8,t)*(1-scaleAt(0,1,A.dur-1.4,A.dur-.8,t));bars=14*scaleAt(0,1,.4,.8,t)*(1-scaleAt(0,1,A.dur-1.0,A.dur-.5,t));}
  else if(type==='amaterasu'){dim=.5*scaleAt(0,1,.4,.9,t)*(1-scaleAt(0,1,3.6,4.3,t));bars=14*scaleAt(0,1,.4,.8,t)*(1-scaleAt(0,1,4.0,4.5,t));const ti=scaleAt(0,1,.9,1.5,t)*(1-scaleAt(0,1,3.6,4.4,t));if(ti>0)tint='rgba(70,0,22,'+(.3*ti)+')';const a=t-2.0;if(a>0&&a<.9)shk=3*(1-a/.9);if(a>=0&&a<.05)flashA=.5;if(t>1.15&&t<1.35)flashA=.6*(1-Math.abs((t-1.25)/.1));}
+ else if(type==='kawarimi'&&LW(type)){const a=raw-2.66;
+  if(a>0&&a<1.7)shk=10*Math.pow(1-a/1.7,1.4)*(a<.4?1.3:1);
+  if(a>=0&&a<.04)flashA=.95;else if(a>=.04&&a<.14)flashA=.5;else if(a>=.14&&a<.3)flashA=.18;
+  dim=.45*scaleAt(0,1,.4,.85,t)*(1-.4*scaleAt(0,1,7.2,8.4,raw)-.6*scaleAt(0,1,9.0,9.8,raw));bars=14*scaleAt(0,1,.4,.8,t)*(1-scaleAt(0,1,9.0,9.8,raw));
+  const tr=scaleAt(0,1,2.7,3.3,raw)*(1-scaleAt(0,1,7.4,8.8,raw));if(tr>0)tint=`rgba(125,6,18,${.22*tr})`;}
  else if(type==='katon'&&LK(type)){const a=raw-2.4;
   if(a>0&&a<1.7)shk=11*Math.pow(1-a/1.7,1.4)*(a<.4?1.3:1);
   if(raw>2.7&&raw<6.6)shk=Math.max(shk,1.1);
@@ -1170,7 +1255,7 @@ function render(ts){
   const ti=scaleAt(0,1,1.2,1.9,t)*(1-scaleAt(0,1,2.9,3.6,t));if(ti>0)tint=`rgba(140,40,10,${.22*ti})`;}
  const rn=R(fr*7+3);const idleCam=A?0:1;const sx=(shk?(rn()-.5)*2*shk*K:0)+idleCam*Math.sin(time*.45)*5,sy=(shk?(rn()-.5)*2*shk*K:0)+idleCam*Math.sin(time*.6+1)*2.5;
  // camera
- let cam=A?interp((LC(type)||LK(type))?A.L.cam:A.cam,t):{z:1.04,cx:192,cy:116};
+ let cam=A?interp((LC(type)||LK(type)||LW(type))?A.L.cam:A.cam,t):{z:1.04,cx:192,cy:116};
  if(window.__CAM)cam=window.__CAM;let z=cam.z,ccx=cam.cx,ccy=cam.cy;
  if(type==='chidori'&&t>2.15&&t<2.56){const k=scaleAt(0,1,2.15,2.3,t);ccx=ccx*(1-k)+(sasX(type,t)+34)*k*(t<2.5?1:0)+ccx*k*(t<2.5?0:1);}
  const hw2=W/(2*z),hh2=H/(2*z);ccx=clamp(ccx,hw2,W-hw2);ccy=clamp(ccy,hh2,H-hh2);
@@ -1179,10 +1264,10 @@ function render(ts){
  drawEnv(g,time,tint);
  const bob=Math.sin(time*3)*.7;
  let sP,nP,sx0=96,sy0=0,nx0=288;
- const lethal=!!(anim&&anim.lethal)||LC(type)||LK(type);if(lethal)(A.enemy?buildLethalE(A):buildLethal(A));
+ const lethal=!!(anim&&anim.lethal)||LC(type)||LK(type)||LW(type);if(lethal)(A.enemy?buildLethalE(A):buildLethal(A));
  if(A){sP=evalPose(lethal?A.sPL:A.sP,t);nP=evalPose(lethal?A.nPL:A.nP,t);nx0=interp(lethal?A.nXL:A.nX,t);sx0=sasX(type,t);sy0=sasY(type,t);if(lethal&&A.enemy&&A.sXL)sx0=interp(A.sXL,t);}
  else if(outcome==='N'){sP=Object.assign({},S_DOWN);nP=Object.assign({},N_VICT);sx0=90;nx0=288;}
- else if(outcome){sP=Object.assign({},VICTORY);nP=Object.assign({},N_DOWN);nx0=300;if(chestHole){nP.turn=.35;nP.torn=1;}}
+ else if(outcome){sP=Object.assign({},VICTORY);nP=Object.assign({},N_DOWN);nx0=300;if(chestHole){nP.turn=.35;nP.torn=1;}if(decap){nx0=112;sx0=152;nP.nohead=1;}}
  else if(burning){sP=Object.assign({},READY);nP=Object.assign({},interp([[0,N_STAG],[1,N_BURN1],[2,N_STAG],[3,N_BURN2],[4,N_STAG]],(time*.9)%4));}
  else{sP=Object.assign({},READY);nP=Object.assign({},N_READY);}
  sP=Object.assign({},sP);nP=Object.assign({},nP);
@@ -1194,6 +1279,7 @@ function render(ts){
  if(LC(type)&&t>2.62&&t<3.7)ny0=-3*scaleAt(0,1,2.62,2.8,t)*(1-scaleAt(0,1,3.56,3.7,t)); /* o braco do Sasuke levanta o Naruto do chao */
  if(LC(type)&&t>=3.58)chestHole=1;
  if(LK(type)&&t>=5.2)burnt=1;
+ if(LW(type)&&t>=2.68)decap=1;
  const idleMv=!A||t<.42||t>4.1;
  const vS=A?(sasX(type,t+.02)-sasX(type,t-.02))/.04:0,vN=A?(interp(lethal?A.nXL:A.nX,t+.02)-interp(lethal?A.nXL:A.nX,t-.02))/.04:0;
  sP=gait(sP,sx0,(LC(type)&&t>6.7)?-1:1,vS,sy0<-1?0:1,time,idleMv,0,GSTATE[0]);nP=gait(nP,nx0,-1,vN,ny0<-1?0:1,time,idleMv,1.7,GSTATE[1]);
@@ -1256,11 +1342,12 @@ function render(ts){
  if(type==='kawarimi')sOpt.alpha=(t>1.6&&t<1.9)?0:1;
  if(power>0)sOpt.light={x:rS.hf.hx,y:rS.hf.hy,r:34,col:[110,185,255],k:.75*Math.min(1,power)};
  if(type==='katon'&&t>1.82&&t<2.4)sOpt.light={x:rS.C[0]+3.2,y:rS.C[1]+2.6,r:28,col:[255,150,50],k:.7};
- const sFlip=(type==='kawarimi'&&t>1.9&&t<3.2)||(LC(type)&&t>6.7);
+ const sFlip=(type==='kawarimi'&&t>1.9&&(LW(type)||t<3.2))||(LC(type)&&t>6.7)||(decap&&!A&&outcome==='S');
  sOpt.rot=sRot;blit(sx0,GY+sy0,sFlip,SASUKE,sP,time,sOpt);
  if(pierce){drawN(); /* o braco entra no peito do Naruto: ele e desenhado por cima do Sasuke e so a parte de fora da frente do corpo reaparece */
   const o2=Object.assign({},sOpt,{noRefl:true});
   g.save();g.beginPath();g.rect(-50,-50,nx0-7+50,H+100);g.clip();blit(sx0,GY+sy0,false,SASUKE,sP,time,o2);g.restore();}
+ if((LW(type)&&t>=2.68)||(decap&&!A&&outcome==='S')){const LL2=ANIMS.kawarimi.L,age2=LW(type)?t-2.68:99,hs2=headSim(LL2.head0[0],LL2.head0[1],age2);drawFlyHead(g,hs2.x,hs2.y,hs2.r,nP,time);}
  if(A&&A.enemy){if(type==='bunshin')drawClones(t,time);drawN();}
 
  /* ---- FX ---- */
@@ -1361,9 +1448,10 @@ function render(ts){
  }
  if(type==='kawarimi'){
   puff(f,96,GY-24,t-1.6,1);puff(f,170,GY-28,t-1.9,2);
+  if(LW(type))decapFX(f,t,raw,time,fr,nx0,sx0,sy0,nP);
   if(t>1.15&&t<1.62){const r2=R(fr*53);f.lineCap='round';for(let i=0;i<18;i++){const y=GY-60+r2()*70,x=ccx-hw2+r2()*W/z,l=18+r2()*50;f.strokeStyle='rgba(255,255,255,'+(.2+r2()*.4)+')';f.lineWidth=.3+r2()*.4;f.beginPath();f.moveTo(x,y);f.lineTo(x+l,y);f.stroke();}}
   const a1=t-1.62;if(a1>=0&&a1<.5){const k=a1/.5;f.globalCompositeOperation='lighter';ringFX(f,100,GY-30,6+44*k,1.8*(1-k)+.2,'rgba(255,255,255,'+(1-k)+')');f.globalCompositeOperation='source-over';}
-  const b1=t-2.68;if(b1>=0&&b1<.8){const k=b1/.8;bloodSpray(f,nx0+2,GY-34,b1,5,22,-1);scraps(f,nx0+2,GY-34,b1,6,12,[[245,143,28],[242,127,18]],-1);f.globalCompositeOperation='lighter';if(b1<.4)orb(f,nx0+4,GY-34,26*(1-b1/.5),[[0,'rgba(255,255,255,.6)'],[.4,'rgba(255,220,160,.3)'],[1,'rgba(255,150,60,0)']]);
+  const b1=LW(type)?-1:t-2.68;if(b1>=0&&b1<.8){const k=b1/.8;bloodSpray(f,nx0+2,GY-34,b1,5,22,-1);scraps(f,nx0+2,GY-34,b1,6,12,[[245,143,28],[242,127,18]],-1);f.globalCompositeOperation='lighter';if(b1<.4)orb(f,nx0+4,GY-34,26*(1-b1/.5),[[0,'rgba(255,255,255,.6)'],[.4,'rgba(255,220,160,.3)'],[1,'rgba(255,150,60,0)']]);
    ringFX(f,nx0+4,GY-34,6+66*Math.min(1,b1/.35),2.4*(1-Math.min(1,b1/.35))+.2,'rgba(255,255,255,'+(1-k)+')');
    const r2=R(91);f.lineCap='round';for(let i=0;i<14;i++){const an=-Math.PI*.9+r2()*Math.PI*.8,r0=8+b1*70,r1=r0+14+r2()*20;f.strokeStyle='rgba(255,240,200,'+(1-k)+')';f.lineWidth=.5;f.beginPath();f.moveTo(nx0+4+Math.cos(an)*r0,GY-34+Math.sin(an)*r0);f.lineTo(nx0+4+Math.cos(an)*r1,GY-34+Math.sin(an)*r1);f.stroke();}
    f.globalCompositeOperation='source-over';}
@@ -1374,6 +1462,7 @@ function render(ts){
  g.save();g.globalCompositeOperation='lighter';g.filter='blur(14px)';g.globalAlpha=.8;g.drawImage(fxc,0,0);g.filter='blur(4px)';g.globalAlpha=.4;g.drawImage(fxc,0,0);g.restore();
  if(flashA>0){g.fillStyle=`rgba(255,255,255,${flashA})`;g.fillRect(0,0,PW,PH);}
  if(LC(type))fatalLens(g,raw,t,time,ccx,ccy,z,nx0);
+ if(LW(type))decapLens(g,raw,ccx,ccy,z);
  const vg=g.createRadialGradient(PW/2,PH/2,PH*.35,PW/2,PH/2,PW*.62);vg.addColorStop(0,'rgba(0,0,12,0)');vg.addColorStop(1,'rgba(0,0,12,.55)');g.fillStyle=vg;g.fillRect(0,0,PW,PH);
  if(bars>0){const bh=bars*K;g.fillStyle='#000';g.fillRect(0,0,PW,bh);g.fillRect(0,PH-bh,PW,bh);}
 }
@@ -1421,7 +1510,7 @@ function play(cd){
  if(lethal)later(((A.L?A.L.koAt:A.hitT+1.3))*1000,()=>{outcome='S';outcomeT=performance.now()/1000;const k=$('ko');k.classList.remove('on');void k.offsetWidth;k.classList.add('on');setCards(false);});
 }
 window.addEventListener('keydown',e=>{if(e.key==='Escape'&&menuOpen==='jutsu'){showMenu('main');return;}const n=parseInt(e.key,10);if(!(n>=1))return;const b=$('hand').children[n-1];if(b&&!b.disabled)b.click();});
-$('rst').onclick=()=>{pending.forEach(clearTimeout);pending=[];chestHole=0;burnt=0;$('speech').classList.remove('on');anim=null;outcome=null;burning=false;turnLock=false;guard=false;showMenu('main');WOUNDS.s.length=0;WOUNDS.n.length=0;$('ko').querySelector('span').textContent='SASUKE VENCEU';$('ko').classList.remove('on');hp={s:100,n:100};ck={s:100,n:100};setBars();setCards(true);$('banner').classList.remove('on');$('dmg').classList.remove('on');};
+$('rst').onclick=()=>{pending.forEach(clearTimeout);pending=[];chestHole=0;burnt=0;decap=0;$('speech').classList.remove('on');anim=null;outcome=null;burning=false;turnLock=false;guard=false;showMenu('main');WOUNDS.s.length=0;WOUNDS.n.length=0;$('ko').querySelector('span').textContent='SASUKE VENCEU';$('ko').classList.remove('on');hp={s:100,n:100};ck={s:100,n:100};setBars();setCards(true);$('banner').classList.remove('on');$('dmg').classList.remove('on');};
 $('mute').onclick=()=>{sound=!sound;$('mute').textContent='Som: '+(sound?'ligado':'desligado');ensureAudio();};
 buildCards();setBars();
 portrait('ptS',SASUKE,mk({red:1,expr:1,hr:.05}));portrait('ptN',NARUTO,mk({expr:5}));
