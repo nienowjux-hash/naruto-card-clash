@@ -1375,7 +1375,7 @@ function sfxFatalKage(){
  tone('sine',85,30,.55,.65,rf+3.6);nz(.45,'lowpass',1600,150,.6,rf+3.6);}
 ANIMS.kagesh.L.sfxFn=sfxFatalKage;
 /* ================== Mecanica nova: Copia de Tecnicas, Genjutsu, Shishi Rendan, Selo Amaldicoado ================== */
-const effDmg=(cd,A)=>{const base=A.dmg||0;if(!base)return 0;return Math.round(base*((sealT>0&&!cd.noSeal)?1.25:1));};
+const effDmg=(cd,A)=>{const base=A.dmg||0;if(!base)return 0;return Math.round(base*((sealT>0&&!cd.noSeal)?1.3:1));};
 const eyePos=(sx0,sy0,rS)=>[sx0+rS.C[0]+.5,GY+sy0+rS.C[1]+.5];
 /* filtro "mundo vermelho" do Genjutsu: tudo vira monocromatico vermelho, mais escuro nas bordas */
 function redWorld(g,k){if(k<=0)return;g.save();g.globalAlpha=Math.min(1,k);g.globalCompositeOperation='saturation';g.fillStyle='#808080';g.fillRect(0,0,PW,PH);g.globalCompositeOperation='multiply';
@@ -1480,22 +1480,30 @@ function sfxFatalGJ(){
  tone('sine',85,30,.55,.65,7.4);nz(.45,'lowpass',1600,150,.6,7.4);tone('sine',3300,3300,2.5,.015,6.6);}
 ANIMS.genjutsu.L.sfxFn=sfxFatalGJ;
 /* ---------- marcas do Selo Amaldicoado e aura sombria ---------- */
+/* marcas do Selo Amaldicoado (Nivel 1): padroes tribais pretos em forma de chamas, no rosto, pescoco, antebracos, maos e pernas */
+function tribal(sc,A,B,k,seed,wd,spacing){
+ const dx=B[0]-A[0],dy=B[1]-A[1],len=Math.hypot(dx,dy)||1,ux=dx/len,uy=dy/len,nx=-uy,ny=ux,rn=R(seed),n=Math.max(2,Math.floor(len/(spacing||1.05)));
+ const P=(x,y)=>[(OXU+x)*RES,(OYU+y)*RES];
+ for(let i=0;i<n;i++){const u=(i+.5)/n;if(u>k)break;const side=i%2?1:-1,cx=A[0]+dx*u+nx*side*(.3+rn()*.5),cy=A[1]+dy*u+ny*side*(.3+rn()*.5),L=(1.5+rn()*1.7),w=wd*.5*(.7+rn()*.7),ca=Math.atan2(dy,dx)+side*(.7+rn()*.8);
+  const ex=cx+Math.cos(ca)*L,ey=cy+Math.sin(ca)*L,mx=cx+Math.cos(ca-side*.9)*L*.62,my=cy+Math.sin(ca-side*.9)*L*.62;
+  sc.beginPath();const p0=P(cx,cy),pm=P(mx,my),pe=P(ex,ey);sc.moveTo(p0[0],p0[1]);sc.quadraticCurveTo(pm[0],pm[1],pe[0],pe[1]);sc.lineWidth=w*RES;sc.stroke();
+  if(rn()<.55){const q=P(cx+Math.cos(ca+side*.5)*L*.5,cy+Math.sin(ca+side*.5)*L*.5);sc.beginPath();sc.moveTo(p0[0],p0[1]);sc.quadraticCurveTo(q[0],q[1],q[0]+side*RES,q[1]-RES*.6);sc.lineWidth=w*.6*RES;sc.stroke();}}
+ const a=P(A[0],A[1]);sc.beginPath();sc.moveTo(a[0],a[1]);const b=P(A[0]+dx*Math.min(1,k),A[1]+dy*Math.min(1,k));sc.lineTo(b[0],b[1]);sc.lineWidth=wd*.38*RES;sc.stroke();}
 function curseMarks(sc,P,k,time){
- if(k<=0)return;const rg=rigW(P),E=o=>[o.ex,o.ey],H=o=>[o.hx,o.hy],nk=[rg.S[0]+.5,rg.S[1]-3.2];
- const targets=[[rg.C[0]+2,rg.C[1]-.5],[rg.C[0]+4.5,rg.C[1]+4],rg.Hp,E(rg.hf),H(rg.hf),E(rg.hb),H(rg.hb),E(rg.lf),H(rg.lf),E(rg.lb),[rg.hip[0],rg.hip[1]+4]];
- sc.save();sc.setTransform(1,0,0,1,0,0);sc.globalCompositeOperation='source-atop';sc.lineCap='round';sc.lineJoin='round';
- const rn=R(77);
- targets.forEach((tg,ti)=>{const reach=clamp(k*1.25-ti*.06,0,1);if(reach<=0)return;
-  for(let b=0;b<3;b++){let x=nk[0],y=nk[1];const n=7;sc.beginPath();sc.moveTo((OXU+x)*RES,(OYU+y)*RES);
-   for(let i=1;i<=n;i++){const u=i/n*reach,px=nk[0]+(tg[0]-nk[0])*u+Math.sin(i*2.1+b*1.7+ti)*1.3*(1-u*.4),py=nk[1]+(tg[1]-nk[1])*u+Math.cos(i*1.9+b*2.3+ti)*1.2*(1-u*.4);sc.lineTo((OXU+px)*RES,(OYU+py)*RES);}
-   sc.strokeStyle='rgba(120,40,190,.55)';sc.lineWidth=(1.1+(b===0?.7:0))*RES;sc.stroke();sc.strokeStyle='rgba(8,2,14,.95)';sc.lineWidth=(.55+(b===0?.45:0))*RES;sc.stroke();}});
- sc.fillStyle='rgba(8,2,14,.9)';sc.beginPath();sc.arc((OXU+nk[0])*RES,(OYU+nk[1])*RES,1.4*RES*Math.min(1,k*2),0,TAU);sc.fill();
+ if(k<=0)return;const rg=rigW(P),E=o=>[o.ex,o.ey],H=o=>[o.hx,o.hy],nk=[rg.S[0]+.7,rg.S[1]-3.4],C=rg.C;
+ const mid=(a,b,u)=>[a[0]+(b[0]-a[0])*u,a[1]+(b[1]-a[1])*u];
+ sc.save();sc.setTransform(1,0,0,1,0,0);sc.globalCompositeOperation='source-atop';sc.lineCap='round';sc.lineJoin='round';sc.strokeStyle='rgba(6,3,10,.97)';
+ const paths=[ /* [de,ate,largura,inicio,seed] */
+  [nk,[C[0]+3.4,C[1]+5.2],1.9,0,1],[[C[0]+3.4,C[1]+5.2],[C[0]+4.2,C[1]-1.6],1.7,.1,2],[[C[0]+1.2,C[1]+1.8],[C[0]+5.2,C[1]+3.0],1.4,.18,3],[nk,[nk[0]-1.6,nk[1]+1.8],1.1,0,4],
+  [mid(rg.shF,E(rg.hf),.7),E(rg.hf),1.6,.12,5],[E(rg.hf),H(rg.hf),1.45,.28,6],
+  [mid(rg.hip,E(rg.lf),.72),E(rg.lf),1.7,.26,9],[E(rg.lf),mid(E(rg.lf),H(rg.lf),.5),1.5,.36,10]];
+ for(const p of paths){const kk=clamp((k-p[3])/.55,0,1);if(kk<=0)continue;tribal(sc,p[0],p[1],kk,p[4],p[2],1.7);}
  sc.restore();}
 function curseAura(f,x,k,time,fr){
- if(k<=0)return;f.globalCompositeOperation='lighter';orb(f,x,GY-30,44*k,[[0,`rgba(150,60,255,${.28*k})`],[1,'rgba(60,10,120,0)']]);f.globalCompositeOperation='source-over';
+ if(k<=0)return;f.globalCompositeOperation='lighter';orb(f,x,GY-30,44*k,[[0,`rgba(30,30,48,${.4*k})`],[1,'rgba(10,10,20,0)']]);f.globalCompositeOperation='source-over';
  for(let i=0;i<9;i++){const u=(i-4)/4,px=x+u*13+Math.sin(fr*.3+i*1.9)*1.4,hh=(14+8*Math.sin(fr*.4+i*2.3)+(1-Math.abs(u))*16)*k;
-  lick(f,px,GY+1,hh,hh*.3,fr*.33+i,'#2a0a5a');lick(f,px,GY+1,hh*.85,hh*.24,fr*.33+i+.4,'#12042a');lick(f,px,GY+1,hh*.62,hh*.16,fr*.33+i+.9,'#000');}
- f.globalCompositeOperation='lighter';for(let i=0;i<10;i++){const ph=((time*.7+i*.19)%1);f.fillStyle=`rgba(190,120,255,${(1-ph)*.6*k})`;f.fillRect(x+Math.sin(i*5.1)*12,GY-ph*50,.7,.7);}f.globalCompositeOperation='source-over';}
+  lick(f,px,GY+1,hh,hh*.3,fr*.33+i,'#262634');lick(f,px,GY+1,hh*.85,hh*.24,fr*.33+i+.4,'#0e0e16');lick(f,px,GY+1,hh*.62,hh*.16,fr*.33+i+.9,'#000');}
+ f.globalCompositeOperation='lighter';for(let i=0;i<10;i++){const ph=((time*.7+i*.19)%1);f.fillStyle=`rgba(150,150,175,${(1-ph)*.5*k})`;f.fillRect(x+Math.sin(i*5.1)*12,GY-ph*50,.7,.7);}f.globalCompositeOperation='source-over';}
 const DK=[[3.6,'rgba(30,0,60,.55)'],[1.6,'rgba(175,95,255,.9)'],[.55,'rgba(255,225,255,1)']];
 function darkChidoriFX(f,x,y,p,fr,time){
  if(p<=0)return;const r2=R(fr*7+3);f.globalCompositeOperation='lighter';orb(f,x,y,16*Math.min(1.3,p),[[0,'rgba(220,170,255,.8)'],[.4,'rgba(130,50,230,.45)'],[1,'rgba(60,10,140,0)']]);
@@ -1781,6 +1789,23 @@ function sfxFatalCB(){
  [rawOfGen(M,4.3)].forEach(a=>{tone('sine',85,30,.6,.7,rawOfGen(M,5.0));nz(.45,'lowpass',1600,150,.6,rawOfGen(M,5.0));});
  [6.2,6.9,7.6].forEach((a,i)=>{tone('sine',62,38,.2,.45-i*.05,a);tone('sine',58,36,.2,.35-i*.05,a+.26);});}
 ANIMS.cop_bunshin.L.sfxFn=sfxFatalCB;
+/* ---- Selo Amaldicoado (Nivel 1): o selo se espalha, deixando o Sasuke mais forte e rapido (sem Chidori roxo) ---- */
+const SEL_S=mk({tilt:.04,crouch:5,lean:1,fbx:-8,ffx:7,hxF:6,hyF:8,hxB:5,hyB:8,hr:.04,hdy:1,expr:2,tw:.92,red:1});
+function seloAtivaFX(c){
+ const {f,A,t,time,fr,sx0,sy0,rS}=c,[ex,ey]=eyePos(sx0,sy0,rS),on=scaleAt(0,1,.8,2.0,t);
+ if(t>.6&&t<2.1){const k=scaleAt(0,1,.6,1.0,t);f.fillStyle='rgba(6,4,12,.55)';for(let i=0;i<14;i++){const r=R(500+i),ph=((time*.8+i*.137)%1),x=sx0+(r()-.5)*22*(1+ph),y=GY-8-ph*60*(.6+r()*.6);f.beginPath();f.ellipse(x,y,1+r()*1.8,1.8+r()*3*ph,0,0,TAU);f.globalAlpha=(1-ph)*.7*k;f.fill();}f.globalAlpha=1;}
+ curseAura(f,sx0,.55*on*(1-scaleAt(0,1,2.7,3.2,t)),time,fr);
+ f.globalCompositeOperation='lighter';orb(f,ex+1.5,ey,4.5*scaleAt(0,1,.8,1.4,t),[[0,'rgba(255,50,60,.55)'],[1,'rgba(160,10,30,0)']]);f.globalCompositeOperation='source-over';
+ const a=t-2.0;if(a>=0&&a<.7){const k=a/.7;f.globalCompositeOperation='lighter';ringFX(f,sx0,GY-34,8+60*k,2*(1-k)+.2,`rgba(200,200,215,${1-k})`);ringFX(f,sx0,GY-34,(8+60*k)*.7,1.2*(1-k)+.2,`rgba(255,80,90,${(1-k)*.7})`);f.globalCompositeOperation='source-over';
+  f.strokeStyle=`rgba(210,210,225,${1-k})`;f.lineWidth=.5;f.lineCap='round';for(let i=0;i<14;i++){const an=i*TAU/14,r0=10+a*80,r1=r0+8+((i*37)%12);f.beginPath();f.moveTo(sx0+Math.cos(an)*r0,GY-34+Math.sin(an)*r0*.9);f.lineTo(sx0+Math.cos(an)*r1,GY-34+Math.sin(an)*r1*.9);f.stroke();}}
+}
+ANIMS.selo={dur:3.6,hold:2.0,hitT:2.0,dmg:0,cost:20,noLift:true,
+ sP:[[0,READY],[.4,READY],[.6,SEL_N],[1.9,SEL_N],[2.05,SEL_B],[2.5,SEL_B],[3.0,SEL_S],[3.6,SEL_S]],
+ nP:[[0,N_READY],[1.4,N_READY],[1.7,N_SURP],[2.6,N_SURP],[3.1,N_READY],[3.6,N_READY]],
+ nX:[[0,288],[3.6,288]],
+ cam:[[0,{z:1.04,cx:192,cy:116}],[.4,{z:1.04,cx:192,cy:116}],[.7,{z:2.5,cx:104,cy:124}],[1.9,{z:2.7,cx:104,cy:124}],[2.1,{z:1.7,cx:112,cy:126}],[2.9,{z:1.4,cx:130,cy:128}],[3.4,{z:1.04,cx:192,cy:116}],[3.6,{z:1.04,cx:192,cy:116}]],
+ env:(raw,t)=>{const E={},a=t-2.0;if(a>0&&a<.9)E.shk=4*(1-a/.9);if(t>.9&&t<1.9)E.shk=Math.max(E.shk||0,1.4);if(a>=0&&a<.05)E.flash=.35;E.dim=.4*scaleAt(0,1,.4,.8,t)*(1-scaleAt(0,1,2.6,3.2,t));E.tint=`rgba(12,10,22,${.3*scaleAt(0,1,.6,1.2,t)*(1-scaleAt(0,1,2.6,3.2,t))})`;return E;},
+ fx:c=>seloAtivaFX(c)};
 ANIMS.rasengan={enemy:true,dur:4.6,hold:2.2,hitT:2.2,hits:[{t:2.2,dmg:30}],cost:30,
   sP:[[0,READY],[.45,READY],[1.7,READY],[1.95,S_GUARD],[2.15,S_GUARD],[2.2,S_HIT],[2.9,S_HIT],[3.3,S_STAG],[3.9,READY],[4.6,READY]],
   nP:[[0,N_READY],[.55,N_READY],[.7,N_RAS_WIND],[1.55,N_RAS_WIND],[1.65,N_RAS_DASH],[2.05,N_RAS_DASH],[2.15,N_RAS_HIT],[2.9,N_RAS_HIT],[3.4,N_READY],[4.6,N_READY]],
@@ -1816,10 +1841,11 @@ function applyDamageS(kind,idx){const S_=WOUNDS.s,t0=performance.now()/1000;
 function showKO(w){const k=$('ko');k.querySelector('span').textContent=w==='N'?'NARUTO VENCEU':'SASUKE VENCEU';k.classList.remove('on');void k.offsetWidth;k.classList.add('on');}
 let turnLock=false;
 function afterAnim(was){if(!was)return;
- if(was.enemy){if(sealT>0){sealT--;hp.s=Math.max(1,hp.s-3);if(!sealT)toast('O selo amaldiçoado se acalma');}ck.s=Math.min(100,ck.s+20);ck.n=Math.min(100,ck.n+15);setBars();turnLock=false;showMenu('main');setCards(!outcome);}
+ if(was.enemy){if(sealT>0){sealT--;hp.s=Math.max(1,hp.s-2);ck.s=Math.min(100,ck.s+10);if(!sealT)toast('O selo amaldiçoado se acalma');}ck.s=Math.min(100,ck.s+20);ck.n=Math.min(100,ck.n+15);setBars();turnLock=false;showMenu('main');setCards(!outcome);}
  else if(outcome){setCards(false);}
  else{setCards(false);setTimeout(()=>{if(!outcome&&!anim)enemyTurn();},1000);}}
-function enemyTurn(){if(outcome||anim)return;if(stunN){stunN=false;toast('Naruto está preso na ilusão e perde o turno');ck.n=Math.min(100,ck.n+15);ck.s=Math.min(100,ck.s+10);setBars();turnLock=false;showMenu('main');setCards(true);return;}const type=Math.random()<.5?'rasengan':'bunshin',A=ANIMS[type];lastEnemy=type;ensureAudio();
+function skipEnemy(msg){toast(msg);if(sealT>0){sealT--;hp.s=Math.max(1,hp.s-2);ck.s=Math.min(100,ck.s+10);if(!sealT)toast('O selo amaldiçoado se acalma');}ck.n=Math.min(100,ck.n+15);ck.s=Math.min(100,ck.s+10);setBars();turnLock=false;showMenu('main');setCards(true);}
+function enemyTurn(){if(outcome||anim)return;if(stunN){stunN=false;skipEnemy('Naruto está preso na ilusão e perde o turno');return;}if(sealT>0&&Math.random()<.3){skipEnemy('Sasuke desvia com a velocidade do selo!');return;}const type=Math.random()<.5?'rasengan':'bunshin',A=ANIMS[type];lastEnemy=type;ensureAudio();
  const gm=guard?.5:1;guard=false;const dm=h=>Math.max(1,Math.round(h.dmg*gm));
  const total=A.hits.reduce((a,h)=>a+dm(h),0),lethal=hp.s-total<=0;
  anim={type,t0:performance.now(),dur:A.dur+HS,lethal,enemy:true};setCards(false);ck.n=Math.max(0,ck.n-A.cost);setBars();sfx(type);
@@ -2072,6 +2098,7 @@ function sfxFatal(){
 function sfx(type){if(type==='cop_rasengan')type='rasengan';if(type==='cop_bunshin')type='bunshin';
  if(type==='shishi'){nz(.3,'bandpass',500,2400,.22,.5);nz(.12,'highpass',3000,8000,.3,.85);tone('sine',110,38,.4,.7,.85);[1.2,1.35,1.5,1.65,1.8].forEach(a=>{nz(.08,'bandpass',1500,700,.4,a);tone('sine',130,50,.15,.45,a);});nz(.3,'highpass',2500,8000,.3,2.1);tone('sine',60,26,.9,.9,2.2);nz(.7,'lowpass',2600,160,.8,2.2);return;}
  if(type==='selochidori'){tone('sine',55,48,1.8,.35,.7);nz(1.6,'bandpass',200,900,.22,.8);tone('sawtooth',90,400,1.1,.05,1.0,8);nz(.5,'highpass',3000,9000,.25,1.9);tone('sine',2600,3600,.7,.04,2.4);nz(.3,'highpass',3500,9000,.6,3.2);nz(.5,'lowpass',2000,150,.8,3.2);tone('sine',90,28,.7,.8,3.2);return;}
+ if(type==='selo'){tone('sine',55,48,1.8,.4,.7);nz(1.6,'bandpass',200,900,.2,.8);tone('sawtooth',90,380,1.1,.05,1.0,8);[1.2,1.5,1.8].forEach(a=>tone('sine',70,40,.2,.4,a));nz(.4,'highpass',3000,9000,.35,2.0);tone('sine',110,40,.6,.6,2.0);return;}
  if(type==='copy'){tone('sine',900,1500,.9,.05,.6);nz(.6,'highpass',3500,8000,.1,.6);tone('sine',70,40,.7,.35,.7);tone('sine',1700,2200,.5,.04,1.4);return;}
  if(type==='genjutsu'){tone('sine',80,45,1.0,.4,.6);nz(.5,'bandpass',400,2200,.2,.7);tone('sawtooth',400,1100,.5,.06,1.0);nz(.35,'highpass',3000,9000,.3,1.5);tone('sine',120,40,.4,.5,1.5);return;}
  if(type==='soushuken'){[.75,.85].forEach(a=>nz(.2,'highpass',3000,8000,.25,a));tone('sine',2400,3400,.9,.04,1.0);nz(.9,'highpass',3500,9000,.07,.9);[1.8,1.95].forEach(a=>{nz(.1,'bandpass',1400,600,.35,a);tone('sine',3000,2400,.12,.07,a);tone('sine',120,50,.2,.4,a);});return;}
@@ -2316,7 +2343,7 @@ function render(ts){
  if(power>0)sOpt.light={x:rS.hf.hx,y:rS.hf.hy,r:34,col:[110,185,255],k:.75*Math.min(1,power)};
  if(type==='katon'&&t>1.82&&t<2.4)sOpt.light={x:rS.C[0]+3.2,y:rS.C[1]+2.6,r:28,col:[255,150,50],k:.7};
  const sFlip=(type==='kawarimi'&&t>1.9&&(LW(type)||t<3.2))||(LC(type)&&t>6.7)||(decap&&!A&&outcome==='S');
- {const cs=(type==='selochidori')?scaleAt(0,1,.7,1.7,t):(sealT>0?.9:0);if(cs>0){sOpt.curse=cs;sOpt.tint=[70,30,110];sOpt.tk=.25*cs;}}
+ {const cs=(type==='selochidori')?scaleAt(0,1,.7,1.7,t):(type==='selo'?scaleAt(0,1,.8,2.0,t):(sealT>0?1:0));if(cs>0){sOpt.curse=cs;if(type==='selochidori'){sOpt.tint=[70,30,110];sOpt.tk=.25*cs;}}}
  sOpt.rot=sRot;blit(sx0,GY+sy0,sFlip,SASUKE,sP,time,sOpt);
  if(pierce){drawN(); /* o braco entra no peito do Naruto: ele e desenhado por cima do Sasuke e so a parte de fora da frente do corpo reaparece */
   const o2=Object.assign({},sOpt,{noRefl:true});
@@ -2389,6 +2416,7 @@ function render(ts){
  }
  {const FXF=LG(type)?A.L.fx:(A&&A.fx);if(FXF)FXF(ctx);else if(fatalKind&&!A&&outcome==='S'&&ANIMS[fatalKind].L.fxStatic)ANIMS[fatalKind].L.fxStatic(ctx);}
  if(burnt&&!A&&outcome==='S')ashFX(f,time,fr,nx0);
+ if(sealT>0&&type!=='selo'&&type!=='selochidori'&&!(A&&A.L&&LG(type)))curseAura(f,sx0,.22,time,fr);
  if(ashed&&!A&&outcome==='S')ashPile(f,time,nx0,1);
  g.setTransform(1,0,0,1,0,0);g.globalCompositeOperation='source-over';g.globalAlpha=1;
 
@@ -2467,7 +2495,8 @@ CARDS.push({id:'copy',name:'Copiar Técnica (Sharingan)',cost:8,col:'#e0306c',de
 {id:'cop_bunshin',name:'Cópia: Kage Bunshin',cost:15,col:'#ffa43a',desc:'Kage Bunshin copiado: 24 de dano, uso único.',live:true,show:()=>copied==='bunshin',onUse:()=>{copied=null;}},
 {id:'genjutsu',name:'Genjutsu Sharingan',cost:12,col:'#e0306c',desc:'Prende o alvo numa ilusão: 14 de dano e ele perde o próximo turno.',live:true,onUse:()=>{stunN=true;}},
 {id:'shishi',name:'Shishi Rendan',cost:25,col:'#ffb04a',desc:'Barragem de Leões: combo aéreo de taijutsu copiado de Rock Lee.',live:true},
-{id:'selochidori',name:'Selo Amaldiçoado: Chidori',cost:35,col:'#8a50c8',desc:'Libera o selo (perde 10 de vida): 48 de dano e +25% de dano por 2 turnos.',live:true,noSeal:true,onUse:()=>{hp.s=Math.max(1,hp.s-10);sealT=3;setBars();}},
+{id:'selo',name:'Selo Amaldiçoado (Nível 1)',cost:20,col:'#9a9aa8',desc:'Libera o selo: perde 8 de vida. Por 3 turnos fica mais forte e rápido: +30% de dano, +10 de chakra por turno e 30% de chance de desviar.',live:true,noSeal:true,ok:()=>sealT===0,onUse:()=>{hp.s=Math.max(1,hp.s-8);sealT=4;setBars();}},
+{id:'selochidori',name:'Selo Amaldiçoado: Chidori',cost:35,col:'#8a50c8',desc:'(reservado para a transformação total)',live:true,noSeal:true,show:()=>false,onUse:()=>{hp.s=Math.max(1,hp.s-10);sealT=3;setBars();}},
 {id:'soushuken',name:'Sōshūken no Jutsu',cost:15,col:'#9fc8ff',desc:'Shuriken e kunai guiados por fios invisíveis atacam de ângulos surpresa.',live:true},{id:'kagesh',name:'Shuriken Kage no Jutsu',cost:12,col:'#8a7ad0',desc:'Uma shuriken escondida na sombra de outra surpreende o alvo.',live:true});
 const CMDS=[
  {name:'Atacar',desc:'Kunai, Shuriken, Soco ou Chute',col:'#ffb04a',run:()=>showMenu('atk')},
@@ -2491,7 +2520,7 @@ function play(cd){
  if(!cd.live){toast(cd.name+': ainda não animada nesta demo');return;}
  if(outcome||turnLock)return;const A=ANIMS[cd.id];if(ck.s<A.cost){toast('Chakra insuficiente para '+cd.name);return;}ensureAudio();const dm=effDmg(cd,A),lethal=dm>0&&hp.n-dm<=0;turnLock=true;if(cd.onUse)cd.onUse();
  anim={type:cd.id,t0:performance.now(),dur:((lethal&&A.L)?A.L.dur:A.dur)+HS,lethal};setCards(false);ck.s=Math.max(0,ck.s-A.cost);setBars();if(!(lethal&&A.L&&A.L.g))sfx(cd.id);
- const BNR=({chidori:[1350,'千鳥','CHIDORI','Mil Pássaros','#7fd4ff'],soushuken:[700,'操手剣','SŌSHŪKEN NO JUTSU','Manipulação da Shuriken','#9fc8ff'],kagesh:[700,'手裏剣影','SHURIKEN KAGE NO JUTSU','Técnica da Shuriken Sombra','#8a7ad0'],copy:[600,'写輪眼','SHARINGAN','Cópia de Técnicas','#e0306c'],genjutsu:[600,'幻術','GENJUTSU SHARINGAN','Ilusão do Sharingan','#e0306c'],shishi:[600,'獅子連弾','SHISHI RENDAN','Barragem de Leões','#ffb04a'],selochidori:[900,'呪印','SELO AMALDIÇOADO','Chidori Sombrio','#8a50c8'],cop_rasengan:[800,'螺旋丸','RASENGAN COPIADO','Sharingan: Cópia de Técnica','#6fb8ff'],cop_bunshin:[900,'影分身の術','KAGE BUNSHIN COPIADO','Sharingan: Cópia de Técnica','#ffa43a'],kawarimi:[1550,'変わり身の術','KAWARIMI NO JUTSU','Técnica da Substituição','#d9b878'],amaterasu:[1500,'天照','AMATERASU','Chamas Negras','#e0306c'],katon:[1500,'豪火球の術','KATON: GOUKAKYUU','Bola de Fogo Suprema','#ffa43a']})[cd.id];if(BNR)later(BNR[0],()=>banner(BNR[1],BNR[2],BNR[3],BNR[4]));
+ const BNR=({chidori:[1350,'千鳥','CHIDORI','Mil Pássaros','#7fd4ff'],soushuken:[700,'操手剣','SŌSHŪKEN NO JUTSU','Manipulação da Shuriken','#9fc8ff'],kagesh:[700,'手裏剣影','SHURIKEN KAGE NO JUTSU','Técnica da Shuriken Sombra','#8a7ad0'],copy:[600,'写輪眼','SHARINGAN','Cópia de Técnicas','#e0306c'],genjutsu:[600,'幻術','GENJUTSU SHARINGAN','Ilusão do Sharingan','#e0306c'],shishi:[600,'獅子連弾','SHISHI RENDAN','Barragem de Leões','#ffb04a'],selochidori:[900,'呪印','SELO AMALDIÇOADO','Chidori Sombrio','#8a50c8'],cop_rasengan:[800,'螺旋丸','RASENGAN COPIADO','Sharingan: Cópia de Técnica','#6fb8ff'],cop_bunshin:[900,'影分身の術','KAGE BUNSHIN COPIADO','Sharingan: Cópia de Técnica','#ffa43a'],selo:[900,'呪印','SELO AMALDIÇOADO','Nível 1','#9a9aa8'],kawarimi:[1550,'変わり身の術','KAWARIMI NO JUTSU','Técnica da Substituição','#d9b878'],amaterasu:[1500,'天照','AMATERASU','Chamas Negras','#e0306c'],katon:[1500,'豪火球の術','KATON: GOUKAKYUU','Bola de Fogo Suprema','#ffa43a']})[cd.id];if(BNR)later(BNR[0],()=>banner(BNR[1],BNR[2],BNR[3],BNR[4]));
  later(A.hitT*1000,()=>{hp.n=Math.max(0,hp.n-dm);setBars();if(dm>0){dmgPop(dm);applyDamage(cd.id);}if(cd.id==='amaterasu')burning=true;});
  if(cd.id==='amaterasu')later(1250,()=>{WOUNDS.s.push({k:'eyeBlood',part:'face',t0:performance.now()/1000,seed:1,r:1});});
  if(lethal&&A.L){if(A.L.line)later(A.L.speakAt*1000,()=>speak(A.L.line,A.L.speechPos));later(A.L.bannerAt*1000,()=>banner(...(A.L.banner||['死','FATALITY','Chidori','#e0102a'])));(A.L.sfxFn||sfxFatal)();}

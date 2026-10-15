@@ -43,9 +43,9 @@ Projeto de fã, sem fins comerciais. Naruto e seus personagens pertencem aos seu
 |---|---|---|---|
 | Genjutsu Sharingan | 12 | 14 | O inimigo perde o proximo turno |
 | Shishi Rendan | 25 | 36 | Combo aereo de taijutsu copiado de Rock Lee |
-| Selo Amaldicoado: Chidori | 35 | 48 | Perde 10 de vida; por 2 turnos os jutsus causam +25% e o selo custa 3 de vida por turno |
+| Selo Amaldicoado (Nivel 1) | 20 | 0 | Perde 8 de vida. Por 3 turnos: +30% de dano, +10 de chakra por turno, 30% de chance de desviar (custa 2 de vida por turno). Marcas pretas tribais, sem Chidori roxo (esse fica para a transformacao total) |
 | Copiar Tecnica (Sharingan) | 8 | 0 | Gasta o turno. Copia a ultima tecnica do inimigo (so Rasengan ou Kage Bunshin) |
 | Copia: Rasengan | 18 | 22 | 60% do chakra e 75% do dano do original (30 de chakra, 30 de dano). Uso unico |
 | Copia: Kage Bunshin | 15 | 24 | 60% do chakra e 75% do dano do original (25 de chakra, 32 de dano). Uso unico |
 
-Cada uma tem um fatality diferente: Tsukuyomi (Genjutsu), calcanhar que crava a cabeca na agua (Shishi Rendan), o Naruto vira pedra negra e se despedaca (Selo), a espiral que tritura em fatias (Rasengan copiado) e seis clones que lancam kunais (Kage Bunshin copiado).
+Cada uma tem um fatality diferente: Tsukuyomi (Genjutsu), calcanhar que crava a cabeca na agua (Shishi Rendan), a espiral que tritura em fatias (Rasengan copiado) e seis clones que lancam kunais (Kage Bunshin copiado).
