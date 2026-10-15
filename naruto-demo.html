@@ -1499,18 +1499,18 @@ function giantHand(c,w,h,flex,seed,mir){
  const ph=h*.5;// altura da palma
  // dedo grosso, quase paralelo, com pontinha de garra
  const finger=(bx,by,ang,len,wd,bend,claw)=>{const n=8,L=[],R=[];let x=bx,y=by,a=ang;
-  for(let i=0;i<=n;i++){const t=i/n,hw=wd*(1-.4*t*t*t-(i===n?.45:0))/2;const nx=Math.cos(a),ny=Math.sin(a);L.push([x-nx*hw,y-ny*hw]);R.push([x+nx*hw,y+ny*hw]);
+  for(let i=0;i<=n;i++){const t=i/n,hw=wd*(1-.35*t*t-(i>=n-2?(i-(n-3))*.3:0))/2;const nx=Math.cos(a),ny=Math.sin(a);L.push([x-nx*hw,y-ny*hw]);R.push([x+nx*hw,y+ny*hw]);
    x+=Math.sin(a)*len/n;y-=Math.cos(a)*len/n;a+=bend*(.3+t)/n;}
   c.beginPath();c.moveTo(L[0][0],L[0][1]);for(const p of L)c.lineTo(p[0],p[1]);for(let i=R.length-1;i>=0;i--)c.lineTo(R[i][0],R[i][1]);c.closePath();
   c.fillStyle=pg;c.fill();c.strokeStyle=ol;c.lineWidth=1.2;c.stroke();
   c.strokeStyle='rgba(60,44,70,.3)';c.lineWidth=wd*.22;c.beginPath();for(let i=0;i<=n-1;i++){const p=R[i],q=[(p[0]*3+L[i][0])/4,(p[1]*3+L[i][1])/4];i?c.lineTo(q[0],q[1]):c.moveTo(q[0],q[1]);}c.stroke();
   c.strokeStyle='rgba(60,44,70,.5)';c.lineWidth=.8;for(const i of [3,6]){c.beginPath();c.moveTo(L[i][0]*.85+R[i][0]*.15,L[i][1]*.85+R[i][1]*.15);c.lineTo(L[i][0]*.15+R[i][0]*.85,L[i][1]*.15+R[i][1]*.85);c.stroke();}
-  if(claw){c.beginPath();c.moveTo(L[n-1][0],L[n-1][1]);c.lineTo(L[n][0],L[n][1]);c.lineTo(R[n][0],R[n][1]);c.lineTo(R[n-1][0],R[n-1][1]);c.closePath();c.fillStyle='rgba(120,100,110,.8)';c.fill();}};
+  if(claw){c.beginPath();c.moveTo(L[n-1][0],L[n-1][1]);c.lineTo(L[n][0],L[n][1]);c.lineTo(R[n][0],R[n][1]);c.lineTo(R[n-1][0],R[n-1][1]);c.closePath();c.fillStyle='#2e2438';c.fill();}};
  // polegar atras da palma, aberto para o lado
  finger(-w*.34,ph*.55,-.95-.15*flex,h*.4,w*.27,.5*flex,true);
  // quatro dedos juntos, longos como a palma
  const bx=[-.375,-.125,.125,.375],len=[.92,1.08,1.0,.8],ang=[-.1,-.03,.04,.12];
- for(let i=0;i<4;i++)finger(bx[i]*w,-ph*.12,ang[i]*(1+flex),ph*len[i]*1.1,w*.245,(i<2?-1:1)*.55*flex,true);
+ for(let i=0;i<4;i++)finger(bx[i]*w,-ph*.12,ang[i]*(1+flex),ph*len[i]*1.25,w*.2,(i<2?-1:1)*.55*flex,true);
  // palma larga e quadrada
  c.beginPath();c.moveTo(-w*.5,-ph*.12);c.lineTo(w*.5,-ph*.12);c.quadraticCurveTo(w*.56,ph*.4,w*.4,ph*.95);c.lineTo(-w*.4,ph*.95);c.quadraticCurveTo(-w*.56,ph*.4,-w*.5,-ph*.12);c.closePath();
  c.fillStyle=pg;c.fill();c.strokeStyle=ol;c.lineWidth=1.5;c.stroke();
@@ -1523,7 +1523,7 @@ function giantHand(c,w,h,flex,seed,mir){
 function drawWings(sc,P,k,time){if(k<=0)return;const rg=rigW(P),S=rg.S,t0=P.tilt||0;sc.save();sc.setTransform(RES,0,0,RES,OXU*RES,OYU*RES);
  const g=k*(1+.1*Math.sin(Math.min(1,k)*Math.PI));sc.globalAlpha=Math.min(1,k*1.6);
  // esquerda: mao aberta erguida atras; direita: mais inclinada e fechando os dedos
- const hands=[{dx:-34,dy:-42,rot:-.2,w:36,h:60,seed:1,flex:.2,mir:false},{dx:26,dy:-34,rot:.8,w:38,h:62,seed:2,flex:.7,mir:true}];
+ const hands=[{dx:-26,dy:-30,rot:-.25,w:25,h:42,seed:1,flex:.3,mir:false},{dx:20,dy:-26,rot:.75,w:26,h:43,seed:2,flex:.8,mir:true}];
  for(const hd of hands){
   const rot=hd.rot+t0+Math.sin(time*1.3+hd.seed)*.03,cx=S[0]+hd.dx*g,cy=S[1]+hd.dy*g,wx=cx-Math.sin(rot)*hd.h*.32*g,wy=cy+Math.cos(rot)*hd.h*.32*g,bx=S[0]-2,by=S[1]+6;
   const mx=(bx+wx)/2-(wy-by)*.12*(hd.mir?-1:1),my=(by+wy)/2+(wx-bx)*.12*(hd.mir?-1:1);
