@@ -1,6 +1,6 @@
-# Naruto Card Clash (demo de combate)
+# Naruto RPG Clash (demo de combate)
 
-Jogo de cartas de fã inspirado em Naruto. Esta demo mostra o foco do projeto: o **visual do combate**.
+RPG de turno de fã inspirado em Naruto. Esta demo mostra o foco do projeto: o **visual do combate**.
 Sasuke e Naruto lutam no Vale do Fim e, conforme a carta escolhida, o golpe é animado.
 
 Tudo é desenhado por código (HTML5 Canvas), sem imagens externas.
@@ -13,7 +13,7 @@ Opção 2: com Node instalado, rode `node serve.js` e abra http://localhost:8123
 
 ## Controles
 
-- Clique numa carta, ou tecle `1` (Chidori), `2` (Katon), `3` (Kawarimi) ou `4` (Amaterasu).
+- Menu de comandos (teclas 1 a 3): **Jutsu** (abre as técnicas: 1 Chidori, 2 Katon, 3 Kawarimi, 4 Amaterasu; Esc volta), **Defender** (próximo dano pela metade) e **Concentrar** (+25 de chakra).
 - Zerando a vida do Naruto aparece o K.O., com Sasuke em pose de vitória. Use "Resetar luta" para recomeçar.
 
 ## O que já existe
