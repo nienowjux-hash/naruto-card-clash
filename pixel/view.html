@@ -3,28 +3,37 @@
 <style>
 body{margin:0;background:#0b0918;color:#e8e4ff;font-family:system-ui,sans-serif}
 .row{display:flex;gap:16px;padding:12px 16px;align-items:flex-end;flex-wrap:wrap}
-.card{background:linear-gradient(#2a2156,#121030);border:1px solid #3a3270;border-radius:8px;padding:10px}
+.card{background:linear-gradient(#2a2156,#121030);border:1px solid #3a3270;border-radius:8px;padding:10px;cursor:pointer}
+.card.sel{border-color:#ffd25a}
 .card b{display:block;font-size:12px;margin-bottom:6px;color:#bdb6e6}
 canvas{image-rendering:pixelated;display:block}
 </style></head><body>
+<div class="row" id="all"></div>
 <div class="row">
- <div class="card" id="bigcard"><b>Ampliado (grade a cada 5 px)</b><canvas id="big"></canvas></div>
+ <div class="card" id="bigcard"><b id="bigname">Ampliado (grade a cada 5 px)</b><canvas id="big"></canvas></div>
  <div class="card"><b>Tamanho do jogo (3x)</b><canvas id="game"></canvas></div>
  <div class="card"><b>Fundo claro (3x)</b><canvas id="light"></canvas></div>
 </div>
-<script src="pixgrid.js"></script><script src="sasuke.js"></script><script src="sasuke-guard.js"></script>
+<script src="pixgrid.js"></script><script src="sasuke.js"></script><script src="sasuke-guard.js"></script><script src="sasuke-poses.js"></script>
 <script>
-/* ?s=idle mostra o Sasuke parado; o padrao e a base de luta */
-const pick=new URLSearchParams(location.search).get('s')==='idle'?[sasukeIdle(),SAS_PAL]:[sasukeGuard(),SAS2_PAL];
-const g=pick[0],PAL=pick[1],S=8;
-const big=document.getElementById('big');g.draw(big,PAL,S);
-const c=big.getContext('2d');c.lineWidth=1;
-for(let x=0;x<=g.w;x++){c.beginPath();c.moveTo(x*S+.5,0);c.lineTo(x*S+.5,g.h*S);c.strokeStyle=x%5?'rgba(255,255,255,.05)':'rgba(255,220,120,.25)';c.stroke();}
-for(let y=0;y<=g.h;y++){c.beginPath();c.moveTo(0,y*S+.5);c.lineTo(g.w*S,y*S+.5);c.strokeStyle=y%5?'rgba(255,255,255,.05)':'rgba(255,220,120,.25)';c.stroke();}
-c.fillStyle='rgba(255,220,120,.7)';c.font='9px monospace';for(let x=0;x<g.w;x+=5)c.fillText(x,x*S+1,9);for(let y=5;y<g.h;y+=5)c.fillText(y,1,y*S-1);
-const tmp=document.createElement('canvas');g.draw(tmp,PAL,1);
-const gm=document.getElementById('game');gm.width=g.w*3+60;gm.height=g.h*3+20;const gx=gm.getContext('2d');
-const sky=gx.createLinearGradient(0,0,0,gm.height);sky.addColorStop(0,'#1c1640');sky.addColorStop(.75,'#2a2a6a');sky.addColorStop(.76,'#16235a');sky.addColorStop(1,'#0e1640');gx.fillStyle=sky;gx.fillRect(0,0,gm.width,gm.height);
-gx.imageSmoothingEnabled=false;gx.fillStyle='rgba(0,0,10,.35)';gx.beginPath();gx.ellipse(30+28*3,10+76*3,72,9,0,0,Math.PI*2);gx.fill();gx.drawImage(tmp,30,10,g.w*3,g.h*3);
-const lc=document.getElementById('light');lc.width=g.w*3+20;lc.height=g.h*3+20;const lx=lc.getContext('2d');lx.fillStyle='#fff';lx.fillRect(0,0,lc.width,lc.height);lx.imageSmoothingEnabled=false;lx.drawImage(tmp,10,10,g.w*3,g.h*3);
+/* ?s=idle|guard|punch|hit|down escolhe a pose ampliada; clicar numa miniatura tambem troca */
+const POSES={idle:['Parado',sasukeIdle,SAS_PAL],guard:['Base de luta',sasukeGuard,SAS2_PAL],punch:['Soco',sasukePunch,SAS2_PAL],hit:['Dano',sasukeHit,SAS2_PAL],down:['Caído (K.O.)',sasukeDown,SAS2_PAL]};
+const built={};for(const k in POSES)built[k]=POSES[k][1]();
+function show(key){
+ document.querySelectorAll('#all .card').forEach(c=>c.classList.toggle('sel',c.dataset.k===key));
+ const g=built[key],PAL=POSES[key][2],S=8;document.getElementById('bigname').textContent=POSES[key][0]+' — ampliado (grade a cada 5 px)';
+ const big=document.getElementById('big');g.draw(big,PAL,S);
+ const c=big.getContext('2d');c.lineWidth=1;
+ for(let x=0;x<=g.w;x++){c.beginPath();c.moveTo(x*S+.5,0);c.lineTo(x*S+.5,g.h*S);c.strokeStyle=x%5?'rgba(255,255,255,.05)':'rgba(255,220,120,.25)';c.stroke();}
+ for(let y=0;y<=g.h;y++){c.beginPath();c.moveTo(0,y*S+.5);c.lineTo(g.w*S,y*S+.5);c.strokeStyle=y%5?'rgba(255,255,255,.05)':'rgba(255,220,120,.25)';c.stroke();}
+ c.fillStyle='rgba(255,220,120,.7)';c.font='9px monospace';for(let x=0;x<g.w;x+=5)c.fillText(x,x*S+1,9);for(let y=5;y<g.h;y+=5)c.fillText(y,1,y*S-1);
+ const tmp=document.createElement('canvas');g.draw(tmp,PAL,1);
+ const gm=document.getElementById('game');gm.width=g.w*3+60;gm.height=g.h*3+20;const gx=gm.getContext('2d');
+ const sky=gx.createLinearGradient(0,0,0,gm.height);sky.addColorStop(0,'#1c1640');sky.addColorStop(.75,'#2a2a6a');sky.addColorStop(.76,'#16235a');sky.addColorStop(1,'#0e1640');gx.fillStyle=sky;gx.fillRect(0,0,gm.width,gm.height);
+ gx.imageSmoothingEnabled=false;gx.drawImage(tmp,30,10,g.w*3,g.h*3);
+ const lc=document.getElementById('light');lc.width=g.w*3+20;lc.height=g.h*3+20;const lx=lc.getContext('2d');lx.fillStyle='#fff';lx.fillRect(0,0,lc.width,lc.height);lx.imageSmoothingEnabled=false;lx.drawImage(tmp,10,10,g.w*3,g.h*3);
+ history.replaceState(null,'','?s='+key);}
+const all=document.getElementById('all');
+for(const k in POSES){const d=document.createElement('div');d.className='card';d.dataset.k=k;d.innerHTML='<b>'+POSES[k][0]+'</b>';const cv=document.createElement('canvas');built[k].draw(cv,POSES[k][2],3);d.appendChild(cv);d.onclick=()=>show(k);all.appendChild(d);}
+const q=new URLSearchParams(location.search).get('s');show(POSES[q]?q:'guard');
 </script></body></html>
