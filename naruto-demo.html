@@ -1495,7 +1495,7 @@ function tribal(sc,A,B,k,seed,wd,spacing){
 function lvDef(p){const d=Object.assign({},SASUKE);d.skin=mix(SASUKE.skin,[168,176,208],p);d.fore=d.skin;d.shin=d.skin;d.hair=mix(SASUKE.hair,[72,90,132],p);d.hairHi=mix(SASUKE.hairHi,[172,192,228],p);d.longHair=p*.5;d.lv2=p;d.eyeH=SASUKE.eyeH*(1-.12*p);return d;}
 function giantHand(c,w,h,flex,seed,mir){
  c.save();if(mir)c.scale(-1,1);c.lineJoin='round';c.lineCap='round';const ol='#3a2e44';
- const pg=c.createLinearGradient(-w*.5,-h*.5,w*.5,h*.4);pg.addColorStop(0,'#cbbfc6');pg.addColorStop(.5,'#b0a2ac');pg.addColorStop(1,'#8c7e8c');
+ const pg=c.createLinearGradient(-w*.5,-h*.5,w*.5,h*.4);pg.addColorStop(0,'#c6b9c4');pg.addColorStop(.5,'#9d8f9f');pg.addColorStop(1,'#5f5169');
  const ph=h*.5;// altura da palma
  // dedo grosso, quase paralelo, com pontinha de garra
  const finger=(bx,by,ang,len,wd,bend,claw)=>{const n=8,L=[],R=[];let x=bx,y=by,a=ang;
@@ -1505,12 +1505,12 @@ function giantHand(c,w,h,flex,seed,mir){
   c.fillStyle=pg;c.fill();c.strokeStyle=ol;c.lineWidth=1.2;c.stroke();
   c.strokeStyle='rgba(60,44,70,.3)';c.lineWidth=wd*.22;c.beginPath();for(let i=0;i<=n-1;i++){const p=R[i],q=[(p[0]*3+L[i][0])/4,(p[1]*3+L[i][1])/4];i?c.lineTo(q[0],q[1]):c.moveTo(q[0],q[1]);}c.stroke();
   c.strokeStyle='rgba(60,44,70,.5)';c.lineWidth=.8;for(const i of [3,6]){c.beginPath();c.moveTo(L[i][0]*.85+R[i][0]*.15,L[i][1]*.85+R[i][1]*.15);c.lineTo(L[i][0]*.15+R[i][0]*.85,L[i][1]*.15+R[i][1]*.85);c.stroke();}
-  if(claw){c.beginPath();c.moveTo(L[n-1][0],L[n-1][1]);c.lineTo(L[n][0],L[n][1]);c.lineTo(R[n][0],R[n][1]);c.lineTo(R[n-1][0],R[n-1][1]);c.closePath();c.fillStyle='#2e2438';c.fill();}};
+  if(claw){{const m=n-3;c.beginPath();c.moveTo(L[m][0],L[m][1]);for(let i=m;i<=n;i++)c.lineTo(L[i][0],L[i][1]);for(let i=n;i>=m;i--)c.lineTo(R[i][0],R[i][1]);c.closePath();const cg=c.createLinearGradient(L[m][0],L[m][1],L[n][0],L[n][1]);cg.addColorStop(0,'#5a4a68');cg.addColorStop(1,'#1c1426');c.fillStyle=cg;c.fill();c.strokeStyle='#150f1c';c.lineWidth=.8;c.stroke();c.strokeStyle='rgba(200,170,255,.45)';c.lineWidth=.6;c.beginPath();c.moveTo(L[m][0]*.7+R[m][0]*.3,L[m][1]*.7+R[m][1]*.3);c.lineTo(L[n][0],L[n][1]);c.stroke();}}};
  // polegar atras da palma, aberto para o lado
  finger(-w*.34,ph*.55,-.95-.15*flex,h*.4,w*.27,.5*flex,true);
  // quatro dedos juntos, longos como a palma
  const bx=[-.375,-.125,.125,.375],len=[.92,1.08,1.0,.8],ang=[-.1,-.03,.04,.12];
- for(let i=0;i<4;i++)finger(bx[i]*w,-ph*.12,ang[i]*(1+flex),ph*len[i]*1.25,w*.2,(i<2?-1:1)*.55*flex,true);
+ for(let i=0;i<4;i++)finger(bx[i]*w,-ph*.12,ang[i]*(1+flex),ph*len[i]*1.05,w*.235,(i<2?-1:1)*.55*flex,true);
  // palma larga e quadrada
  c.beginPath();c.moveTo(-w*.5,-ph*.12);c.lineTo(w*.5,-ph*.12);c.quadraticCurveTo(w*.56,ph*.4,w*.4,ph*.95);c.lineTo(-w*.4,ph*.95);c.quadraticCurveTo(-w*.56,ph*.4,-w*.5,-ph*.12);c.closePath();
  c.fillStyle=pg;c.fill();c.strokeStyle=ol;c.lineWidth=1.5;c.stroke();
@@ -1519,6 +1519,8 @@ function giantHand(c,w,h,flex,seed,mir){
  c.beginPath();c.moveTo(-w*.4,ph*.5);c.quadraticCurveTo(-w*.1,ph*.6,w*.05,ph*.9);c.stroke();
  c.beginPath();c.moveTo(w*.35,ph*.1);c.quadraticCurveTo(w*.15,ph*.4,w*.2,ph*.7);c.stroke();
  c.fillStyle='rgba(245,238,244,.25)';c.beginPath();c.ellipse(-w*.15,ph*.3,w*.22,ph*.22,-.3,0,TAU);c.fill();
+ for(let i=0;i<4;i++){const kx=bx[i]*w;c.fillStyle='rgba(235,225,235,.3)';c.beginPath();c.arc(kx-w*.03,-ph*.02,w*.085,0,TAU);c.fill();c.strokeStyle='rgba(40,28,52,.55)';c.lineWidth=.9;c.beginPath();c.arc(kx,ph*.02,w*.11,.3,Math.PI-.3);c.stroke();}
+ c.strokeStyle='rgba(95,60,150,.55)';c.lineWidth=.8;for(const v of [[-.2,.4,-.3,.9],[.1,.35,.2,.9]]){c.beginPath();c.moveTo(v[0]*w,ph*v[1]);c.quadraticCurveTo((v[0]+v[2])*.5*w+3,ph*.65,v[2]*w,ph*v[3]);c.stroke();}
  c.restore();}
 function drawWings(sc,P,k,time){if(k<=0)return;const rg=rigW(P),S=rg.S,t0=P.tilt||0;sc.save();sc.setTransform(RES,0,0,RES,OXU*RES,OYU*RES);
  const g=k*(1+.1*Math.sin(Math.min(1,k)*Math.PI));sc.globalAlpha=Math.min(1,k*1.6);
