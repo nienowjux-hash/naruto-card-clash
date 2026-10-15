@@ -485,6 +485,9 @@ function applyDamage(kind){const N=WOUNDS.n,t0=performance.now()/1000;
  else if(kind==='kawarimi'){F('brow');F('lip');F('cheekCut');TE('legF',.42,0,2.2,'#c89a80','#a85808');CU('legB',.5,0,2,.6);B('legB',.52,0,1.2,1);add({k:'bruise',part:'armB',u:.4,v:0,r:2.4,seed:rs()});}
  else if(kind==='amaterasu'){BU('torso',.25,.3,3.2);BU('torso',.5,-.3,3.4);BU('torso',.7,.2,3);BU('armF',.4,0,2.5);BU('armB',.5,0,2.3);BU('legF',.4,0,2.4);BU('legB',.5,0,2.2);SC('torso',.5,0,8);SC('armF',.5,0,5);SC('legF',.5,0,5);TE('torso',.4,.4,3.4,'#2a1a14','#2a1408');TE('armF',.55,0,2.4,'#2a1a14','#2a1408');TE('legB',.45,0,2.4,'#2a1a14','#2a1408');F('faceBurn');F('faceBurn');F('faceSoot');}}
 function bloodSpray(c,x,y,age,seed,n,dir){if(age<0||age>.85)return;for(let i=0;i<n;i++){const r=R(seed*13+i),an=-Math.PI/2+(r()-.5)*2.4+dir*.6,sp=40+r()*100,px=x+Math.cos(an)*sp*age,py=y+Math.sin(an)*sp*age+160*age*age;if(py>GY+3)continue;c.fillStyle='rgba('+(120+r()*50|0)+',8,16,'+(1-age/.85)+')';c.beginPath();c.arc(px,py,.4+r()*.7,0,TAU);c.fill();}}
+/* contorno irregular (pontas alternando para dentro e para fora) para o buraco rasgado */
+function holePts(r,seed,sx,sy,rot){const rn=R(seed),n=18,c=Math.cos(rot),s=Math.sin(rot),pts=[];for(let i=0;i<n;i++){const a=i/n*TAU,k=(.6+rn()*.75)*(i%2?.8:1.12),x=Math.cos(a)*r*k*sx,y=Math.sin(a)*r*k*sy;pts.push([x*c-y*s,x*s+y*c]);}return pts;}
+function holePath(c,hx,hy,pts){c.beginPath();pts.forEach((p,i)=>i?c.lineTo(hx+p[0],hy+p[1]):c.moveTo(hx+p[0],hy+p[1]));c.closePath();}
 /* centro do peito rasgado (mesmo ponto do remendo de pele desenhado em drawFig), ja em unidades do mundo e girado com o tronco */
 function chestPos(P){const r=rig(P),S=r.S,Hp=r.Hp,mid=(S[1]+Hp[1])*.5,cx=S[0]+.6,cy=((S[1]+.8)+(mid+5.2))/2,t=P.tilt||0,cs=Math.cos(t),sn=Math.sin(t),x=cx-Hp[0],y=cy-Hp[1];
  return[(Hp[0]+x*cs-y*sn)*BS,(Hp[1]+x*sn+y*cs)*BS];}
@@ -508,9 +511,14 @@ function blit(x,y,flip,d,P,time,o){o=o||{};
  if(o.hole){ /* buraco de lado a lado no peito: borda queimada e sangrenta, e o cenario aparece pelo furo */
   const rg=rigW(P),cp=P.torn>0?chestPos(P):[(rg.S[0]+rg.Hp[0])/2+1.2,(rg.S[1]+rg.Hp[1])/2+.5],hx=(OXU+cp[0])*RES,hy=(OYU+cp[1])*RES,hr=o.hole*(4.0+(P.turn||0)*.9)*RES;
   sc.setTransform(1,0,0,1,0,0);sc.globalCompositeOperation='source-atop';
-  sc.fillStyle='rgba(40,3,10,.95)';sc.beginPath();sc.ellipse(hx,hy,hr*1.5,hr*1.62,0,0,TAU);sc.fill();
-  sc.fillStyle='rgba(165,14,24,.95)';sc.beginPath();sc.ellipse(hx,hy,hr*1.22,hr*1.34,0,0,TAU);sc.fill();sc.strokeStyle='rgba(255,170,150,.55)';sc.lineWidth=.5*RES;sc.beginPath();sc.ellipse(hx,hy,hr*1.12,hr*1.24,0,.2,Math.PI*1.1);sc.stroke();
-  sc.globalCompositeOperation='destination-out';sc.fillStyle='#000';sc.beginPath();sc.ellipse(hx,hy,hr,hr*1.12,0,0,TAU);sc.fill();
+  /* buraco deformado, como carne rasgada por uma mao: contorno irregular, mais comprido na diagonal, com bordas dentadas e rachaduras */
+  const rot=-.38,ptsIn=holePts(hr,7,.9,1.3,rot),ptsMid=holePts(hr*1.34,7,.92,1.28,rot),ptsOut=holePts(hr*1.75,11,.95,1.25,rot+.2);
+  sc.fillStyle='rgba(95,8,14,.55)';holePath(sc,hx,hy,ptsOut);sc.fill();
+  sc.fillStyle='rgba(38,3,9,.95)';holePath(sc,hx,hy,ptsMid);sc.fill();
+  sc.strokeStyle='rgba(120,10,18,.85)';sc.lineWidth=.55*RES;sc.lineCap='round';
+  for(let i=0;i<9;i++){const q=ptsIn[(i*2+1)%ptsIn.length],a=Math.atan2(q[1],q[0]),l=hr*(.5+((i*37)%10)/10*.9);sc.beginPath();sc.moveTo(hx+q[0],hy+q[1]);sc.lineTo(hx+q[0]+Math.cos(a)*l,hy+q[1]+Math.sin(a)*l);sc.stroke();}
+  sc.strokeStyle='rgba(255,165,140,.4)';sc.lineWidth=.35*RES;holePath(sc,hx,hy,ptsMid);sc.stroke();
+  sc.globalCompositeOperation='destination-out';sc.fillStyle='#000';holePath(sc,hx,hy,ptsIn);sc.fill();
   sc.globalCompositeOperation='source-over';}
  const al=o.alpha==null?1:o.alpha;
  if(!o.noRefl&&!o.rot){g.save();g.translate(x,GY);g.scale((flip?-1:1)*sxq,-.5*syq);g.globalAlpha=.16*al;g.drawImage(sp,-OXU,-OYU,SW,SH);g.restore();}
@@ -750,9 +758,9 @@ const CH_WIND=Object.assign({},HIT,{tilt:.5,lean:4,crouch:9,hxF:14,hyF:-3,hxB:-1
 const CH_RIP=mk({tilt:-.3,crouch:3,lean:-5,fbx:-9,ffx:6,hxF:7,hyF:-6,hxB:-7,hyB:6,red:1,expr:2,tw:.9,hr:-.22,hdx:-2,hdy:-1,wind:1});
 const CH_DRIP=mk({tilt:-.06,crouch:2,lean:-2,fbx:-6,ffx:5,hxF:4,hyF:11,hxB:5,hyB:8,red:1,expr:7,tw:.95,hr:-.1,hdy:-1});
 const N_IMP_B=Object.assign({},N_IMP,{tilt:-.3,lean:-4,hr:-.5,hdy:-1,hxF:-8,hyF:-1,hxB:-10,hyB:-2,expr:3});
-const N_JERK=mk({tilt:.14,lean:2,crouch:6,fbx:-8,ffx:6,hxF:-1,hyF:12,hxB:-2,hyB:11,hdx:2,hdy:3,hr:.35,expr:3,tw:1,wind:.8,turn:.85,torn:1});
-const N_SWAY1=mk({tilt:.04,lean:0,crouch:2,fbx:-5,ffx:5,hxF:1,hyF:13,hxB:0,hyB:13,hdx:0,hdy:1,hr:.2,expr:3,tw:1,turn:1,torn:1});
-const N_SWAY2=mk({tilt:.06,lean:1,crouch:3,fbx:-6,ffx:6,hxF:2,hyF:13,hxB:1,hyB:13,hdx:1,hdy:2,hr:.28,expr:3,tw:1,turn:1,torn:1});
+const N_JERK=mk({tilt:.08,lean:1,crouch:3,fbx:-5,ffx:5,hxF:1.5,hyF:12,hxB:-1.5,hyB:11,hdx:1,hdy:2,hr:.16,expr:3,tw:1,wind:.8,turn:.85,torn:1});
+const N_SWAY1=mk({tilt:0,lean:0,crouch:.5,fbx:-4,ffx:4,hxF:1.8,hyF:13,hxB:-1.8,hyB:13,hdx:0,hdy:.5,hr:.05,expr:3,tw:1,turn:1,torn:1});
+const N_SWAY2=mk({tilt:.02,lean:0,crouch:1,fbx:-4,ffx:4,hxF:1.8,hyF:13,hxB:-1.8,hyB:13,hdx:0,hdy:1.2,hr:.08,expr:3,tw:1,turn:1,torn:1});
 const N_DOWN_T=Object.assign({},N_DOWN,{turn:.35,torn:1});
 ANIMS.chidori.L={dur:10.6,koAt:9.6,speakAt:7.4,bannerAt:8.6,line:'Você é fraco!',
  /* mapa raw->t: pausa no impacto, camera lenta com o braco cravado, lentissima no arranque, depois normal */
@@ -893,7 +901,10 @@ function pierceFX(f,t,time,fr,nx0,sx0,sy0,rS,hw,ny0){
    const pr=Math.min(7,Math.max(0,(t-3.9)*3));if(pr>0){f.fillStyle='rgba(105,6,14,.7)';f.beginPath();f.ellipse(ha[0],GY+1.5,pr,pr*.24,0,0,TAU);f.fill();}}}
  if(t>3.6&&t<7.9){ /* buraco no peito: sangue escorrendo pela borda e poca crescendo */
   const k=clamp((t-3.6)/.3,0,1),wy=cy+5;
-  for(let i=0;i<4;i++){const ph=((t*1.1+i*.31)%1);f.strokeStyle=`rgba(135,8,16,${.85*k})`;f.lineWidth=.9;f.beginPath();f.moveTo(cx+(i-1.5)*1.7,wy);f.lineTo(cx+(i-1.5)*1.7+Math.sin(t*3+i)*.4,wy+ph*(GY-wy));f.stroke();}
+  /* sangue escorrendo da borda do buraco: filetes de largura e velocidade diferentes que serpenteiam e terminam numa gota */
+  for(let i=0;i<6;i++){const sp=.35+((i*29)%7)/14,ph=((t*sp+i*.23)%1),x0=cx+(((i*53)%9)-4)*1.1,len=(GY-wy)*(.45+((i*17)%5)/9),yy=wy+ph*len,w=.5+((i*13)%4)*.28;
+   f.strokeStyle=`rgba(${110+(i*11)%40},6,14,${.88*k})`;f.lineWidth=w;f.beginPath();f.moveTo(x0,wy-1);f.bezierCurveTo(x0+Math.sin(t*2+i)*.9,wy+ph*len*.35,x0-Math.sin(t*1.7+i*2)*.9,wy+ph*len*.7,x0+Math.sin(t+i)*.4,yy);f.stroke();
+   f.fillStyle=`rgba(125,6,14,${.9*k})`;f.beginPath();f.ellipse(x0+Math.sin(t+i)*.4,yy+w,w*.9,w*1.5,0,0,TAU);f.fill();}
   const pr=Math.min(13,(t-3.8)*3.4);if(pr>0){f.fillStyle='rgba(110,6,14,.6)';f.beginPath();f.ellipse(nx0-3,GY+2,pr,pr*.24,0,0,TAU);f.fill();}}
 }
 /* Cabelo/faixa/jaqueta com inercia: uma mola segue a velocidade da cabeca, balanca ao parar e se acalma sozinha. */
