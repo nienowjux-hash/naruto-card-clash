@@ -822,7 +822,7 @@ const KB_C=mk({tilt:-.04,lean:0,crouch:0,fbx:-4,ffx:4,hxF:2,hyF:-14,hxB:-2,hyB:-
 const KB_KNEEL=mk({tilt:.08,lean:0,crouch:10,fbx:-6,ffx:6,hxF:3,hyF:-6,hxB:-3,hyB:-6,hdx:0,hdy:1,hr:.2,expr:3,tw:1,turn:1,scream:1,wind:.6});
 const KB_STAT=mk({tilt:.14,lean:0,crouch:12,fbx:-6,ffx:6,hxF:3,hyF:-3,hxB:-3,hyB:-3,hdx:0,hdy:3,hr:.3,expr:3,tw:1,turn:1,scream:.4,wind:.2});
 const KB_DOWN=Object.assign({},N_DOWN,{turn:.35});
-ANIMS.katon.L={dur:9.6,koAt:8.6,bannerAt:7.4,banner:['火','FATALITY','Katon','#ff7a1a'],sfxFn:null,
+ANIMS.katon.L={dur:9.6,koAt:8.6,bannerAt:7.4,speakAt:3.4,line:'Queime!',speechPos:['24%','24%'],banner:['火','FATALITY','Katon','#ff7a1a'],sfxFn:null,
  /* mapa raw->t: pausa no impacto, camera lenta enquanto o fogo toma conta, depois quase normal */
  map:[[0,0],[2.4,2.4],[2.75,2.44],[4.5,3.5],[8.0,6.4],[99,97.4]],
  sP:ANIMS.katon.sP.filter(k=>k[0]<=2.5).concat([[3.6,EXH],[4.2,READY],[5.4,READY],[6.0,VICTORY],[99,VICTORY]]),
@@ -1404,7 +1404,7 @@ function showMenu(m){menuOpen=m;const h=$('hand');h.innerHTML='';
  setCards(!anim&&!outcome&&!turnLock);}
 function buildCards(){showMenu('main');}
 function setCards(on){[...$('hand').children].forEach(b=>{b.disabled=!on||(b._cost!=null&&ck.s<b._cost);});}
-function speak(line){const s=$('speech');s.textContent=line;s.classList.remove('on');void s.offsetWidth;s.classList.add('on');later(2200,()=>s.classList.remove('on'));}
+function speak(line,pos){const s=$('speech');s.textContent=line;s.style.left=pos?pos[0]:'31%';s.style.top=pos?pos[1]:'18%';s.classList.remove('on');void s.offsetWidth;s.classList.add('on');later(2200,()=>s.classList.remove('on'));}
 function idleAct(t){if(anim||frozen||outcome||turnLock)return;ensureAudio();turnLock=true;
  if(t==='defend'){guard=true;ck.s=Math.min(100,ck.s+10);toast('Sasuke se defende: próximo dano cai pela metade');}
  else{ck.s=Math.min(100,ck.s+25);toast('Sasuke concentra chakra');}
@@ -1417,7 +1417,7 @@ function play(cd){
  if(cd.id==='chidori')later(1350,()=>banner('千鳥','CHIDORI','Mil Pássaros','#7fd4ff'));else if(cd.id==='kawarimi')later(1550,()=>banner('変わり身の術','KAWARIMI NO JUTSU','Técnica da Substituição','#d9b878'));else if(cd.id==='amaterasu')later(1500,()=>banner('天照','AMATERASU','Chamas Negras','#e0306c'));else later(1500,()=>banner('豪火球の術','KATON: GOUKAKYUU','Bola de Fogo Suprema','#ffa43a'));
  later(A.hitT*1000,()=>{hp.n=Math.max(0,hp.n-A.dmg);setBars();dmgPop(A.dmg);applyDamage(cd.id);if(cd.id==='amaterasu')burning=true;});
  if(cd.id==='amaterasu')later(1250,()=>{WOUNDS.s.push({k:'eyeBlood',part:'face',t0:performance.now()/1000,seed:1,r:1});});
- if(lethal&&A.L){if(A.L.line)later(A.L.speakAt*1000,()=>speak(A.L.line));later(A.L.bannerAt*1000,()=>banner(...(A.L.banner||['死','FATALITY','Chidori','#e0102a'])));(A.L.sfxFn||sfxFatal)();}
+ if(lethal&&A.L){if(A.L.line)later(A.L.speakAt*1000,()=>speak(A.L.line,A.L.speechPos));later(A.L.bannerAt*1000,()=>banner(...(A.L.banner||['死','FATALITY','Chidori','#e0102a'])));(A.L.sfxFn||sfxFatal)();}
  if(lethal)later(((A.L?A.L.koAt:A.hitT+1.3))*1000,()=>{outcome='S';outcomeT=performance.now()/1000;const k=$('ko');k.classList.remove('on');void k.offsetWidth;k.classList.add('on');setCards(false);});
 }
 window.addEventListener('keydown',e=>{if(e.key==='Escape'&&menuOpen==='jutsu'){showMenu('main');return;}const n=parseInt(e.key,10);if(!(n>=1))return;const b=$('hand').children[n-1];if(b&&!b.disabled)b.click();});
