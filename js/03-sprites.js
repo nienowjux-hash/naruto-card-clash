@@ -16,6 +16,11 @@ const SPRN={};if(USE_SPR&&typeof naruGuard==='function'){const mkN=(fn,ax,ay)=>{
 if(USE_SPR&&typeof breathOf==='function'){const mkB=(fn,pal,sh)=>{const gb=fn(),a=document.createElement('canvas'),b=document.createElement('canvas');gb.draw(a,pal,1);gb.draw(b,Object.assign({},pal,sh),1);return[a,b];};
  if(SPR.guard){const r=mkB(sasukeGuardB,SAS2_PAL,SHARI);SPR.guard.cb=r[0];SPR.guard.cbsh=r[1];}
  if(typeof SPRN!=='undefined'&&SPRN.guard&&typeof naruGuardB==='function'){const r=mkB(naruGuardB,NAR_PAL,KYU_EYES);SPRN.guard.cb=r[0];SPRN.guard.cbsh=r[1];}}
+/* ciclo de corrida: 4 quadros por personagem; o quadro e escolhido pelo tempo (ver blitSprite) */
+if(USE_SPR&&typeof sasukeRunFrame==='function'){const mk4=(fn,pal,sh)=>[0,1,2,3].map(i=>{const gr=fn(i),a=document.createElement('canvas'),b=document.createElement('canvas');gr.draw(a,pal,1);gr.draw(b,Object.assign({},pal,sh),1);return{c:a,csh:b};});
+ const fs4=mk4(sasukeRunFrame,SAS2_PAL,SHARI);SPR.run={c:fs4[0].c,csh:fs4[0].csh,fr:fs4,w:56,h:80,ax:27,ay:75};
+ if(typeof SPRN!=='undefined'&&SPRN.guard&&typeof naruRun0==='function'){const nf=mk4(i=>[naruRun0,naruRun1,naruRun2,naruRun3][i](),NAR_PAL,KYU_EYES);SPRN.run={c:nf[0].c,csh:nf[0].csh,fr:nf,w:56,h:80,ax:27,ay:75};}
+ if(typeof lv2From==='function'&&typeof LV2_PAL!=='undefined'){const lf=[0,1,2,3].map(i=>{const gr=lv2From(()=>sasukeRunFrame(i))(),c=document.createElement('canvas');gr.draw(c,LV2_PAL,1);return{c,csh:c};});SPRL2.run={c:lf[0].c,fr:lf,w:56,h:80,ax:27,ay:75};}}
 /* poses de referencia: cada pose do jogo cai no sprite cuja referencia estiver mais perto */
 let SPR_REF=null;
 function sprRefs(){if(SPR_REF)return SPR_REF;const L=[];const add=(k,...ps)=>ps.forEach(p=>{if(p)L.push([k,p]);});
@@ -26,13 +31,14 @@ function sprRefs(){if(SPR_REF)return SPR_REF;const L=[];const add=(k,...ps)=>ps.
  add('chidori',PREP,CHARGE,COIL,typeof SEL_C!=='undefined'&&SEL_C,typeof RS_H!=='undefined'&&RS_H);
  if(SPR.pw)add('pw',PN_W);
  if(SPR.kw&&typeof CK_W!=='undefined')add('kw',CK_W);
- add('punch',DASH,HIT,typeof CH_PULL!=='undefined'&&CH_PULL,typeof PN_D!=='undefined'&&PN_D,typeof PN_P!=='undefined'&&PN_P,typeof KT_T!=='undefined'&&KT_T,typeof KT_F!=='undefined'&&KT_F,typeof SS_T!=='undefined'&&SS_T,typeof SEL_D!=='undefined'&&SEL_D,typeof SEL_H!=='undefined'&&SEL_H,typeof RS_D!=='undefined'&&RS_D,typeof RS_P!=='undefined'&&RS_P,typeof SLASH!=='undefined'&&SLASH,typeof SH_A!=='undefined'&&SH_A,typeof SH_TOP!=='undefined'&&SH_TOP);
+ add('punch',DASH,HIT,typeof CH_PULL!=='undefined'&&CH_PULL,(SPR.run?false:(typeof PN_D!=='undefined'&&PN_D)),typeof PN_P!=='undefined'&&PN_P,typeof KT_T!=='undefined'&&KT_T,typeof KT_F!=='undefined'&&KT_F,typeof SS_T!=='undefined'&&SS_T,typeof SEL_D!=='undefined'&&SEL_D,typeof SEL_H!=='undefined'&&SEL_H,typeof RS_D!=='undefined'&&RS_D,typeof RS_P!=='undefined'&&RS_P,typeof SLASH!=='undefined'&&SLASH,typeof SH_A!=='undefined'&&SH_A,typeof SH_TOP!=='undefined'&&SH_TOP);
+ if(SPR.run&&typeof PN_D!=='undefined')add('run',PN_D);
  add('kick',KICK,typeof CK_K!=='undefined'&&CK_K,typeof SH_UP!=='undefined'&&SH_UP,typeof SH_B!=='undefined'&&SH_B,typeof SH_HEEL!=='undefined'&&SH_HEEL);
  add('hit',S_HIT,S_FLINCH,S_STAG);add('guard',HOP);
  add('down',S_DOWN);
  return SPR_REF=L;}
 let SPRN_REF=null;function sprRefsN(){if(SPRN_REF)return SPRN_REF;const L=[],add=(k,...ps)=>ps.forEach(p=>{if(p)L.push([k,p]);}),d=n=>typeof window[n]!=='undefined'?window[n]:null;
- add('guard',N_READY,N_GUARD,N_SURP,N_VICT,(typeof N_JUMP!=='undefined'?N_JUMP:null));add('block',(typeof N_GUARD!=='undefined'?N_GUARD:null));if(SPRN.pw)add('pw',N_COIL);else add('guard',N_COIL);add('seal',(typeof N_SEAL!=='undefined'?N_SEAL:null));add('charge',(typeof N_RAS_WIND!=='undefined'?N_RAS_WIND:null));add('punch',N_DASHP,N_PUNCH,N_UPPER,(typeof N_RAS_DASH!=='undefined'?N_RAS_DASH:null),(typeof N_RAS_HIT!=='undefined'?N_RAS_HIT:null));add('kick',N_UPKICK);add('hit',N_HIT,N_STAG,N_HITB,N_BURN1,N_BURN2,(typeof N_AIR!=='undefined'?N_AIR:null),(typeof N_AIR2!=='undefined'?N_AIR2:null));add('down',N_DOWN);return SPRN_REF=L;}
+ add('guard',N_READY,N_GUARD,N_SURP,N_VICT,(typeof N_JUMP!=='undefined'?N_JUMP:null));add('block',(typeof N_GUARD!=='undefined'?N_GUARD:null));if(SPRN.pw)add('pw',N_COIL);else add('guard',N_COIL);add('seal',(typeof N_SEAL!=='undefined'?N_SEAL:null));add('charge',(typeof N_RAS_WIND!=='undefined'?N_RAS_WIND:null));if(SPRN.run)add('run',N_DASHP);add('punch',SPRN.run?null:N_DASHP,N_PUNCH,N_UPPER,(typeof N_RAS_DASH!=='undefined'?N_RAS_DASH:null),(typeof N_RAS_HIT!=='undefined'?N_RAS_HIT:null));add('kick',N_UPKICK);add('hit',N_HIT,N_STAG,N_HITB,N_BURN1,N_BURN2,(typeof N_AIR!=='undefined'?N_AIR:null),(typeof N_AIR2!=='undefined'?N_AIR2:null));add('down',N_DOWN);return SPRN_REF=L;}
 const SPR_W={hxF:1,hyF:1,hxB:.6,hyB:.6,ffx:.9,ffy:1.4,fbx:.6,fby:1,crouch:1.2,lean:.8,tilt:30,hr:6};
 let sprRefPose=null;
 function sprPick(P,refs){let best='guard',bd=1e9;for(const [k,R0] of (refs||sprRefs())){let d=0;for(const q in SPR_W){const v=(P[q]||0)-(R0[q]||0);d+=SPR_W[q]*v*v;}if(d<bd){bd=d;best=k;sprRefPose=R0;}}return best;}
@@ -46,7 +52,7 @@ const sprTmp=document.createElement('canvas');sprTmp.width=96;sprTmp.height=96;c
 const sprBig=document.createElement('canvas');sprBig.width=384;sprBig.height=384;const sprBx=sprBig.getContext('2d');
 function blitSprite(x,y,flip,P,time,o,isN){
  const key=(isN&&o.four&&SPRN.four)?'four':(isN&&o.sexy&&SPRN.sexy)?'sexy':sprPick(P,isN?sprRefsN():null),S=(isN?SPRN:(o.lv2px>0?(SPRL2[key]?SPRL2:(SPRL2.guard&&key==='idle'?{idle:SPRL2.guard}:SPR)):SPR))[key],al=o.alpha==null?1:o.alpha;
- sprTx.setTransform(1,0,0,1,0,0);sprTx.globalCompositeOperation='source-over';sprTx.clearRect(0,0,96,96);{const br=(key==='idle'||key==='guard')&&S.cb&&Math.floor(time*1.15+(isN?.55:0))%2===1;sprTx.drawImage(o.sharingan&&S.csh?(br?S.cbsh:S.csh):(br?S.cb:S.c),0,0);}
+ sprTx.setTransform(1,0,0,1,0,0);sprTx.globalCompositeOperation='source-over';sprTx.clearRect(0,0,96,96);{const fr=(key==='run'&&S.fr)?S.fr[Math.floor(time*16+(isN?1:0))%4]:null,br=!fr&&(key==='idle'||key==='guard')&&S.cb&&Math.floor(time*1.15+(isN?.55:0))%2===1;sprTx.drawImage(fr?(o.sharingan&&fr.csh?fr.csh:fr.c):(o.sharingan&&S.csh?(br?S.cbsh:S.csh):(br?S.cb:S.c)),0,0);}
  sprTx.globalCompositeOperation='source-atop';
  if(o.light){const L=o.light;sprTx.globalAlpha=Math.min(.3,L.k*.25);sprTx.fillStyle=css(L.col,1,1);sprTx.fillRect(0,0,S.w,S.h);sprTx.globalAlpha=1;}
  if(o.tint){sprTx.fillStyle=css(o.tint,1,o.tk);sprTx.fillRect(0,0,S.w,S.h);}
