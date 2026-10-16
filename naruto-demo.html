@@ -638,12 +638,16 @@ function blitSprite(x,y,flip,P,time,o,isN){
  if(o.tint){sprTx.fillStyle=css(o.tint,1,o.tk);sprTx.fillRect(0,0,S.w,S.h);}
  sprTx.globalCompositeOperation='source-over';
  /* efeitos especiais em pixel art, aplicados direto nos pixels do sprite */
- if(o.cracks>0||o.curse>0||o.hole||o.dissolve>0||P.torn||P.nohead||o.bleed>.04||P.hr<-1.6){
+ if(o.cracks>0||o.curse>0||o.hole||o.dissolve>0||P.torn||P.nohead||o.bleed>.04||P.hr<-1.6||o.lv2px>0){
   const id=sprTx.getImageData(0,0,S.w,S.h),d=id.data,W2=S.w,H2=S.h,down=key==='down',hsh=(a,b)=>((a*73856093)^(b*19349663))>>>0;
   const bl=o.bleed||0,bleedAt=(x,y)=>y>=24&&(hsh(x*7+3,y*5+1)%1000)/1000<bl*.14;
   const isSkin=i=>d[i]>200&&d[i+1]>130&&d[i+1]<215&&d[i+2]>80&&d[i+2]<190&&d[i]-d[i+2]>50;
   const cx=down?30:28,cy=down?38:37; /* centro do peito no sprite */
   for(let yy=0;yy<H2;yy++)for(let xx=0;xx<W2;xx++){const i=(yy*W2+xx)*4;if(d[i+3]===0)continue;const h=hsh(xx,yy)%1000/1000;
+   /* Selo nivel 2: pele cinza-lilas e cabelo azul claro, mantendo as sombras do desenho */
+   if(o.lv2px>0){const r0=d[i],g0=d[i+1],b0=d[i+2],lum=(r0*.3+g0*.59+b0*.11)/255,p=o.lv2px;
+    if(isSkin(i)){d[i]+= (lum*205-r0)*p*.8;d[i+1]+=(lum*198-g0)*p*.8;d[i+2]+=(lum*236-b0)*p*.8;}
+    else if(b0>r0+12&&r0<110&&lum>.1&&lum<.5){d[i]=Math.min(255,r0+36*p);d[i+1]=Math.min(255,g0+44*p);d[i+2]=Math.min(255,b0+62*p);}}
    /* cabeca girada para tras (pescoco quebrado): do rosto sobra so o cabelo, visto de tras */
    if(P.hr<-1.6&&!down&&yy>=17&&yy<=28&&xx>=19&&xx<=47){const edge=!d[i-3]||!d[i+5]||!d[i-W2*4+3]||!d[i+W2*4+3];
     if(!edge){const q=hsh(xx,yy*3)%5;d[i]=q<2?255:q<4?233:255;d[i+1]=q<2?217:q<4?169:246;d[i+2]=q<2?58:q<4?29:176;}}
@@ -677,7 +681,12 @@ function blitSprite(x,y,flip,P,time,o,isN){
  sprDraw(g,SB,S,P,sprRefPose,key,(o.vel||0)*(flip?-1:1),o.sq);
  g.restore();
  return rigW(P);}
-function blit(x,y,flip,d,P,time,o){o=o||{};if(USE_SPR&&(d===SASUKE||(d===NARUTO&&SPRN.guard))&&!(o.lv2>0))return blitSprite(x,y,flip,P,time,o,d===NARUTO);if(o.lv2>0&&d.style==='s')d=lvDef(o.lv2);
+function blit(x,y,flip,d,P,time,o){o=o||{};
+ if(USE_SPR&&d===SASUKE&&o.lv2>0){ /* Selo nivel 2 em pixel art: maos-asa por tras (vetor) e o sprite recolorido */
+  sc.setTransform(1,0,0,1,0,0);sc.clearRect(0,0,spW,spH);sc.globalCompositeOperation='source-over';drawWings(sc,P,o.lv2h!=null?o.lv2h:o.lv2,time);
+  g.save();g.translate(x,y);g.scale(flip?-1:1,1);g.globalAlpha=o.alpha==null?1:o.alpha;g.drawImage(sp,0,0,spW,spH,-OXU,-OYU,SW,SH);g.restore();
+  return blitSprite(x,y,flip,P,time,Object.assign({},o,{lv2px:o.lv2,curse:Math.max(o.curse||0,o.lv2)}),false);}
+ if(USE_SPR&&(d===SASUKE||(d===NARUTO&&SPRN.guard))&&!(o.lv2>0))return blitSprite(x,y,flip,P,time,o,d===NARUTO);if(o.lv2>0&&d.style==='s')d=lvDef(o.lv2);
  const cq=clamp(P.crouch-3,-4,6),fast=(P.tilt||0)>.25?1:0,sxq=1+cq*.006+fast*.045,syq=1-cq*.007-fast*.025;
  sc.setTransform(1,0,0,1,0,0);sc.clearRect(0,0,spW,spH);sc.globalCompositeOperation='source-over';
  if(o.lv2>0)drawWings(sc,P,o.lv2h!=null?o.lv2h:o.lv2,time);sc.setTransform(SR,0,0,SR,OXU*SR,OYU*SR);const r=drawFig(sc,d,P,time);drawDecals(sc,d,P,time);
