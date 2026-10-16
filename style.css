@@ -48,7 +48,7 @@ canvas#c{display:block;width:100%;height:auto}
 @keyframes koa{0%{opacity:0;transform:scale(2.6)}10%{opacity:1;transform:scale(1)}16%{transform:scale(1.06)}22%{transform:scale(1)}85%{opacity:1}100%{opacity:.0;transform:scale(1)}}
 #toast{position:absolute;left:50%;bottom:10px;transform:translateX(-50%);background:#000c;border:1px solid #6a5fb0;padding:6px 14px;border-radius:20px;font-size:13px;opacity:0;transition:opacity .25s;pointer-events:none}
 #toast.on{opacity:1}
-#speech{position:absolute;left:31%;top:18%;transform:translate(-50%,6px) scale(.8);background:#fff;color:#111;border:3px solid #000;border-radius:14px;padding:8px 16px;font:900 italic clamp(15px,2.6vw,26px) 'Arial Black',sans-serif;opacity:0;pointer-events:none;transition:opacity .18s,transform .18s;z-index:6;white-space:nowrap}
+#speech{position:absolute;left:31%;top:18%;transform:translate(-50%,6px) scale(.8);background:#fff;color:#111;border:3px solid #000;border-radius:14px;padding:8px 16px;font:900 italic clamp(12px,2vw,24px) 'Arial Black',sans-serif;opacity:0;pointer-events:none;transition:opacity .18s,transform .18s;z-index:6;white-space:normal;width:max-content;max-width:64%;text-align:center;line-height:1.12}
 #speech:after{content:'';position:absolute;left:34px;bottom:-15px;border:9px solid transparent;border-top:12px solid #000;border-bottom:0}
 #speech.on{opacity:1;transform:translate(-50%,0) scale(1)}
 /* ---------- painel de comandos de RPG ---------- */
