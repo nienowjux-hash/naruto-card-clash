@@ -81,3 +81,20 @@ const naruDown=naruFrom(sasukeDown,{collar:(x,y)=>(x<=22&&y>=33&&y<=44)?1:(x<=25
 function naruCharge(){const g=naruFrom(sasukeChidori,NAR_STD)();for(let y=0;y<g.h;y++)for(let x=36;x<g.w;x++){if(y>=34&&'ZzR'.includes(g.G[y][x]))g.G[y][x]='.';}for(let y=34;y<g.h;y++)for(let x=36;x<g.w;x++){if(g.G[y][x]==='K'){const nb=[[1,0],[-1,0],[0,1],[0,-1]].some(([a,b])=>{const c=(g.G[y+b]||[])[x+a];return c&&c!=='.'&&c!=='K';});if(!nb)g.G[y][x]='.';}}return g;}
 /* quadros de transicao (derivados dos do Sasuke) */
 const naruPunchWind=typeof sasukePunchWind==='function'?naruFrom(sasukePunchWind,Object.assign({},NAR_STD,{folds:[[24,52,20,57,'m'],[14,62,10,67,'m'],[41,58,44,62,'m']]})):null;
+/* Oiroke no Jutsu: a transformacao comica (cabelo loiro em duas maria-chiquinhas, sem a faixa, rubor no rosto)
+   com o corpo coberto por nuvens de fumaca, como no anime. Base: a base de luta do Naruto. */
+NAR_PAL.h='#f49ab0';
+function naruSexy(){const g=naruGuard();
+ const toSkin={O:'S',Q:'S',q:'s',m:'t',N:'S',n:'s',v:'S',W:'S',A:'S',a:'s',d:'s',D:'S',L:'s'};
+ for(let y=0;y<g.h;y++)for(let x=0;x<g.w;x++){const ch=g.G[y][x];if(ch==='.')continue;
+  if(y<=26){if('MmLBbuj'.includes(ch)&&y<=17)g.G[y][x]=(x+y)%3?'Y':'y';continue;} /* tira a faixa: vira franja */
+  if(y<=66&&toSkin[ch])g.G[y][x]=toSkin[ch];}
+ /* maria-chiquinhas descendo dos lados da cabeca */
+ g.poly([[9,12],[14,13],[13,24],[10,34],[7,30],[8,20]],'Y');g.line(10,15,9,29,'y',['Y']);
+ g.poly([[40,12],[45,12],[47,20],[46,31],[43,35],[41,24]],'Y');g.line(44,15,45,29,'y',['Y']);
+ /* rubor */
+ g.put(25,21,'hh');g.put(35,21,'hh');
+ /* nuvens de fumaca cobrindo o corpo */
+ for(const [cx,cy,rx,ry] of [[29,35,10,6],[22,38,6,5],[36,38,6,5],[29,44,9,5],[29,51,12,6],[20,53,6,4.5],[38,53,6,4.5]])g.ell(cx,cy,rx,ry,'W');
+ for(const [cx,cy,rx,ry] of [[29,39,9,2.5],[29,55,11,2.5],[21,56,5,2],[37,56,5,2]])g.ell(cx,cy,rx,ry,'u');
+ g.outline('K');return g;}
