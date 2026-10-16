@@ -739,6 +739,11 @@ function blit(x,y,flip,d,P,time,o){o=o||{};
 const BW=Math.round(W*RES),BH=Math.round(H*RES);
 const bgSky=document.createElement('canvas'),bgFront=document.createElement('canvas');bgSky.width=bgFront.width=BW;bgSky.height=bgFront.height=BH;
 const cloudSpr=[];let bgRefl=null;
+/* cenario em pixel art: reduz para 1 pixel por unidade do mundo (a mesma escala dos sprites), reduz a paleta com tramado ordenado e amplia sem suavizar */
+const BAYER=[0,8,2,10,12,4,14,6,3,11,1,9,15,7,13,5];
+function pixelateBG(cnv,step){const sm=document.createElement('canvas');sm.width=W;sm.height=H;const sx=sm.getContext('2d',{willReadFrequently:true});sx.imageSmoothingEnabled=true;sx.imageSmoothingQuality='high';sx.drawImage(cnv,0,0,W,H);
+ const id=sx.getImageData(0,0,W,H),d=id.data;for(let y=0;y<H;y++)for(let x=0;x<W;x++){const i=(y*W+x)*4,b=(BAYER[(y&3)*4+(x&3)]/16-.47)*step*.9;for(let c=0;c<3;c++)d[i+c]=Math.max(0,Math.min(255,Math.round((d[i+c]+b)/step)*step));d[i+3]=d[i+3]<110?0:255;}
+ sx.putImageData(id,0,0);const cx=cnv.getContext('2d');cx.setTransform(1,0,0,1,0,0);cx.clearRect(0,0,cnv.width,cnv.height);cx.imageSmoothingEnabled=false;cx.drawImage(sm,0,0,cnv.width,cnv.height);}
 function buildBG(){
  let c=bgSky.getContext('2d');c.setTransform(RES,0,0,RES,0,0);
  let gr=c.createLinearGradient(0,0,0,152);[[0,'#040620'],[.28,'#140e44'],[.55,'#33205f'],[.75,'#7c3a7e'],[.9,'#cf6580'],[1,'#ffb98c']].forEach(s=>gr.addColorStop(s[0],s[1]));c.fillStyle=gr;c.fillRect(0,0,W,152);
@@ -826,6 +831,7 @@ function buildBG(){
  const fg=c.createLinearGradient(0,190,0,H);fg.addColorStop(0,'#1b1136');fg.addColorStop(1,'#05030f');
  poly(c,[[0,H],[0,194],[10,188],[26,190],[40,198],[56,208],[74,H]],fg,'rgba(170,150,240,.35)',.4);
  poly(c,[[W,H],[W,196],[W-12,189],[W-30,193],[W-46,200],[W-60,210],[W-80,H]],fg,'rgba(170,150,240,.35)',.4);
+ pixelateBG(bgSky,20);pixelateBG(bgFront,20);
  /* reflexo do cenario na agua: tira da parte de baixo invertida, desenhada em faixas ondulantes a cada quadro */
  {const rc=document.createElement('canvas');rc.width=BW;rc.height=Math.round(70*RES);const x=rc.getContext('2d');x.setTransform(1,0,0,-1,0,rc.height);
   x.drawImage(bgSky,0,(152-70)*RES,BW,70*RES,0,0,BW,70*RES);x.drawImage(bgFront,0,(152-70)*RES,BW,70*RES,0,0,BW,70*RES);bgRefl=rc;}
@@ -833,7 +839,7 @@ function buildBG(){
 buildBG();
 function drawBird(c,x,y,s,ph){c.strokeStyle='rgba(14,6,30,.85)';c.lineWidth=.55*s;c.lineCap='round';const w=Math.sin(ph)*2.2*s;c.beginPath();c.moveTo(x-4*s,y-w*.6);c.quadraticCurveTo(x-2*s,y-w-1*s,x,y);c.quadraticCurveTo(x+2*s,y-w-1*s,x+4*s,y-w*.6);c.stroke();}
 function drawEnv(c,time,tint){
- c.drawImage(bgSky,0,0,W,H);
+ c.save();c.imageSmoothingEnabled=false;c.drawImage(bgSky,0,0,W,H);c.restore();
  // god rays
  c.globalCompositeOperation='lighter';for(let i=0;i<5;i++){const a=.04+.025*Math.sin(time*.6+i*1.7);const x0=192+(i-2)*10,x1=192+(i-2)*46;const gr=c.createLinearGradient(0,60,0,150);gr.addColorStop(0,`rgba(255,220,180,${a})`);gr.addColorStop(1,'rgba(255,220,180,0)');c.fillStyle=gr;c.beginPath();c.moveTo(x0-3,62);c.lineTo(x0+3,62);c.lineTo(x1+14,150);c.lineTo(x1-14,150);c.closePath();c.fill();}c.globalCompositeOperation='source-over';
  c.globalAlpha=.9;[[10,32,3,0],[130,22,5,1],[250,44,4,2],[330,26,6,1],[60,64,2,2]].forEach(q=>{const x=((q[0]+time*q[2]*.7)%(W+160))-120;c.drawImage(cloudSpr[q[3]],x,q[1],120,34);});c.globalAlpha=1;
@@ -845,7 +851,7 @@ function drawEnv(c,time,tint){
  for(let i=0;i<70;i++){const hs=((i*7919)%1000)/1000,x=169+((i*37)%46)+hs*.9,spd=55+hs*60,len=5+hs*14;const y0=74+((time*spd+hs*200+i*13)%90)-14;c.strokeStyle=`rgba(255,255,255,${.25+hs*.5})`;c.lineWidth=.35+hs*.45;const ya=Math.max(74,y0),yb=Math.min(152,y0+len);if(yb>ya){c.beginPath();c.moveTo(x,ya);c.lineTo(x,yb);c.stroke();}}
  for(let i=0;i<22;i++){const hs=((i*104729)%1000)/1000,x=170+((i*53)%44),y0=74+((time*(40+hs*30)+hs*300)%90);c.strokeStyle='rgba(60,120,180,.35)';c.lineWidth=.45;c.beginPath();c.moveTo(x,y0);c.lineTo(x,Math.min(152,y0+7));c.stroke();}
  c.fillStyle='rgba(255,255,255,.85)';c.beginPath();c.ellipse(192,74,24,1.7,0,0,Math.PI);c.fill();
- c.drawImage(bgFront,0,0,W,H);
+ c.save();c.imageSmoothingEnabled=false;c.drawImage(bgFront,0,0,W,H);c.restore();
  for(let i=0;i<8;i++){const x=((i*61+time*(2+i%3*1.3))%(W+140))-70,y=146+Math.sin(time*.3+i*1.7)*2;c.save();c.translate(x,y);c.scale(2.4,.32);orb(c,0,0,30,[[0,'rgba(175,155,225,.11)'],[1,'rgba(175,155,225,0)']]);c.restore();}
  // foam & mist at base
  c.fillStyle='rgba(240,250,255,.55)';for(let i=0;i<18;i++){const a=i/18*TAU,rx=24+Math.sin(time*2+i)*2;c.beginPath();c.ellipse(192+Math.cos(a)*rx*.9,151.5+Math.sin(a)*1.3,2.6+Math.sin(time*3+i*2)*.8,1,0,0,TAU);c.fill();}
