@@ -573,7 +573,12 @@ function applyDamage(kind){const N=WOUNDS.n,t0=performance.now()/1000;
  else if(kind==='soco'){F('eyeBruise');F('nose');F('lip');F('brow');}
  else if(kind==='chute'){B('torso',.5,.4,2,1);add({k:'bruise',part:'torso',u:.5,v:.4,r:3,seed:rs()});}
  else if(kind==='amaterasu'){BU('torso',.25,.3,3.2);BU('torso',.5,-.3,3.4);BU('torso',.7,.2,3);BU('armF',.4,0,2.5);BU('armB',.5,0,2.3);BU('legF',.4,0,2.4);BU('legB',.5,0,2.2);SC('torso',.5,0,8);SC('armF',.5,0,5);SC('legF',.5,0,5);TE('torso',.4,.4,3.4,'#2a1a14','#2a1408');TE('armF',.55,0,2.4,'#2a1a14','#2a1408');TE('legB',.45,0,2.4,'#2a1a14','#2a1408');F('faceBurn');F('faceBurn');F('faceSoot');}}
-function bloodSpray(c,x,y,age,seed,n,dir){if(age<0||age>.85)return;for(let i=0;i<n;i++){const r=R(seed*13+i),an=-Math.PI/2+(r()-.5)*2.4+dir*.6,sp=40+r()*100,px=x+Math.cos(an)*sp*age,py=y+Math.sin(an)*sp*age+160*age*age;if(py>GY+3)continue;c.fillStyle='rgba('+(120+r()*50|0)+',8,16,'+(1-age/.85)+')';c.beginPath();c.arc(px,py,.4+r()*.7,0,TAU);c.fill();}}
+function bloodSpray(c,x,y,age,seed,n,dir){if(age<0||age>1.15)return;n=Math.round(n*1.5); /* sangue em pixels quadrados, tres tons; cai, bate no chao e fica */
+ const fade=age<.9?1:1-(age-.9)/.25;c.save();c.globalAlpha=Math.max(0,fade);
+ for(let i=0;i<n;i++){const r=R(seed*13+i),an=-Math.PI/2+(r()-.5)*2.6+dir*.6,sp=45+r()*125,sz=r()<.2?2:1,tone=r(),life=Math.min(age,.85);
+  let px=x+Math.cos(an)*sp*life,py=y+Math.sin(an)*sp*life+170*life*life,ground=false;if(py>GY+2){py=GY+1+(i%3);ground=true;}
+  c.fillStyle=tone<.3?'#5a0610':tone<.75?'#9a0f1c':'#d4202e';c.fillRect(Math.floor(px),Math.floor(py),ground?sz+1:sz,sz);}
+ c.restore();}
 /* contorno irregular (pontas alternando para dentro e para fora) para o buraco rasgado */
 function holePts(r,seed,sx,sy,rot){const rn=R(seed),n=18,c=Math.cos(rot),s=Math.sin(rot),pts=[];for(let i=0;i<n;i++){const a=i/n*TAU,k=(.6+rn()*.75)*(i%2?.8:1.12),x=Math.cos(a)*r*k*sx,y=Math.sin(a)*r*k*sy;pts.push([x*c-y*s,x*s+y*c]);}return pts;}
 function holePath(c,hx,hy,pts){c.beginPath();pts.forEach((p,i)=>i?c.lineTo(hx+p[0],hy+p[1]):c.moveTo(hx+p[0],hy+p[1]));c.closePath();}
@@ -2256,8 +2261,8 @@ function pierceFX(f,t,time,fr,nx0,sx0,sy0,rS,hw,ny0){
    orb(f,cx,cy,50*(1-k*.6),[[0,`rgba(255,255,255,${.8*(1-k)})`],[.35,`rgba(150,225,255,${.5*(1-k)})`],[1,'rgba(60,120,255,0)']]);
    ringFX(f,cx,cy,8+60*(1-(1-k)*(1-k)),2*(1-k)+.2,`rgba(200,235,255,${1-k})`);
    let L=[];for(let i=0;i<9;i++)L.push(...boltLines(cx,cy,r2()*TAU,(12+r2()*30)*(1-k*.7),fb*13+i,true));drawBolts(f,L,1);f.globalCompositeOperation='source-over';}
-  for(let i=0;i<22;i++){const r=R(300+i),vx=-(30+r()*110),vy=-(10+r()*90),x=cx-2+vx*rp,y=cy+vy*rp+150*rp*rp;if(y>GY+2||rp>1.0)continue;
-   f.fillStyle=r()<.35?'rgba(70,6,12,.95)':'rgba(150,12,20,.95)';f.beginPath();f.ellipse(x,y,.5+r()*1.1,.4+r()*.8,r()*3,0,TAU);f.fill();}}
+  for(let i=0;i<30;i++){const r=R(300+i),vx=-(30+r()*130),vy=-(10+r()*100),x=cx-2+vx*rp,y=cy+vy*rp+150*rp*rp;if(y>GY+2||rp>1.0)continue;
+   const q=r(),sz=q<.25?3:2;f.fillStyle=q<.3?'#4a0610':q<.55?'#8a0e1a':q<.8?'#c4202c':'#e8a090';f.fillRect(Math.floor(x),Math.floor(y),sz,sz-1);}}
  const pull=clamp((t-3.58)/.2,0,1);
  if(pull>0){ /* braco sujo de sangue, pingando */
   const el=[sx0+rS.hf.ex,GY+sy0+rS.hf.ey],ha=hw,mid=[el[0]+(ha[0]-el[0])*.3,el[1]+(ha[1]-el[1])*.3];
