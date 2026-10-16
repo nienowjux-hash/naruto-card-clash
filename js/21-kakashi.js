@@ -40,16 +40,16 @@ ANIMS.suijinheki={dur:3.6,hold:1.5,hitT:1.5,dmg:0,cost:18,noLift:true,
  fx:c=>suijinhekiFX(c)};
 
 /* Dragao de Agua: espinha com onda lateral, corpo em fita (casca escura, miolo claro, barriga, escamas e nadadeiras), cabeca com chifres, bigodes e mandibula, coluna de agua na origem e onda que desaba no alvo */
-function dragonSpine(tauH,x0,x1,time,N,lag){const P=[];for(let i=0;i<=N;i++){const s=i/N,tau=Math.max(0,tauH-s*lag),e=tau*tau*(3-2*tau);
-  const x=x0+(x1-x0)*e,y=GY-22-Math.sin(tau*Math.PI)*50,w=Math.sin(s*9.5-time*7)*7.5*Math.min(1,s*5)*(1-.3*tau);P.push([x,y+w]);}return P;}
+function dragonSpine(tauH,x0,x1,time,N,lag,lift){lift=lift||0;const P=[];for(let i=0;i<=N;i++){const s=i/N,tau=Math.max(0,tauH-s*lag),e=tau*tau*(3-2*tau);
+  const x=x0+(x1-x0)*e,y=GY-22-Math.sin(tau*Math.PI)*50-lift*tau*tau,w=Math.sin(s*9.5-time*7)*7.5*Math.min(1,s*5)*(1-.3*tau);P.push([x,y+w]);}return P;}
 function dragonR(s){return s<.08?6.5+s/.08*5.5:12*Math.pow(1-(s-.08)/.92,.62)+1.4;}
-function suiryudanFX(c){const {f,t,time,sx0,nx0}=c,x0=sx0+12,x1=nx0-8,hitAt=2.3;
+function suiryudanFX(c,fat){const {f,t,time,sx0,nx0}=c,x0=sx0+12,x1=nx0-(fat?34:8),hitAt=2.3,lift=fat?fatLift(t)+26*scaleAt(0,1,2.3,3.0,t)*(1-scaleAt(0,1,FAT_POP,FAT_POP+.5,t)):0;
  /* coluna de agua em espiral subindo no Kakashi */
  const col=scaleAt(0,1,.7,1.2,t)*(1-scaleAt(0,1,1.6,2.1,t));
  if(col>0){f.save();for(let r=0;r<6;r++){const ph=(time*1.1+r/6)%1,y=GY-ph*54,rw=(6+8*Math.sin(ph*Math.PI))*col;f.strokeStyle=`rgba(${120+r*14},${190+r*8},255,${(1-ph)*.85*col})`;f.lineWidth=1.3;f.beginPath();f.ellipse(x0,y,rw,rw*.28,0,0,TAU);f.stroke();}
   f.globalCompositeOperation='lighter';orb(f,x0,GY-26,22*col,[[0,'rgba(190,230,255,.45)'],[1,'rgba(30,110,230,0)']]);const r2=R(8);for(let i=0;i<26;i++){const a=r2()*TAU+time*3,rr=(4+r2()*20)*(1-col*.3);f.fillStyle=`rgba(170,220,255,${.7*col})`;f.fillRect(Math.round(x0+Math.cos(a)*rr),Math.round(GY-8-r2()*40+Math.sin(a)*3),1,1);}f.restore();}
- const tauH=scaleAt(0,1,1.15,hitAt,t);if(tauH<=0||t>3.7)return;
- const fade=1-scaleAt(0,1,hitAt+.05,hitAt+.55,t),N=64,P=dragonSpine(tauH,x0,x1,time,N,.52);if(fade<=0)return;
+ const tauH=scaleAt(0,1,1.15,hitAt,t);if(tauH<=0||t>(fat?5.7:3.7))return;
+ const fade=fat?1-scaleAt(0,1,5.0,5.45,t):1-scaleAt(0,1,hitAt+.05,hitAt+.55,t),N=64,P=dragonSpine(tauH,x0,x1,time,N,.52,lift);if(fade<=0)return;
  const grow=.45+.55*scaleAt(0,1,0,.25,tauH),sc=grow*(.4+.6*fade),nrm=[];
  for(let i=0;i<=N;i++){const a=P[Math.max(0,i-1)],b=P[Math.min(N,i+1)];let dx=b[0]-a[0],dy=b[1]-a[1];const L=Math.hypot(dx,dy)||1;let nx=-dy/L,ny=dx/L;if(ny>0){nx=-nx;ny=-ny;}nrm.push([nx,ny]);}
  const edge=(k0,k1,o)=>{const A=[],B=[];for(let i=0;i<=N;i++){const r=dragonR(i/N)*sc,[nx,ny]=nrm[i];A.push([P[i][0]+nx*r*k0,P[i][1]+ny*r*k0]);B.push([P[i][0]+nx*r*k1,P[i][1]+ny*r*k1]);}return A.concat(B.reverse());};
@@ -101,7 +101,7 @@ function suiryudanFX(c){const {f,t,time,sx0,nx0}=c,x0=sx0+12,x1=nx0-8,hitAt=2.3;
  /* espuma e gotas soltas pelo corpo */
  f.save();f.globalCompositeOperation='lighter';const r3=R(123);for(let i=0;i<46;i++){const k=Math.floor(r3()*N),[px,py]=P[k],ph=(time*1.4+r3())%1;f.fillStyle=`rgba(200,236,255,${(1-ph)*.8*fade})`;f.fillRect(Math.round(px-ph*10*(r3()+.3)),Math.round(py-ph*8+ph*ph*20+(r3()-.5)*8),1+(i%3===0?1:0),1);}f.restore();
  /* impacto: onda que desaba, brilho, aneis e gotas */
- const a=t-hitAt;if(a>=0&&a<1.1){const k=a/1.1,h=58*Math.sin(Math.PI*Math.min(1,Math.pow(k/.7,.8)))*(k<.7?1:Math.max(0,1-(k-.7)/.3));
+ const a=fat?-1:t-hitAt;if(a>=0&&a<1.1){const k=a/1.1,h=58*Math.sin(Math.PI*Math.min(1,Math.pow(k/.7,.8)))*(k<.7?1:Math.max(0,1-(k-.7)/.3));
   if(h>0){f.save();f.globalAlpha=Math.min(1,(1-k)*1.6);const gr=f.createLinearGradient(0,GY-h,0,GY);gr.addColorStop(0,'rgba(200,236,255,.85)');gr.addColorStop(.4,'rgba(60,150,240,.8)');gr.addColorStop(1,'rgba(20,80,190,.85)');f.fillStyle=gr;f.beginPath();f.moveTo(x1-40,GY);for(let u=0;u<=20;u++){const q=u/20,yy=GY-h*Math.pow(Math.sin(Math.PI*q),.8)*(1+.12*Math.sin(q*14+time*10));f.lineTo(x1-40+q*80+(q<.5?-1:1)*Math.sin(q*Math.PI)*10*k,yy);}f.lineTo(x1+40,GY);f.closePath();f.fill();
    f.strokeStyle='rgba(255,255,255,.9)';f.lineWidth=1.2;f.beginPath();for(let u=0;u<=20;u++){const q=u/20,yy=GY-h*Math.pow(Math.sin(Math.PI*q),.8);u?f.lineTo(x1-40+q*80,yy):f.moveTo(x1-40,yy);}f.stroke();f.restore();}
   f.save();f.globalCompositeOperation='lighter';orb(f,x1,GY-34,46*(1-k*.5),[[0,`rgba(230,248,255,${.8*(1-k)})`],[.4,`rgba(80,170,255,${.5*(1-k)})`],[1,'rgba(20,80,200,0)']]);
@@ -118,3 +118,49 @@ ANIMS.suiryudan={dur:4.2,hold:2.3,hitT:2.3,dmg:36,cost:30,noLift:true,
 KAKASHI_JUTSUS.push(
  {id:'suijinheki',name:'Suiton: Suijinheki',cost:18,col:'#6cc0ff',desc:'Parede de Água: fica de pé até o inimigo atacar e absorve 80% do dano desse golpe.',live:true,ok:()=>!wallS,onUse:()=>{wallS=true;wallShow=true;wallBreakX=96+16;later(1700,()=>toast('Parede de água erguida: fica de pé até o inimigo atacar'));}},
  {id:'suiryudan',name:'Suiton: Suiryūdan no Jutsu',cost:30,col:'#2f86e6',desc:'Molda a água em um dragão que devora o inimigo (36 de dano).',live:true,shout:'Suiton: Suiryūdan no Jutsu!'});
+
+/* ---------- Fatality do Suiryudan: o dragao morde o Naruto e o ergue, uma bolha de agua o prende e o esmaga, e explode ---------- */
+const FAT_UP=[2.3,3.0],FAT_POP=5.0;
+function fatLift(t){const up=scaleAt(0,1,FAT_UP[0],FAT_UP[1],t),d=scaleAt(0,1,FAT_POP,FAT_POP+.6,t);return 58*up*(1-d*d);}
+function suiFatalFX(c){const {f,t,time,nx0}=c,tt=c.A?t:99;
+ if(tt<99)suiryudanFX(c,true);
+ const cx=nx0,cy=GY-34-fatLift(tt);
+ /* bolha de agua em volta do Naruto: cresce, pulsa, comprime e racha */
+ const grow=scaleAt(0,1,2.5,3.3,tt),sq=scaleAt(0,1,4.2,FAT_POP,tt);
+ if(tt<FAT_POP&&grow>0){const R0=(10+22*grow)*(1-.42*sq),wob=1+Math.sin(time*9)*.04*(1+sq*2),rr=R0*wob;f.save();
+  const gr=f.createRadialGradient(cx-rr*.3,cy-rr*.3,rr*.1,cx,cy,rr);gr.addColorStop(0,'rgba(190,230,255,.28)');gr.addColorStop(.7,'rgba(70,150,235,.38)');gr.addColorStop(1,'rgba(20,90,200,.62)');
+  f.fillStyle=gr;f.beginPath();f.ellipse(cx,cy,rr*.9,rr,0,0,TAU);f.fill();f.strokeStyle='rgba(225,245,255,.85)';f.lineWidth=1;f.stroke();
+  f.strokeStyle='rgba(255,255,255,.8)';f.lineWidth=1.4;f.beginPath();f.arc(cx,cy,rr*.78,Math.PI*1.15,Math.PI*1.45);f.stroke();
+  f.globalCompositeOperation='lighter';const r2=R(33);for(let i=0;i<22;i++){const ph=(time*.7+r2())%1,bx=cx+(r2()-.5)*rr*1.4,by=cy+rr*.8-ph*rr*1.6;f.fillStyle=`rgba(210,240,255,${(1-ph)*.9})`;f.beginPath();f.arc(bx,by,.7+r2()*1.3,0,TAU);f.fill();}
+  if(sq>0){f.strokeStyle=`rgba(255,255,255,${sq})`;f.lineWidth=.8;for(let i=0;i<7;i++){const a=i*.9+1,l=rr*(.5+.5*Math.sin(i*3.1));f.beginPath();f.moveTo(cx+Math.cos(a)*rr*.3,cy+Math.sin(a)*rr*.3);f.lineTo(cx+Math.cos(a+.2)*l,cy+Math.sin(a+.2)*l);f.stroke();}}
+  f.restore();}
+ /* mordida: respingo ao fechar a mandibula */
+ const b=tt-2.3;if(b>=0&&b<.7){const k=b/.7;f.save();f.globalCompositeOperation='lighter';orb(f,cx-6,cy-4,26*(1-k*.5),[[0,`rgba(230,248,255,${.7*(1-k)})`],[1,'rgba(40,120,230,0)']]);ringFX(f,cx-6,cy,6+40*k,2*(1-k)+.2,`rgba(190,230,255,${1-k})`);f.restore();}
+ /* explosao final: a bolha estoura, onda enorme, aneis, gotas e chuva */
+ const a=tt-FAT_POP;if(a>=0&&a<1.6){const k=a/1.6,e=1-(1-k)*(1-k);f.save();f.globalCompositeOperation='lighter';
+  orb(f,cx,cy,90*(1-k*.4),[[0,`rgba(240,252,255,${.9*(1-k)})`],[.35,`rgba(100,190,255,${.6*(1-k)})`],[1,'rgba(20,80,200,0)']]);
+  for(let q=0;q<3;q++){const kk=Math.max(0,Math.min(1,k*1.4-q*.15));ringFX(f,cx,cy,8+130*kk,3*(1-kk)+.2,`rgba(${q?'130,200,255':'220,244,255'},${1-kk})`);}
+  ringFX(f,cx,GY-3,6+110*e,2*(1-k)+.2,`rgba(160,215,255,${.9*(1-k)})`);f.restore();
+  const r2=R(404);for(let i=0;i<70;i++){const an=r2()*TAU,sp=40+r2()*110,x=cx+Math.cos(an)*sp*e,y=cy+Math.sin(an)*sp*e*.8+k*k*90;f.fillStyle=`rgba(${160+(r2()*80|0)},${215+(r2()*40|0)},255,${1-k})`;f.fillRect(Math.round(x),Math.round(y),2,2);}
+  f.fillStyle=`rgba(120,190,255,${.35*(1-k)})`;for(let i=0;i<28;i++){const x=cx-70+r2()*140,y=GY-120+((k*1.6+r2())%1)*120;f.fillRect(Math.round(x),Math.round(y),1,4);}}
+ /* depois: poca de agua no chao */
+ const pu=tt>=FAT_POP+.5?scaleAt(0,1,FAT_POP+.5,FAT_POP+1.8,tt):0;if(pu>0){f.save();f.fillStyle=`rgba(80,160,235,${.4*pu})`;f.beginPath();f.ellipse(nx0+4,GY+2,40*pu,6*pu,0,0,TAU);f.fill();f.strokeStyle=`rgba(210,240,255,${.6*pu})`;f.lineWidth=.7;f.stroke();f.restore();}}
+ANIMS.suiryudan.L={g:true,dur:8.0,koAt:7.3,bannerAt:5.05,banner:['水龍弾','FATALITY','Suiryūdan','#4aa8ff'],latchT:2.3,line:'Respire fundo. Pela última vez.',speakAt:3.5,speechPos:['18%','14%'],
+ map:[[0,0],[99,99]],
+ sP:[[0,READY],[.4,READY],[.7,SUI_SEAL],[1.5,SUI_SEAL],[1.75,READY],[99,READY]],
+ nP:[[0,N_READY],[2.2,N_READY],[2.3,N_HIT],[2.55,N_CROSS2],[4.2,N_CROSS2],[4.9,N_CROSS],[5.0,N_CROSS],[5.3,N_BOUND2],[99,N_BOUND2]],
+ nX:[[0,288],[5.2,288],[5.9,246],[99,246]],
+ cam:[[0,{z:1.04,cx:192,cy:116}],[.4,{z:1.04,cx:192,cy:116}],[.8,{z:1.9,cx:120,cy:124}],[1.4,{z:1.5,cx:150,cy:122}],[1.9,{z:1.15,cx:210,cy:116}],[2.3,{z:1.55,cx:262,cy:128}],[3.0,{z:1.5,cx:262,cy:92}],[4.3,{z:1.8,cx:280,cy:86}],[5.0,{z:2.0,cx:288,cy:88}],[5.2,{z:1.5,cx:288,cy:120}],[6.2,{z:1.4,cx:245,cy:132}],[7.3,{z:1.3,cx:235,cy:136}],[8.0,{z:1.04,cx:192,cy:116}]],
+ nRot:t=>{const k=scaleAt(0,1,5.3,6.1,t),sw=t<FAT_POP?Math.sin(t*3.2)*.12*scaleAt(0,1,2.6,3.2,t):0;return sw-1.45*k*k;},
+ nY:t=>{const k=scaleAt(0,1,5.3,6.1,t);return -fatLift(t)+32*k*k;},
+ stat:{nx0:246,nP:N_BOUND2},
+ env:(raw,t)=>{const E={},a=raw-2.3,sq=scaleAt(0,1,4.2,FAT_POP,raw),p=raw-FAT_POP;if(a>0&&a<.5)E.shk=8*(1-a/.5);if(sq>0&&p<0)E.shk=Math.max(E.shk||0,1.5+4*sq);if(p>0&&p<.9)E.shk=Math.max(E.shk||0,14*(1-p/.9));if(p>=0&&p<.05)E.flash=1;else if(p>=.05&&p<.2)E.flash=.4;
+  const k=scaleAt(0,1,.5,1.0,raw)*(1-scaleAt(0,1,6.8,7.6,raw));E.dim=.3*k;E.tint=`rgba(8,40,100,${.3*k})`;E.bars=12*scaleAt(0,1,2.2,2.8,raw)*(1-scaleAt(0,1,7.0,7.8,raw));return E;},
+ fx:c=>suiFatalFX(c),fxStatic:c=>suiFatalFX(c)};
+function sfxFatalSui(){
+ nz(1.4,'lowpass',1200,400,.5,1.0);tone('sine',70,45,1.6,.45,1.2);nz(.8,'bandpass',600,2200,.3,1.6);tone('sawtooth',200,520,.7,.05,1.8);
+ nz(.3,'lowpass',2200,200,.8,2.3);tone('sine',80,30,.7,.9,2.3);nz(.5,'highpass',3000,8000,.3,2.3);
+ nz(2.4,'bandpass',300,900,.25,2.6);tone('sine',120,260,2.2,.06,2.6,6);[3.2,3.9,4.5].forEach((a,i)=>{tone('sine',900+i*200,500,.3,.05,a);nz(.2,'highpass',3500,9000,.15,a);});
+ tone('sine',60,200,.8,.2,4.2);nz(.5,'highpass',3000,9000,.35,4.9);
+ nz(.6,'lowpass',2600,120,1,5.0);tone('sine',70,24,1.2,1.0,5.0);nz(.8,'highpass',2500,8000,.5,5.02);nz(2.0,'bandpass',500,1800,.25,5.2);tone('sine',55,36,1.4,.5,5.6);}
+ANIMS.suiryudan.L.sfxFn=sfxFatalSui;
