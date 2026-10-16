@@ -25,7 +25,7 @@ const CMDS=[
  {name:'Defender',desc:'Reduz à metade o próximo dano e recupera 10 de chakra',col:'#c9b27a',run:()=>idleAct('defend')},
  {name:'Concentrar',desc:'Recupera 25 de chakra',col:'#9fe0ff',run:()=>idleAct('focus')},
  {name:'Itens',desc:()=>'Usa uma pílula ou pergaminho da mochila (gasta o turno)',col:'#9fe0a0',ok:()=>consumables().length>0,run:()=>showMenu('itens')}];
-function showMenu(m){if(roleN){showNarutoMenu();return;}menuOpen=m;const h=$('hand');h.innerHTML='';setHead(m==='main'?'COMANDOS':m==='atk'?'ATACAR':m==='itens'?'ITENS':'JUTSU');
+function showMenu(m){if(roleN){(playSkin&&typeof showDemonMenu==='function'?showDemonMenu:showNarutoMenu)();return;}menuOpen=m;const h=$('hand');h.innerHTML='';setHead(m==='main'?'COMANDOS':m==='atk'?'ATACAR':m==='itens'?'ITENS':'JUTSU');
  const add=(name,desc,col,k,cost,fn,ok,mv)=>{const b=document.createElement('button');b.className='cmd';b.style.setProperty('--cc',col);b.innerHTML=`<span class="ic">${k}</span><span class="tx"><b>${name}${elemChip(mv||moveByName(name))}</b><small>${desc}</small></span>`+(cost!=null?`<span class="cost">${cost}<em>CK</em></span>`:'<span></span>');b.onclick=fn;b._cost=cost;b._ok=ok||null;h.appendChild(b);};
  if(m==='main')CMDS.forEach((c,i)=>add(c.name,typeof c.desc==='function'?c.desc():c.desc,c.col,i+1,c.cost==null?null:c.cost,c.run,c.ok));
  else if(m==='itens'){consumables().forEach((id,i)=>add(ITEMS[id].name+' ×'+bagQty(id),ITEMS[id].d,RARITY[ITEMS[id].rar].col,i+1,null,()=>idleAct('item:'+id)));add('Voltar','Menu principal','#888','Esc',null,()=>showMenu('main'));}

@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Naruto RPG Clash - Demo HD 3</title>
-<link rel="stylesheet" href="style.css?v=mvbhc1f4">
+<link rel="stylesheet" href="style.css?v=mvbhkskt">
 </head>
 <body>
 <div id="app">
@@ -16,7 +16,7 @@
       <div class="row"><label>HP</label><div class="bar hp"><i class="ghost" id="hpSg" style="width:100%"></i><i class="v" id="hpS" style="width:100%"></i><span class="num" id="hpSn">100</span></div></div>
       <div class="row"><label>CK</label><div class="bar ck"><i class="v" id="ckS" style="width:100%"></i><span class="num" id="ckSn">100</span></div></div></div></div>
     <div class="vs">VS</div>
-    <canvas id="ptK" width="96" height="96" hidden></canvas><canvas id="ptKa" width="96" height="96" hidden></canvas><canvas id="ptS0" width="96" height="96" hidden></canvas><div class="pl r"><canvas class="pt" id="ptN" width="96" height="96"></canvas><div class="inf"><b>NARUTO UZUMAKI<i class="kaw" id="kawN" title="Kawarimi pronto: o próximo golpe será evitado">変わり身</i></b>
+    <canvas id="ptK" width="96" height="96" hidden></canvas><canvas id="ptG" width="96" height="96" hidden></canvas><canvas id="ptM" width="96" height="96" hidden></canvas><canvas id="ptKa" width="96" height="96" hidden></canvas><canvas id="ptS0" width="96" height="96" hidden></canvas><div class="pl r"><canvas class="pt" id="ptN" width="96" height="96"></canvas><div class="inf"><b>NARUTO UZUMAKI<i class="kaw" id="kawN" title="Kawarimi pronto: o próximo golpe será evitado">変わり身</i></b>
       <div class="row"><label>HP</label><div class="bar hp"><i class="ghost" id="hpNg" style="width:100%"></i><i class="v" id="hpN" style="width:100%"></i><span class="num" id="hpNn">100</span></div></div>
       <div class="row"><label>CK</label><div class="bar ck"><i class="v" id="ckN" style="width:100%"></i><span class="num" id="ckNn">100</span></div></div>
       <div class="row sumrow" id="sumRow"><label>SAPO</label><div class="bar hp sm"><i class="v" id="smV" style="width:100%"></i><span class="num" id="smN">70</span></div></div></div></div>
@@ -31,22 +31,22 @@
 <div class="ctl"><button id="fsbtn">Tela cheia (F)</button><button id="rst">Resetar luta</button><button id="mute">Som: ligado</button><button id="sprbtn">Sasuke: pixel art</button><button id="nmbtn">Jogar como: Sasuke</button></div>
 <div class="note">RPG de turno: escolha um comando no painel (ou tecle o número; Esc volta). Jutsu gasta chakra, Defender corta o próximo dano pela metade e Concentrar recupera chakra. Depois o Naruto contra-ataca. Quem zerar a vida do outro vence.</div>
 </div>
-<script src="pixel/pixgrid.js?v=mvbhc1f4"></script><script src="pixel/sasuke.js?v=mvbhc1f4"></script><script src="pixel/sasuke-guard.js?v=mvbhc1f4"></script><script src="pixel/sasuke-poses.js?v=mvbhc1f4"></script><script src="pixel/sasuke-idle.js?v=mvbhc1f4"></script><script src="pixel/sasuke-run.js?v=mvbhc1f4"></script><script src="pixel/sasuke-throw.js?v=mvbhc1f4"></script><script src="pixel/sasuke-between.js?v=mvbhc1f4"></script><script src="pixel/naruto.js?v=mvbhc1f4"></script><script src="pixel/naruto-bent.js?v=mvbhc1f4"></script><script src="pixel/naruto-fours.js?v=mvbhc1f4"></script><script src="pixel/naruto-run.js?v=mvbhc1f4"></script><script src="pixel/breath.js?v=mvbhc1f4"></script><script src="pixel/gamabunta.js?v=mvbhc1f4"></script><script src="pixel/sasuke-lv2.js?v=mvbhc1f4"></script><script src="pixel/sakura.js?v=mvbhc1f4"></script><script src="pixel/kirigakure.js?v=mvbhc1f4"></script><script src="pixel/kakashi.js?v=mvbhc1f4"></script><script src="pixel/ninken.js?v=mvbhc1f4"></script>
-<script src="js/00-data.js?v=mvbhc1f4"></script><script src="js/01-core.js?v=mvbhc1f4"></script>
-<script src="js/02-characters.js?v=mvbhc1f4"></script>
-<script src="js/03-sprites.js?v=mvbhc1f4"></script>
-<script src="js/04-scenery.js?v=mvbhc1f4"></script>
-<script src="js/05-poses.js?v=mvbhc1f4"></script>
-<script src="js/06-attacks-basic.js?v=mvbhc1f4"></script>
-<script src="js/07-soushuken.js?v=mvbhc1f4"></script>
-<script src="js/08-mechanics.js?v=mvbhc1f4"></script>
-<script src="js/09-curse-seal.js?v=mvbhc1f4"></script>
-<script src="js/10-copy-jutsu.js?v=mvbhc1f4"></script>
-<script src="js/11-kyubi.js?v=mvbhc1f4"></script>
-<script src="js/12-state.js?v=mvbhc1f4"></script>
-<script src="js/13-audio.js?v=mvbhc1f4"></script>
-<script src="js/14-fx.js?v=mvbhc1f4"></script>
-<script src="js/15-render.js?v=mvbhc1f4"></script>
-<script src="js/16-commands.js?v=mvbhc1f4"></script><script src="js/17-skilltree.js?v=mvbhc1f4"></script><script src="js/18-inventory.js?v=mvbhc1f4"></script><script src="js/18b-map-art.js?v=mvbhc1f4"></script><script src="js/19-map.js?v=mvbhc1f4"></script><script src="js/20-sakura.js?v=mvbhc1f4"></script><script src="js/21-kakashi.js?v=mvbhc1f4"></script><script src="js/22-demonios.js?v=mvbhc1f4"></script>
+<script src="pixel/pixgrid.js?v=mvbhkskt"></script><script src="pixel/sasuke.js?v=mvbhkskt"></script><script src="pixel/sasuke-guard.js?v=mvbhkskt"></script><script src="pixel/sasuke-poses.js?v=mvbhkskt"></script><script src="pixel/sasuke-idle.js?v=mvbhkskt"></script><script src="pixel/sasuke-run.js?v=mvbhkskt"></script><script src="pixel/sasuke-throw.js?v=mvbhkskt"></script><script src="pixel/sasuke-between.js?v=mvbhkskt"></script><script src="pixel/naruto.js?v=mvbhkskt"></script><script src="pixel/naruto-bent.js?v=mvbhkskt"></script><script src="pixel/naruto-fours.js?v=mvbhkskt"></script><script src="pixel/naruto-run.js?v=mvbhkskt"></script><script src="pixel/breath.js?v=mvbhkskt"></script><script src="pixel/gamabunta.js?v=mvbhkskt"></script><script src="pixel/sasuke-lv2.js?v=mvbhkskt"></script><script src="pixel/sakura.js?v=mvbhkskt"></script><script src="pixel/kirigakure.js?v=mvbhkskt"></script><script src="pixel/kakashi.js?v=mvbhkskt"></script><script src="pixel/ninken.js?v=mvbhkskt"></script>
+<script src="js/00-data.js?v=mvbhkskt"></script><script src="js/01-core.js?v=mvbhkskt"></script>
+<script src="js/02-characters.js?v=mvbhkskt"></script>
+<script src="js/03-sprites.js?v=mvbhkskt"></script>
+<script src="js/04-scenery.js?v=mvbhkskt"></script>
+<script src="js/05-poses.js?v=mvbhkskt"></script>
+<script src="js/06-attacks-basic.js?v=mvbhkskt"></script>
+<script src="js/07-soushuken.js?v=mvbhkskt"></script>
+<script src="js/08-mechanics.js?v=mvbhkskt"></script>
+<script src="js/09-curse-seal.js?v=mvbhkskt"></script>
+<script src="js/10-copy-jutsu.js?v=mvbhkskt"></script>
+<script src="js/11-kyubi.js?v=mvbhkskt"></script>
+<script src="js/12-state.js?v=mvbhkskt"></script>
+<script src="js/13-audio.js?v=mvbhkskt"></script>
+<script src="js/14-fx.js?v=mvbhkskt"></script>
+<script src="js/15-render.js?v=mvbhkskt"></script>
+<script src="js/16-commands.js?v=mvbhkskt"></script><script src="js/17-skilltree.js?v=mvbhkskt"></script><script src="js/18-inventory.js?v=mvbhkskt"></script><script src="js/18b-map-art.js?v=mvbhkskt"></script><script src="js/19-map.js?v=mvbhkskt"></script><script src="js/20-sakura.js?v=mvbhkskt"></script><script src="js/21-kakashi.js?v=mvbhkskt"></script><script src="js/22-demonios.js?v=mvbhkskt"></script>
 </body>
 </html>

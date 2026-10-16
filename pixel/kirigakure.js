@@ -36,4 +36,16 @@ function demonHeadRows(variant,mod){
 function demonHead(variant){return(g,ox,oy,mod)=>demonHeadRows(variant,mod).forEach((r,y)=>g.put(ox,y+oy,r.join('')));}
 function demonHeadLying(variant){return(g,ox,oy,groundY,mod)=>{const rows=demonHeadRows(variant,mod),Wd=rows[0].length;
  for(let y=0;y<rows.length;y++)for(let x=0;x<Wd;x++){const ch=rows[y][x];if(ch==='.')continue;const nx=ox+y,ny=oy+(Wd-1-x);if(ny<=groundY)g.set(nx,ny,ch);}};}
-const DEMON_SKIN={};for(const v of ['gozu','meizu'])DEMON_SKIN[v]={head:demonHead(v),lying:demonHeadLying(v),pal:Object.assign({},NAR_PAL,DEMON_PAL[v]),variant:v};
+/* manopla de metal com tres garras venenosas: Gozu na mao direita (braco de perto), Meizu na esquerda (braco de longe) */
+function demonGauntlet(g,side){let x0=99,x1=0,y0=99,y1=0,n=0;
+ for(let y=0;y<g.h;y++)for(let x=0;x<g.w;x++){const ch=g.G[y][x];if(ch==='F'||ch==='G'||ch==='z'){if(y<=58&&(side==='front'?x>=29:x<=24)){if(x<x0)x0=x;if(x>x1)x1=x;if(y<y0)y0=y;if(y>y1)y1=y;n++;}}}
+ if(n<4)return;
+ /* a luva cobre tambem a mao: a pele ao redor do metal vira aco */
+ for(let y=Math.max(0,y0-1);y<=Math.min(g.h-1,y1+5);y++)for(let x=Math.max(0,x0-3);x<=Math.min(g.w-1,x1+3);x++){const ch=g.G[y][x];if(ch==='S'||ch==='s'||ch==='t'||ch==='o'){g.G[y][x]=(ch==='S')?'F':(ch==='s'?'G':'z');}}
+ y1=Math.min(g.h-1,y1+4);
+ /* realce e sombra no metal, rebites e o veneno verde nas pontas */
+ for(let y=y0;y<=y1;y++)for(let x=x0;x<=x1;x++){const ch=g.G[y][x];if(ch==='F'&&(!g.G[y-1]||g.G[y-1][x]==='.'||g.G[y-1][x]==='O'||g.G[y-1][x]==='S'||g.G[y-1][x]==='s'))g.G[y][x]='H';}
+ const hx=side==='front'?x1:x0,hy=y1,dir=side==='front'?1:-1;
+ /* tres garras saindo do punho, apontando para baixo e para fora */
+ for(let k=-1;k<=1;k++){const bx=hx+dir*(1+k),by=hy-1,ex=bx+dir*(3+k*2),ey=by+8+(k===0?2:0);g.line(bx,by,ex,ey,'H');g.line(bx+dir,by,ex+dir,ey,'F');g.put(ex,ey,'V');g.put(ex,ey-1,'V');}}
+const DEMON_SKIN={};for(const v of ['gozu','meizu']){DEMON_SKIN[v]={head:demonHead(v),lying:demonHeadLying(v),pal:Object.assign({},NAR_PAL,DEMON_PAL[v],{V:'#7ad070'}),variant:v,gaunt:v==='gozu'?'front':'back'};}

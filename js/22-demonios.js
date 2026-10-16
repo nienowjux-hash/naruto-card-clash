@@ -8,7 +8,7 @@
 let poisonS=0,dmKCd=0,dmInstK=false,eFatalKind=null;
 function sayNq(line,pos){speak(line,pos,roleN?'s':'n',true);} /* fala durante a acao: nao move a camera */
 const DM_BASE={z:1.04,cx:192,cy:116};
-function dmOther(){return enemySkin==='gozu'?'meizu':'gozu';}
+function dmOther(){return nSkin()==='gozu'?'meizu':'gozu';}
 function dmBrother(c,x,y,flip,pose,alpha){withG(c,G=>blit(x,y,flip,NARUTO,pose,c.time,{skin:dmOther(),alpha:alpha==null?1:alpha}));}
 function poisonTick(){if(poisonS<=0)return;poisonS--;hp.s=Math.max(1,hp.s-3);dmgPop(3,'S');setBars();toast('Veneno: '+HN()+' perde 3 de vida'+(poisonS?' (mais '+poisonS+' turno'+(poisonS>1?'s':'')+')':''));}
 /* garras: tres riscos em arco no ponto do golpe */
@@ -219,3 +219,26 @@ function demonPick(){const a=CAMP.active,lvl=a?NODES[a.node].lvl:3,SM=aiSmart(),
  if(!opts.length)return'concentrate';
  if(SM>.2&&Math.random()<.35+SM*.5){const k=opts.filter(o=>{const A=ANIMS[o[0]];return A.hits&&A.hits.reduce((s,h)=>s+h.dmg,0)*1.1>=hp.s;}).sort((x,y)=>ANIMS[x[0]].cost-ANIMS[y[0]].cost)[0];if(k)return k[0];}
  const p=aiPickW(opts,x=>x[1])[0];if(p==='dmKusari')dmKCd=2;return p;}
+
+/* ---------------- Gozu e Meizu jogaveis ----------------
+   Eles jogam do lado da direita (tela espelhada, como o Naruto) com os mesmos golpes da IA; o Sasuke e a IA. Menu proprio. */
+function showDemonMenu(){menuOpen='main';const h=$('hand'),me=playSkin,nm=NN();h.innerHTML='';setHead('JUTSUS DE '+nm.toUpperCase());
+ const add=(name,desc,col,k,cost,fn,ok,mv)=>{const b=document.createElement('button');b.className='cmd';b.style.setProperty('--cc',col);b._ok=ok||null;b.innerHTML=`<span class="ic">${h.children.length+1}</span><span class="tx"><b>${name}${elemChip(mv||moveByName(name))}</b><small>${desc}</small></span>`+(cost!=null?`<span class="cost">${cost}<em>CK</em></span>`:'<span></span>');b.onclick=fn;b._cost=cost;h.appendChild(b);};
+ const un=id=>moveUnlocked(me,id);
+ if(un('kunai'))add('Kunai','Arremessa um kunai direto no alvo (8 de dano, sem custo).','#b8c4d8',0,null,()=>enemyTurn('gkunai'));
+ if(un('shuriken'))add('Shuriken','Lança três shurikens seguidas (sem custo).','#9fb0c8',0,null,()=>enemyTurn('gshuriken'));
+ if(un('soco'))add('Soco','Avança e acerta um soco no rosto (sem custo).','#ffb04a',0,null,()=>enemyTurn('nsoco'));
+ if(un('chute'))add('Chute','Salta e acerta um chute (sem custo).','#ff8a4a',0,null,()=>enemyTurn('nchute'));
+ const J=[['dmShunshin','Shunshin no Jutsu','Some numa nuvem e acerta pelas costas (12 de dano). Fatality: decapitação.','#bfe4ff'],
+  ['dmGarras','Garras Envenenadas','Três golpes de garra (12 de dano) e veneno: 3 de vida por turno durante 3 turnos. Fatality: convulsão.','#7ad070'],
+  ['dmSuigakure','Suiton: Suigakure no Jutsu','Some numa poça e surge debaixo do alvo (15 de dano). Fatality: a garra atravessa o peito.','#6cc0ff'],
+  ['dmKusari','Kusari: Corrente de Shuriken','A corrente prende o alvo (20 de dano) e ele perde o próximo turno. Fatality: corta ao meio.','#c8d0e0'],
+  ['dmInstinto','Assassinato Compartilhado','Os dois irmãos cruzam em X (30 de dano). Só 1 vez por luta. Fatality: o corpo se desfaz em três pedaços.','#ff5a5a']];
+ for(const [id,name,desc,col] of J)if(un(id))add(name,desc,col,0,ANIMS[id].cost,()=>enemyTurn(id),id==='dmInstinto'?()=>!dmInstK:null,MOVES[id]);
+ add('Defender','Corta o próximo dano pela metade e recupera chakra.','#8fb4ff',0,null,()=>idleActN('defend'));
+ add('Concentrar','Recupera chakra.','#7fd4ff',0,null,()=>idleActN('charge'));
+ consumables().forEach(id=>add(ITEMS[id].name+' ×'+bagQty(id),ITEMS[id].d,RARITY[ITEMS[id].rar].col,0,null,()=>idleActN('item:'+id)));
+ if(un('kawarimi'))add('Kawarimi no Jutsu','Troca de lugar com um tronco: evita por completo o próximo golpe (restam '+(KAWARIMI_MAX-kawUseN)+' de '+KAWARIMI_MAX+').','#c9b27a',0,KAWARIMI_COST,()=>idleActN('kawarimi'),()=>!kawN&&kawUseN<KAWARIMI_MAX);
+ setCommands(!anim&&!outcome&&!turnLock);}
+for(const [id,v] of [['ptG','gozu'],['ptM','meizu']])portrait(id,NARUTO,mk({expr:5}));
+if(roleN&&playSkin&&typeof showMenu==='function')showMenu('main');

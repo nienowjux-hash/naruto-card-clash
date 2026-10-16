@@ -46,7 +46,9 @@ if(USE_SPR&&typeof DEMON_SKIN!=='undefined'&&typeof naruGuard==='function'){for(
   if(typeof naruRun0==='function'){const fr=[naruRun0,naruRun1,naruRun2,naruRun3].map(fn=>mkE(fn,27,75));S2.run={c:fr[0].c,csh:fr[0].c,fr:fr.map(x=>({c:x.c,csh:x.c})),w:56,h:80,ax:27,ay:75};}
   if(typeof naruCharge==='function')S2.charge=mkE(naruCharge,27,75);if(typeof naruPunchWind!=='undefined'&&naruPunchWind)S2.pw=mkE(naruPunchWind,27,75);
   for(const key in SPRN)if(!S2[key])S2[key]=SPRN[key];SPRE[k]=S2;}finally{NARU_SKIN=null;}}}
-const SPRNX=o=>(o&&o.skin&&SPRE[o.skin])||(typeof roleN!=='undefined'&&!roleN&&enemySkin&&SPRE[enemySkin])||SPRN;
+let playSkin=(typeof CAMP!=='undefined'&&CAMP.active&&(CAMP.active.hero==='gozu'||CAMP.active.hero==='meizu'))?CAMP.active.hero:null; /* heroi jogavel com a aparencia dos Irmaos Demonios */
+const nSkin=()=>(typeof roleN!=='undefined'&&roleN)?playSkin:enemySkin;
+const SPRNX=o=>(o&&o.skin&&SPRE[o.skin])||(nSkin()&&SPRE[nSkin()])||SPRN;
 const SPRX=()=>heroS==='sakura'&&SPRK.guard?SPRK:heroS==='kakashi'&&SPRKA.guard?SPRKA:SPR;
 /* Naruto de quatro (manto da Kyubi): quadros de agachar, galope e bote, escolhidos pela pose (fourKeyFor) */
 if(USE_SPR&&SPRN.four&&typeof naruFourCoil==='function'){const mkF=fn=>{const gr=fn(),a=document.createElement('canvas'),b=document.createElement('canvas');gr.draw(a,NAR_PAL,1);gr.draw(b,Object.assign({},NAR_PAL,KYU_EYES),1);return{c:a,csh:b,w:gr.w,h:gr.h,ax:48,ay:56};};

@@ -43,6 +43,11 @@ const MOVES={
  /* Sakura */
  raikiri:{name:'Raikiri',elem:'raio',tipo:'ninjutsu',lvl:10,rar:3},
  sennen:{name:'Sennen Gorōshi',elem:'neutro',tipo:'taijutsu',lvl:8,rar:3},
+ dmShunshin:{name:'Shunshin no Jutsu',elem:'neutro',tipo:'taijutsu',lvl:1,rar:2},
+ dmGarras:{name:'Garras Envenenadas',elem:'neutro',tipo:'arma',lvl:2,rar:2},
+ dmSuigakure:{name:'Suiton: Suigakure no Jutsu',elem:'agua',tipo:'ninjutsu',lvl:3,rar:3},
+ dmKusari:{name:'Kusari: Corrente de Shuriken',elem:'neutro',tipo:'arma',lvl:5,rar:3},
+ dmInstinto:{name:'Assassinato Compartilhado',elem:'neutro',tipo:'taijutsu',lvl:10,rar:4},
  doryuheki:{name:'Doton: Doryūheki',elem:'terra',tipo:'ninjutsu',lvl:12,rar:3},
  tsuiga:{name:'Doton: Tsuiga no Jutsu',elem:'terra',tipo:'ninjutsu',lvl:10,rar:3},
  suijinheki:{name:'Suiton: Suijinheki',elem:'agua',tipo:'ninjutsu',lvl:15,rar:3},
@@ -69,7 +74,10 @@ const CHARS={
  sasuke:{id:'sasuke',name:'Sasuke Uchiha',rar:2,hp:100,ck:100,afin:['fogo','raio'],extras:['yin']},
  naruto:{id:'naruto',name:'Naruto Uzumaki',rar:2,hp:100,ck:100,afin:['vento'],extras:['yang']},
  sakura:{id:'sakura',name:'Sakura Haruno',rar:1,hp:100,ck:100,afin:['terra'],extras:['yin']},
- kakashi:{id:'kakashi',name:'Kakashi Hatake',rar:3,hp:100,ck:100,afin:['raio','terra'],extras:['yang']}};
+ kakashi:{id:'kakashi',name:'Kakashi Hatake',rar:3,hp:100,ck:100,afin:['raio','terra'],extras:['yang']},
+ gozu:{id:'gozu',name:'Gozu',rar:2,hp:100,ck:100,afin:['agua'],extras:[]},
+ meizu:{id:'meizu',name:'Meizu',rar:2,hp:100,ck:100,afin:['agua'],extras:[]}};
+const NHEROES=['naruto','gozu','meizu']; /* herois que jogam do lado da direita (tela espelhada, o Sasuke e a IA) */
 /* raridade do personagem: comum a lendario */
 function charRar(id){const r=RARITY[(CHARS[id]||{}).rar||1];return `<em class="crar" style="--rc:${r.col}">${r.name}</em>`;}
 function elemChip(m){if(!m||!m.elem||m.elem==='neutro')return '';const e=ELEMENTS[m.elem];return `<em class="el" style="--ec:${e.col}">${e.name}</em>`;}
@@ -84,7 +92,7 @@ function elemMatch(att,def){ /* >0 vantagem, <0 desvantagem, 0 neutro */
  const A=elemParts(att),D=Array.isArray(def)?def.flatMap(elemParts):elemParts(def);let w=false,l=false;
  for(const a of A)for(const d of D){if(ELEM_BEATS[a]===d)w=true;if(ELEM_BEATS[d]===a)l=true;}
  return w&&!l?1:l&&!w?-1:0;}
-function elemMult(att,defCharId){const c=CHARS[defCharId];if(!att||!c)return 1;const a=CAMP.active,af=(a&&a.afin&&defCharId===(a.hero==='naruto'?'sasuke':'naruto'))?a.afin:c.afin,m=elemMatch(att,af);return m>0?ELEM_ADV:m<0?ELEM_DIS:1;}
+function elemMult(att,defCharId){const c=CHARS[defCharId];if(!att||!c)return 1;const a=CAMP.active,af=(a&&a.afin&&defCharId===(NHEROES.includes(a.hero)?'sasuke':'naruto'))?a.afin:c.afin,m=elemMatch(att,af);return m>0?ELEM_ADV:m<0?ELEM_DIS:1;}
 function elemMsg(mult){return mult>1?'Vantagem elemental! (+40%)':mult<1?'Elemento fraco contra o alvo (-25%)':'';}
 
 /* ---------- Arvore de habilidades ----------
@@ -144,7 +152,27 @@ const TREES={
   {id:'doryuheki',x:7,y:1,req:[],pt:0,auto:1,d:'Parede de Estilo Terra: um muro de pedra que absorve 88% do dano dos ataques por 2 turnos do inimigo. Só 1 uso por batalha. Libera sozinho no nível 12.'},
   {id:'tsuiga',x:7,y:0,req:[],pt:0,auto:1,d:'Técnica da Perseguição Presa: cães ninjas saem da terra, mordem e imobilizam o alvo (ele perde o próximo turno). Libera sozinho no nível 10.'},
   {id:'suijinheki',x:6,y:0,req:[],pt:0,auto:1,d:'Parede de Água: um escudo de água que absorve 80% do próximo dano. Libera sozinho no nível 15.'},
-  {id:'suiryudan',x:6,y:1,req:['suijinheki'],pt:0,auto:1,d:'Dragão de Água: molda a água em um dragão que devora o inimigo. Libera sozinho no nível 25.'}]};
+  {id:'suiryudan',x:6,y:1,req:['suijinheki'],pt:0,auto:1,d:'Dragão de Água: molda a água em um dragão que devora o inimigo. Libera sozinho no nível 25.'}],
+ gozu:[  {id:'soco',x:0,y:0,req:[],pt:0,base:1,d:'Avança e acerta um soco no rosto.'},
+  {id:'chute',x:0,y:1,req:[],pt:0,base:1,d:'Salta e acerta um chute.'},
+  {id:'kunai',x:1,y:0,req:[],pt:0,base:1,d:'Arremessa um kunai direto no alvo.'},
+  {id:'shuriken',x:1,y:1,req:[],pt:0,base:1,d:'Lança estrelas ninja que giram até o alvo.'},
+  {id:'kawarimi',x:2,y:0,req:[],pt:0,base:1,d:'Jutsu de Substituição: evita por completo o próximo golpe (2 usos por luta).'},
+  {id:'dmShunshin',x:3,y:0,req:[],pt:0,auto:1,d:'Some numa nuvem e acerta pelas costas. Fatality: decapitação.'},
+  {id:'dmGarras',x:3,y:1,req:[],pt:0,auto:1,d:'Três golpes de garra e veneno (3 de vida por turno durante 3 turnos). Fatality: convulsão com veneno.'},
+  {id:'dmSuigakure',x:4,y:0,req:[],pt:0,auto:1,d:'Some numa poça e surge debaixo do alvo. Fatality: a garra atravessa o peito e o levanta.'},
+  {id:'dmKusari',x:4,y:1,req:[],pt:0,auto:1,d:'A corrente de shuriken prende o alvo (perde o próximo turno). Fatality: corta ao meio.'},
+  {id:'dmInstinto',x:5,y:0,req:[],pt:0,auto:1,d:'Cortes em X em alta velocidade (1 vez por luta). Fatality: o corpo se desfaz em três pedaços.'}],
+ meizu:[  {id:'soco',x:0,y:0,req:[],pt:0,base:1,d:'Avança e acerta um soco no rosto.'},
+  {id:'chute',x:0,y:1,req:[],pt:0,base:1,d:'Salta e acerta um chute.'},
+  {id:'kunai',x:1,y:0,req:[],pt:0,base:1,d:'Arremessa um kunai direto no alvo.'},
+  {id:'shuriken',x:1,y:1,req:[],pt:0,base:1,d:'Lança estrelas ninja que giram até o alvo.'},
+  {id:'kawarimi',x:2,y:0,req:[],pt:0,base:1,d:'Jutsu de Substituição: evita por completo o próximo golpe (2 usos por luta).'},
+  {id:'dmShunshin',x:3,y:0,req:[],pt:0,auto:1,d:'Some numa nuvem e acerta pelas costas. Fatality: decapitação.'},
+  {id:'dmGarras',x:3,y:1,req:[],pt:0,auto:1,d:'Três golpes de garra e veneno (3 de vida por turno durante 3 turnos). Fatality: convulsão com veneno.'},
+  {id:'dmSuigakure',x:4,y:0,req:[],pt:0,auto:1,d:'Some numa poça e surge debaixo do alvo. Fatality: a garra atravessa o peito e o levanta.'},
+  {id:'dmKusari',x:4,y:1,req:[],pt:0,auto:1,d:'A corrente de shuriken prende o alvo (perde o próximo turno). Fatality: corta ao meio.'},
+  {id:'dmInstinto',x:5,y:0,req:[],pt:0,auto:1,d:'Cortes em X em alta velocidade (1 vez por luta). Fatality: o corpo se desfaz em três pedaços.'}]};
 /* golpes guardados para personagens/fases futuras (nao aparecem na arvore nem no menu): o no pronto para recolocar */
 const TREES_FUTURO={naruto:[
   {id:'odama',x:1,y:3,req:['rasengan'],pt:4,rar:3,lvl:20,elem:'vento',d:'Rasengan Gigante: uma esfera enorme, mais dano e mais chakra.'},
@@ -161,6 +189,9 @@ const TEST_UNLOCK_KAKASHI=false;
 /* fim do modo teste: volta o Kakashi para o nivel 1 uma unica vez (progresso salvo durante os testes) */
 try{if(localStorage.getItem('kakashiResetV')!=='1'){const d=progDefault().kakashi;PROG.kakashi=d;localStorage.setItem(PROG_KEY,JSON.stringify(PROG));localStorage.setItem('kakashiResetV','1');}}catch(e){}
 if(TEST_UNLOCK_KAKASHI){const P=PROG.kakashi;P.level=Math.max(P.level,25);for(const n of TREES.kakashi)if(!P.learned.includes(n.id))P.learned.push(n.id);}
+/* MODO TESTE: Gozu e Meizu jogaveis, ja no nivel 30 e com todos os golpes. Para voltar ao normal, ponha false. */
+const TEST_UNLOCK_DEMONS=true;
+if(TEST_UNLOCK_DEMONS)for(const c of ['gozu','meizu']){const P=PROG[c];P.level=Math.max(P.level,30);for(const n of TREES[c])if(!P.learned.includes(n.id))P.learned.push(n.id);}
 autoLearn();
 /* golpes com auto:1 (jutsus raros bloqueados por nivel) entram sozinhos quando o personagem chega no nivel deles */
 function autoLearn(){let got=[];for(const c in TREES){const P=PROG[c];if(!P)continue;for(const n of TREES[c])if(n.auto&&!P.learned.includes(n.id)&&MOVES[n.id].lvl<=P.level&&n.req.every(r=>P.learned.includes(r))){P.learned.push(n.id);got.push(n.id);}}return got;}
@@ -215,9 +246,9 @@ const ITEMS={
  elixir_sabio:{name:'Elixir do Sábio',slot:'cons',rar:4,g:'丹',use:{hp:100,ck:50},d:'Recupera 100 de vida e 50 de chakra. Gasta o turno.'}};
 const RARITY={1:{name:'Comum',col:'#aab0c8'},2:{name:'Incomum',col:'#5cc878'},3:{name:'Raro',col:'#4aa8ff'},4:{name:'Épico',col:'#b070ff'},5:{name:'Lendário',col:'#ffa43a'}};
 const INV_KEY='rpgInvV1';
-function invDefault(){return{ryo:0,bag:{kunai_ferro:1,colete:1,bandana:1,pilula_vida:3,pilula_ck:3},eq:{sasuke:{},naruto:{},sakura:{},kakashi:{}}};}
+function invDefault(){return{ryo:0,bag:{kunai_ferro:1,colete:1,bandana:1,pilula_vida:3,pilula_ck:3},eq:{sasuke:{},naruto:{},sakura:{},kakashi:{},gozu:{},meizu:{}}};}
 let INV=invDefault();
-try{const j=JSON.parse(localStorage.getItem(INV_KEY)||'null');if(j){INV.ryo=j.ryo||0;INV.bag=j.bag||INV.bag;INV.eq=Object.assign({sasuke:{},naruto:{},sakura:{},kakashi:{}},j.eq||{});}}catch(e){}
+try{const j=JSON.parse(localStorage.getItem(INV_KEY)||'null');if(j){INV.ryo=j.ryo||0;INV.bag=j.bag||INV.bag;INV.eq=Object.assign({sasuke:{},naruto:{},sakura:{},kakashi:{},gozu:{},meizu:{}},j.eq||{});}}catch(e){}
 function saveInv(){try{localStorage.setItem(INV_KEY,JSON.stringify(INV));}catch(e){}}
 function bagQty(id){return INV.bag[id]||0;}
 function addItem(id,n){INV.bag[id]=bagQty(id)+(n||1);saveInv();}
@@ -257,4 +288,4 @@ function resetCamp(){CAMP={cleared:['konoha'],at:'konoha',active:null};saveCamp(
 
 /* Kit do inimigo da campanha: so os golpes da arvore com nivel minimo ate o nivel do local (mais os basicos). Fora da campanha vale o kit completo. */
 function enemyKit(charId,lvl){return new Set(TREES[charId].filter(n=>n.base||n.start||MOVES[n.id].lvl<=lvl).map(n=>n.id));}
-function enemyKitOf(charId){const a=CAMP.active;if(!a)return null;if(charId!==(a.hero==='naruto'?'sasuke':'naruto'))return null;return enemyKit(charId,NODES[a.node].lvl);}
+function enemyKitOf(charId){const a=CAMP.active;if(!a)return null;if(charId!==(NHEROES.includes(a.hero)?'sasuke':'naruto'))return null;return enemyKit(charId,NODES[a.node].lvl);}

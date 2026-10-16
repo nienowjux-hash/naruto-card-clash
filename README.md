@@ -209,3 +209,9 @@ A IA deles (`demonPick`) escolhe entre Soco, Chute e os golpes abaixo, conforme 
 - **Instinto de Assassinato Compartilhado** (28, 30 de dano, 1 vez por luta, nível 4+): os dois irmãos cruzam em alta velocidade e deixam um X de cortes. *Fatality:* o corpo se desfaz em três pedaços.
 
 O segundo irmão é desenhado por `blit(..., {skin})`; o corpo cortado usa a opção `slices` do sprite; as fatalities são configuradas em `ANIMS.<golpe>.LR` e a tela final usa `eFatalKind`.
+
+### Gozu e Meizu jogáveis (modo teste)
+
+- **Manopla desenhada no corpo** (`pixel/kirigakure.js`, `demonGauntlet`): luva de aço com três garras venenosas (pontas verdes), no braço direito do Gozu (o de perto) e no esquerdo do Meizu (o de longe).
+- **Jogáveis no mapa** (botões Gozu e Meizu na equipe): jogam do lado da direita com a tela espelhada, como o Naruto, com menu próprio (`showDemonMenu` em `js/22-demonios.js`) com Kunai, Shuriken, Soco, Chute e os cinco golpes deles (cada um com seu fatality), Defender, Concentrar, itens e Kawarimi. O outro irmão aparece nos golpes de dupla. O adversário é o Sasuke (IA).
+- **Modo teste:** `TEST_UNLOCK_DEMONS=true` em `js/00-data.js` deixa os dois no nível 30 com todos os golpes; ponha `false` para voltar ao normal (depois o nível sobe jogando e os golpes liberam por nível: Shunshin 1, Garras 2, Suigakure 3, Kusari 5, Instinto 10).

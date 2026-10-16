@@ -6,8 +6,8 @@ function treeEl(){let t=document.getElementById('tree');if(t)return t;t=document
 function closeTree(){stopPreview();treeEl().hidden=true;if(!anim&&!outcome&&!turnLock){showMenu('main');}}
 function treeSkillDesc(id){const n=treeNode(treeChar,id);return n?n.d:'';}
 /* simbolo (kanji) de cada golpe no medalhao do no */
-const SKILL_GLYPH={chute:'蹴',kunai:'刃',kawarimi:'替',soco:'拳',shishi:'獅',shuriken:'手',soushuken:'操',kagesh:'影',katon:'火',amaterasu:'天',chidori:'千',genjutsu:'幻',copy:'写',selo:'呪',selo2:'魔',selochidori:'雷',bunshin:'分',uzumaki:'渦',kuchiyose:'蛙',rasengan:'螺',kamikaze:'嵐',kyuubi:'狐',oiroke:'色',harem:'艶',cura:'癒',cura2:'医',shannaro:'怪',raikiri:'雷',suijinheki:'壁',suiryudan:'龍',tsuiga:'牙',doryuheki:'岩',sennen:'殺'};
-const TREE_BRANCH={sasuke:['Taijutsu','Armas','Fogo','Raio','Sharingan','Selo','Básico'],naruto:['Clones','Vento','Ilusão','Básico','Armas'],sakura:['Taijutsu','Armas','Suporte','Medicina','Chakra'],kakashi:['Taijutsu','Armas','Suporte','Fogo','Raio','Sharingan','Água','Terra']};
+const SKILL_GLYPH={chute:'蹴',kunai:'刃',kawarimi:'替',soco:'拳',shishi:'獅',shuriken:'手',soushuken:'操',kagesh:'影',katon:'火',amaterasu:'天',chidori:'千',genjutsu:'幻',copy:'写',selo:'呪',selo2:'魔',selochidori:'雷',bunshin:'分',uzumaki:'渦',kuchiyose:'蛙',rasengan:'螺',kamikaze:'嵐',kyuubi:'狐',oiroke:'色',harem:'艶',cura:'癒',cura2:'医',shannaro:'怪',raikiri:'雷',dmShunshin:'瞬',dmGarras:'毒',dmSuigakure:'潜',dmKusari:'鎖',dmInstinto:'殺',suijinheki:'壁',suiryudan:'龍',tsuiga:'牙',doryuheki:'岩',sennen:'殺'};
+const TREE_BRANCH={sasuke:['Taijutsu','Armas','Fogo','Raio','Sharingan','Selo','Básico'],naruto:['Clones','Vento','Ilusão','Básico','Armas'],sakura:['Taijutsu','Armas','Suporte','Medicina','Chakra'],kakashi:['Taijutsu','Armas','Suporte','Fogo','Raio','Sharingan','Água','Terra'],gozu:['Taijutsu','Armas','Suporte','Jutsus','Dupla','Instinto'],meizu:['Taijutsu','Armas','Suporte','Jutsus','Dupla','Instinto']};
 /* ---- previa animada: grava quadros da propria animacao do golpe (o motor desenha o golpe congelado em cada instante) e toca em loop ---- */
 const PREV={};let prevTimer=null,prevToken=0;
 async function buildPreview(id){
@@ -71,6 +71,6 @@ function renderTree(){
 window.addEventListener('keydown',e=>{const t=document.getElementById('tree');if(e.key==='Escape'&&t&&!t.hidden){closeTree();e.stopImmediatePropagation();}},true);
 (function(){const b=document.createElement('button');b.id='treebtn';b.textContent='Árvore de habilidades';b.onclick=openTree;const c=document.querySelector('.ctl');if(c)c.insertBefore(b,c.firstChild);})();
 /* XP no fim da luta: quem o jogador controla ganha XP por vitoria (mais) ou derrota (menos) */
-function giveBattleXp(winner){const me=roleN?'naruto':sideChar('s'),won=(winner==='N')===roleN,nd=CAMP.active?NODES[CAMP.active.node]:null,fx=nd?Math.min(1.3,Math.max(.1,1+(nd.lvl-PROG[me].level)*.08)):1,xp=Math.max(1,Math.round(((nd&&nd.xp)||8)*fx*(won?1:.15))),up=awardXp(me,xp);
+function giveBattleXp(winner){const me=roleN?sideChar('n'):sideChar('s'),won=(winner==='N')===roleN,nd=CAMP.active?NODES[CAMP.active.node]:null,fx=nd?Math.min(1.3,Math.max(.1,1+(nd.lvl-PROG[me].level)*.08)):1,xp=Math.max(1,Math.round(((nd&&nd.xp)||8)*fx*(won?1:.15))),up=awardXp(me,xp);
  if(typeof giveBattleLoot==='function')giveBattleLoot(won);if(typeof campaignResult==='function')campaignResult(won);
  setTimeout(()=>toast(CHARS[me].name.split(' ')[0]+' ganhou '+xp+' XP'+(up?' · subiu para o nível '+PROG[me].level+'! (+'+up+' pt)':'')),2600);}
