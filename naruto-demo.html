@@ -2314,6 +2314,7 @@ function applyDamageS(kind,idx){const S_=WOUNDS.s,t0=performance.now()/1000;
 function showKO(w){const k=$('ko');k.querySelector('span').textContent=w==='N'?'NARUTO VENCEU':'SASUKE VENCEU';k.classList.remove('on');void k.offsetWidth;k.classList.add('on');}
 let turnLock=false;
 function afterAnim(was){if(!was)return;
+ if(was.chainKill&&bunta&&!outcome){turnLock=true;setCards(false);setTimeout(()=>{if(!outcome&&!anim)enemyTurn('teppodama');},400);return;}
  if(was.enemy&&bunta&&!outcome&&was.type!=='teppodama'&&was.type!=='kuchiyose'){turnLock=true;setCards(false);setTimeout(()=>{if(!outcome&&!anim)enemyTurn('teppodama');},500);return;}
  if(was.enemy){if(seal2T>0){seal2T--;hp.s=Math.max(1,hp.s-3);ck.s=Math.min(100,ck.s+15);if(!seal2T)toast('A transformação se desfaz');}else if(sealT>0){sealT--;hp.s=Math.max(1,hp.s-2);ck.s=Math.min(100,ck.s+10);if(!sealT)toast('O selo amaldiçoado se acalma');}ck.s=Math.min(100,ck.s+20);ck.n=Math.min(100,ck.n+15);setBars();endEnemyTurn();}
  else if(outcome){setCards(false);}
@@ -2354,10 +2355,12 @@ function aiSasuke(){if(outcome||anim)return;turnLock=false;
 function endEnemyTurn(){if(stunS>0&&!outcome){stunS--;const msg=stunS>0?'Sasuke perde o turno (ainda falta 1)':'Sasuke perde o turno';if(roleN){toast(msg);turnLock=false;showMenu('main');setCards(true);}else{toast(msg);turnLock=true;setCards(false);setTimeout(()=>{if(!outcome&&!anim)enemyTurn();},1300);}return;}
  if(roleN){if(outcome){setCards(false);return;}turnLock=true;setCards(false);setTimeout(()=>{if(!outcome&&!anim)aiSasuke();},900);}else{turnLock=false;showMenu('main');setCards(!outcome);}}
 function enemyTurn(force){if(typeof force!=='string')force=null;if(outcome||anim)return;const isToad=force==='teppodama';if(!isToad&&stunN&&!roleN){stunN=false;skipEnemy('Naruto está preso na ilusão e perde o turno');return;}if(!isToad&&((sealT>0&&Math.random()<.3)||(seal2T>0&&Math.random()<.4))){skipEnemy('Sasuke desvia com a velocidade do selo!');return;} const type=force||(bunta?(Math.random()<.5?'nkunai':'nshuriken'):null)||(()=>{const r=Math.random();const pick=r<.26?'rasengan':r<.48?'bunshin':r<.66?'uzumaki':r<.8?'kamikaze':r<.9?'kuchiyose':r<.96?'oiroke':'harem';return (pick==='kuchiyose'&&bunta)?'rasengan':pick;})(),A=ANIMS[type];if(roleN&&!isToad){if(turnLock||ck.n<A.cost){if(!turnLock)toast('Chakra insuficiente para '+(type==='rasengan'?'o Rasengan':'o Kage Bunshin'));return;}turnLock=true;}if(type==='rasengan'||type==='bunshin')lastEnemy=type;ensureAudio();
- const gm=guard?.5:1;guard=false;const dm=h=>Math.max(1,Math.round(h.dmg*gm));
- const total=A.hits.reduce((a,h)=>a+dm(h),0),lethal=hp.s-total<=0;
+ const gm=guard?.5:1;guard=false;let dm=h=>Math.max(1,Math.round(h.dmg*gm));
+ /* golpe final com o sapo em campo (ou na propria invocacao): quem mata e sempre o Gama Bunta, para o fatality dele acontecer */
+ let chainKill=false;if((type==='kuchiyose'||type==='nkunai'||type==='nshuriken')&&hp.s-A.hits.reduce((a,h)=>a+dm(h),0)<=0){chainKill=true;let left=hp.s-1;const d0=dm;dm=h=>{const v=Math.min(d0(h),Math.max(0,left));left-=v;return v;};}
+ const dmv=A.hits.map(h=>dm(h)),total=dmv.reduce((a,v)=>a+v,0),lethal=!chainKill&&hp.s-total<=0;
  const isLR=lethal&&A.LR;if(isLR){if(type==='rasengan')rasKill=true;if(type==='uzumaki')uzKill=true;if(type==='kamikaze')kmKill=true;if(type==='teppodama')tpKill=true;}
- anim={type,t0:performance.now(),dur:isLR?A.LR.dur:A.dur+HS,lethal,enemy:true};if(isLR){later(A.LR.speakAt*1000,()=>speak(A.LR.line,A.LR.speechPos||['44%','14%']));later(A.LR.bannerAt*1000,()=>banner(...(A.LR.banner||['螺旋丸','FATALITY','Rasengan','#7fd4ff'])));sfxFatal();}setCards(false);ck.n=Math.max(0,ck.n-A.cost);setBars();sfx(type);
+ anim={type,t0:performance.now(),dur:isLR?A.LR.dur:A.dur+HS,lethal,enemy:true,chainKill};if(isLR){later(A.LR.speakAt*1000,()=>speak(A.LR.line,A.LR.speechPos||['44%','14%']));later(A.LR.bannerAt*1000,()=>banner(...(A.LR.banner||['螺旋丸','FATALITY','Rasengan','#7fd4ff'])));sfxFatal();}setCards(false);ck.n=Math.max(0,ck.n-A.cost);setBars();sfx(type);
  if(type==='kuchiyose')later(KU_IN*1000,()=>{bunta={hp:70,max:70};setBars();});
  if(type==='teppodama')later(TP_FIRE*1000-300,()=>speak('Teppōdama!',[roleN?'24%':'52%','10%']));
  if(type==='kuchiyose'){later(1150,()=>speak('Kuchiyose no Jutsu!',[roleN?'40%':'56%','16%']));later(1650,()=>banner('口寄せの術','KUCHIYOSE NO JUTSU','Invocação: Gama Bunta','#e8703a'));later(2150,()=>speak('Quem me chamou, moleque?!',[roleN?'24%':'52%','10%']));later(2650,()=>speak('Suiton: Teppōdama!',[roleN?'28%':'48%','10%']));}
@@ -2368,7 +2371,7 @@ function enemyTurn(force){if(typeof force!=='string')force=null;if(outcome||anim
   later(2850,()=>{speak(hit?'...!!':'Patético.',[roleN?'52%':'18%','14%']);if(hit){stunS=1;toast('Sasuke ficou sem reação e vai perder o próximo turno');}else toast('Não funcionou no Sasuke');});}
  else if(type==='uzumaki'){later(700,()=>banner('うずまきナルト連弾','UZUMAKI NARUTO RENDAN','Rajada Naruto Uzumaki','#ff7a2a'));['U!','ZU!','MA!','KI!'].forEach((w,i)=>later(UZK[i]*1000,()=>speak(w,[(roleN?62-i*3:30+i*3)+'%','44%'])));later((UZ_SLAM-.15)*1000,()=>speak('NARUTO UZUMAKI RENDAN!',[roleN?'52%':'22%','12%']));}
  else if(type==='rasengan')later(1500,()=>banner('螺旋丸','RASENGAN','Esfera Giratória','#7fd4ff'));else if(type==='bunshin')later(1100,()=>banner('影分身の術','KAGE BUNSHIN','Clones das Sombras','#ffa43a'));
- A.hits.forEach((h,i)=>later(h.t*1000,()=>{hp.s=Math.max(0,hp.s-dm(h));setBars();dmgPop(dm(h),'S');applyDamageS(type,i);}));
+ A.hits.forEach((h,i)=>later(h.t*1000,()=>{const v=dmv[i];hp.s=Math.max(0,hp.s-v);setBars();if(v>0)dmgPop(v,'S');applyDamageS(type,i);}));
  if(lethal)later((isLR?A.LR.koAt:A.hits[A.hits.length-1].t+1.3)*1000,()=>{outcome='N';outcomeT=performance.now()/1000;showKO('N');setCards(false);});}
 const HS=.09;
 const LR=type=>type==='rasengan'&&!!ANIMS.rasengan.LR&&((anim&&anim.lethal)||!!window.__LETHR);
