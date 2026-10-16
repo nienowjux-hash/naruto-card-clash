@@ -21,18 +21,23 @@ if(USE_SPR&&typeof sasukeRunFrame==='function'){const mk4=(fn,pal,sh)=>[0,1,2,3]
  const fs4=mk4(sasukeRunFrame,SAS2_PAL,SHARI);SPR.run={c:fs4[0].c,csh:fs4[0].csh,fr:fs4,w:56,h:80,ax:27,ay:75};
  if(typeof SPRN!=='undefined'&&SPRN.guard&&typeof naruRun0==='function'){const nf=mk4(i=>[naruRun0,naruRun1,naruRun2,naruRun3][i](),NAR_PAL,KYU_EYES);SPRN.run={c:nf[0].c,csh:nf[0].csh,fr:nf,w:56,h:80,ax:27,ay:75};}
  if(typeof lv2From==='function'&&typeof LV2_PAL!=='undefined'){const lf=[0,1,2,3].map(i=>{const gr=lv2From(()=>sasukeRunFrame(i))(),c=document.createElement('canvas');gr.draw(c,LV2_PAL,1);return{c,csh:c};});SPRL2.run={c:lf[0].c,fr:lf,w:56,h:80,ax:27,ay:75};}}
+/* arremesso de kunai/shuriken: preparar (tw), lancar (tt) e terminar (te) */
+if(USE_SPR&&typeof sasukeThrowFrame==='function'){const mkT=i=>{const gr=sasukeThrowFrame(i),a=document.createElement('canvas'),b=document.createElement('canvas');gr.draw(a,SAS2_PAL,1);gr.draw(b,Object.assign({},SAS2_PAL,SHARI),1);return{c:a,csh:b,w:56,h:80,ax:27,ay:75};};
+ SPR.tw=mkT(0);SPR.tt=mkT(1);SPR.te=mkT(2);
+ if(typeof lv2From==='function'&&typeof LV2_PAL!=='undefined')['tw','tt','te'].forEach((k,i)=>{const gr=lv2From(()=>sasukeThrowFrame(i))(),c=document.createElement('canvas');gr.draw(c,LV2_PAL,1);SPRL2[k]={c,w:56,h:80,ax:27,ay:75};});}
 /* poses de referencia: cada pose do jogo cai no sprite cuja referencia estiver mais perto */
 let SPR_REF=null;
 function sprRefs(){if(SPR_REF)return SPR_REF;const L=[];const add=(k,...ps)=>ps.forEach(p=>{if(p)L.push([k,p]);});
- add('block',S_GUARD);add('katon',TIGER,INH,EXH);add('guard',READY,K_WIND,typeof KT_W!=='undefined'&&KT_W,typeof SH_W!=='undefined'&&SH_W,typeof GZ!=='undefined'&&GZ,typeof GZ2!=='undefined'&&GZ2,typeof SEL_B!=='undefined'&&SEL_B);
+ add('block',S_GUARD);add('katon',TIGER,INH,EXH);add('guard',READY,K_WIND,(SPR.tw?false:(typeof KT_W!=='undefined'&&KT_W)),typeof SH_W!=='undefined'&&SH_W,typeof GZ!=='undefined'&&GZ,typeof GZ2!=='undefined'&&GZ2,typeof SEL_B!=='undefined'&&SEL_B);
  add('idle',VICTORY,AMA_A,AMA_A2,typeof FLICK!=='undefined'&&FLICK,typeof SEL_S!=='undefined'&&SEL_S,typeof PN_S!=='undefined'&&PN_S,typeof PN_R!=='undefined'&&PN_R);
  if(SPR.eh)add('eh',AMA_CLUTCH,typeof AMA_CL2!=='undefined'&&AMA_CL2);
  add('seal',SEAL_A,SEAL_B,SEAL_C,SPR.eh?null:AMA_CLUTCH,typeof SEL_N!=='undefined'&&SEL_N,typeof SS_G!=='undefined'&&SS_G);
  add('chidori',PREP,CHARGE,COIL,typeof SEL_C!=='undefined'&&SEL_C,typeof RS_H!=='undefined'&&RS_H);
  if(SPR.pw)add('pw',PN_W);
  if(SPR.kw&&typeof CK_W!=='undefined')add('kw',CK_W);
- add('punch',DASH,HIT,typeof CH_PULL!=='undefined'&&CH_PULL,(SPR.run?false:(typeof PN_D!=='undefined'&&PN_D)),typeof PN_P!=='undefined'&&PN_P,typeof KT_T!=='undefined'&&KT_T,typeof KT_F!=='undefined'&&KT_F,typeof SS_T!=='undefined'&&SS_T,typeof SEL_D!=='undefined'&&SEL_D,typeof SEL_H!=='undefined'&&SEL_H,typeof RS_D!=='undefined'&&RS_D,typeof RS_P!=='undefined'&&RS_P,typeof SLASH!=='undefined'&&SLASH,typeof SH_A!=='undefined'&&SH_A,typeof SH_TOP!=='undefined'&&SH_TOP);
+ add('punch',DASH,HIT,typeof CH_PULL!=='undefined'&&CH_PULL,(SPR.run?false:(typeof PN_D!=='undefined'&&PN_D)),typeof PN_P!=='undefined'&&PN_P,(SPR.tw?false:(typeof KT_T!=='undefined'&&KT_T)),(SPR.tw?false:(typeof KT_F!=='undefined'&&KT_F)),typeof SS_T!=='undefined'&&SS_T,typeof SEL_D!=='undefined'&&SEL_D,typeof SEL_H!=='undefined'&&SEL_H,typeof RS_D!=='undefined'&&RS_D,typeof RS_P!=='undefined'&&RS_P,typeof SLASH!=='undefined'&&SLASH,typeof SH_A!=='undefined'&&SH_A,typeof SH_TOP!=='undefined'&&SH_TOP);
  if(SPR.run&&typeof PN_D!=='undefined')add('run',PN_D);
+ if(SPR.tw&&typeof KT_W!=='undefined'){add('tw',KT_W);add('tt',KT_T);add('te',KT_F);}
  add('kick',KICK,typeof CK_K!=='undefined'&&CK_K,typeof SH_UP!=='undefined'&&SH_UP,typeof SH_B!=='undefined'&&SH_B,typeof SH_HEEL!=='undefined'&&SH_HEEL);
  add('hit',S_HIT,S_FLINCH,S_STAG);add('guard',HOP);
  add('down',S_DOWN);
