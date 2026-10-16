@@ -79,7 +79,7 @@ canvas#c{display:block;width:100%;height:auto}
 /* ---------- arvore de habilidades (estilo RPG: medalhoes, linhas de energia, moldura dourada) ---------- */
 #tree{position:fixed;inset:0;z-index:50;background:radial-gradient(#0a0a1acc,#020208f2);display:flex;align-items:center;justify-content:center;padding:12px}
 #tree[hidden]{display:none}
-#tree .tbox{width:min(1000px,100%);max-height:100%;display:flex;flex-direction:column;background:radial-gradient(ellipse at 50% 30%,#1a1634,#0b0a18 70%);border:3px solid #b8924a;border-radius:14px;box-shadow:0 0 0 2px #2a1d08,0 0 0 5px #6e5424,0 0 50px #000;overflow:hidden}
+#tree .tbox{width:min(1320px,96vw);height:min(840px,94vh);display:flex;flex-direction:column;background:radial-gradient(ellipse at 40% 30%,#1a1634,#0b0a18 70%);border:3px solid #b8924a;border-radius:14px;box-shadow:0 0 0 2px #2a1d08,0 0 0 5px #6e5424,0 0 50px #000;overflow:hidden}
 #tree .thead{display:flex;align-items:center;gap:18px;padding:10px 16px;background:linear-gradient(#2a2140,#14102a);border-bottom:2px solid #6e5424;flex-wrap:wrap}
 #tree .tabs{display:flex;gap:6px}
 #tree .tab{background:#1a1630;color:#b9a97a;border:1px solid #6e5424;border-radius:4px;padding:6px 16px;font:700 13px Georgia,'Times New Roman',serif;cursor:pointer;letter-spacing:1px}
@@ -91,7 +91,7 @@ canvas#c{display:block;width:100%;height:auto}
 #tree .lvl small,#tree .pts small{color:#a89a78;font:600 10px Georgia,serif}
 #tree .pts{text-align:center}#tree .pts b{display:block;font:700 24px Georgia,serif;color:#9ff0b8;line-height:1;text-shadow:0 0 10px #3fd070}
 #tree .x{margin-left:auto;background:#2a1d08;color:#ffe9b0;border:1px solid #b8924a;border-radius:4px;padding:6px 12px;font:700 12px Georgia,serif;cursor:pointer}
-#tree .tscroll{overflow:auto;flex:1;min-height:200px}
+#tree .tmain{display:flex;flex:1;min-height:0}#tree .tscroll{overflow:auto;flex:1;min-width:0}
 #tree .tcanvas{position:relative;margin:0 auto}
 #tree svg{position:absolute;left:0;top:0;pointer-events:none}
 #tree svg path{fill:none;stroke:#3a3452;stroke-width:4;stroke-linecap:round}
@@ -112,13 +112,27 @@ canvas#c{display:block;width:100%;height:auto}
 #tree .nd.lock b{opacity:.55}
 #tree .nd.sel .orb{outline:3px solid #fff;outline-offset:3px}
 @keyframes orbp{0%,100%{box-shadow:inset 0 0 14px #000,0 0 6px #ffb40066}50%{box-shadow:inset 0 0 14px #000,0 0 22px #ffb400}}
-#tree .tdet{display:flex;align-items:center;gap:14px;padding:12px 18px;border-top:2px solid #6e5424;background:linear-gradient(#1c1736,#100c22);min-height:72px;flex-wrap:wrap}
-#tree .tdet h4{margin:0 0 3px;font:700 16px Georgia,serif;color:#ffe9b0}
-#tree .tdet p{margin:0 0 3px;font:400 13px Georgia,serif;color:#cfc6a8}
-#tree .tdet small,#tree .hint{color:#a89a78;font:600 11px Georgia,serif;margin:0;text-transform:capitalize}
-#tree .dtx{flex:1;min-width:220px}
-#tree .el{font-style:normal;font:700 9px Georgia,serif;margin-left:8px;padding:1px 7px;border-radius:9px;color:var(--ec);border:1px solid var(--ec);text-transform:uppercase;vertical-align:middle}
-#tree .learn{background:linear-gradient(#e0b860,#9a6e1e);color:#241606;border:2px solid #ffe9b0;border-radius:6px;padding:9px 18px;font:700 14px Georgia,serif;cursor:pointer}
-#tree .ok{color:#9ff0b8;font:700 13px Georgia,serif}#tree .why{color:#e8b050;font:700 12px Georgia,serif}
 #tree .tdev{display:flex;gap:8px;padding:6px 14px;background:#0a0814;justify-content:flex-end}
 #tree .tdev button{background:transparent;color:#6d6f96;border:1px dashed #3a3a60;border-radius:4px;padding:3px 9px;font:600 10px Georgia,serif;cursor:pointer}
+#tree .tside{width:400px;flex:none;overflow:auto;padding:16px 18px;border-left:2px solid #6e5424;background:linear-gradient(#1c1736,#100c22)}
+#tree .pv{position:relative;border:2px solid #6e5424;border-radius:8px;background:#000;overflow:hidden;aspect-ratio:16/9}
+#tree .pv canvas{display:block;width:100%;height:100%}
+#tree .pvmsg{display:grid;place-items:center;height:100%;color:#a89a78;font:600 12px Georgia,serif;text-align:center;padding:10px}
+#tree .pvtag{position:absolute;left:8px;top:6px;font:700 9px Georgia,serif;letter-spacing:2px;color:#ffe9b0;background:#000a;padding:2px 6px;border-radius:3px}
+#tree .tside h3{margin:14px 0 6px;font:700 22px Georgia,serif;color:#ffe9b0}
+#tree .chips{display:flex;gap:6px;margin-bottom:10px}#tree .chips .el{margin:0}
+#tree .desc{margin:0 0 6px;font:400 14px/1.45 Georgia,serif;color:#e0d8c0}
+#tree .tipo{margin:0 0 12px;font:italic 12px Georgia,serif;color:#a89a78}
+#tree .stats{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-bottom:10px}
+#tree .stats div{background:#0a0814;border:1px solid #3a2f14;border-radius:6px;padding:6px 4px;text-align:center}
+#tree .stats small{display:block;font:600 9px Georgia,serif;color:#a89a78;text-transform:uppercase;letter-spacing:.5px}
+#tree .stats b{font:700 15px Georgia,serif;color:#ffe9b0}
+#tree .elx{display:flex;flex-direction:column;gap:3px;margin-bottom:10px;font:600 12px Georgia,serif;color:#a89a78}
+#tree .elx .g{color:#9ff0b8}#tree .elx .r{color:#ff9a8a}
+#tree .req small{font:600 10px Georgia,serif;color:#a89a78;text-transform:uppercase;letter-spacing:1px}
+#tree .req ul{list-style:none;margin:4px 0 14px;padding:0;font:600 12px Georgia,serif}
+#tree .req li:before{content:'● ';font-size:9px}#tree .req li.y{color:#9ff0b8}#tree .req li.n{color:#ff9a8a}
+#tree .act{margin-top:4px}
+#tree .tdev .lg{margin-right:auto;font:600 10px Georgia,serif;color:#a89a78;display:flex;align-items:center;gap:6px}
+#tree .tdev .lg i{display:inline-block;width:10px;height:10px;border-radius:50%;margin-left:8px}
+#tree .tdev .lg .a{background:#ffd97a}#tree .tdev .lg .b{background:#3fd070}#tree .tdev .lg .c{background:#444}

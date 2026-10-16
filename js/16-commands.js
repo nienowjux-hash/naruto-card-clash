@@ -27,7 +27,7 @@ const CMDS=[
 function showMenu(m){if(roleN){showNarutoMenu();return;}menuOpen=m;const h=$('hand');h.innerHTML='';setHead(m==='main'?'COMANDOS':m==='atk'?'ATACAR':'JUTSU');
  const add=(name,desc,col,k,cost,fn,ok,mv)=>{const b=document.createElement('button');b.className='cmd';b.style.setProperty('--cc',col);b.innerHTML=`<span class="ic">${k}</span><span class="tx"><b>${name}${elemChip(mv||moveByName(name))}</b><small>${desc}</small></span>`+(cost!=null?`<span class="cost">${cost}<em>CK</em></span>`:'<span></span>');b.onclick=fn;b._cost=cost;b._ok=ok||null;h.appendChild(b);};
  if(m==='main')CMDS.forEach((c,i)=>add(c.name,typeof c.desc==='function'?c.desc():c.desc,c.col,i+1,c.cost==null?null:c.cost,c.run,c.ok));
- else{(m==='atk'?ATKS:SASUKE_JUTSUS.filter(cd=>!cd.show||cd.show())).filter(cd=>moveUnlocked('sasuke',cd.id)).forEach((cd,i)=>add(cd.name,typeof cd.desc==='function'?cd.desc():cd.desc,cd.col,i+1,cd.cost,()=>play(cd),cd.ok,MOVES[cd.id]));add('Voltar','Menu principal','#888','Esc',null,()=>showMenu('main'));}
+ else{(m==='atk'?ATKS:SASUKE_JUTSUS.filter(cd=>!cd.show||cd.show())).filter(cd=>moveUnlocked('sasuke',cd.id)).forEach((cd,i)=>add(cd.name,typeof cd.desc==='function'?cd.desc():cd.desc,cd.col,i+1,ANIMS[cd.id]?ANIMS[cd.id].cost:cd.cost,()=>play(cd),cd.ok,MOVES[cd.id]));add('Voltar','Menu principal','#888','Esc',null,()=>showMenu('main'));}
  setCommands(!anim&&!outcome&&!turnLock);}
 function buildMenu(){showMenu('main');}
 function setCommands(on){[...$('hand').children].forEach(b=>{b.disabled=!on||(b._cost!=null&&(roleN?ck.n:ck.s)<b._cost)||(b._ok&&!b._ok());});}
