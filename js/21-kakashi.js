@@ -145,11 +145,11 @@ function suiFatalFX(c){const {f,t,time,nx0}=c,tt=c.A?t:99;
   f.fillStyle=`rgba(120,190,255,${.35*(1-k)})`;for(let i=0;i<28;i++){const x=cx-70+r2()*140,y=GY-120+((k*1.6+r2())%1)*120;f.fillRect(Math.round(x),Math.round(y),1,4);}}
  /* bracos arrancados pela explosao: voam girando, deixam sangue e caem na poca */
  {const a2=tt-FAT_POP;if(a2>=0){f.save();f.globalCompositeOperation='source-over';f.globalAlpha=1;const bx=288,by=GY-34-fatLift(FAT_POP);
-  for(let q=0;q<2;q++){const dir=q?1:-1,vx=dir*(48+q*26),vy0=-70-q*22,g0=210;let x=bx+dir*8,y=by-10,vy=vy0,ang=0,land=false;const steps=Math.min(a2,3.0)/.02;
+  for(let q=0;q<2;q++){const dir=q?1:-1,vx=q?27:-40,vy0=q?-92:-66,g0=210;let x=bx+dir*8,y=by-10,vy=vy0,ang=0,land=false;const steps=Math.min(a2,3.0)/.02;
    for(let k=0;k<steps;k++){if(land)break;x+=vx*.02;vy+=g0*.02;y+=vy*.02;ang+=dir*.18;if(y>=GY-1){y=GY-1;land=true;ang=dir*(.12+q*.25);y=GY-2;}}
-   suiArm(f,x,y,ang);
+   (q?suiHand:suiArmHalf)(f,x,y,ang);
    if(!land&&a2<1.4){bloodSpray(f,x,y,a2*.7,610+q*13,6,dir);}
-   if(land&&a2<3.2){f.fillStyle='rgba(140,10,20,.75)';f.beginPath();f.ellipse(x-dir*10,GY+1,9,1.8,0,0,TAU);f.fill();}}
+   if(land){f.fillStyle='rgba(140,10,20,.75)';f.beginPath();f.ellipse(x-dir*10,GY+1,9,1.8,0,0,TAU);f.fill();}}
   if(a2<1.1){bloodSpray(f,bx-8,by-10,a2,621,16,-1);bloodSpray(f,bx+8,by-10,a2,622,16,1);}f.restore();}
  }
  /* depois: poca de agua no chao */
@@ -163,6 +163,16 @@ function suiArm(f,x,y,ang){f.save();f.translate(Math.round(x),Math.round(y));f.r
  f.fillStyle='#b06c4c';for(let q=0;q<4;q++)f.fillRect(14,-3+q*2,3,1);
  f.fillStyle='#7a0a14';f.fillRect(-15,-4,3,9);f.fillStyle='#d01828';f.fillRect(-14,-3,2,6);f.fillStyle='#f5e6d8';f.fillRect(-14,-1,1,2);
  f.restore();}
+/* metade de um braco (manga laranja cortada nas duas pontas) e uma mao solta */
+function suiArmHalf(f,x,y,ang){f.save();f.translate(Math.round(x),Math.round(y));f.rotate(ang);
+ f.fillStyle='#8a380a';f.fillRect(-8,-3,13,7);f.fillStyle='#cf620e';f.fillRect(-8,-3,13,5);f.fillStyle='#f58a18';f.fillRect(-8,-3,13,3);f.fillStyle='#ffb347';f.fillRect(-6,-3,8,1);
+ f.fillStyle='#8a380a';f.fillRect(-3,-3,1,7);
+ f.fillStyle='#7a0a14';f.fillRect(-11,-4,3,9);f.fillStyle='#d01828';f.fillRect(-10,-3,2,6);f.fillStyle='#f5e6d8';f.fillRect(-10,-1,1,2);
+ f.fillStyle='#7a0a14';f.fillRect(5,-4,3,9);f.fillStyle='#d01828';f.fillRect(5,-3,2,6);f.fillStyle='#f5e6d8';f.fillRect(6,0,1,2);f.restore();}
+function suiHand(f,x,y,ang){f.save();f.translate(Math.round(x),Math.round(y));f.rotate(ang);
+ f.fillStyle='#e9e4d0';f.fillRect(-4,-2,3,5);f.fillStyle='#de9c70';f.fillRect(-1,-3,6,7);f.fillStyle='#f6c9a0';f.fillRect(-1,-3,6,4);
+ f.fillStyle='#b06c4c';for(let q=0;q<4;q++)f.fillRect(5,-3+q*2,3,1);f.fillRect(0,4,3,1);
+ f.fillStyle='#7a0a14';f.fillRect(-6,-3,2,7);f.fillStyle='#d01828';f.fillRect(-6,-2,1,5);f.restore();}
 ANIMS.suiryudan.L={g:true,dur:8.0,koAt:7.3,bannerAt:5.05,banner:['水龍弾','FATALITY','Suiryūdan','#4aa8ff'],latchT:2.3,line:'Respire fundo. Pela última vez.',speakAt:3.5,speechPos:['18%','14%'],
  map:[[0,0],[99,99]],
  sP:[[0,READY],[.4,READY],[.7,SUI_SEAL],[1.5,SUI_SEAL],[1.75,READY],[99,READY]],
