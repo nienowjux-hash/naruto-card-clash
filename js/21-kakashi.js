@@ -228,7 +228,8 @@ function tsuigaFX(c,fat){const {f,t,time,sx0,nx0}=c,tt=c.A?t:99;
  if(p>0&&tt<(fat?5.2:3.9)){const x0=sx0+16,x1=nx0-6,r2=R(66);f.save();f.strokeStyle='#1c0e06';f.lineWidth=1.3;f.beginPath();f.moveTo(x0,GY+1);const n=Math.round(30*p);for(let i=1;i<=n;i++){const u=i/30;f.lineTo(x0+(x1-x0)*u,GY+1+Math.sin(i*1.7)*1.3+(r2()-.5)*1.4);}f.stroke();
   f.fillStyle='#7a5630';for(let i=0;i<n;i+=2){const u=i/30,x=x0+(x1-x0)*u,ph=((tt*3+i*.37)%1);f.fillRect(Math.round(x),Math.round(GY-1-ph*7),2,2);}f.restore();}
  /* caes */
- for(const [i,d] of TS_DOGS.entries()){const s=dogState(d,tt,nx0,fat,fat?undefined:999);if(tt<s.st||s.al<=0)continue;
+ const dodged=!fat&&anim&&anim.dodge;
+ for(const [i,d] of TS_DOGS.entries()){const s=dogState(d,tt,nx0,fat,fat?undefined:(dodged?3.4+d.d:999));if(tt<s.st||s.al<=0)continue;
   const pull=fat?tsPull(tt):0,fadeD=fat?1-scaleAt(0,1,4.1,4.5,tt):1;
   if(tt<s.st+.5){const k=(tt-s.st)/.5;f.save();f.fillStyle=`rgba(130,92,52,${.8*(1-k)})`;const r2=R(900+i);for(let q=0;q<14;q++){const a=-Math.PI*(.05+r2()*.9),sp=8+r2()*22;f.fillRect(Math.round(nx0+d.sx+Math.cos(a)*sp*k),Math.round(GY+Math.sin(a)*sp*k+k*k*18),2,2);}f.restore();}
   const pose=s.u<1||s.v>0?'leap':'bite';withG(c,G=>dogDrawS(G,s.x,s.y+pull*30,s.face,s.ang+(fat?pull*.45*s.face:0),d.ty,pose,Math.round(s.jaw),s.al*fadeD));
@@ -263,11 +264,12 @@ function sfxFatalTsuiga(){
  nz(1.6,'bandpass',200,700,.3,2.9);tone('sawtooth',90,60,1.4,.08,2.9,7);[3.1,3.4,3.7].forEach(a=>{tone('sawtooth',380,200,.25,.07,a);nz(.15,'bandpass',800,300,.4,a);});
  nz(.7,'lowpass',1400,100,.9,4.3);tone('sine',70,24,1.0,1.0,4.3);nz(.8,'highpass',2500,8000,.4,4.35);nz(1.2,'bandpass',300,1200,.25,4.5);}
 ANIMS.tsuiga.L.sfxFn=sfxFatalTsuiga;
-KAKASHI_JUTSUS.push({id:'tsuiga',name:'Doton: Tsuiga no Jutsu',cost:22,col:'#c99a5a',desc:'Cães ninja saem da terra, mordem e prendem o alvo: 18 de dano e ele fica imobilizado por 2 turnos, com os cães mordendo.',live:true,
+KAKASHI_JUTSUS.push({id:'tsuiga',name:'Doton: Tsuiga no Jutsu',cost:22,col:'#c99a5a',desc:'Cães ninja saem da terra, mordem e prendem o alvo: 18 de dano e ele fica imobilizado por 2 turnos, com os cães mordendo. Só 1 uso por batalha.',live:true,ok:()=>!tsK,
  onUse:()=>{if(immN)later(2400,()=>toast('Naruto se soltou dos cães!'));else{stunN=true;later(2200,()=>{tsHold=2;tsRelT=-9;toast('Os cães prendem o Naruto: ele perde os próximos 2 turnos');});}}});
 
 /* ---- Tsuiga: o alvo fica preso por 2 turnos dele; os caes continuam mordendo e soltam no fim ---- */
-let tsHold=0,tsRelT=-9; /* turnos do inimigo ainda presos (visual e logica) */
+let tsHold=0,tsRelT=-9,tsK=false; /* tsK: Tsuiga so 1 vez por batalha */
+ /* turnos do inimigo ainda presos (visual e logica) */
 function tsTurn(){if(tsHold<=0)return null;tsHold--;hp.n=Math.max(1,hp.n-4);dmgPop(4);setBars();const more=tsHold>0;if(!more)tsRelT=performance.now()/1000;
  return{more,msg:more?'Os cães seguram o Naruto: ele perde o turno (falta mais 1)':'Os cães soltam o Naruto: ele perde o turno'};}
 function tsStatic(c){const {time,nx0}=c,now=performance.now()/1000;
