@@ -56,7 +56,7 @@ Cada uma tem um fatality diferente: Tsukuyomi (Genjutsu), calcanhar que crava a 
 A pasta `pixel/` guarda os novos sprites em pixel art desenhados por codigo (`pixgrid.js` e o Sasuke em `sasuke.js` e `sasuke-guard.js`). Para ver: `node serve.js` e abra http://localhost:8123/pixel/view.html (ou `?s=idle` para o Sasuke parado). O jogo ainda usa os bonecos antigos.
 
 ## Jogar como Naruto
-O botão **Jogar como: Sasuke / Naruto** (abaixo do jogo) troca de lado: a tela é espelhada (Naruto à esquerda), você escolhe **Rasengan**, **Kage Bunshin**, **Oiroke no Jutsu**, **Harem no Jutsu**, **Kamikaze**, **Uzumaki Rendan**, **Defender** ou **Concentrar**, e o Sasuke é jogado pela IA (escolhe um golpe que consegue pagar e vai no mais forte quando sua vida está baixa). A escolha fica salva no navegador.
+O botão **Jogar como: Sasuke / Naruto** (abaixo do jogo) troca de lado: a tela é espelhada (Naruto à esquerda), você escolhe **Rasengan**, **Kage Bunshin**, **Oiroke no Jutsu**, **Harem no Jutsu**, **Kamikaze**, **Kuchiyose: Gama Bunta**, **Uzumaki Rendan**, **Defender** ou **Concentrar**, e o Sasuke é jogado pela IA (escolhe um golpe que consegue pagar e vai no mais forte quando sua vida está baixa). A escolha fica salva no navegador.
 
 ### Naruto Uzumaki Rendan (35 de chakra, 40 de dano)
 Quatro clones aparecem na fumaça, correm até o Sasuke e chutam ele para o alto em sequência ("U! ZU! MA! KI!"); o Naruto de verdade salta acima dele e desce com o calcanhar ("NARUTO UZUMAKI RENDAN!"). A IA do Naruto também usa este jutsu.
@@ -69,3 +69,6 @@ Oiroke + Kage Bunshin: seis garotas (cobertas por fumaça) cercam o Sasuke. Com 
 
 ### Uzumaki Naruto Kamikaze (30 de chakra, 34 de dano)
 O Naruto gira como um tornado com três clones em volta e atravessa o Sasuke cinco vezes. **Fatality:** o tornado puxa o Sasuke para o alto, gira ele rasgando a roupa num redemoinho de sangue e o arremessa no chão; o Naruto diz "Ninguém me para, dattebayo!".
+
+### Kuchiyose no Jutsu (45 de chakra, 32 de dano)
+O Naruto morde o polegar e bate a mão no chão com o chakra vermelho da Kurama; o selo de invocação aparece e o **Gama Bunta** surge numa nuvem de fumaça, com o Naruto em cima da cabeça. O sapo dispara a bala de água (*Suiton: Teppōdama*) no Sasuke e some.
