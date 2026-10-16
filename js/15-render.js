@@ -9,7 +9,7 @@ function render(ts){
  const time=window.__T!=null?window.__T:(frozen?frozen.t+3:ts/1000),fr=Math.floor(time*30);
  const A=type?ANIMS[type]:null;
  if((seal2T>0)!==lastP2){lastP2=seal2T>0;portrait('ptS',lastP2?lvDef(1):SASUKE,mk({red:1,expr:1,hr:.05}));}
- if(burning&&!outcome&&!anim&&!frozen&&ts-lastBurn>1600){lastBurn=ts;if(bunta){bunta.hp=Math.max(0,bunta.hp-1);if(bunta.hp<=0)buntaDie();}else hp.n=Math.max(0,hp.n-1);setBars();if(hp.n<=0){outcome='S';outcomeT=performance.now()/1000;showKO('S');setCards(false);}}
+ if(burning&&!outcome&&!anim&&!frozen&&ts-lastBurn>1600){lastBurn=ts;if(bunta){bunta.hp=Math.max(0,bunta.hp-1);if(bunta.hp<=0)buntaDie();}else hp.n=Math.max(0,hp.n-1);setBars();if(hp.n<=0){outcome='S';outcomeT=performance.now()/1000;showKO('S');setCommands(false);}}
  let shk=0,flashA=0,dim=0,bars=0,tint=null;
  if(type==='chidori'&&LC(type)){ /* fatality: tela treme, flashes, escurece e fica avermelhada na camera lenta (tempos em raw = segundos reais) */
   const a=raw-2.58;

@@ -30,7 +30,7 @@ Opção 2: com Node instalado, rode `node serve.js` e abra http://localhost:8123
 ## Estrutura do projeto
 
 - `naruto-demo.html`: so a pagina (HTML); `style.css`: o visual da pagina.
-- `js/`: o codigo do jogo, em arquivos numerados que **carregam nessa ordem** (cada um depende dos anteriores): `01-core` (base e helpers), `02-characters`, `03-sprites`, `04-scenery`, `05-poses`, `06-attacks-basic`, `07-soushuken`, `08-mechanics`, `09-curse-seal`, `10-copy-jutsu`, `11-kyubi`, `12-state`, `13-audio`, `14-fx`, `15-render`, `16-cards`.
+- `js/`: o codigo do jogo, em arquivos numerados que **carregam nessa ordem** (cada um depende dos anteriores): `01-core` (base e helpers), `02-characters`, `03-sprites`, `04-scenery`, `05-poses`, `06-attacks-basic`, `07-soushuken`, `08-mechanics`, `09-curse-seal`, `10-copy-jutsu`, `11-kyubi`, `12-state`, `13-audio`, `14-fx`, `15-render`, `16-commands`.
 - `pixel/`: os sprites em pixel art desenhados por codigo (galeria em `pixel/view.html`).
 - `tools/check-order.js`: confere se algum arquivo de `js/` usa, ao carregar, algo definido em um arquivo posterior. Rode depois de mover codigo entre arquivos: `npm i --no-save acorn` e `node tools/check-order.js`.
 - Atencao: como os arquivos sao scripts separados, uma funcao so pode ser chamada **ao carregar** se ja estiver definida em um arquivo anterior. Chamadas feitas dentro de outras funcoes (executadas depois) funcionam de qualquer arquivo.
