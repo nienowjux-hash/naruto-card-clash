@@ -155,3 +155,11 @@ Os itens também têm raridade (Comum, Incomum, Raro, Épico, Lendário) e exige
 - O progresso salvo foi reiniciado (`rpgProgV2`) por causa da nova ordem.
 
 Raridades ajustadas: Chidori e Rasengan **Raros** (4 pontos); Katon, Oiroke, Sōshūken e Shuriken Kage **Incomuns** (os golpes de shuriken do Sasuke são no máximo Incomum); Harem **Raro**.
+
+### IA tática dos inimigos por local
+A esperteza da IA cresce com o nível do local (`aiSmart` em `js/11-kyubi.js`: 0 no Campo de Treino, 1 no Vale do Fim, 0,5 fora da campanha) e **não muda os status** do inimigo, só as escolhas:
+- **Vantagem elemental:** os golpes com vantagem contra os elementos do jogador ficam até ~10x mais prováveis e os com desvantagem quase somem (ex.: no Vale do Fim o Sasuke inimigo usa muito o Katon contra o Vento do Naruto e quase nunca o Chidori).
+- **Finalização:** quando algum golpe mata, usa o mais barato que mata.
+- **Kawarimi:** guarda para quando o jogador tem chakra para um golpe forte e usa mais cedo nos locais avançados (ainda no limite de 2 por luta).
+- **Defender:** com pouca vida e sem Kawarimi pronto, se defende (o próximo dano cai pela metade). O Defender do Naruto agora vale também quando ele é o inimigo.
+O `tools/balance-sim.js` ainda usa a IA antiga.
