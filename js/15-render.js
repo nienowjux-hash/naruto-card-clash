@@ -147,6 +147,7 @@ function render(ts){
  if(type==='selochidori'&&LG(type)&&t>=3.2){const kk=scaleAt(0,1,3.25,3.5,t)*(1-scaleAt(0,1,4.1,4.4,t));nOpt=Object.assign({},nOpt,{tint:[50,20,90],tk:.35*kk});}
  if(fatalKind&&!A&&outcome==='S'&&ANIMS[fatalKind].L.nRot)nOpt.rot=ANIMS[fatalKind].L.nRot(99);
  if(typeof tsuigaNOpt==='function')tsuigaNOpt(nOpt,type,t,A,fatalKind,outcome);
+ if(typeof senNOpt==='function')senNOpt(nOpt,type,t,A,fatalKind,outcome);
  if(typeof FAT_POP!=='undefined'&&((type==='suiryudan'&&LG(type)&&t>=FAT_POP)||(fatalKind==='suiryudan'&&!A&&outcome==='S')))nOpt.noArms=1; /* o fatality do dragao de agua arranca os bracos */
  if(LA(type)&&t>=4.3)nOpt.dissolve=scaleAt(0,1,4.4,5.8,t);
  if(LK(type)&&t>2.6)nOpt.cracks=scaleAt(0,1,2.7,5.4,t);else if(burnt&&(!A||type==='katon'))nOpt.cracks=1;
@@ -179,12 +180,12 @@ function render(ts){
  if(LTP(type)&&t>=TPF_LAND-.04&&t<TPF_BACK+.12)sOpt.alpha=0;if((LTP(type)&&t>=TPF_BACK+.12)||(!A&&outcome==='N'&&tpKill)){sOpt.flat=.42;sP.torn=1;}if(LKM(type)&&t>=KMF_UP+.3){sP.torn=1;}else if(!A&&outcome==='N'&&kmKill)sP.torn=1;if(LR(type)&&t>=ANIMS.rasengan.LR.burst){sOpt.hole=clamp((t-ANIMS.rasengan.LR.burst)/.06,0,1)*(rasKyu?3.8:2.5);if(rasKyu){sOpt.cracks=scaleAt(0,1,ANIMS.rasengan.LR.burst,ANIMS.rasengan.LR.burst+1.2,t);sOpt.tint=[40,14,10];sOpt.tk=.55*scaleAt(0,1,ANIMS.rasengan.LR.burst,ANIMS.rasengan.LR.burst+.8,t);}}else if(!A&&outcome==='N'&&rasKill){sOpt.hole=rasKyu?3.8:2.5;if(rasKyu){sOpt.cracks=1;sOpt.tint=[40,14,10];sOpt.tk=.55;}}
  if(power>0)sOpt.light={x:rS.hf.hx,y:rS.hf.hy,r:34,col:[110,185,255],k:.75*Math.min(1,power)};
  if(type==='katon'&&t>1.82&&t<2.4)sOpt.light={x:rS.C[0]+3.2,y:rS.C[1]+2.6,r:28,col:[255,150,50],k:.7};
- const sFlip=(LC(type)&&t>6.7);
+ const sFlip=(LC(type)&&t>6.7)||(typeof senFlip==='function'&&senFlip(type,t,A));
  {const l2=(type==='selo2')?scaleAt(0,1,1.0,2.4,t):(type==='selochidori'?1:(seal2T>0?1:0));const cs=(l2>0)?0:(type==='selo'?scaleAt(0,1,.8,2.0,t):(sealT>0?1:0));if(l2>0){sOpt.lv2=l2;sOpt.lv2h=(type==='selo2')?scaleAt(0,1,2.35,2.95,t):1;if(type==='selochidori'){sOpt.tint=[50,20,90];sOpt.tk=.2;}}else if(cs>0)sOpt.curse=cs;}
  if(A&&A.tp&&!LG(type)&&!lethal)sOpt.alpha=clamp(Math.abs(t-A.tp[0])/.07,0,1); /* teleporte: some no lugar do golpe e aparece na posicao inicial */
  {const DG=anim&&anim.dodge;if(DG&&DG.who==='S'&&t>=DG.t0&&t<DG.t1)sOpt.alpha=0;} /* Kawarimi: some enquanto o tronco leva o golpe */
  sOpt.bleed=Math.max(0,1-hp.s/HPMAX.s);
- sOpt.rot=sRot;sOpt.vel=vS;blit(sx0,GY+sy0,sFlip,SASUKE,sP,time,sOpt);
+ if(typeof senSOpt==='function')senSOpt(sOpt,type,t,A);sOpt.rot=sRot;sOpt.vel=vS;blit(sx0,GY+sy0,sFlip,SASUKE,sP,time,sOpt);
  if(pierce){drawN(); /* o braco entra no peito do Naruto: ele e desenhado por cima do Sasuke e so a parte de fora da frente do corpo reaparece */
   const o2=Object.assign({},sOpt,{noRefl:true});
   g.save();g.beginPath();g.rect(-50,-50,nx0-7+50,H+100);g.clip();blit(sx0,GY+sy0,false,SASUKE,sP,time,o2);g.restore();}
