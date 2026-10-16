@@ -197,3 +197,15 @@ Kit: Kunai, Shuriken, Soco, Chute, Kawarimi e, na aba Jutsu, **Katon** (copiado)
 Ilha ao sul de Konoha com três locais encadeados (`NODES.ondas`, `ondas2` e `ponte` em `js/00-data.js`; ilha, casas e Grande Ponte em `js/18b-map-art.js`): **País das Ondas** (Gozu, nível 3), **Estrada do Tazuna** (Meizu, nível 4) e **Grande Ponte** (Zabuza Momochi, chefe, nível 8). O cenário (`scene:'ondas'`) tem filtro frio, neblina passando e pilares e cabos da ponte ao fundo (`js/04-scenery.js`).
 
 **Irmãos Demônios (Gozu e Meizu):** inimigos com aparência própria, `pixel/kirigakure.js`. Usam as poses do Naruto com outra paleta (cinza-azulado e verde-oliva) e cabeça nova: bandana da Névoa com a placa riscada, máscara de respiração com filtro, olhos fundos; Gozu com cabelo preto espetado e máscara redonda, Meizu com cabelo castanho solto e máscara em bico. Um encontro escolhe a aparência com `enc.skin` (`enemySkin`, `SPRE`, `NARU_SKIN`); o retrato do HUD também muda. O Zabuza ainda usa o sprite do Naruto, só com o nome: sprite próprio dele e do Haku ficam para depois.
+
+### Golpes e fatalities dos Irmãos Demônios (`js/22-demonios.js`)
+
+A IA deles (`demonPick`) escolhe entre Soco, Chute e os golpes abaixo, conforme o nível do local e o chakra; cada golpe tem um fatality se mata o herói:
+
+- **Shunshin no Jutsu** (6 de chakra, 12 de dano): some numa nuvem e acerta pelas costas. *Fatality:* decapitação (a cabeça voa girando, o corpo cai, poça de sangue).
+- **Suiton: Suigakure no Jutsu** (12, 15 de dano): afunda numa poça, ela corre pelo chão e ele surge debaixo do alvo com um golpe ascendente. *Fatality:* a garra atravessa o peito, o levanta e o joga longe.
+- **Garras Envenenadas** (8, 12 de dano em três golpes): deixa o herói **envenenado** (3 de vida por turno durante 3 turnos). *Fatality:* o veneno o convulsiona, ele fica verde e cai espumando.
+- **Corrente de Shuriken (Kusari)** (18, 20 de dano, recarga de 2 turnos): o outro irmão salta por cima do alvo, a corrente com a shuriken gigante o envolve e aperta; o herói perde o próximo turno. *Fatality:* a corrente o **corta ao meio**.
+- **Instinto de Assassinato Compartilhado** (28, 30 de dano, 1 vez por luta, nível 4+): os dois irmãos cruzam em alta velocidade e deixam um X de cortes. *Fatality:* o corpo se desfaz em três pedaços.
+
+O segundo irmão é desenhado por `blit(..., {skin})`; o corpo cortado usa a opção `slices` do sprite; as fatalities são configuradas em `ANIMS.<golpe>.LR` e a tela final usa `eFatalKind`.

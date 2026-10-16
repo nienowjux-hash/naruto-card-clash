@@ -70,7 +70,8 @@ function render(ts){
  let sP,nP,sx0=96,sy0=0,nx0=288;
  const lethal=!!(anim&&anim.lethal)||LC(type)||LK(type)||LA(type)||LG(type)||LE(type);if(lethal)(A.enemy?buildLethalE(A):buildLethal(A));
  if(A){sP=evalPose(lethal?A.sPL:A.sP,t);nP=evalPose(lethal?A.nPL:A.nP,t);nx0=interp(lethal?A.nXL:A.nX,t);sx0=sasX(type,t);sy0=sasY(type,t);if(lethal&&A.enemy&&A.sXL)sx0=interp(A.sXL,t);}
- else if(outcome==='N'){sP=Object.assign({},S_DOWN);nP=Object.assign({},N_VICT);sx0=tpKill?74:90;nx0=288;}
+ else if(outcome==='N'){sP=Object.assign({},S_DOWN);nP=Object.assign({},N_VICT);sx0=tpKill?74:90;nx0=288;
+  if(typeof eFatalKind!=='undefined'&&eFatalKind&&ANIMS[eFatalKind].LR&&ANIMS[eFatalKind].LR.stat){const S2=ANIMS[eFatalKind].LR.stat;if(S2.sP)sP=Object.assign({},S2.sP);if(S2.nP)nP=Object.assign({},S2.nP);if(S2.sx0!=null)sx0=S2.sx0;if(S2.nx0!=null)nx0=S2.nx0;}}
  else if(outcome){sP=Object.assign({},VICTORY);nP=Object.assign({},N_DOWN);nx0=300;if(chestHole){nP.turn=.35;nP.torn=1;}if(ashed){sP=Object.assign({},AMA_CL2);}if(fatalKind){const S2=ANIMS[fatalKind].L.stat;if(S2){if(S2.nx0!=null)nx0=S2.nx0;if(S2.sx0!=null)sx0=S2.sx0;if(S2.nP)nP=Object.assign({},S2.nP);if(S2.sP)sP=Object.assign({},S2.sP);}}}
  else if(burning){sP=Object.assign({},READY);nP=Object.assign({},interp([[0,N_STAG],[1,N_BURN1],[2,N_STAG],[3,N_BURN2],[4,N_STAG]],(time*.9)%4));}
  else{sP=Object.assign({},READY);const held=typeof tsHold!=='undefined'&&tsHold>0&&!roleN;nP=Object.assign({},held?N_STAG:N_READY);if(held)nx0+=Math.sin(time*26)*.7;}
@@ -150,6 +151,7 @@ function render(ts){
  if(fatalKind&&!A&&outcome==='S'&&ANIMS[fatalKind].L.nRot)nOpt.rot=ANIMS[fatalKind].L.nRot(99);
  if(typeof tsuigaNOpt==='function')tsuigaNOpt(nOpt,type,t,A,fatalKind,outcome);
  if(typeof senNOpt==='function')senNOpt(nOpt,type,t,A,fatalKind,outcome);
+ if(typeof dmNOpt==='function')dmNOpt(nOpt,type,t,A,outcome);
  if(typeof FAT_POP!=='undefined'&&((type==='suiryudan'&&LG(type)&&t>=FAT_POP)||(fatalKind==='suiryudan'&&!A&&outcome==='S')))nOpt.noArms=1; /* o fatality do dragao de agua arranca os bracos */
  if(LA(type)&&t>=4.3)nOpt.dissolve=scaleAt(0,1,4.4,5.8,t);
  if(LK(type)&&t>2.6)nOpt.cracks=scaleAt(0,1,2.7,5.4,t);else if(burnt&&(!A||type==='katon'))nOpt.cracks=1;
@@ -187,7 +189,7 @@ function render(ts){
  if(A&&A.tp&&!LG(type)&&!lethal)sOpt.alpha=clamp(Math.abs(t-A.tp[0])/.07,0,1); /* teleporte: some no lugar do golpe e aparece na posicao inicial */
  {const DG=anim&&anim.dodge;if(DG&&DG.who==='S'&&t>=DG.t0&&t<DG.t1)sOpt.alpha=0;} /* Kawarimi: some enquanto o tronco leva o golpe */
  sOpt.bleed=Math.max(0,1-hp.s/HPMAX.s);
- if(typeof senSOpt==='function')senSOpt(sOpt,type,t,A);sOpt.rot=sRot;sOpt.vel=vS;blit(sx0,GY+sy0,sFlip,SASUKE,sP,time,sOpt);
+ if(typeof senSOpt==='function')senSOpt(sOpt,type,t,A);sOpt.rot=sRot;sOpt.vel=vS;if(typeof dmSOpt==='function')dmSOpt(sOpt,type,t,A,outcome);blit(sx0,GY+sy0,sFlip,SASUKE,sP,time,sOpt);
  if(pierce){drawN(); /* o braco entra no peito do Naruto: ele e desenhado por cima do Sasuke e so a parte de fora da frente do corpo reaparece */
   const o2=Object.assign({},sOpt,{noRefl:true});
   g.save();g.beginPath();g.rect(-50,-50,nx0-7+50,H+100);g.clip();blit(sx0,GY+sy0,false,SASUKE,sP,time,o2);g.restore();}
@@ -265,11 +267,12 @@ function render(ts){
    for(let i=0;i<24;i++){const ph=(a*.6+i*.137)%1;const ex=nx0+(i%9-4)*7+Math.sin(a*4+i)*4,ey=GY-8-ph*60;f.fillStyle=`rgba(255,${150+i*3},60,${(1-ph)*.9})`;f.fillRect(ex,ey,.7,.7);}
    f.globalCompositeOperation='source-over';}
  }
- {const FXF=LG(type)?A.L.fx:(A&&A.fx);if(FXF)FXF(ctx);else if(fatalKind&&!A&&outcome==='S'&&ANIMS[fatalKind].L.fxStatic)ANIMS[fatalKind].L.fxStatic(ctx);}
+ {const FXF=LG(type)?A.L.fx:(LE(type)&&A.LR&&A.LR.fx)?A.LR.fx:(A&&A.fx);if(FXF)FXF(ctx);else if(fatalKind&&!A&&outcome==='S'&&ANIMS[fatalKind].L.fxStatic)ANIMS[fatalKind].L.fxStatic(ctx);}
  if(typeof stoneStatic==='function'&&!roleN&&!lethal&&!(A&&type==='doryuheki')&&(stoneShow||performance.now()/1000-stoneBreakT<1.1))stoneStatic(ctx);
  if(typeof tsStatic==='function'&&!roleN&&!outcome&&!lethal&&!(A&&type==='tsuiga')&&(tsHold>0||performance.now()/1000-tsRelT<.7))tsStatic(ctx);
  if(typeof wallStatic==='function'&&!roleN&&!(A&&type==='suijinheki')&&(wallShow||performance.now()/1000-wallBreakT<.8))wallStatic(ctx);
  if(burnt&&!A&&outcome==='S')ashFX(f,time,fr,nx0);
+ if(typeof eFatalKind!=='undefined'&&eFatalKind&&!A&&outcome==='N'&&ANIMS[eFatalKind].LR&&ANIMS[eFatalKind].LR.fxStatic)ANIMS[eFatalKind].LR.fxStatic(ctx);
  if(seal2T>0&&type!=='selo2'&&type!=='selochidori'&&!(A&&A.L&&LG(type)))curseAura2(f,sx0,.3,time,fr);else if(sealT>0&&type!=='selo'&&type!=='selochidori'&&!(A&&A.L&&LG(type)))curseAura(f,sx0,.22,time,fr);
  if(ashed&&!A&&outcome==='S')ashPile(f,time,nx0,1);
  g.setTransform(1,0,0,1,0,0);g.globalCompositeOperation='source-over';g.globalAlpha=1;

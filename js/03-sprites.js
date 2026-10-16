@@ -43,9 +43,10 @@ const SPRK=typeof sakuraFrom==='function'?buildHeroSet(sakuraFrom,SAK_PAL):{},SP
 const SPRE={};let enemySkin=null;
 if(USE_SPR&&typeof DEMON_SKIN!=='undefined'&&typeof naruGuard==='function'){for(const k in DEMON_SKIN){const sk=DEMON_SKIN[k];NARU_SKIN=sk;try{const mkE=(fn,ax,ay)=>{const gr=fn(),c=document.createElement('canvas');gr.draw(c,sk.pal,1);return{c,csh:c,w:gr.w,h:gr.h,ax,ay};};
   const S2={guard:mkE(naruGuard,27,75),punch:mkE(naruPunch,27,75),hit:mkE(naruHit,25,75),down:mkE(naruDown,40,45),kick:mkE(naruKick,22,75),seal:mkE(naruSeal,27,75),block:mkE(naruBlock,27,75)};
+  if(typeof naruRun0==='function'){const fr=[naruRun0,naruRun1,naruRun2,naruRun3].map(fn=>mkE(fn,27,75));S2.run={c:fr[0].c,csh:fr[0].c,fr:fr.map(x=>({c:x.c,csh:x.c})),w:56,h:80,ax:27,ay:75};}
   if(typeof naruCharge==='function')S2.charge=mkE(naruCharge,27,75);if(typeof naruPunchWind!=='undefined'&&naruPunchWind)S2.pw=mkE(naruPunchWind,27,75);
   for(const key in SPRN)if(!S2[key])S2[key]=SPRN[key];SPRE[k]=S2;}finally{NARU_SKIN=null;}}}
-const SPRNX=()=>(typeof roleN!=='undefined'&&!roleN&&enemySkin&&SPRE[enemySkin])||SPRN;
+const SPRNX=o=>(o&&o.skin&&SPRE[o.skin])||(typeof roleN!=='undefined'&&!roleN&&enemySkin&&SPRE[enemySkin])||SPRN;
 const SPRX=()=>heroS==='sakura'&&SPRK.guard?SPRK:heroS==='kakashi'&&SPRKA.guard?SPRKA:SPR;
 /* Naruto de quatro (manto da Kyubi): quadros de agachar, galope e bote, escolhidos pela pose (fourKeyFor) */
 if(USE_SPR&&SPRN.four&&typeof naruFourCoil==='function'){const mkF=fn=>{const gr=fn(),a=document.createElement('canvas'),b=document.createElement('canvas');gr.draw(a,NAR_PAL,1);gr.draw(b,Object.assign({},NAR_PAL,KYU_EYES),1);return{c:a,csh:b,w:gr.w,h:gr.h,ax:48,ay:56};};
@@ -86,7 +87,7 @@ function sprDraw(c,SB,S,P,R0,key,vf,sq){vf=vf||0;sq=sq||0;const dT=((P.tilt||0)-
 const sprTmp=document.createElement('canvas');sprTmp.width=96;sprTmp.height=96;const sprTx=sprTmp.getContext('2d',{willReadFrequently:true});
 const sprBig=document.createElement('canvas');sprBig.width=384;sprBig.height=384;const sprBx=sprBig.getContext('2d');
 function blitSprite(x,y,flip,P,time,o,isN){
- const key=(isN&&o.bentSpr&&SPRN.bent)?'bent':(isN&&o.bend&&SPRN.guard)?'guard':(isN&&o.four&&SPRN.four)?((o.fourKey&&SPRN[o.fourKey])?o.fourKey:'four'):(isN&&o.sexy&&SPRN.sexy)?'sexy':sprPick(P,isN?sprRefsN():null),S=(isN?SPRNX():(o.lv2px>0?(SPRL2[key]?SPRL2:(SPRL2.guard&&key==='idle'?{idle:SPRL2.guard}:SPR)):SPRX()))[key],al=o.alpha==null?1:o.alpha;
+ const key=(isN&&o.bentSpr&&SPRN.bent)?'bent':(isN&&o.bend&&SPRN.guard)?'guard':(isN&&o.four&&SPRN.four)?((o.fourKey&&SPRN[o.fourKey])?o.fourKey:'four'):(isN&&o.sexy&&SPRN.sexy)?'sexy':sprPick(P,isN?sprRefsN():null),S=(isN?SPRNX(o):(o.lv2px>0?(SPRL2[key]?SPRL2:(SPRL2.guard&&key==='idle'?{idle:SPRL2.guard}:SPR)):SPRX()))[key],al=o.alpha==null?1:o.alpha;
  sprTx.setTransform(1,0,0,1,0,0);sprTx.globalCompositeOperation='source-over';sprTx.clearRect(0,0,96,96);{const fr=(key==='run'&&S.fr)?S.fr[Math.floor(time*16+(isN?1:0))%4]:null,br=!fr&&(key==='idle'||key==='guard')&&S.cb&&Math.floor(time*1.15+(isN?.55:0))%2===1;sprTx.drawImage(fr?(o.sharingan&&fr.csh?fr.csh:fr.c):(o.sharingan&&S.csh?(br?S.cbsh:S.csh):(br?S.cb:S.c)),0,0);}
  sprTx.globalCompositeOperation='source-atop';
  if(o.light){const L=o.light;sprTx.globalAlpha=Math.min(.3,L.k*.25);sprTx.fillStyle=css(L.col,1,1);sprTx.fillRect(0,0,S.w,S.h);sprTx.globalAlpha=1;}
@@ -139,7 +140,9 @@ function blitSprite(x,y,flip,P,time,o,isN){
  if(o.vel&&!o.rot&&Math.abs(o.vel)>160){const dir=Math.sign(o.vel),va=Math.min(Math.abs(o.vel),900),ka=Math.min(1,(Math.abs(o.vel)-160)/220);for(let i=3;i>=1;i--){g.save();g.translate(x-dir*va*.011*i,y);g.scale(flip?-1:1,1);g.globalAlpha=al*(.34-.09*i)*ka;g.drawImage(SB,0,0,S.w*4,S.h*4,-S.ax,-S.ay+ys,S.w,S.h);g.restore();}}
  g.translate(x,y);if(o.rot){g.translate(0,-30);g.rotate(o.rot*(flip?-1:1));g.translate(0,30);}if(o.sc)g.scale(o.sc,o.sc);if(o.flat)g.scale(1+(1-o.flat)*.35,o.flat);g.scale(flip?-1:1,1);g.globalAlpha=al;
  if(key==='bent')sprRefPose=P;
- if(o.bend&&isN&&key==='guard'){ /* dobrado para a frente: pernas agachadas e tronco girando em torno do quadril (traseiro empinado para tras) */
+ if(o.slices){ /* corpo cortado em pedacos: cada faixa de linhas do sprite se move e gira sozinha */
+  for(const sl of o.slices){g.save();g.translate(sl.dx||0,sl.dy||0);const pv=sl.piv||[0,-S.ay+(sl.y0+sl.y1)/2];g.translate(pv[0],pv[1]);g.rotate(sl.rot||0);g.translate(-pv[0],-pv[1]);g.beginPath();g.rect(-S.ax-60,-S.ay+sl.y0,S.w+120,sl.y1-sl.y0);g.clip();g.drawImage(SB,0,0,S.w*4,S.h*4,-S.ax,-S.ay,S.w,S.h);g.restore();}
+ }else if(o.bend&&isN&&key==='guard'){ /* dobrado para a frente: pernas agachadas e tronco girando em torno do quadril (traseiro empinado para tras) */
   const g0=sprRefsN().find(r=>r[0]==='guard');if(g0)sprRefPose=g0[1];
   const hipY=57,sq=o.bendSq||.86;g.save();g.beginPath();g.rect(-S.ax-6,-S.ay+hipY,S.w+12,S.h-hipY);g.clip();g.scale(1,sq);g.drawImage(SB,0,0,S.w*4,S.h*4,-S.ax,-S.ay,S.w,S.h);g.restore();
   g.save();g.translate(0,-(S.ay-hipY)*sq);g.rotate(o.bend);g.beginPath();g.rect(-S.ax-8,-hipY-8,S.w+16,hipY+8);g.clip();g.drawImage(SB,0,0,S.w*4,S.h*4,-S.ax,-hipY,S.w,S.h);g.restore();
