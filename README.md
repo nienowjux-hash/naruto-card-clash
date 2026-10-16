@@ -81,3 +81,6 @@ Em cima do Gama Bunta o Naruto **não ataca de perto**: ele só pode arremessar 
 **Fatality do Gama Bunta:** se a bala de água zera a vida do Sasuke, o sapo salta e o esmaga com o corpo inteiro (câmera lenta no impacto), levanta, e o Sasuke fica achatado numa cratera de sangue; o Gama Bunta diz "Isso é o que dá mexer com o chefe do Monte Myōboku!".
 
 O HUD (retratos, HP e chakra) agora fica numa faixa própria acima do cenário e não cobre mais a luta.
+
+### Chakra da Kyūbi (Manto da Raposa)
+Disponível uma vez por luta, com a vida do Naruto em **50 ou menos** (a IA usa sozinha quando chega a 40). O Naruto se curva, o chakra vermelho explode e um manto de chakra com orelhas e cauda de raposa o envolve, com os olhos vermelhos de pupila em fenda. Por **3 turnos** ele cura **+8 de vida** no fim de cada turno e os golpes dele causam **+35% de dano**.
