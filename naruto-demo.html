@@ -910,11 +910,11 @@ function evalPose(keys,t){const o=Object.assign({},interp(keys,t));
  o.fby=Math.min(0,o.fby);o.ffy=Math.min(0,o.ffy);return o;}
 const ANIMS={
  chidori:{dur:4.7,hold:2.58,
-  sP:[[0,READY],[.45,READY],[.55,SEAL_A],[.85,SEAL_B],[1.15,SEAL_C],[1.4,PREP],[1.6,CHARGE],[2.0,CHARGE],[2.15,COIL],[2.33,DASH],[2.55,DASH],[2.58,HIT],[3.1,HIT],[3.3,HOP],[3.55,HOP],[3.68,READY],[4.4,READY]],
+  sP:[[0,READY],[.45,READY],[.55,SEAL_A],[.85,SEAL_B],[1.15,SEAL_C],[1.4,PREP],[1.6,CHARGE],[2.0,CHARGE],[2.15,COIL],[2.33,DASH],[2.55,DASH],[2.58,HIT],[3.12,HIT],[3.18,READY],[4.4,READY]],
   nP:[[0,N_READY],[2.12,N_READY],[2.28,N_SURP],[2.42,N_GUARD],[2.55,N_GUARD],[2.58,N_HIT],[3.0,N_HIT],[3.4,N_STAG],[4.0,N_READY]],
   nX:[[0,288],[2.55,288],[2.58,290],[3.0,318],[3.5,312],[4.2,288]],
-  cam:[[0,{z:1.04,cx:192,cy:116}],[.4,{z:1.04,cx:192,cy:116}],[.9,{z:1.3,cx:100,cy:128}],[1.4,{z:1.5,cx:104,cy:132}],[2.1,{z:1.55,cx:108,cy:132}],[2.2,{z:1.25,cx:150,cy:130}],[2.5,{z:1.3,cx:240,cy:132}],[2.58,{z:1.5,cx:262,cy:132}],[3.0,{z:1.4,cx:266,cy:132}],[3.5,{z:1.1,cx:200,cy:114}],[4.0,{z:1.04,cx:192,cy:116}]],
-  hitT:2.58,dmg:34,cost:30},
+  cam:[[0,{z:1.04,cx:192,cy:116}],[.4,{z:1.04,cx:192,cy:116}],[.9,{z:1.3,cx:100,cy:128}],[1.4,{z:1.5,cx:104,cy:132}],[2.1,{z:1.55,cx:108,cy:132}],[2.2,{z:1.25,cx:150,cy:130}],[2.5,{z:1.3,cx:240,cy:132}],[2.58,{z:1.5,cx:262,cy:132}],[3.05,{z:1.4,cx:266,cy:132}],[3.3,{z:1.25,cx:215,cy:122}],[3.7,{z:1.04,cx:192,cy:116}],[4.0,{z:1.04,cx:192,cy:116}]],
+  tp:[3.15],hitT:2.58,dmg:34,cost:30},
  katon:{dur:4.5,hold:2.4,
   sP:[[0,READY],[.4,READY],[.5,SEAL_A],[.7,SEAL_B],[.9,SEAL_C],[1.1,SEAL_A],[1.3,SEAL_B],[1.5,TIGER],[1.8,INH],[1.84,EXH],[2.5,EXH],[3.0,READY],[3.8,READY]],
   nP:[[0,N_READY],[1.9,N_READY],[2.05,N_SURP],[2.18,N_GUARD],[2.36,N_GUARD],[2.4,N_HIT],[2.85,N_HIT],[3.2,N_STAG],[3.8,N_READY]],
@@ -1725,10 +1725,10 @@ ANIMS.shishi={dur:4.2,hold:1.0,hitT:.85,dmg:36,cost:25,noLift:true,
  nYf:t=>interp([[0,0],[.85,0],[1.2,-62],[1.9,-66],[2.05,-62],[2.2,0],[99,0]],t),
  sYf:sasYShishi,
  sP:[[0,READY],[.4,READY],[.5,SH_W],[.7,PN_D],[.82,SH_UP],[1.0,SH_A],[1.2,SH_A],[1.27,SH_B],[1.42,SH_A],[1.57,SH_B],[1.72,SH_A],[1.85,SH_TOP],[2.0,SH_HEEL],[2.3,READY],[3.0,READY],[4.2,READY]],
- sX:[[0,96],[.45,96],[.8,250],[1.0,258],[2.0,262],[2.3,260],[3.2,150],[3.8,96]],
+ tp:[2.4],sX:[[0,96],[.45,96],[.8,250],[1.0,258],[2.0,262],[2.39,260],[2.41,96],[4.2,96]],
  nP:[[0,N_READY],[.8,N_READY],[.85,N_HITB],[1.1,N_AIR],[1.4,N_AIR2],[1.7,N_AIR],[1.95,N_AIR2],[2.2,N_STAG],[3.0,N_READY],[4.2,N_READY]],
  nX:[[0,288],[.85,288],[1.2,292],[2.0,290],[2.3,296],[3.0,288],[4.2,288]],
- cam:[[0,{z:1.04,cx:192,cy:116}],[.4,{z:1.04,cx:192,cy:116}],[.7,{z:1.4,cx:180,cy:126}],[.9,{z:1.6,cx:268,cy:118}],[1.3,{z:1.5,cx:274,cy:96}],[1.9,{z:1.5,cx:278,cy:94}],[2.1,{z:1.6,cx:280,cy:122}],[2.6,{z:1.3,cx:262,cy:128}],[3.4,{z:1.04,cx:192,cy:116}]],
+ cam:[[0,{z:1.04,cx:192,cy:116}],[.4,{z:1.04,cx:192,cy:116}],[.7,{z:1.4,cx:180,cy:126}],[.9,{z:1.6,cx:268,cy:118}],[1.3,{z:1.5,cx:274,cy:96}],[1.9,{z:1.5,cx:278,cy:94}],[2.1,{z:1.6,cx:280,cy:122}],[2.5,{z:1.3,cx:262,cy:128}],[2.9,{z:1.1,cx:205,cy:122}],[3.3,{z:1.04,cx:192,cy:116}]],
  env:(raw,t)=>{const E={};for(const h of SHT.concat([.85])){const a=t-h;if(a>0&&a<.25)E.shk=Math.max(E.shk||0,3*(1-a/.25));}const a2=t-2.2;if(a2>0&&a2<.6)E.shk=Math.max(E.shk||0,8*(1-a2/.6));if(a2>=0&&a2<.04)E.flash=.5;return E;},
  fx:c=>{shishiFX(c,false);shishiSlamFX(c,2.2);}};
 /* ---- fatality do Shishi Rendan: o calcanhar crava a cabeca do Naruto na agua ---- */
@@ -2065,10 +2065,8 @@ function enemyTurn(){if(outcome||anim)return;if(stunN){stunN=false;skipEnemy('Na
 const HS=.09;
 function warp(type,raw){if(LC(type))return mapL(raw);if(LK(type))return mapK(raw);if(LW(type))return mapW(raw);if(LA(type))return mapA(raw);if(LG(type))return mapGen(ANIMS[type].L.map,raw);const h=ANIMS[type].hold;if(raw<h)return raw;if(raw<h+HS)return h+(raw-h)*.06;return raw-HS*.94;}
 const LC=type=>type==='chidori'&&!!ANIMS.chidori.L&&((anim&&anim.lethal)||!!window.__LETH);
-function sasX(type,t){{const a_=ANIMS[type];if(LG(type)&&a_.L.sX)return interp(a_.L.sX,t);if(a_&&a_.sX)return interp(a_.sX,t);}if(LC(type)&&t>=2.55)return interp(ANIMS.chidori.L.sX,t);if(LW(type))return interp(ANIMS.kawarimi.L.sX,t);if(type==='kawarimi')return interp([[0,96],[1.58,96],[1.9,170],[3.0,150],[3.9,96]],t);if(type==='chidori'){if(t<2.15)return 96;if(t<2.55){const k=(t-2.15)/.4;return 96+(246-96)*Math.pow(k,1.7);}if(t<3.1)return 246;
-  if(t<3.58){const k=(t-3.1)/.48,e=k*k*(3-2*k);return 246+(132-246)*e;}
-  if(t<4.25){const k=(t-3.58)/.67,e=k*k*(3-2*k);return 132+(96-132)*e;}return 96;}return 96;}
-function sasY(type,t){if(LG(type)&&ANIMS[type].L.sYf)return ANIMS[type].L.sYf(t);if(!LG(type)&&ANIMS[type].sYf)return ANIMS[type].sYf(t);if(LG(type)){const q=ANIMS[type].L.sArc;if(q&&t>q[0]&&t<q[1])return -Math.sin((t-q[0])/(q[1]-q[0])*Math.PI)*q[2];return 0;}if(LC(type)&&t>3.0)return 0;{const a_=ANIMS[type];if(a_&&a_.sArc){const q=a_.sArc;if(t>q[0]&&t<q[1])return -Math.sin((t-q[0])/(q[1]-q[0])*Math.PI)*q[2];return 0;}}if(type==='kawarimi'&&t>1.9&&t<2.12){const k=(t-1.9)/.22;return -48*(1-k)*(1-k);}if(type==='chidori'&&t>3.1&&t<3.58)return -Math.sin((t-3.1)/.48*Math.PI)*24;return 0;}
+function sasX(type,t){{const a_=ANIMS[type];if(LG(type)&&a_.L.sX)return interp(a_.L.sX,t);if(a_&&a_.sX)return interp(a_.sX,t);}if(LC(type)&&t>=2.55)return interp(ANIMS.chidori.L.sX,t);if(LW(type))return interp(ANIMS.kawarimi.L.sX,t);if(type==='kawarimi')return interp([[0,96],[1.58,96],[1.9,170],[3.0,150],[3.9,96]],t);if(type==='chidori'){if(t<2.15)return 96;if(t<2.55){const k=(t-2.15)/.4;return 96+(246-96)*Math.pow(k,1.7);}if(t<3.15)return 246;return 96;}return 96;}
+function sasY(type,t){if(LG(type)&&ANIMS[type].L.sYf)return ANIMS[type].L.sYf(t);if(!LG(type)&&ANIMS[type].sYf)return ANIMS[type].sYf(t);if(LG(type)){const q=ANIMS[type].L.sArc;if(q&&t>q[0]&&t<q[1])return -Math.sin((t-q[0])/(q[1]-q[0])*Math.PI)*q[2];return 0;}if(LC(type)&&t>3.0)return 0;{const a_=ANIMS[type];if(a_&&a_.sArc){const q=a_.sArc;if(t>q[0]&&t<q[1])return -Math.sin((t-q[0])/(q[1]-q[0])*Math.PI)*q[2];return 0;}}if(type==='kawarimi'&&t>1.9&&t<2.12){const k=(t-1.9)/.22;return -48*(1-k)*(1-k);}return 0;}
 function sRotF(type,t){if(LG(type)){const q=ANIMS[type].L.sSpin;if(q&&t>q[0]&&t<q[1]){const k=(t-q[0])/(q[1]-q[0]),e=k*k*(3-2*k);return q[2]*TAU*e;}return 0;}if(LC(type)&&t>3.0)return 0;{const a_=ANIMS[type];if(a_&&a_.sSpin){const q=a_.sSpin;if(t>q[0]&&t<q[1]){const k=(t-q[0])/(q[1]-q[0]),e=k*k*(3-2*k);return q[2]*TAU*e;}return 0;}}if(type==='chidori'&&t>3.12&&t<3.56){const k=(t-3.12)/.44,e=k*k*(3-2*k);return -TAU*e;}return 0;}
 function nY(type,t){if(LG(type))return ANIMS[type].L.nY?ANIMS[type].L.nY(t):0;if(ANIMS[type].nYf)return ANIMS[type].nYf(t);if(ANIMS[type].noLift)return 0;if(LC(type)||LK(type)||LW(type)||LA(type))return 0;{const a_=ANIMS[type];if(a_.enemy){const q=a_.nArc;if(q&&t>q[0]&&t<q[1])return -Math.sin((t-q[0])/(q[1]-q[0])*Math.PI)*q[2];return 0;}}const h=ANIMS[type].hitT;if(t>h&&t<h+.5){return -Math.sin((t-h)/.5*Math.PI)*(type==='chidori'?18:10);}return 0;}
 function nRotF(type,t){if(LG(type))return ANIMS[type].L.nRot?ANIMS[type].L.nRot(t):0;if(ANIMS[type].nRotf)return ANIMS[type].nRotf(t);if(ANIMS[type].enemy||LC(type)||LW(type))return 0;const h=ANIMS[type].hitT;if((type==='chidori'||type==='kawarimi')&&t>h+.02&&t<h+.5){const k=(t-h-.02)/.48,e=k*k*(3-2*k);return (type==='chidori'?-1:1)*TAU*e;}return 0;}
@@ -2575,7 +2573,7 @@ function render(ts){
   g.save();g.beginPath();g.rect(-50,-50,nx0-7+50,H+100);g.clip();blit(sx0,GY+sy0,false,SASUKE,sP,time,o2);g.restore();}
  if((LW(type)&&t>=2.68)||(decap&&!A&&outcome==='S')){const LL2=ANIMS.kawarimi.L,age2=LW(type)?t-2.68:99,hs2=headSim(LL2.head0[0],LL2.head0[1],age2);drawFlyHead(g,hs2.x,hs2.y,hs2.r,nP,time);}
  if(A&&A.clonesFn&&!LG(type))A.clonesFn(ctx);
- if(A&&A.tp&&!LG(type)&&!lethal){const k=A.tp[0],xo=interp(A.sX,k-.02);puff(f,xo,GY-24,t-k,5);puff(f,96,GY-24,t-k-.04,6);}
+ if(A&&A.tp&&!LG(type)&&!lethal){const k=A.tp[0],xo=sasX(type,k-.02);puff(f,xo,GY-24,t-k,5);puff(f,96,GY-24,t-k-.04,6);}
  if(A&&A.enemy){if(type==='bunshin')drawClones(t,time);drawN();}
 
  /* ---- FX ---- */
