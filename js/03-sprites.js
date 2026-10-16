@@ -86,12 +86,17 @@ function blitSprite(x,y,flip,P,time,o,isN){
  if(o.tint){sprTx.fillStyle=css(o.tint,1,o.tk);sprTx.fillRect(0,0,S.w,S.h);}
  sprTx.globalCompositeOperation='source-over';
  /* efeitos especiais em pixel art, aplicados direto nos pixels do sprite */
- if(o.cracks>0||o.curse>0||o.hole||o.dissolve>0||P.torn||o.bleed>.04||P.hr<-1.6){
+ if(o.cracks>0||o.curse>0||o.hole||o.dissolve>0||P.torn||o.bleed>.04||P.hr<-1.6||o.noArms){
   const id=sprTx.getImageData(0,0,S.w,S.h),d=id.data,W2=S.w,H2=S.h,down=key==='down',hsh=(a,b)=>((a*73856093)^(b*19349663))>>>0;
   const bl=o.bleed||0,bleedAt=(x,y)=>y>=26&&(hsh((x>>2)*7+3,(y>>2)*5+1)%1000)/1000<Math.min(.5,bl*.22)&&(hsh(x*3+1,y*11+5)%4)!==0; /* manchas de sangue em blocos (nao ruido pixel a pixel) e so do pescoco para baixo */
   const isSkin=i=>d[i]>200&&d[i+1]>130&&d[i+1]<215&&d[i+2]>80&&d[i+2]<190&&d[i]-d[i+2]>50;
   const cx=down?30:28,cy=down?38:37; /* centro do peito no sprite */
+  /* bracos arrancados: segmentos ombro->cotovelo->mao da pose de referencia do sprite, cortados a ~35% do braco */
+  let ARMS=null;if(o.noArms){const rg=rigW(sprRefPose||P);ARMS=[[rg.shB,rg.hb],[rg.shF,rg.hf]].map(([s0,h0])=>{const sx=S.ax+s0[0],sy=S.ay+s0[1],ex=S.ax+h0.ex,ey=S.ay+h0.ey,hx=S.ax+h0.hx,hy=S.ay+h0.hy,qx=sx+(ex-sx)*.35,qy=sy+(ey-sy)*.35;return{c:[qx,qy],p:[[qx,qy],[ex,ey],[hx,hy]]};});}
+  const dseg=(ax,ay,bx,by,px,py)=>{const vx=bx-ax,vy=by-ay,L=vx*vx+vy*vy||1,u=Math.max(0,Math.min(1,((px-ax)*vx+(py-ay)*vy)/L));return Math.hypot(px-(ax+vx*u),py-(ay+vy*u));};
   for(let yy=0;yy<H2;yy++)for(let xx=0;xx<W2;xx++){const i=(yy*W2+xx)*4;if(d[i+3]===0)continue;const h=hsh(xx,yy)%1000/1000;
+   if(ARMS){let gone=false,stump=false;for(const a of ARMS){const dm=Math.min(dseg(a.p[0][0],a.p[0][1],a.p[1][0],a.p[1][1],xx+.5,yy+.5),dseg(a.p[1][0],a.p[1][1],a.p[2][0],a.p[2][1],xx+.5,yy+.5)),dc=Math.hypot(xx+.5-a.c[0],yy+.5-a.c[1]);if(dm<4.6)gone=true;else if(dm<6.2&&dc<8)stump=true;}
+    if(gone){d[i+3]=0;continue;}if(stump){const fr=h<.45;d[i]=fr?210:130;d[i+1]=fr?24:10;d[i+2]=fr?34:20;}}
    /* cabeca girada para tras (pescoco quebrado): do rosto sobra so o cabelo, visto de tras */
    if(P.hr<-1.6&&!down&&yy>=17&&yy<=28&&xx>=19&&xx<=47){const edge=!d[i-3]||!d[i+5]||!d[i-W2*4+3]||!d[i+W2*4+3];
     if(!edge){const q=hsh(xx,yy*3)%5;d[i]=q<2?255:q<4?233:255;d[i+1]=q<2?217:q<4?169:246;d[i+2]=q<2?58:q<4?29:176;}}
