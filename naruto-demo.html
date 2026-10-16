@@ -614,6 +614,7 @@ let SPRN_REF=null;function sprRefsN(){if(SPRN_REF)return SPRN_REF;const L=[],add
 const SPR_W={hxF:1,hyF:1,hxB:.6,hyB:.6,ffx:.9,ffy:1.4,fbx:.6,fby:1,crouch:1.2,lean:.8,tilt:30,hr:6};
 function sprPick(P,refs){let best='guard',bd=1e9;for(const [k,R0] of (refs||sprRefs())){let d=0;for(const q in SPR_W){const v=(P[q]||0)-(R0[q]||0);d+=SPR_W[q]*v*v;}if(d<bd){bd=d;best=k;}}return best;}
 const sprTmp=document.createElement('canvas');sprTmp.width=96;sprTmp.height=96;const sprTx=sprTmp.getContext('2d',{willReadFrequently:true});
+const sprBig=document.createElement('canvas');sprBig.width=384;sprBig.height=384;const sprBx=sprBig.getContext('2d');
 function blitSprite(x,y,flip,P,time,o,isN){
  const key=sprPick(P,isN?sprRefsN():null),S=(isN?SPRN:SPR)[key],al=o.alpha==null?1:o.alpha;
  sprTx.setTransform(1,0,0,1,0,0);sprTx.globalCompositeOperation='source-over';sprTx.clearRect(0,0,96,96);sprTx.drawImage(S.c,0,0);
@@ -642,11 +643,12 @@ function blitSprite(x,y,flip,P,time,o,isN){
   }
   sprTx.putImageData(id,0,0);}
  const ys=0;
- g.save();g.imageSmoothingEnabled=false;
- if(!o.noRefl&&!o.rot){g.save();g.translate(x,GY);g.scale(flip?-1:1,-.5);g.globalAlpha=.16*al;g.drawImage(sprTmp,0,0,S.w,S.h,-S.ax,-S.ay,S.w,S.h);g.restore();}
- if(o.vel&&!o.rot&&Math.abs(o.vel)>160){const dir=Math.sign(o.vel),va=Math.min(Math.abs(o.vel),900),ka=Math.min(1,(Math.abs(o.vel)-160)/220);for(let i=3;i>=1;i--){g.save();g.translate(x-dir*va*.011*i,y);g.scale(flip?-1:1,1);g.globalAlpha=al*(.34-.09*i)*ka;g.drawImage(sprTmp,0,0,S.w,S.h,-S.ax,-S.ay+ys,S.w,S.h);g.restore();}}
+ sprBx.imageSmoothingEnabled=false;sprBx.clearRect(0,0,384,384);sprBx.drawImage(sprTmp,0,0,S.w,S.h,0,0,S.w*4,S.h*4);const SB=sprBig;
+ g.save();g.imageSmoothingEnabled=true;g.imageSmoothingQuality='high';
+ if(!o.noRefl&&!o.rot){g.save();g.translate(x,GY);g.scale(flip?-1:1,-.5);g.globalAlpha=.16*al;g.drawImage(SB,0,0,S.w*4,S.h*4,-S.ax,-S.ay,S.w,S.h);g.restore();}
+ if(o.vel&&!o.rot&&Math.abs(o.vel)>160){const dir=Math.sign(o.vel),va=Math.min(Math.abs(o.vel),900),ka=Math.min(1,(Math.abs(o.vel)-160)/220);for(let i=3;i>=1;i--){g.save();g.translate(x-dir*va*.011*i,y);g.scale(flip?-1:1,1);g.globalAlpha=al*(.34-.09*i)*ka;g.drawImage(SB,0,0,S.w*4,S.h*4,-S.ax,-S.ay+ys,S.w,S.h);g.restore();}}
  g.translate(x,y);if(o.rot){g.translate(0,-30);g.rotate(o.rot*(flip?-1:1));g.translate(0,30);}g.scale(flip?-1:1,1);g.globalAlpha=al;
- g.drawImage(sprTmp,0,0,S.w,S.h,-S.ax,-S.ay+ys,S.w,S.h);
+ g.drawImage(SB,0,0,S.w*4,S.h*4,-S.ax,-S.ay+ys,S.w,S.h);
  g.restore();
  return rigW(P);}
 function blit(x,y,flip,d,P,time,o){o=o||{};if(USE_SPR&&(d===SASUKE||(d===NARUTO&&SPRN.guard))&&!(o.lv2>0))return blitSprite(x,y,flip,P,time,o,d===NARUTO);if(o.lv2>0&&d.style==='s')d=lvDef(o.lv2);
