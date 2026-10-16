@@ -263,6 +263,7 @@ function render(ts){
    f.globalCompositeOperation='source-over';}
  }
  {const FXF=LG(type)?A.L.fx:(A&&A.fx);if(FXF)FXF(ctx);else if(fatalKind&&!A&&outcome==='S'&&ANIMS[fatalKind].L.fxStatic)ANIMS[fatalKind].L.fxStatic(ctx);}
+ if(typeof stoneStatic==='function'&&!roleN&&!lethal&&!(A&&type==='doryuheki')&&(stoneShow||performance.now()/1000-stoneBreakT<1.1))stoneStatic(ctx);
  if(typeof tsStatic==='function'&&!roleN&&!outcome&&!lethal&&!(A&&type==='tsuiga')&&(tsHold>0||performance.now()/1000-tsRelT<.7))tsStatic(ctx);
  if(typeof wallStatic==='function'&&!roleN&&!(A&&type==='suijinheki')&&(wallShow||performance.now()/1000-wallBreakT<.8))wallStatic(ctx);
  if(burnt&&!A&&outcome==='S')ashFX(f,time,fr,nx0);
