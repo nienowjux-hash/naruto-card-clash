@@ -13,7 +13,7 @@ Opção 2: com Node instalado, rode `node serve.js` e abra http://localhost:8123
 
 ## Controles
 
-- Menu de comandos (teclas 1 a 4): **Atacar** (1 Kunai, 2 Shuriken, 3 Soco, 4 Chute, sem custo de chakra), **Jutsu** (abre as técnicas; Esc volta), **Defender** (próximo dano pela metade) e **Concentrar** (+25 de chakra).
+- Menu de comandos (teclas 1 a 5): **Atacar** (1 Kunai, 2 Shuriken, 3 Soco, 4 Chute, sem custo de chakra), **Jutsu** (abre as técnicas; Esc volta), **Defender** (próximo dano pela metade), **Concentrar** (+25 de chakra) e **Kawarimi** (evita por completo o próximo golpe; veja abaixo).
 - Zerando a vida do Naruto aparece o K.O., com Sasuke em pose de vitória. Use "Resetar luta" para recomeçar.
 
 ## O que já existe
@@ -21,7 +21,7 @@ Opção 2: com Node instalado, rode `node serve.js` e abra http://localhost:8123
 - Personagens: Sasuke e Naruto (Parte 1), com corpo, mãos, cabelo e expressões desenhados por código.
 - Cenário do Vale do Fim animado (cachoeira, névoa, lua, estátuas).
 - Câmera dinâmica, hitstop, tremor de tela e brilho (bloom).
-- Golpes: Chidori (corrida, rastro, pássaros de raio, impacto), Katon (bola de fogo, ondas de fogo), Kawarimi (tronco, fumaça e contra-ataque) e Amaterasu (Mangekyō e chamas negras).
+- Golpes: Chidori (corrida, rastro, pássaros de raio, impacto), Katon (bola de fogo, ondas de fogo), Amaterasu (Mangekyō e chamas negras).
 
 - Dano persistente: cada golpe deixa marcas no corpo (sangue, cortes, hematomas, queimaduras, roupa rasgada e chamuscada), e o rosto fica machucado. O Amaterasu continua queimando até resetar, tirando vida aos poucos.
 
@@ -40,7 +40,7 @@ Opção 2: com Node instalado, rode `node serve.js` e abra http://localhost:8123
 
 Projeto de fã, sem fins comerciais. Naruto e seus personagens pertencem aos seus criadores e detentores de direitos.
 
-- Fatalities: quando o golpe zera a vida do Naruto, cada golpe tem uma morte propria (Chidori, Katon, Kawarimi, Amaterasu, Soushuken, Shuriken Kage, Genjutsu Sharingan, Shishi Rendan, Selo Amaldicoado, copias do Rasengan e do Kage Bunshin, Kunai, Shuriken, Soco e Chute), em camera lenta.
+- Fatalities: quando o golpe zera a vida do Naruto, cada golpe tem uma morte propria (Chidori, Katon, Amaterasu, Soushuken, Shuriken Kage, Genjutsu Sharingan, Shishi Rendan, Selo Amaldicoado, copias do Rasengan e do Kage Bunshin, Kunai, Shuriken, Soco e Chute), em camera lenta.
 
 ## Tecnicas do Sasuke e balanceamento
 
@@ -56,6 +56,17 @@ Projeto de fã, sem fins comerciais. Naruto e seus personagens pertencem aos seu
 | Copia: Kage Bunshin | 15 | 24 | 60% do chakra e 75% do dano do original (25 de chakra, 32 de dano). Uso unico |
 
 Cada uma tem um fatality diferente: Tsukuyomi (Genjutsu), calcanhar que crava a cabeca na agua (Shishi Rendan), a espiral que tritura em fatias (Rasengan copiado) e seis clones que lancam kunais (Kage Bunshin copiado).
+## Kawarimi no Jutsu (defesa)
+
+O Kawarimi é um jutsu **básico de defesa**, disponível para todos os personagens (Sasuke e Naruto; os próximos também devem ter). Ele **não causa dano** nem contra-ataca:
+
+- Custa **10 de chakra** e gasta o turno: o personagem faz o selo e deixa o jutsu **pronto** (aparece a marca "変わり身" na placa dele).
+- O **próximo golpe que causaria dano** nele é **evitado por completo**: ele some numa nuvem de fumaça, um tronco leva o golpe (e se parte) e ele volta ileso para o lugar de origem, com a mensagem "ESQUIVOU!". Golpes que atordoam (Genjutsu) também falham quando são esquivados.
+- Fica pronto até esse golpe chegar (não acumula: dá para ter um só). Se o adversário usar golpes sem dano (Oiroke, Harem, transformação do selo), o Kawarimi continua pronto.
+- Sasuke: comando **Kawarimi** (tecla 5 do menu principal). Naruto: **Kawarimi no Jutsu** no fim da lista. As IAs também usam: o Naruto da IA prepara de vez em quando quando está machucado, e o mesmo vale para o Sasuke quando você joga de Naruto.
+- Na simulação (`tools/balance-sim.js`) quem usa o Kawarimi toda vez que está ferido ganha bem menos do que quem só ataca com eficiência, então ele não é uma estratégia dominante.
+- A animação antiga do Kawarimi como golpe (esquiva, contra-ataque por trás e fatality de decapitação) continua no código (`ANIMS.kawarimi` em `js/05-poses.js`), mas fora do menu.
+
 ## Regras de equilíbrio do RPG
 
 - **Sem atordoamento em sequência:** depois de perder um turno por **Genjutsu Sharingan**, **Oiroke** ou **Harem no Jutsu**, o alvo fica imune a atordoamento até agir de novo (aparece "resistiu"). Antes dava para repetir o Genjutsu para sempre e o Naruto nunca jogava.

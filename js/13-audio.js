@@ -42,6 +42,7 @@ function sfx(type){if(type==='cop_rasengan')type='rasengan';if(type==='cop_bunsh
  if(type==='oiroke'){nz(.4,'bandpass',500,2400,.22,OIR_ON-.1);tone('sine',880,1320,.25,.25,OIR_ON+.3);nz(.4,'bandpass',500,2400,.22,OIR_OFF-.1);return;}
  if(type==='uzumaki'){[.65,.85].forEach(a=>nz(.1,'bandpass',2000,1000,.1,a));nz(.4,'bandpass',500,2400,.22,1.0);UZK.forEach(a=>{tone('sine',150,60,.22,.45,a);nz(.18,'lowpass',2600,300,.4,a);});nz(.3,'bandpass',800,3000,.18,2.45);tone('sine',90,30,.6,.7,UZ_SLAM);nz(.6,'lowpass',2000,150,.7,UZ_SLAM);return;}
  if(type==='bunshin'){[.65,.85].forEach(a=>nz(.1,'bandpass',2000,1000,.1,a));nz(.4,'bandpass',500,2400,.22,1.15);[1.9,2.45,3.0].forEach(a=>{tone('sine',120,50,.25,.45,a);nz(.2,'lowpass',2400,300,.4,a);});nz(.4,'bandpass',500,3000,.2,3.3);tone('sine',140,40,.5,.65,3.6);nz(.5,'lowpass',2600,200,.6,3.6);return;}
+ if(type==='kawarimidef'||type==='nkawarimi'){[.45,.7,.95].forEach(a=>nz(.1,'bandpass',2000,1000,.1,a));nz(.45,'bandpass',600,2600,.2,1.2);return;}
  if(type==='kawarimi'){[.5,.75,1.0].forEach(a=>nz(.1,'bandpass',2000,1000,.1,a));nz(.45,'bandpass',600,2600,.2,1.15);tone('sine',150,50,.3,.5,1.62);nz(.4,'highpass',1500,4000,.25,1.62);nz(.3,'bandpass',800,200,.3,1.9);tone('sine',130,40,.4,.55,2.68);nz(.3,'lowpass',2500,200,.5,2.68);return;}
  if(type==='amaterasu'){tone('sine',60,50,1.2,.25,1.0);nz(.5,'bandpass',400,2400,.25,1.2);tone('sawtooth',300,900,.4,.08,1.25);nz(1.9,'highpass',3000,6000,.05,2.0);nz(1.6,'lowpass',500,150,.4,2.0);tone('sine',90,40,.5,.5,2.0);return;}
  if(type==='chidori'){[.55,.85,1.15].forEach(a=>nz(.12,'bandpass',2200,1200,.12,a));tone('sawtooth',2600,4200,.8,.04,1.4,26);nz(.8,'highpass',3500,6000,.07,1.4);
@@ -49,4 +50,5 @@ function sfx(type){if(type==='cop_rasengan')type='rasengan';if(type==='cop_bunsh
  else{[.5,.7,.9,1.1,1.3].forEach(a=>nz(.1,'bandpass',2000,1000,.1,a));nz(.35,'bandpass',300,1400,.18,1.45);nz(.7,'lowpass',1200,300,.35,1.82);tone('sawtooth',90,60,.6,.08,1.82);
   tone('sine',110,30,.7,.65,2.4);nz(.9,'lowpass',2000,150,.6,2.4);}
 }
-
+/* esquiva do Kawarimi: baque do tronco e fumaca */
+function sfxDodge(){ensureAudio();nz(.25,'highpass',1800,4500,.22,0);tone('sine',170,60,.22,.5,.02);nz(.3,'bandpass',900,300,.25,.05);[.18,.32].forEach(a=>nz(.08,'bandpass',1400,500,.2,a));}

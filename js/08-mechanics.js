@@ -103,3 +103,27 @@ function sfxFatalGJ(){
  [6.6,7.4,8.2,9.0].forEach((a,i)=>{tone('sine',58,36,.22,.45-i*.05,a);tone('sine',54,34,.22,.35-i*.05,a+.28);});
  tone('sine',85,30,.55,.65,7.4);nz(.45,'lowpass',1600,150,.6,7.4);tone('sine',3300,3300,2.5,.015,6.6);}
 ANIMS.genjutsu.L.sfxFn=sfxFatalGJ;
+
+/* ---------- Kawarimi no Jutsu: jutsu BASICO de DEFESA (vale para todos os personagens) ----------
+   Gasta o turno e 10 de chakra para deixar o jutsu pronto. O PROXIMO golpe que causar dano em quem preparou e evitado por completo:
+   ele troca de lugar com um tronco, o tronco leva o golpe e ele reaparece ileso. Nao causa dano nem contra-ataca.
+   Sasuke: card KAWARIMI_S (anim 'kawarimidef'). Naruto: anim 'nkawarimi'. Flags kawS / kawN em js/11-kyubi.js. */
+const KAWARIMI_COST=10;
+ANIMS.kawarimidef={dur:2.0,hold:1.3,hitT:1.3,dmg:0,cost:KAWARIMI_COST,noLift:true,
+ sP:[[0,READY],[.3,READY],[.42,SEAL_A],[.62,SEAL_B],[.82,SEAL_C],[1.25,SEAL_C],[1.5,READY],[2.0,READY]],
+ nP:[[0,N_READY],[2.0,N_READY]],nX:[[0,288],[2.0,288]],
+ cam:[[0,{z:1.04,cx:192,cy:116}],[.3,{z:1.04,cx:192,cy:116}],[.6,{z:1.8,cx:108,cy:124}],[1.4,{z:1.8,cx:108,cy:124}],[1.9,{z:1.04,cx:192,cy:116}],[2.0,{z:1.04,cx:192,cy:116}]],
+ fx:c=>kawPrepFX(c,'S')};
+ANIMS.nkawarimi={enemy:true,dur:2.0,hold:1.3,hitT:1.3,hits:[],cost:KAWARIMI_COST,noLift:true,
+ sP:[[0,READY],[2.0,READY]],sX:[[0,96],[99,96]],
+ nP:[[0,N_READY],[.3,N_READY],[.42,N_SEAL],[1.25,N_SEAL],[1.5,N_READY],[2.0,N_READY]],nX:[[0,288],[99,288]],
+ cam:[[0,{z:1.04,cx:192,cy:116}],[.3,{z:1.04,cx:192,cy:116}],[.6,{z:1.8,cx:278,cy:124}],[1.4,{z:1.8,cx:278,cy:124}],[1.9,{z:1.04,cx:192,cy:116}],[2.0,{z:1.04,cx:192,cy:116}]],
+ fx:c=>kawPrepFX(c,'N')};
+/* card do Sasuke (fica no menu principal, nao na lista de jutsus) */
+const KAWARIMI_S={id:'kawarimidef',name:'Kawarimi no Jutsu',cost:KAWARIMI_COST,col:'#c9b27a',desc:'Troca de lugar com um tronco: evita por completo o proximo golpe.',live:true,noSeal:true,ok:()=>!kawS,onUse:()=>{kawS=true;}};
+/* janela da esquiva dentro de uma animacao de ataque: some no primeiro acerto, o tronco leva o golpe, volta ileso depois do ultimo */
+function mkDodge(who,A){const ts=(A.hits&&A.hits.length)?A.hits.filter(h=>h.dmg>0).map(h=>h.t):[A.hitT];const first=Math.min(...ts),last=Math.max(...ts);return{who,t0:Math.max(.2,first-.3),tb:last,t1:last+1.05};}
+/* preparo do Kawarimi: chakra juntando nas maos e uma baforada de fumaca no fim (o tronco so aparece quando o golpe chega) */
+function kawPrepFX(c,who){const {f,t,time,sx0,nx0}=c,x=who==='S'?sx0:nx0;
+ if(t>.4&&t<1.3){const k=Math.min(1,(t-.4)/.5)*(1-Math.max(0,(t-1.1)/.2));f.save();f.globalCompositeOperation='lighter';orb(f,x,GY-30,16+4*Math.sin(time*18),[[0,'rgba(245,225,160,'+(.4*k)+')'],[1,'rgba(200,160,80,0)']]);f.restore();}
+ if(t>=1.25&&t<1.3+.75){puff(f,x,GY-24,t-1.25,6);const a=t-1.25;if(a<.4){f.save();f.globalCompositeOperation='lighter';ringFX(f,x,GY-30,6+34*(a/.4),1.6*(1-a/.4)+.2,'rgba(255,240,200,'+(1-a/.4)+')');f.restore();}}}

@@ -129,6 +129,8 @@ const mapK=raw=>{const M=ANIMS.katon.L.map;if(raw<=0)return raw;let i=0;while(i<
 ANIMS.katon.L.sfxFn=(...a)=>sfxFatalK(...a); /* sfxFatalK e definida em outro arquivo (js/11-kyubi.js): resolve so na hora de tocar */
 
 
+/* ANTIGO: Kawarimi como GOLPE (esquiva + contra-ataque + fatality de decapitacao). Fora do menu desde que o Kawarimi virou defesa
+   (veja KAWARIMI_S / 'kawarimidef' / 'nkawarimi' em js/08-mechanics.js). Mantido por enquanto; nada o chama. */
 ANIMS.kawarimi={dur:5.2,hold:2.68,
   sP:[[0,READY],[.45,READY],[.55,SEAL_A],[.85,SEAL_B],[1.1,SEAL_C],[1.4,READY],[1.9,READY],[2.25,K_WIND],[2.62,K_WIND],[2.7,KICK],[3.0,KICK],[3.25,READY],[5.0,READY]],
   nP:[[0,N_READY],[.9,N_READY],[1.15,N_COIL],[1.3,N_DASHP],[1.58,N_DASHP],[1.62,N_PUNCH],[2.3,N_PUNCH],[2.5,N_SURP],[2.64,N_SURP],[2.7,N_HITB],[3.1,N_HITB],[3.5,N_STAG],[3.58,N_STAG],[3.62,N_READY]],

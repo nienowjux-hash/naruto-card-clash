@@ -69,3 +69,5 @@ canvas#c{display:block;width:100%;height:auto}
 .ctl button{background:#1a1536;color:#cfc9ff;border:1px solid #5a4fa0;border-radius:6px;padding:6px 14px;cursor:pointer;font:inherit}
 .ctl button:hover{background:#2a2350}
 .note{text-align:center;color:#7d78a8;font-size:12px;margin-top:10px}
+.kaw{display:none;margin-left:6px;padding:0 5px;font:800 9px 'Trebuchet MS',sans-serif;font-style:normal;letter-spacing:.5px;color:#2a1a08;background:#c9b27a;border-radius:3px;vertical-align:middle;text-shadow:none}
+.kaw.on{display:inline-block}

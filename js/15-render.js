@@ -99,6 +99,7 @@ function render(ts){
  const idleMv=!A||t<.42||t>4.1;
  const vS=A?(sasX(type,t+.02)-sasX(type,t-.02))/.04:0,vN=A?(interp(lethal?A.nXL:A.nX,t+.02)-interp(lethal?A.nXL:A.nX,t-.02))/.04:0;
  sP=gait(sP,sx0,(LC(type)&&t>6.7)?-1:1,vS,sy0<-1?0:1,time,idleMv,0,GSTATE[0]);nP=gait(nP,nx0,-1,vN,ny0<-1?0:1,time,idleMv,1.7,GSTATE[1]);
+ {const DG=anim&&anim.dodge;if(DG&&t>=DG.t1){if(DG.who==='S'){sP=Object.assign({},READY);sx0=96;sy0=0;sRot=0;}else{nP=Object.assign({},N_READY);nx0=288;ny0=0;}}} /* depois da esquiva quem apanharia volta ileso para a posicao inicial */
  if((sealT>0||seal2T>0)&&sP.red<1)sP.red=1; /* com o selo ativo o Sharingan fica sempre ligado */
  if(!A&&!outcome){const sw1=Math.sin(time*1.8),sw2=Math.cos(time*2.1);sP.hxF+=sw1*.7;sP.hyF+=sw2*.6;sP.hxB+=sw2*.5;sP.hyB+=sw1*.5;
   nP.hxF+=sw2*.7;nP.hyF+=sw1*.6;nP.hxB+=sw1*.5;nP.hyB+=sw2*.5;
@@ -145,6 +146,7 @@ function render(ts){
  if(A)nOpt.rot=nRotF(type,t);
  nOpt.bleed=Math.max(0,(100-hp.n)/100);if((type==='oiroke'||type==='harem')&&t>=OIR_ON&&t<OIR_OFF){nOpt.sexy=true;nOpt.bleed=0;}if((type==='kuchiyose'&&t>=1.5)||onToad||(bunta&&type==='teppodama')){nOpt.sc=KU_NS;nOpt.noRefl=true;nOpt.vel=0;nOpt.rot=0;nOpt.bleed=0;}if(type==='kamikaze'&&KM_SPIN(t)&&!(LKM(type)&&t>KMF_DROP))nOpt.flipN=Math.sin(time*44)>0;
  if(A&&A.tpN&&!lethal)nOpt.alpha=clamp(Math.abs(t-A.tpN[0])/.07,0,1); /* o Naruto tambem volta por teleporte */
+ {const DG=anim&&anim.dodge;if(DG&&DG.who==='N'&&t>=DG.t0&&t<DG.t1)nOpt.alpha=0;} /* Kawarimi: some enquanto o tronco leva o golpe */
  if(A&&A.hitT!=null&&!LG(type)){const hh=t-A.hitT;if(hh>=0&&hh<.22)nOpt.sq=Math.pow(1-hh/.22,2)*(Math.min(1,(A.dmg||10)/25)*.6+.4);}
  if(chestHole)nOpt.hole=(A&&LC(type))?clamp((t-3.58)/.1,0,1):((A&&type==='selochidori'&&LG(type))?clamp((t-4.2)/.1,0,1)*1.8:(fatalKind==='selochidori'?1.8:1));
  if(type==='selochidori'&&LG(type)&&t>=3.2){const kk=scaleAt(0,1,3.25,3.5,t)*(1-scaleAt(0,1,4.1,4.4,t));nOpt=Object.assign({},nOpt,{tint:[50,20,90],tk:.35*kk});}
@@ -168,7 +170,8 @@ function render(ts){
  if(type==='katon'){const mth=[sx0+rS.C[0]+2.2,GY+sy0+rS.C[1]+2.7],tx0=nx0-6,ty0=GY-42;
   if(t>=1.82&&t<2.4){const kk=(t-1.82)/.58,ee=kk*kk*.7+kk*.3;fxLights.push({x:mth[0]+(tx0-mth[0])*ee,y:mth[1]+(ty0-mth[1])*ee,col:[255,150,50],r:150,k:.85});}
   const a0=t-2.4;if(a0>=0&&a0<1.2)fxLights.push({x:tx0,y:ty0,col:[255,150,50],r:190,k:.9*(1-a0/1.2)});}
- if(type==='kawarimi')drawLog(g,96,t);
+ {const DG=anim&&anim.dodge;if(DG&&t>=DG.t0&&t<DG.t1+.1){const bx=DG.who==='S'?96:288;drawLog(g,bx,t<DG.tb?1.62+((t*9)%1)*.12:t-DG.tb+1.62);puff(f,bx,GY-24,t-DG.t0,3);puff(f,bx,GY-24,t-DG.t1,4);}} /* o tronco no lugar de quem esquivou: em pe ate o golpe, depois se parte */
+ if(type==='kawarimi')drawLog(g,96,t); /* anim antiga do Kawarimi como golpe: fora do menu */
  const ctx={hw,f,g,A,type,t,raw,time,fr,nx0,ny0,sx0,sy0,nP,sP,rS,nOpt,ccx,ccy,z,hw2,outcome};
  const LGk=LG(type)?A.L:(fatalKind&&!A&&outcome==='S'?ANIMS[fatalKind].L:null);
  nOpt.vel=vN;const drawN=()=>{if(ashed&&!A&&outcome==='S')return;if(onToad&&A&&!A.enemy){blit(KU_NX,GY+KU_NY,true,NARUTO,nP,time,nOpt);return;}if(LGk&&LGk.drawN){LGk.drawN(ctx);return;}const kA=(type==='kyuubi'?clamp((t-.6)/(KY_ON-.6),0,1):0)||(kyuT>0&&!onToad?1:0),fl=nOpt.flipN!=null?nOpt.flipN:true;
@@ -183,6 +186,7 @@ function render(ts){
  const sFlip=(type==='kawarimi'&&t>1.9&&(LW(type)||t<3.2))||(LC(type)&&t>6.7)||(decap&&!A&&outcome==='S');
  {const l2=(type==='selo2')?scaleAt(0,1,1.0,2.4,t):(type==='selochidori'?1:(seal2T>0?1:0));const cs=(l2>0)?0:(type==='selo'?scaleAt(0,1,.8,2.0,t):(sealT>0?1:0));if(l2>0){sOpt.lv2=l2;sOpt.lv2h=(type==='selo2')?scaleAt(0,1,2.35,2.95,t):1;if(type==='selochidori'){sOpt.tint=[50,20,90];sOpt.tk=.2;}}else if(cs>0)sOpt.curse=cs;}
  if(A&&A.tp&&!LG(type)&&!lethal)sOpt.alpha=clamp(Math.abs(t-A.tp[0])/.07,0,1); /* teleporte: some no lugar do golpe e aparece na posicao inicial */
+ {const DG=anim&&anim.dodge;if(DG&&DG.who==='S'&&t>=DG.t0&&t<DG.t1)sOpt.alpha=0;} /* Kawarimi: some enquanto o tronco leva o golpe */
  sOpt.bleed=Math.max(0,(100-hp.s)/100);
  sOpt.rot=sRot;sOpt.vel=vS;blit(sx0,GY+sy0,sFlip,SASUKE,sP,time,sOpt);
  if(pierce){drawN(); /* o braco entra no peito do Naruto: ele e desenhado por cima do Sasuke e so a parte de fora da frente do corpo reaparece */
