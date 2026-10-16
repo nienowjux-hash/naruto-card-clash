@@ -3,13 +3,14 @@
    e a marca em X no nariz. Usa a mesma geometria de cada pose; so a cabeca e a paleta mudam. */
 const LV2_PAL=Object.assign({},SAS2_PAL,{
  1:'#2a3352',2:'#44557f',3:'#6276aa',4:'#8d9fd0',5:'#c0cbec',
- S:'#bdb6d2',s:'#9790b2',t:'#736b8f',o:'#4c4566',
+ S:'#a49fc0',s:'#8580a4',t:'#625d82',o:'#403a5e',
  x:'#e0202e',X:'#ff6a5a'});
 
 function lv2HeadRows(mod){
  const rows=sasHeadRows(mod).map(r=>r.slice());
  const set=(y,x,s)=>{for(let i=0;i<s.length;i++)rows[y][x+i]=s[i];};
- if(!(mod&&mod.shut)){set(12,17,'Lxx');set(12,25,'xxL');set(13,18,'x');set(13,26,'x');}
+ /* olhos: mantem o desenho original (branco + iris) e pinta a iris de vermelho com brilho, no estilo Sharingan */
+ if(!(mod&&mod.shut))for(let y=12;y<=15;y++)for(let x=0;x<rows[y].length;x++){if(rows[y][x]==='E')rows[y][x]='x';else if(rows[y][x]==='e')rows[y][x]='X';}
  /* marca em X no nariz, entre os olhos */
  set(14,21,'tKt');set(15,22,'t');
  return rows;}

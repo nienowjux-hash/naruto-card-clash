@@ -73,7 +73,7 @@ function blitSprite(x,y,flip,P,time,o,isN){
  /* efeitos especiais em pixel art, aplicados direto nos pixels do sprite */
  if(o.cracks>0||o.curse>0||o.hole||o.dissolve>0||P.torn||o.bleed>.04||P.hr<-1.6){
   const id=sprTx.getImageData(0,0,S.w,S.h),d=id.data,W2=S.w,H2=S.h,down=key==='down',hsh=(a,b)=>((a*73856093)^(b*19349663))>>>0;
-  const bl=o.bleed||0,bleedAt=(x,y)=>y>=24&&(hsh(x*7+3,y*5+1)%1000)/1000<bl*.14;
+  const bl=o.bleed||0,bleedAt=(x,y)=>y>=26&&(hsh((x>>2)*7+3,(y>>2)*5+1)%1000)/1000<Math.min(.5,bl*.22)&&(hsh(x*3+1,y*11+5)%4)!==0; /* manchas de sangue em blocos (nao ruido pixel a pixel) e so do pescoco para baixo */
   const isSkin=i=>d[i]>200&&d[i+1]>130&&d[i+1]<215&&d[i+2]>80&&d[i+2]<190&&d[i]-d[i+2]>50;
   const cx=down?30:28,cy=down?38:37; /* centro do peito no sprite */
   for(let yy=0;yy<H2;yy++)for(let xx=0;xx<W2;xx++){const i=(yy*W2+xx)*4;if(d[i+3]===0)continue;const h=hsh(xx,yy)%1000/1000;
