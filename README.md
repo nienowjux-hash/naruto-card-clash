@@ -65,7 +65,7 @@ O Kawarimi é um jutsu **básico de defesa**, disponível para todos os personag
 - Fica pronto até esse golpe chegar (não acumula: dá para ter um só). Se o adversário usar golpes sem dano (Oiroke, Harem, transformação do selo), o Kawarimi continua pronto.
 - Sasuke: comando **Kawarimi** (tecla 5 do menu principal). Naruto: **Kawarimi no Jutsu** no fim da lista. As IAs também usam: o Naruto da IA prepara de vez em quando quando está machucado, e o mesmo vale para o Sasuke quando você joga de Naruto.
 - Na simulação (`tools/balance-sim.js`) quem usa o Kawarimi toda vez que está ferido ganha bem menos do que quem só ataca com eficiência, então ele não é uma estratégia dominante.
-- A animação antiga do Kawarimi como golpe (esquiva, contra-ataque por trás e fatality de decapitação) continua no código (`ANIMS.kawarimi` em `js/05-poses.js`), mas fora do menu.
+- O Kawarimi antigo (golpe com contra-ataque por trás e fatality de decapitação) foi **removido** do código; ele continua no histórico do Git (commit `ebb86cb` e anteriores).
 
 ## Regras de equilíbrio do RPG
 

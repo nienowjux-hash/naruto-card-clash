@@ -4,7 +4,7 @@ const SASUKE=mkDef({skin:'#f7d6b8',shirt:'#33449a',sleeve:'#33449a',fore:'#f7d6b
  hair:'#161a32',hairHi:'#5870c0',band:'#1f2d80',plate:'#d5dcec',iris:'#14141f',irisHi:'#47507a',eyeH:.86,eyeW:1.1,browW:.72,lidW:.95,lash:0,style:'s'});
 const NARUTO=mkDef({skin:'#fbd3a8',shirt:'#f58f1c',sleeve:'#f58f1c',fore:'#f58f1c',collar:'#2a4fb8',shorts:'#f27f12',shin:'#f27f12',wrap:'#efece2',wrapLen:.22,shoe:'#1d2d78',belt:'#2a4fb8',
  hair:'#ffcb24',hairHi:'#fff2a0',band:'#1f3fa0',plate:'#d5dcec',iris:'#1646d8',irisHi:'#86d4ff',eyeH:1.06,eyeW:1.02,browW:1.2,lidW:1.0,lash:0,style:'n'});
-const IDLE={lean:0,crouch:0,fbx:-5,fby:0,ffx:5,ffy:0,hxF:4,hyF:12,hxB:-1,hyB:12,hdx:0,hdy:0,hr:0,tilt:0,red:0,expr:0,hF:0,hB:0,tw:1,wind:0,hix:0,hiy:0,turn:0,torn:0,scream:0,nohead:0};
+const IDLE={lean:0,crouch:0,fbx:-5,fby:0,ffx:5,ffy:0,hxF:4,hyF:12,hxB:-1,hyB:12,hdx:0,hdy:0,hr:0,tilt:0,red:0,expr:0,hF:0,hB:0,tw:1,wind:0,hix:0,hiy:0,turn:0,torn:0,scream:0};
 const mk=o=>Object.assign({},IDLE,o);
 function ik(sx,sy,hx,hy,l1,l2,dir){let dx=hx-sx,dy=hy-sy,d=Math.hypot(dx,dy);const mx=(l1+l2)*.965;if(d>mx){dx*=mx/d;dy*=mx/d;d=mx;hx=sx+dx;hy=sy+dy}if(d<.01)d=.01;
  const a=(l1*l1-l2*l2+d*d)/(2*d),h=Math.sqrt(Math.max(0,l1*l1-a*a));const px=sx+dx*a/d,py=sy+dy*a/d;return{ex:px+(-dy/d)*h*dir,ey:py+(dx/d)*h*dir,hx,hy}}
@@ -190,7 +190,7 @@ function drawFig(c,d,P,time){
  else{c.beginPath();c.moveTo(S[0]-sw,S[1]+1);c.lineTo(S[0]-4*tw,S[1]-2.8);c.quadraticCurveTo(S[0]+.5,S[1]-3.8,S[0]+4.2*tw,S[1]-2.6);c.lineTo(S[0]+sw,S[1]+1);c.quadraticCurveTo(S[0],S[1]-.5,S[0]-sw,S[1]+1);c.closePath();c.fillStyle=css(d.collar,1);c.fill();c.strokeStyle=outC(d.collar);c.lineWidth=.75;c.stroke();c.strokeStyle=hiC(d.collar,1,.55);c.lineWidth=.38;c.beginPath();c.moveTo(S[0]-3.4,S[1]-1.6);c.quadraticCurveTo(S[0]+.5,S[1]-2.6,S[0]+3.4,S[1]-1.5);c.stroke();}
  });
  leg(r.hip,r.lf,1,true);
- if(P.nohead>.5)up(()=>{const sx2=S[0],sy2=S[1]-3.4;c.fillStyle=css(d.skin,.95);c.fillRect(sx2-1.7,sy2,3.6,3.4);c.fillStyle='rgba(140,9,18,.9)';c.fillRect(sx2-1.7,sy2+1,3.6,5);c.beginPath();c.ellipse(sx2+.1,sy2,1.9,.85,0,0,TAU);c.fillStyle='#7a0a14';c.fill();c.beginPath();c.ellipse(sx2+.1,sy2-.05,1,.42,0,0,TAU);c.fillStyle='#d02634';c.fill();});else up(()=>drawHead(c,d,P,r,time));
+ up(()=>drawHead(c,d,P,r,time));
  if(handsUp)up(()=>arm(r.hb,.74,hB,r.shB));
  up(()=>arm(r.hf,1,hF,r.shF));
  c.restore();
@@ -437,7 +437,6 @@ function applyDamage(kind){const N=WOUNDS.n,t0=performance.now()/1000;
  const CU=(part,u,v,r,rot)=>add({k:'cut',part,u,v,r,rot,seed:rs()});
  if(kind==='chidori'){TE('torso',.42,.5,2.8,'#c89a80','#a85808');add({k:'puncture',part:'torso',u:.42,v:.5,r:1.2,seed:rs()});B('torso',.5,.46,2.6,1);BU('torso',.64,.2,1.5);CU('armF',.5,0,2.4,.4);B('armF',.52,0,1.3,1);F('eyeBruise');F('nose');F('lip');}
  else if(kind==='katon'){BU('torso',.3,.4,2.6);BU('torso',.55,-.2,2.2);BU('torso',.75,.3,2);BU('armF',.45,0,1.8);BU('armB',.5,0,1.6);BU('legF',.4,0,1.6);SC('torso',.5,.1,6);SC('legF',.6,0,4);SC('legB',.5,0,4);TE('torso',.62,.35,2.4,'#6a3a28','#4a2a10');TE('armF',.6,0,1.9,'#6a3a28','#4a2a10');TE('legB',.4,0,1.9,'#6a3a28','#4a2a10');F('faceBurn');F('faceSoot');}
- else if(kind==='kawarimi'){F('brow');F('lip');F('cheekCut');TE('legF',.42,0,2.2,'#c89a80','#a85808');CU('legB',.5,0,2,.6);B('legB',.52,0,1.2,1);add({k:'bruise',part:'armB',u:.4,v:0,r:2.4,seed:rs()});}
  else if(kind==='cop_rasengan'){B('torso',.5,.45,2.4,1);F('nose');F('lip');BU('torso',.5,.45,1.6);}
  else if(kind==='cop_bunshin'){F('eyeBruise');F('lip');B('torso',.4,.3,1.6,1);CU('armF',.5,0,1.4,.3);}
  else if(kind==='shishi'){F('eyeBruise');F('nose');F('lip');B('torso',.5,.4,2,1);add({k:'bruise',part:'torso',u:.45,v:.3,r:3,seed:rs()});}

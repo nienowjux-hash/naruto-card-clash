@@ -180,13 +180,13 @@ const LR=type=>type==='rasengan'&&!!ANIMS.rasengan.LR&&((anim&&anim.lethal)||!!w
 /* golpe final de um jutsu do Naruto que tem fatality proprio (LR): Rasengan, Uzumaki Rendan */
 const LE=type=>!!(type&&ANIMS[type]&&ANIMS[type].LR&&((anim&&anim.lethal)||window.__LETHE===type||(type==='rasengan'&&!!window.__LETHR)));
 const LU=type=>type==='uzumaki'&&LE(type);
-function warp(type,raw){if(LE(type))return mapGen(ANIMS[type].LR.map,raw);if(LC(type))return mapL(raw);if(LK(type))return mapK(raw);if(LW(type))return mapW(raw);if(LA(type))return mapA(raw);if(LG(type))return mapGen(ANIMS[type].L.map,raw);const h=ANIMS[type].hold;if(raw<h)return raw;if(raw<h+HS)return h+(raw-h)*.06;return raw-HS*.94;}
+function warp(type,raw){if(LE(type))return mapGen(ANIMS[type].LR.map,raw);if(LC(type))return mapL(raw);if(LK(type))return mapK(raw);if(LA(type))return mapA(raw);if(LG(type))return mapGen(ANIMS[type].L.map,raw);const h=ANIMS[type].hold;if(raw<h)return raw;if(raw<h+HS)return h+(raw-h)*.06;return raw-HS*.94;}
 const LC=type=>type==='chidori'&&!!ANIMS.chidori.L&&((anim&&anim.lethal)||!!window.__LETH);
-function sasX(type,t){{const a_=ANIMS[type];if(LG(type)&&a_.L.sX)return interp(a_.L.sX,t);if(a_&&a_.sX)return interp(a_.sX,t);}if(LC(type)&&t>=2.55)return interp(ANIMS.chidori.L.sX,t);if(LW(type))return interp(ANIMS.kawarimi.L.sX,t);if(type==='kawarimi')return interp([[0,96],[1.58,96],[1.9,170],[3.0,150],[3.59,150],[3.61,96]],t);if(type==='chidori'){if(t<2.15)return 96;if(t<2.55){const k=(t-2.15)/.4;return 96+(246-96)*Math.pow(k,1.7);}if(t<3.15)return 246;return 96;}return 96;}
-function sasY(type,t){if(LG(type)&&ANIMS[type].L.sYf)return ANIMS[type].L.sYf(t);if(!LG(type)&&ANIMS[type].sYf)return ANIMS[type].sYf(t);if(LG(type)){const q=ANIMS[type].L.sArc;if(q&&t>q[0]&&t<q[1])return -Math.sin((t-q[0])/(q[1]-q[0])*Math.PI)*q[2];return 0;}if(LC(type)&&t>3.0)return 0;{const a_=ANIMS[type];if(a_&&a_.sArc){const q=a_.sArc;if(t>q[0]&&t<q[1])return -Math.sin((t-q[0])/(q[1]-q[0])*Math.PI)*q[2];return 0;}}if(type==='kawarimi'&&t>1.9&&t<2.12){const k=(t-1.9)/.22;return -48*(1-k)*(1-k);}return 0;}
+function sasX(type,t){{const a_=ANIMS[type];if(LG(type)&&a_.L.sX)return interp(a_.L.sX,t);if(a_&&a_.sX)return interp(a_.sX,t);}if(LC(type)&&t>=2.55)return interp(ANIMS.chidori.L.sX,t);if(type==='chidori'){if(t<2.15)return 96;if(t<2.55){const k=(t-2.15)/.4;return 96+(246-96)*Math.pow(k,1.7);}if(t<3.15)return 246;return 96;}return 96;}
+function sasY(type,t){if(LG(type)&&ANIMS[type].L.sYf)return ANIMS[type].L.sYf(t);if(!LG(type)&&ANIMS[type].sYf)return ANIMS[type].sYf(t);if(LG(type)){const q=ANIMS[type].L.sArc;if(q&&t>q[0]&&t<q[1])return -Math.sin((t-q[0])/(q[1]-q[0])*Math.PI)*q[2];return 0;}if(LC(type)&&t>3.0)return 0;{const a_=ANIMS[type];if(a_&&a_.sArc){const q=a_.sArc;if(t>q[0]&&t<q[1])return -Math.sin((t-q[0])/(q[1]-q[0])*Math.PI)*q[2];return 0;}}return 0;}
 function sRotF(type,t){if(LG(type)){const q=ANIMS[type].L.sSpin;if(q&&t>q[0]&&t<q[1]){const k=(t-q[0])/(q[1]-q[0]),e=k*k*(3-2*k);return q[2]*TAU*e;}return 0;}if(LC(type)&&t>3.0)return 0;{const a_=ANIMS[type];if(a_&&a_.sSpin){const q=a_.sSpin;if(t>q[0]&&t<q[1]){const k=(t-q[0])/(q[1]-q[0]),e=k*k*(3-2*k);return q[2]*TAU*e;}return 0;}}if(type==='chidori'&&t>3.12&&t<3.56){const k=(t-3.12)/.44,e=k*k*(3-2*k);return -TAU*e;}return 0;}
-function nY(type,t){if(LG(type))return ANIMS[type].L.nY?ANIMS[type].L.nY(t):0;if(ANIMS[type].nYf)return ANIMS[type].nYf(t);if(ANIMS[type].noLift)return 0;if(LC(type)||LK(type)||LW(type)||LA(type))return 0;{const a_=ANIMS[type];if(a_.enemy){const q=a_.nArc;if(q&&t>q[0]&&t<q[1])return -Math.sin((t-q[0])/(q[1]-q[0])*Math.PI)*q[2];return 0;}}const h=ANIMS[type].hitT;if(t>h&&t<h+.5){return -Math.sin((t-h)/.5*Math.PI)*(type==='chidori'?18:10);}return 0;}
-function nRotF(type,t){if(LG(type))return ANIMS[type].L.nRot?ANIMS[type].L.nRot(t):0;if(ANIMS[type].nRotf)return ANIMS[type].nRotf(t);if(ANIMS[type].enemy||LC(type)||LW(type))return 0;const h=ANIMS[type].hitT;if((type==='chidori'||type==='kawarimi')&&t>h+.02&&t<h+.5){const k=(t-h-.02)/.48,e=k*k*(3-2*k);return (type==='chidori'?-1:1)*TAU*e;}return 0;}
+function nY(type,t){if(LG(type))return ANIMS[type].L.nY?ANIMS[type].L.nY(t):0;if(ANIMS[type].nYf)return ANIMS[type].nYf(t);if(ANIMS[type].noLift)return 0;if(LC(type)||LK(type)||LA(type))return 0;{const a_=ANIMS[type];if(a_.enemy){const q=a_.nArc;if(q&&t>q[0]&&t<q[1])return -Math.sin((t-q[0])/(q[1]-q[0])*Math.PI)*q[2];return 0;}}const h=ANIMS[type].hitT;if(t>h&&t<h+.5){return -Math.sin((t-h)/.5*Math.PI)*(type==='chidori'?18:10);}return 0;}
+function nRotF(type,t){if(LG(type))return ANIMS[type].L.nRot?ANIMS[type].L.nRot(t):0;if(ANIMS[type].nRotf)return ANIMS[type].nRotf(t);if(ANIMS[type].enemy||LC(type))return 0;const h=ANIMS[type].hitT;if(type==='chidori'&&t>h+.02&&t<h+.5){const k=(t-h-.02)/.48,e=k*k*(3-2*k);return (type==='chidori'?-1:1)*TAU*e;}return 0;}
 /* Passos com o pe preso ao chao: durante o apoio o pe anda para tras na mesma velocidade do corpo (sem patinar);
    na passada ele sobe em arco e pousa na frente. Cada pouso gera uma ondulacao na agua. */
 const STRIDE=18,STEPS=[],GSTATE=[{c:null},{c:null}];
@@ -207,64 +207,6 @@ function gait(P,x,face,v,ground,time,idle,ph0,gs){
   o.hyF-=br2*.35;o.hyB-=br2*.3;o.hxF+=Math.sin(time*.8+ph0)*.25;o.hdy-=br*.22;o.hr+=Math.sin(time*.55+ph0*2)*.025;o.lean+=br*.12;if(gs)gs.c=null;}
  else if(gs)gs.c=null;
  return o;}
-/* Fatality do Kawarimi: kunai, rastro do corte, fonte de sangue no pescoco, cabeca voando e caindo na agua. */
-let NHEAD_SPR=null;
-function drawFlyHead(g,x,y,rot,P,time){
- if(USE_SPR&&typeof naruHead==='function'){ /* cabeca em pixel art, com o corte de sangue no pescoco */
-  if(!NHEAD_SPR){const gr=PixGrid(44,26);naruHead(gr,2,4,{shut:true});gr.outline('K');for(let x2=12;x2<32;x2++){if(gr.G[24]&&gr.G[24][x2]!=='.')gr.G[24][x2]='R';}const c=document.createElement('canvas');gr.draw(c,NAR_PAL,1);NHEAD_SPR=c;}
-  g.save();g.translate(x,y);g.rotate(rot);g.scale(-1,1);g.imageSmoothingEnabled=false;g.drawImage(NHEAD_SPR,-27,-14);g.restore();return;}
- g.save();g.translate(x,y);g.rotate(rot);g.scale(-BS,BS);
- const Pf=Object.assign({},P,{hr:0,hix:0,hiy:0,turn:0,nohead:0});drawHead(g,NARUTO,Pf,{C:[0,0]},time);
- g.fillStyle='rgba(135,8,16,.95)';g.beginPath();g.ellipse(.6,6.6,2.1,.9,0,0,TAU);g.fill();g.fillStyle='rgba(205,30,40,.9)';g.beginPath();g.ellipse(.6,6.5,1.1,.45,0,0,TAU);g.fill();
- g.restore();}
-function decapFX(f,t,raw,time,fr,nx0,sx0,sy0,nP){
- const L=ANIMS.kawarimi.L,rn=R((fr>>1)*17+3),tipHand=tt=>{const rg=rigW(evalPose(L.sP,tt)),X=sasX('kawarimi',tt);return[X-rg.hf.hx,GY+rg.hf.hy,Math.atan2(rg.hf.hy-rg.hf.ey,-(rg.hf.hx-rg.hf.ex))];};
- f.lineCap='round';f.lineJoin='round';
- if(t>=2.3&&t<5.2){ /* kunai na mao do Sasuke e rastro do corte */
-  const h=tipHand(t),dx=Math.cos(h[2]),dy=Math.sin(h[2]),bl=t>2.72?.78:0;
-  if(t>2.6&&t<2.85){f.globalCompositeOperation='lighter';for(let i=0;i<16;i++){const a0=tipHand(t-i*.012),a1=tipHand(t-(i+1)*.012),k=1-i/16;f.strokeStyle=`rgba(235,245,255,${k*.9})`;f.lineWidth=3.2*k+.4;f.beginPath();f.moveTo(a0[0]+dx*8,a0[1]+dy*8);f.lineTo(a1[0]+dx*8,a1[1]+dy*8);f.stroke();}f.globalCompositeOperation='source-over';}
-  f.strokeStyle='#161624';f.lineWidth=1.3;f.beginPath();f.moveTo(h[0]-dx*2.6,h[1]-dy*2.6);f.lineTo(h[0]+dx*1.6,h[1]+dy*1.6);f.stroke();
-  f.strokeStyle='#8c8ca4';f.lineWidth=.5;f.beginPath();f.arc(h[0]-dx*3.4,h[1]-dy*3.4,1.1,0,TAU);f.stroke();
-  const nxp=-dy,nyp=dx;f.beginPath();f.moveTo(h[0]+dx*1.6+nxp*.9,h[1]+dy*1.6+nyp*.9);f.lineTo(h[0]+dx*10.5,h[1]+dy*10.5);f.lineTo(h[0]+dx*1.6-nxp*.9,h[1]+dy*1.6-nyp*.9);f.closePath();
-  const bg2=f.createLinearGradient(h[0],h[1],h[0]+dx*10,h[1]+dy*10);bg2.addColorStop(0,'#c8d2e0');bg2.addColorStop(1,'#f4f8ff');f.fillStyle=bg2;f.fill();f.strokeStyle='rgba(30,30,50,.8)';f.lineWidth=.35;f.stroke();
-  if(bl>0){f.fillStyle=`rgba(150,10,20,${bl})`;f.beginPath();f.moveTo(h[0]+dx*3+nxp*.8,h[1]+dy*3+nyp*.8);f.lineTo(h[0]+dx*10.3,h[1]+dy*10.3);f.lineTo(h[0]+dx*3-nxp*.8,h[1]+dy*3-nyp*.8);f.closePath();f.fill();
-   if(t>3.2)for(let i=0;i<4;i++){const ph=((t*.9+i*.27)%1);f.fillStyle=`rgba(150,10,20,${(1-ph)*.9})`;f.beginPath();f.ellipse(h[0]+dx*10.5+(i-1.5)*.4,h[1]+dy*10.5+2+ph*ph*(GY-h[1]-14),.7,1.1,0,0,TAU);f.fill();}}}
- /* fonte de sangue no toco do pescoco: jatos no ritmo do coracao, enfraquecendo */
- const rgN=rigW(nP),nk=[nx0-rgN.S[0],GY+rgN.S[1]-4.5],env=(t>=2.68&&t<5.6)?Math.pow(1-scaleAt(0,1,2.68,5.6,t),1.2):0;
- if(env>0){const pulse=.5+.5*Math.max(0,Math.sin(time*9));for(let k=0;k<3;k++){const ak=((time*.9+k*.31)%.8);bloodSpray(f,nk[0],nk[1],ak,31+k,Math.round(20*env*(.55+.45*pulse))+4,.25*(k-1));}
-  f.strokeStyle=`rgba(130,8,16,${.8*env})`;for(let i=0;i<4;i++){const ph=((t*.8+i*.29)%1);f.lineWidth=1.1;f.beginPath();f.moveTo(nk[0]+(i-1.5)*1.4,nk[1]+1);f.lineTo(nk[0]+(i-1.5)*1.6,nk[1]+1+ph*(GY-nk[1]-3));f.stroke();}}
- /* a cabeca: rastro de sangue, splash e mancha na agua ao cair */
- if(t>=2.68){const age=t-2.68,hs=headSim(L.head0[0],L.head0[1],age);
-  for(let i=1;i<=12;i++){const a2=age-i*.035;if(a2<0)break;const q=headSim(L.head0[0],L.head0[1],a2);f.fillStyle=`rgba(150,10,20,${(1-i/13)*.85})`;f.beginPath();f.arc(q.x+(rn()-.5)*1.6,q.y+(rn()-.5)*1.6,1.2*(1-i/16)+.3,0,TAU);f.fill();}
-  const la=age-L.landAge;if(la>=0){const kk=Math.min(la,1.6);
-   if(la<1.2){waterColumn(f,hs.x,Math.min(la,.9),9,26);f.strokeStyle=`rgba(210,232,255,${1-la/1.2})`;f.lineWidth=.5;f.beginPath();f.ellipse(hs.x,GY+1,4+la*26,(4+la*26)*.24,0,0,TAU);f.stroke();}
-   f.fillStyle=`rgba(120,8,16,${Math.min(.55,la*1.2)})`;f.beginPath();f.ellipse(hs.x,GY+1.5,5+kk*10,(5+kk*10)*.24,0,0,TAU);f.fill();}}
- /* gotas pesadas caindo do corpo e sangue espirrado no chao */
- if(t>2.8&&t<5.8){for(let i=0;i<10;i++){const ph=((t*.7+i*.173)%1),x=nx0+Math.sin(i*5.7)*14,y=GY-60+ph*ph*58;f.fillStyle=`rgba(140,9,18,${(1-ph*.5)*.9*Math.max(.2,env)})`;f.beginPath();f.ellipse(x,y,.6,1,0,0,TAU);f.fill();}
-  const pr=Math.min(16,(t-2.9)*4.5);if(pr>0){f.fillStyle='rgba(112,6,14,.6)';f.beginPath();f.ellipse(nx0-2,GY+2,pr,pr*.24,0,0,TAU);f.fill();}}
-}
-/* efeitos de "lente" do corte: raio de luz horizontal, vinheta vermelha e respingos que escorrem */
-function decapLens(g,raw,ccx,ccy,z){
- const syp=y=>(y-ccy)*K*z+PH/2,a=raw-2.66;
- if(a>=0&&a<.4){const y=syp(GY-50),al=1-a/.4;g.save();g.globalCompositeOperation='lighter';const gr=g.createLinearGradient(0,y-7,0,y+7);gr.addColorStop(0,'rgba(255,255,255,0)');gr.addColorStop(.5,`rgba(255,255,255,${al})`);gr.addColorStop(1,'rgba(255,255,255,0)');g.fillStyle=gr;g.fillRect(0,y-7,PW,14);g.restore();}
- const hv=scaleAt(0,1,2.7,3.3,raw)*(1-scaleAt(0,1,7.2,8.4,raw));
- if(hv>0){const pulse=.5+.5*Math.pow(Math.max(0,Math.sin(raw*5.2)),4),vg=g.createRadialGradient(PW/2,PH/2,PH*.3,PW/2,PH/2,PW*.65);vg.addColorStop(0,'rgba(90,0,8,0)');vg.addColorStop(1,`rgba(110,0,10,${.55*hv*pulse+.1*hv})`);g.fillStyle=vg;g.fillRect(0,0,PW,PH);}
- const SPL=[[2.72,.82,.25,56,1],[2.8,.18,.4,44,2],[2.95,.68,.78,38,3],[3.5,.35,.82,50,4],[3.9,.9,.5,34,5]];
- const fade=1-scaleAt(0,1,8.4,9.6,raw);if(fade<=0)return;
- for(const s of SPL){const age=raw-s[0];if(age<0)continue;const x=s[1]*PW,y=s[2]*PH+age*s[3]*.4*Math.min(1,age),sz=s[3]*(.55+Math.min(1,age*5)*.45);
-  const len=Math.min(age*s[3]*.9,s[3]*2.2);g.save();g.lineCap='round';g.strokeStyle=`rgba(104,4,12,${fade*.8})`;g.lineWidth=sz*.2;g.beginPath();g.moveTo(x,y);g.lineTo(x,y+len);g.stroke();
-  g.globalAlpha=fade*.88;g.translate(x,y);g.fillStyle='rgb(112,5,13)';blobPath(g,sz,s[4],.3);g.fill();g.fillStyle='rgba(165,15,24,.55)';g.translate(-sz*.12,-sz*.14);blobPath(g,sz*.45,s[4]+1,.3);g.fill();g.restore();}
-}
-/* Som do fatality do Kawarimi (segundos reais): corte, osso, jorro, splash da cabeca na agua, queda do corpo. */
-function sfxFatalW(){
- const rl=rawOfW(2.68+ANIMS.kawarimi.L.landAge),rf=rawOfW(5.6);
- nz(.28,'highpass',3000,9000,.45,2.6);tone('sine',2400,3600,.6,.07,2.64);
- nz(.2,'lowpass',1600,200,.75,2.68);tone('sine',90,40,.45,.6,2.68);nz(.4,'bandpass',300,90,.6,2.72);
- [3.4,4.0,4.6,5.2,5.8,6.4,7.0].forEach((a,i)=>nz(.35,'lowpass',700,150,.4-i*.03,a));
- nz(1.6,'bandpass',500,2000,.07,3.0);
- nz(.55,'lowpass',2600,300,.65,rl);tone('sine',140,50,.3,.4,rl);nz(.2,'lowpass',1800,300,.4,rl+.3);nz(.16,'lowpass',1500,300,.3,rl+.5);
- tone('sine',85,30,.55,.65,rf);nz(.4,'lowpass',1500,150,.55,rf);
- [rf+.8,rf+1.3,rf+1.9].forEach(a=>nz(.08,'bandpass',1200,500,.2,a));}
 /* Fatality do Amaterasu: flocos de cinza saindo do corpo, monte de cinza na agua, e o olho sangrando do Sasuke. */
 function ashFlakes(f,t,time,nx0,ny0,P){
  const rg=rigW(P),E=o=>[o.ex,o.ey],H=o=>[o.hx,o.hy],mid=[(rg.S[0]+rg.Hp[0])/2,(rg.S[1]+rg.Hp[1])/2];

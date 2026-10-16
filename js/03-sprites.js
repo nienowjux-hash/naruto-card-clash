@@ -35,7 +35,7 @@ function sprRefs(){if(SPR_REF)return SPR_REF;const L=[];const add=(k,...ps)=>ps.
  add('chidori',PREP,CHARGE,COIL,typeof SEL_C!=='undefined'&&SEL_C,typeof RS_H!=='undefined'&&RS_H);
  if(SPR.pw)add('pw',PN_W);
  if(SPR.kw&&typeof CK_W!=='undefined')add('kw',CK_W);
- add('punch',DASH,HIT,typeof CH_PULL!=='undefined'&&CH_PULL,(SPR.run?false:(typeof PN_D!=='undefined'&&PN_D)),typeof PN_P!=='undefined'&&PN_P,(SPR.tw?false:(typeof KT_T!=='undefined'&&KT_T)),(SPR.tw?false:(typeof KT_F!=='undefined'&&KT_F)),typeof SS_T!=='undefined'&&SS_T,typeof SEL_D!=='undefined'&&SEL_D,typeof SEL_H!=='undefined'&&SEL_H,typeof RS_D!=='undefined'&&RS_D,typeof RS_P!=='undefined'&&RS_P,typeof SLASH!=='undefined'&&SLASH,typeof SH_A!=='undefined'&&SH_A,typeof SH_TOP!=='undefined'&&SH_TOP);
+ add('punch',DASH,HIT,typeof CH_PULL!=='undefined'&&CH_PULL,(SPR.run?false:(typeof PN_D!=='undefined'&&PN_D)),typeof PN_P!=='undefined'&&PN_P,(SPR.tw?false:(typeof KT_T!=='undefined'&&KT_T)),(SPR.tw?false:(typeof KT_F!=='undefined'&&KT_F)),typeof SS_T!=='undefined'&&SS_T,typeof SEL_D!=='undefined'&&SEL_D,typeof SEL_H!=='undefined'&&SEL_H,typeof RS_D!=='undefined'&&RS_D,typeof RS_P!=='undefined'&&RS_P,typeof SH_A!=='undefined'&&SH_A,typeof SH_TOP!=='undefined'&&SH_TOP);
  if(SPR.run&&typeof PN_D!=='undefined')add('run',PN_D);
  if(SPR.tw&&typeof KT_W!=='undefined'){add('tw',KT_W);add('tt',KT_T);add('te',KT_F);}
  add('kick',KICK,typeof CK_K!=='undefined'&&CK_K,typeof SH_UP!=='undefined'&&SH_UP,typeof SH_B!=='undefined'&&SH_B,typeof SH_HEEL!=='undefined'&&SH_HEEL);
@@ -63,7 +63,7 @@ function blitSprite(x,y,flip,P,time,o,isN){
  if(o.tint){sprTx.fillStyle=css(o.tint,1,o.tk);sprTx.fillRect(0,0,S.w,S.h);}
  sprTx.globalCompositeOperation='source-over';
  /* efeitos especiais em pixel art, aplicados direto nos pixels do sprite */
- if(o.cracks>0||o.curse>0||o.hole||o.dissolve>0||P.torn||P.nohead||o.bleed>.04||P.hr<-1.6){
+ if(o.cracks>0||o.curse>0||o.hole||o.dissolve>0||P.torn||o.bleed>.04||P.hr<-1.6){
   const id=sprTx.getImageData(0,0,S.w,S.h),d=id.data,W2=S.w,H2=S.h,down=key==='down',hsh=(a,b)=>((a*73856093)^(b*19349663))>>>0;
   const bl=o.bleed||0,bleedAt=(x,y)=>y>=24&&(hsh(x*7+3,y*5+1)%1000)/1000<bl*.14;
   const isSkin=i=>d[i]>200&&d[i+1]>130&&d[i+1]<215&&d[i+2]>80&&d[i+2]<190&&d[i]-d[i+2]>50;
@@ -73,7 +73,6 @@ function blitSprite(x,y,flip,P,time,o,isN){
    if(P.hr<-1.6&&!down&&yy>=17&&yy<=28&&xx>=19&&xx<=47){const edge=!d[i-3]||!d[i+5]||!d[i-W2*4+3]||!d[i+W2*4+3];
     if(!edge){const q=hsh(xx,yy*3)%5;d[i]=q<2?255:q<4?233:255;d[i+1]=q<2?217:q<4?169:246;d[i+2]=q<2?58:q<4?29:176;}}
    /* sem cabeca (decapitado): apaga tudo acima do pescoco */
-   if(P.nohead&&(down?xx<17:yy<25)){d[i+3]=0;continue;}
    /* carbonizado: rachaduras incandescentes por cima da tinta escura */
    if(o.cracks>0&&h<.17*o.cracks&&((xx+yy)%3===0)){d[i]=255;d[i+1]=110+(h*900|0)%80;d[i+2]=30;}
    /* marcas do selo amaldicoado: riscos pretos so na pele */

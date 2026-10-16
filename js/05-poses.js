@@ -129,40 +129,7 @@ const mapK=raw=>{const M=ANIMS.katon.L.map;if(raw<=0)return raw;let i=0;while(i<
 ANIMS.katon.L.sfxFn=(...a)=>sfxFatalK(...a); /* sfxFatalK e definida em outro arquivo (js/11-kyubi.js): resolve so na hora de tocar */
 
 
-/* ANTIGO: Kawarimi como GOLPE (esquiva + contra-ataque + fatality de decapitacao). Fora do menu desde que o Kawarimi virou defesa
-   (veja KAWARIMI_S / 'kawarimidef' / 'nkawarimi' em js/08-mechanics.js). Mantido por enquanto; nada o chama. */
-ANIMS.kawarimi={dur:5.2,hold:2.68,
-  sP:[[0,READY],[.45,READY],[.55,SEAL_A],[.85,SEAL_B],[1.1,SEAL_C],[1.4,READY],[1.9,READY],[2.25,K_WIND],[2.62,K_WIND],[2.7,KICK],[3.0,KICK],[3.25,READY],[5.0,READY]],
-  nP:[[0,N_READY],[.9,N_READY],[1.15,N_COIL],[1.3,N_DASHP],[1.58,N_DASHP],[1.62,N_PUNCH],[2.3,N_PUNCH],[2.5,N_SURP],[2.64,N_SURP],[2.7,N_HITB],[3.1,N_HITB],[3.5,N_STAG],[3.58,N_STAG],[3.62,N_READY]],
-  tp:[3.6],tpN:[3.6],nX:[[0,288],[1.15,288],[1.3,270],[1.6,126],[2.65,126],[2.95,70],[3.45,62],[3.59,62],[3.61,288],[5.2,288]],
-  cam:[[0,{z:1.04,cx:192,cy:116}],[.4,{z:1.04,cx:192,cy:116}],[.9,{z:1.3,cx:130,cy:128}],[1.3,{z:1.3,cx:200,cy:128}],[1.62,{z:1.55,cx:112,cy:130}],[2.1,{z:1.4,cx:140,cy:130}],[2.68,{z:1.6,cx:148,cy:130}],[3.4,{z:1.3,cx:120,cy:128}],[3.9,{z:1.04,cx:192,cy:116}],[5.2,{z:1.04,cx:192,cy:116}]],
-  hitT:2.68,dmg:14,cost:10};
-/* ---- golpe final do Kawarimi: o Sasuke surge atras e decapita o Naruto com um kunai ---- */
-const LW=type=>type==='kawarimi'&&!!ANIMS.kawarimi.L&&((anim&&anim.lethal)||!!window.__LETHW);
-let decap=0;
-const SLASH=mk({tilt:.3,crouch:5,lean:3,fbx:-10,ffx:6,hxF:17,hyF:-1,hxB:-8,hyB:3,hdx:3,hdy:1,red:1,expr:2,tw:.85,hr:-.08,wind:.8});
-const SLASHF=mk({tilt:.2,crouch:4,lean:2,fbx:-9,ffx:6,hxF:8,hyF:5,hxB:-6,hyB:4,red:1,expr:1,tw:.9,hr:-.05,wind:.5});
 const FLICK=mk({tilt:.02,crouch:2,lean:0,fbx:-7,ffx:5,hxF:3,hyF:10,hxB:5,hyB:8,red:1,expr:7,tw:.95,hr:.05});
-const N_HL1=mk({tilt:-.04,lean:0,crouch:2,fbx:-8,ffx:6,hxF:6,hyF:2,hxB:5,hyB:6,expr:3,tw:1,nohead:1,wind:.4});
-const N_HL2=mk({tilt:.02,lean:0,crouch:2.5,fbx:-8,ffx:6,hxF:1,hyF:12,hxB:0,hyB:12,expr:3,tw:1,nohead:1});
-const N_HL3=mk({tilt:.18,lean:1,crouch:6,fbx:-9,ffx:6,hxF:0,hyF:13,hxB:-1,hyB:13,expr:3,tw:1,nohead:1});
-const N_HL4=mk({tilt:.5,lean:2,crouch:11,fbx:-10,ffx:6,hxF:1,hyF:13,hxB:0,hyB:13,expr:3,tw:1,nohead:1});
-const N_DOWN_H=Object.assign({},N_DOWN,{nohead:1});
-ANIMS.kawarimi.L={dur:9.8,koAt:8.9,bannerAt:8.0,banner:['斬','FATALITY','Kawarimi','#d9b878'],sfxFn:null,
- /* mapa raw->t: pausa no corte, camera lenta com a cabeca voando e o corpo de pe, depois acelera na queda */
- map:[[0,0],[2.68,2.68],[3.05,2.72],[5.5,3.9],[8.0,5.4],[99,96.4]],
- sX:[[0,96],[1.58,96],[1.9,170],[2.6,152],[99,152]],
- sP:ANIMS.kawarimi.sP.filter(k=>k[0]<=2.62).concat([[2.7,SLASH],[3.2,SLASH],[3.6,SLASHF],[4.2,FLICK],[5.2,VICTORY],[99,VICTORY]]),
- nP:ANIMS.kawarimi.nP.filter(k=>k[0]<=2.64).concat([[2.66,N_SURP],[2.68,N_HL1],[3.6,N_HL2],[4.6,N_HL3],[5.1,N_HL3],[5.5,N_HL4],[5.9,N_DOWN_H],[99,N_DOWN_H]]),
- nX:[[0,288],[1.15,288],[1.3,270],[1.6,126],[3.5,126],[4.6,122],[5.9,112],[99,112]],
- cam:ANIMS.kawarimi.cam.filter(k=>k[0]<=2.1).concat([[2.5,{z:1.9,cx:140,cy:126}],[2.68,{z:2.5,cx:136,cy:118}],[3.0,{z:2.2,cx:124,cy:108}],[3.6,{z:2.0,cx:112,cy:128}],[4.4,{z:1.8,cx:128,cy:130}],[5.2,{z:2.0,cx:124,cy:140}],[6.0,{z:1.6,cx:135,cy:135}],[7.0,{z:1.25,cx:150,cy:125}],[7.4,{z:1.04,cx:192,cy:116}]])};
-const mapW=raw=>{const M=ANIMS.kawarimi.L.map;if(raw<=0)return raw;let i=0;while(i<M.length-2&&raw>M[i+1][0])i++;const a=M[i],b=M[i+1];return a[1]+(b[1]-a[1])*(raw-a[0])/(b[0]-a[0]);};
-const rawOfW=tt=>{let lo=0,hi=40;for(let i=0;i<40;i++){const m=(lo+hi)/2;if(mapW(m)<tt)lo=m;else hi=m;}return lo;};
-/* a cabeca decepada: parabola, giro e quiques na agua (simulacao simples, so depende do tempo desde o corte) */
-function headSim(x0,y0,age){let x=x0,y=y0,vx=-34,vy=-95,r=0,w=-9,t=0,b=0;const g0=260;while(t<age){const s=Math.min(.01,age-t);vy+=g0*s;x+=vx*s;y+=vy*s;r+=w*s;if(y>GY-3){y=GY-3;if(Math.abs(vy)>25&&b<3){vy*=-.32;vx*=.55;w*=.5;b++;}else{vy=0;vx=0;w=0;}}t+=s;}return{x,y,r,b};}
-{const rg=rigW(evalPose(ANIMS.kawarimi.L.nP,2.68));ANIMS.kawarimi.L.head0=[126-rg.C[0],GY+rg.C[1]];
- let a=0,x=ANIMS.kawarimi.L.head0[0],y=ANIMS.kawarimi.L.head0[1],vy=-95;while(a<5){vy+=260*.01;y+=vy*.01;a+=.01;if(y>GY-3)break;}ANIMS.kawarimi.L.landAge=a;}
-ANIMS.kawarimi.L.sfxFn=(...a)=>sfxFatalW(...a); /* sfxFatalW e definida em js/11-kyubi.js: resolve so na hora de tocar */
 ANIMS.amaterasu={dur:5.0,hold:2.0,
   sP:[[0,READY],[.45,READY],[.65,AMA_A],[1.0,AMA_CLUTCH],[1.55,AMA_CLUTCH],[1.9,AMA_A2],[2.7,AMA_A2],[3.0,AMA_CL2],[4.2,AMA_CL2],[4.6,READY],[5.0,READY]],
   nP:[[0,N_READY],[1.7,N_READY],[1.95,N_SURP],[2.05,N_BURN1],[2.35,N_BURN2],[2.65,N_BURN1],[2.95,N_BURN2],[3.3,N_BURN1],[3.9,N_STAG],[4.5,N_READY]],
