@@ -60,18 +60,44 @@ function dmSuigakureFX(c){const {f,t,time}=c,k0=scaleAt(0,1,.8,1.05,t)*(1-scaleA
   const r2=R(66);for(let i=0;i<22;i++){const an=-Math.PI*(.1+r2()*.8),sp=24+r2()*46,x=104+Math.cos(an)*sp*k*(r2()<.5?-1:1),y=GY-8+Math.sin(an)*sp*k+k*k*50;f.fillStyle=`rgba(${160+(r2()*70|0)},${210+(r2()*40|0)},255,${1-k})`;f.fillRect(Math.round(x),Math.round(y),2,2);}}
  dmClaws(f,96,GY-44,a,'180,235,255',1);}
 /* ---------------- Garras envenenadas ---------------- */
-ANIMS.dmGarras={enemy:true,dur:3.9,hold:1.35,hitT:1.35,hits:[{t:1.35,dmg:4},{t:1.7,dmg:4},{t:2.05,dmg:4}],cost:8,noLift:true,
- sP:[[0,READY],[1.3,READY],[1.37,S_HIT],[1.6,S_STAG],[1.72,S_HIT],[1.95,S_STAG],[2.07,S_HIT],[2.5,S_STAG],[3.3,READY]],sX:[[0,96],[1.3,96],[1.4,102],[1.75,100],[2.1,104],[3.0,98],[99,96]],
- nP:[[0,N_READY],[.3,N_READY],[.4,DASH],[.95,DASH],[1.1,PN_W],[1.3,PN_W],[1.35,PN_P],[1.5,PN_P],[1.55,PN_W],[1.68,PN_W],[1.7,PN_P],[1.85,PN_P],[1.9,PN_W],[2.03,PN_W],[2.05,PN_P],[2.4,PN_P],[2.7,N_READY],[2.8,DASH],[3.5,DASH],[3.6,N_READY],[3.9,N_READY]],
- nX:[[0,288],[.35,288],[1.0,136],[2.6,136],[3.3,288],[99,288]],
- cam:[[0,DM_BASE],[.4,{z:1.2,cx:210,cy:122}],[1.0,{z:1.8,cx:128,cy:126}],[2.2,{z:2.0,cx:120,cy:128}],[2.9,{z:1.4,cx:150,cy:124}],[3.5,DM_BASE],[3.9,DM_BASE]],
- env:(raw,t)=>{const E={};for(const h of [1.35,1.7,2.05]){const a=t-h;if(a>0&&a<.25)E.shk=Math.max(E.shk||0,3*(1-a/.25));}return E;},
+ANIMS.dmGarras={enemy:true,dur:4.2,hold:1.35,hitT:1.35,hits:[{t:1.35,dmg:4},{t:1.7,dmg:4},{t:2.05,dmg:4}],cost:8,noLift:true,
+ sP:[[0,READY],[1.3,READY],[1.37,S_HIT],[1.6,S_STAG],[1.72,S_HIT],[1.95,S_STAG],[2.07,S_HIT],[2.55,S_STAG],[3.4,READY]],sX:[[0,96],[1.3,96],[1.4,102],[1.72,100],[2.07,106],[2.3,112],[3.2,98],[99,96]],
+ nP:[[0,N_READY],[.3,N_READY],[.5,PN_W],[.8,PN_W],[.85,DASH],[1.15,DASH],[1.25,PN_W],[1.3,PN_W],[1.35,PN_P],[1.5,PN_P],[1.55,PN_W],[1.68,PN_W],[1.7,PN_P],[1.85,PN_P],[1.9,PN_W],[2.03,PN_W],[2.05,PN_P],[2.45,PN_P],[2.75,N_READY],[3.0,DASH],[3.7,DASH],[3.8,N_READY],[4.2,N_READY]],
+ nX:[[0,288],[.8,288],[1.2,138],[2.7,138],[3.0,138],[3.7,288],[99,288]],
+ cam:[[0,DM_BASE],[.35,{z:1.5,cx:252,cy:126}],[.8,{z:1.5,cx:240,cy:126}],[1.2,{z:1.8,cx:150,cy:126}],[1.35,{z:2.1,cx:114,cy:128}],[1.7,{z:2.3,cx:110,cy:126}],[2.05,{z:2.7,cx:108,cy:126}],[2.5,{z:2.0,cx:116,cy:126}],[3.0,{z:1.35,cx:160,cy:124}],[3.6,DM_BASE],[4.2,DM_BASE]],
+ env:(raw,t)=>{const E={};for(const [h,pw] of [[1.35,3],[1.7,4],[2.05,7]]){const a=t-h;if(a>0&&a<.3)E.shk=Math.max(E.shk||0,pw*(1-a/.3));if(a>=0&&a<.04)E.flash=Math.max(E.flash||0,.15+pw*.03);}E.dim=.18*scaleAt(0,1,.3,.8,t)*(1-scaleAt(0,1,2.6,3.2,t));E.tint=`rgba(20,70,20,${.16*scaleAt(0,1,.3,.9,t)*(1-scaleAt(0,1,2.6,3.2,t))})`;return E;},
  fx:c=>dmGarrasFX(c),
- start:(an,i)=>{later(450,()=>banner('毒爪','GARRAS ENVENENADAS','Veneno Paralisante','#7ad070'));later(1000,()=>sayNq('Um arranhão basta.',['70%','14%']));
-  [1350,1700,2050].forEach(ms=>later(ms,()=>{nz(.12,'highpass',3000,8000,.3,0);tone('sine',1400,600,.12,.2,0);}));
+ start:(an,i)=>{later(350,()=>banner('毒爪','GARRAS ENVENENADAS','Veneno Paralisante','#7ad070'));later(700,()=>sayNq('Um arranhão basta.',['70%','14%']));
+  later(450,()=>{tone('sine',300,900,.5,.07,0);nz(.4,'bandpass',900,2400,.12,0);});later(850,()=>{nz(.3,'highpass',2500,8000,.3,0);tone('sine',700,300,.3,.15,0);});
+  [[1350,1.0],[1700,1.0],[2050,1.5]].forEach(([ms,m])=>later(ms,()=>{nz(.14*m,'highpass',3000,8000,.35,0);tone('sine',1500,500,.14*m,.22,0);tone('sine',90,50,.18*m,.4,0);nz(.2,'bandpass',600,300,.25,0);}));
   if(!i.dodge&&!i.isLR)later(2150,()=>{poisonS=3;toast(''+HN()+' foi envenenado: perde 3 de vida por turno (3 turnos)');});}};
-function dmGarrasFX(c){const {f,t,time}=c;for(const h of [1.35,1.7,2.05]){dmClaws(f,96,GY-42,t-h,'150,255,110',-1);const a=t-h;if(a>=0&&a<.6){const r2=R(Math.round(h*100));for(let i=0;i<8;i++){const an=-Math.PI*(.1+r2()*.5),sp=16+r2()*26,x=94+Math.cos(an)*sp*a*(r2()<.5?-1:1),y=GY-40+Math.sin(an)*sp*a+a*a*50;f.fillStyle=`rgba(120,255,110,${1-a/.6})`;f.fillRect(Math.round(x),Math.round(y),2,2);}}}
- if(t>.4&&t<1.0){const k=(t-.4)/.6;f.save();f.strokeStyle='rgba(230,235,245,.55)';f.lineWidth=1;for(let q=0;q<5;q++){const y=GY-12-q*9;f.beginPath();f.moveTo(288-(288-136)*k+14,y);f.lineTo(288-(288-136)*k+50,y);f.stroke();}f.restore();}}
+/* aparencia do proprio atacante (aura, rastro) */
+function dmSelf(c,x,y,flip,pose,alpha){withG(c,G=>blit(x,y,flip,NARUTO,pose,c.time,{alpha:alpha,noRefl:true}));}
+/* corte curvo e afilado (da garra): cabeca branca, miolo verde-claro e halo de veneno; varre de p0 a p1 em ~0.1s e some */
+function dmSlash(f,p0,p1,bend,age,w){if(age<0||age>.34)return;const k=age/.34,sw=Math.min(1,age/.09),tail=Math.max(0,sw-.7+k*.5),mx=(p0[0]+p1[0])/2+bend,my=(p0[1]+p1[1])/2-bend*.6;
+ const pt=u=>{const v=1-u;return[v*v*p0[0]+2*v*u*mx+u*u*p1[0],v*v*p0[1]+2*v*u*my+u*u*p1[1]];};
+ f.save();f.globalCompositeOperation='lighter';f.lineCap='round';
+ for(const [lw,col] of [[w*3.2,`rgba(60,200,60,${.45*(1-k)})`],[w*1.8,`rgba(150,255,130,${.8*(1-k)})`],[w*.8,`rgba(255,255,255,${1-k})`]]){f.strokeStyle=col;f.lineWidth=Math.max(.3,lw*(1-k*.6));f.beginPath();for(let i=0;i<=14;i++){const q=pt(tail+(sw-tail)*i/14);i?f.lineTo(q[0],q[1]):f.moveTo(q[0],q[1]);}f.stroke();}
+ f.restore();}
+function dmGarrasFX(c){const {f,t,time}=c,A=ANIMS.dmGarras,nxi=tt=>interp(A.nX,tt),hit=[1.35,1.7,2.05],VX=96,VY=GY-40;
+ /* veneno acumulando nas garras: orbe verde que cresce e pinga ate o ultimo golpe */
+ if(t>.45&&t<2.9){const nx=nxi(t),g=scaleAt(0,1,.45,.9,t)*(1-scaleAt(0,1,2.6,2.9,t)),hx=nx-17,hy=GY-26;f.save();f.globalCompositeOperation='lighter';orb(f,hx,hy,(5+3*Math.sin(time*20))*g,[[0,`rgba(230,255,200,${.9*g})`],[.5,`rgba(100,230,90,${.6*g})`],[1,'rgba(30,140,40,0)']]);
+  for(let q=0;q<4;q++){const ph=((time*1.6+q*.27)%1);f.fillStyle=`rgba(140,255,120,${(1-ph)*g})`;f.fillRect(Math.round(hx-2+q*1.5),Math.round(hy+3+ph*10),1,2);}f.restore();}
+ /* avanço: rastro de imagens e poeira, linhas de velocidade */
+ if(t>.8&&t<1.3){const k=(t-.8)/.5;for(let i=1;i<=4;i++){const tg=t-i*.045;if(tg<.8)continue;dmSelf(c,nxi(tg),GY,true,DASH,.3-i*.06);}
+  f.save();f.strokeStyle=`rgba(230,240,230,${.55*(1-k*.6)})`;f.lineWidth=1;for(let q=0;q<6;q++){const y=GY-10-q*8,x0=nxi(t)+16;f.beginPath();f.moveTo(x0,y);f.lineTo(x0+46+q*4,y);f.stroke();}
+  f.fillStyle='rgba(150,130,100,.5)';const r2=R(5);for(let i=0;i<10;i++){const x=nxi(t)+10+r2()*40,y=GY-r2()*8-1;f.fillRect(Math.round(x),Math.round(y),2,2);}f.restore();}
+ /* os tres golpes: cortes curvos em sentidos diferentes e, no ultimo, X com estocada */
+ const S1=[[VX-18,GY-70],[VX+16,GY-16]],S2=[[VX+18,GY-68],[VX-18,GY-14]],S3a=[[VX-20,GY-62],[VX+22,GY-20]],S3b=[[VX+22,GY-64],[VX-20,GY-18]];
+ dmSlash(f,S1[0],S1[1],10,t-hit[0],2.2);dmSlash(f,S2[0],S2[1],-10,t-hit[1],2.2);dmSlash(f,S3a[0],S3a[1],12,t-hit[2],3);dmSlash(f,S3b[0],S3b[1],-12,t-hit[2]-.03,3);
+ for(const [h,pw] of [[hit[0],1],[hit[1],1],[hit[2],1.8]]){const a=t-h;if(a>=0&&a<.5){const k=a/.5;f.save();f.globalCompositeOperation='lighter';orb(f,VX+4,VY,(16+14*pw)*(1-k*.5),[[0,`rgba(235,255,225,${.8*(1-k)})`],[.5,`rgba(110,230,100,${.5*(1-k)})`],[1,'rgba(30,140,40,0)']]);
+   ringFX(f,VX+4,VY,5+30*pw*k,1.8*(1-k)+.2,`rgba(180,255,160,${1-k})`);f.restore();
+   const r2=R(Math.round(h*100));for(let i=0;i<Math.round(12*pw);i++){const an=-Math.PI*(.05+r2()*.9),sp=18+r2()*40*pw,x=VX+Math.cos(an)*sp*a*(r2()<.5?-1:1),y=VY+Math.sin(an)*sp*a+a*a*60;f.fillStyle=`rgba(${110+(r2()*70|0)},255,${100+(r2()*60|0)},${1-k})`;f.fillRect(Math.round(x),Math.round(y),2,2);}}}
+ /* gotas de veneno escorrendo dos cortes e bolhas subindo em volta do alvo (fica ate o fim do golpe) */
+ if(t>1.45&&t<3.2){const g=scaleAt(0,1,1.45,1.9,t)*(1-scaleAt(0,1,2.8,3.2,t)),r2=R(41);f.save();for(let i=0;i<9;i++){const ph=((time*.9+r2())%1),x=VX-12+r2()*24,y=VY-24+ph*38;f.fillStyle=`rgba(120,255,110,${(1-ph)*.8*g})`;f.fillRect(Math.round(x),Math.round(y),1,2+(i%2));}
+  f.globalCompositeOperation='lighter';for(let i=0;i<10;i++){const ph=((time*.5+r2())%1),x=VX-16+r2()*32+Math.sin(time*3+i)*2,y=GY-4-ph*64;f.strokeStyle=`rgba(170,255,150,${(1-ph)*.7*g})`;f.lineWidth=.7;f.beginPath();f.arc(x,y,1+r2()*1.6,0,TAU);f.stroke();}f.restore();}
+ /* ultimo gesto: sacode o veneno das garras */
+ if(t>=2.5&&t<2.8){const k=(t-2.5)/.3,nx=nxi(t);f.save();for(let i=0;i<10;i++){const an=Math.PI*(.9+i*.05),sp=14+i*3;f.fillStyle=`rgba(130,255,110,${1-k})`;f.fillRect(Math.round(nx-17+Math.cos(an)*sp*k),Math.round(GY-26+Math.sin(an)*sp*k*.6+k*k*16),2,2);}f.restore();}}
 /* ---------------- Kusari (corrente de shuriken) ---------------- */
 function dmKusariGeom(t){ /* posicoes do Meizu e pontos da corrente nos tempos t */
  const gx=274,gy=GY-38;let mx,my=0;
@@ -128,10 +154,10 @@ function dmHeadFlight(a){const g=240,v0=70,vx=34,dyL=58,tl=(v0+Math.sqrt(v0*v0+4
 const DM_S={
  dmShunshin:(o,t,L)=>{if(!L||t<1.52)return;const a=t-1.52,h=dmHeadFlight(a);o.slices=[slice(SL_CUT_NECK,80,0,0,DM_FALL(a,.45,1.15,-1.5),[0,0]),slice(0,SL_CUT_NECK,h.dx,h.dy,h.rot,[0,-61])];o.hurt=0;},
  dmSuigakure:(o,t,L)=>{if(!L||t<2.0)return;o.hole=clamp((t-2.0)/.12,0,1)*2.2;},
- dmGarras:(o,t,L)=>{if(!L||t<2.05)return;const k=scaleAt(0,1,2.1,3.2,t);o.tint=[40,170,60];o.tk=.1+.5*k;},
+ dmGarras:(o,t,L)=>{if(L){if(t<2.05)return;const k=scaleAt(0,1,2.1,3.2,t);o.tint=[40,170,60];o.tk=.1+.5*k;return;}const k=scaleAt(0,1,1.4,2.3,t)*(1-scaleAt(0,1,3.0,3.8,t));if(k>0){o.tint=[40,170,60];o.tk=.3*k;}},
  dmKusari:(o,t,L)=>{if(!L||t<2.62)return;const a=t-2.62;o.slices=[slice(0,SL_CUT_WAIST,-34*Math.min(1,a/.5),27*Math.pow(Math.min(1,Math.max(0,(a-.5)/.5)),2),DM_FALL(a,.1,.8,-1.45),[8,-25]),slice(SL_CUT_WAIST,80,0,0,DM_FALL(a,.45,1.2,1.45),[0,0])];},
  dmInstinto:(o,t,L)=>{if(!L||t<2.55)return;const a=t-2.55,sh=Math.min(1,a/.25)*0;o.slices=[slice(0,26,-20*Math.min(1,a/.5),-6*Math.sin(Math.min(1,a/.5)*Math.PI)+55*Math.pow(Math.min(1,Math.max(0,(a-.4)/.6)),2),DM_FALL(a,.1,1.0,-1.35),[0,-61]),slice(26,52,18*Math.min(1,a/.5),20*Math.pow(Math.min(1,Math.max(0,(a-.5)/.6)),2),DM_FALL(a,.3,1.1,.9),[0,-38]),slice(52,80,-6*Math.min(1,a/.6),0,DM_FALL(a,.5,1.3,1.45),[0,0])];}};
-function dmSOpt(o,type,t,A,out){if(A&&type&&type.slice(0,2)==='dm'&&DM_S[type]){DM_S[type](o,t,LE(type));}else if(!A&&out==='N'&&typeof eFatalKind!=='undefined'&&eFatalKind&&DM_S[eFatalKind])DM_S[eFatalKind](o,99,true);}
+function dmSOpt(o,type,t,A,out){if(!A&&!out&&typeof poisonS!=='undefined'&&poisonS>0){o.tint=[40,170,60];o.tk=.12+.05*Math.sin(performance.now()/260);}if(A&&type&&type.slice(0,2)==='dm'&&DM_S[type]){DM_S[type](o,t,LE(type));}else if(!A&&out==='N'&&typeof eFatalKind!=='undefined'&&eFatalKind&&DM_S[eFatalKind])DM_S[eFatalKind](o,99,true);}
 const DM_N={
  dmShunshin:(o,t,L)=>{if(t>.5&&t<1.25)o.alpha=0;if(t>=1.2&&t<(L?3.2:2.3))o.flipN=false;if(!L&&t>2.3&&t<2.5)o.alpha=0;},
  dmSuigakure:(o,t,L)=>{if(t>.9&&t<1.95)o.alpha=0;else if(t>=1.95&&t<2.08)o.alpha=scaleAt(0,1,1.95,2.08,t);else if(!L&&t>=3.0&&t<3.2)o.alpha=1-scaleAt(0,1,3.0,3.2,t);else if(!L&&t>=3.2&&t<3.5)o.alpha=0;else if(!L&&t>=3.5&&t<3.7)o.alpha=scaleAt(0,1,3.5,3.7,t);},
@@ -175,9 +201,9 @@ function dmSuigLethalFX(c){const {f,t,time}=c,tt=c.A?t:99;
 /* ---- Garras: veneno ---- */
 ANIMS.dmGarras.LR={dur:9.0,koAt:8.2,bannerAt:2.6,speakAt:4.6,line:'O veneno já está em você.',speechPos:['68%','14%'],banner:['毒','FATALITY','Garras Envenenadas','#7ad070'],map:[[0,0],[99,99]],
  sP:[[0,READY],[1.3,READY],[1.37,S_HIT],[1.6,S_STAG],[1.72,S_HIT],[1.95,S_STAG],[2.07,S_HIT],[2.6,S_STAG],[3.4,S_STAG],[3.9,S_DOWN],[99,S_DOWN]],sX:[[0,96],[1.3,96],[1.4,102],[1.75,100],[2.1,104],[3.0,98],[3.9,92],[99,88]],
- nP:[[0,N_READY],[.3,N_READY],[.4,DASH],[.95,DASH],[1.1,PN_W],[1.3,PN_W],[1.35,PN_P],[1.5,PN_P],[1.55,PN_W],[1.68,PN_W],[1.7,PN_P],[1.85,PN_P],[1.9,PN_W],[2.03,PN_W],[2.05,PN_P],[2.4,PN_P],[2.7,N_READY],[99,N_READY]],
- nX:[[0,288],[.35,288],[1.0,136],[99,136]],
- cam:[[0,DM_BASE],[.4,{z:1.2,cx:210,cy:122}],[1.0,{z:1.8,cx:128,cy:126}],[2.2,{z:2.0,cx:116,cy:126}],[3.2,{z:2.2,cx:100,cy:128}],[4.4,{z:2.0,cx:96,cy:140}],[6.4,{z:1.4,cx:120,cy:132}],[9.0,DM_BASE]],
+ nP:[[0,N_READY],[.3,N_READY],[.5,PN_W],[.8,PN_W],[.85,DASH],[1.15,DASH],[1.25,PN_W],[1.3,PN_W],[1.35,PN_P],[1.5,PN_P],[1.55,PN_W],[1.68,PN_W],[1.7,PN_P],[1.85,PN_P],[1.9,PN_W],[2.03,PN_W],[2.05,PN_P],[2.4,PN_P],[2.7,N_READY],[99,N_READY]],
+ nX:[[0,288],[.8,288],[1.2,138],[99,138]],
+ cam:[[0,DM_BASE],[.35,{z:1.5,cx:252,cy:126}],[.8,{z:1.5,cx:240,cy:126}],[1.2,{z:1.8,cx:150,cy:126}],[1.35,{z:2.1,cx:114,cy:128}],[1.7,{z:2.3,cx:110,cy:126}],[2.05,{z:2.7,cx:108,cy:126}],[3.2,{z:2.2,cx:100,cy:128}],[4.4,{z:2.0,cx:96,cy:140}],[6.4,{z:1.4,cx:120,cy:132}],[9.0,DM_BASE]],
  stat:{sP:S_DOWN,sx0:88,nP:N_READY,nx0:136},
  sfxFn:()=>{[1.35,1.7,2.05].forEach(a=>{nz(.12,'highpass',3000,8000,.3,a);tone('sine',1400,600,.12,.2,a);});tone('sine',300,120,2.0,.08,2.6,14);nz(1.5,'bandpass',300,900,.12,2.8);tone('sine',70,30,.6,.8,3.9);},
  fx:c=>dmGarrasLethalFX(c),fxStatic:c=>dmGarrasLethalFX(c)};
