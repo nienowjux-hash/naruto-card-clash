@@ -15,9 +15,10 @@ let SC={gated:false,S:{level:10,tier:0,build:'padrao'},N:{level:10,tier:0,build:
 const BUILD_ORDER={sasuke:['genjutsu','shishi','soushuken','copy','kagesh','selo','selo2','selochidori'],naruto:['uzumaki','harem','kamikaze','kuchiyose','kyuubi']};
 function learnedAt(charId,level){const T=TREES[charId],set=new Set(T.filter(n=>n.base||n.start).map(n=>n.id));let pts=0;
  for(let L=2;L<=level;L++){pts++;for(const id of BUILD_ORDER[charId]){const n=T.find(x=>x.id===id);if(set.has(id)||MOVES[id].lvl>L||pts<n.pt||!n.req.every(r=>set.has(r)))continue;set.add(id);pts-=n.pt;}}return set;}
-const GEAR={sasuke:[[],['kunai_ferro','colete','bandana'],['kusanagi','manto_nuvem','amuleto_sorte']],naruto:[[],['kunai_ferro','colete','bandana'],['kunai_tri','manto_nuvem','talisma_vento']]};
+/* equipamento por faixa de nivel: 0 comum (inicial), 1 incomum (nv 8+), 2 raro (nv 16+), 3 epico (nv 28+) */
+const GEAR={sasuke:[['kunai_ferro','colete','bandana'],['lamina_chakra','roupa_peso','talisma_raio'],['katana_anbu','armadura_anbu','amuleto_sorte'],['kusanagi','manto_nuvem','selo_protecao']],naruto:[['kunai_ferro','colete','bandana'],['lamina_chakra','roupa_peso','talisma_vento'],['katana_anbu','armadura_anbu','amuleto_sorte'],['kunai_tri','manto_nuvem','selo_protecao']]};
 function gearStats(ids){const s={hp:0,atk:0,def:0,elem:{}};for(const id of ids){const st=ITEMS[id].stats||{};s.hp+=st.hp||0;s.atk+=st.atk||0;s.def+=st.def||0;if(st.elem)s.elem[st.elem]=(s.elem[st.elem]||0)+st.pct;}s.def=Math.min(.6,s.def);return s;}
-const tierFor=lvl=>lvl<8?0:lvl<20?1:2;
+const tierFor=lvl=>lvl<8?0:lvl<16?1:lvl<28?2:3;
 const rnd=()=>Math.random();
 /* regras em teste:
    imunidade: depois de perder um turno por stun, o alvo nao pode ser atordoado de novo no turno seguinte
@@ -155,10 +156,10 @@ function niveis(){CFG={imunidade:true,iaChakra:true,iaEsperta:true,iaSapo:true};
  console.log(pad('nivel',7)+'Sasuke: eficiente / forte / esquivador   |  Naruto: forte / esquivador');
  for(const L of [1,2,3,4,5,6,8,10]){const f=(fn,strats,ps)=>strats.map(s=>{setSC({[ps]:{level:L,tier:0,build:'padrao'},pills:0});const r=winRate(fn,s,ps);return(r.w.toFixed(0)+'%').padStart(4);}).join(' ');
   console.log(pad(L,7)+f(fightSasukePlayer,['eficiente','forte','esquivador'],'S')+'      |  '+f(fightNarutoPlayer,['forte','esquivador'],'N'));}}
-function itens(){CFG={imunidade:true,iaChakra:true,iaEsperta:true,iaSapo:true};const n=NODES.floresta,L=3;console.log('\n=== ITENS: '+n.name+' (nivel '+L+'), estrategia eficiente/forte (ou curandeiro com pilulas) ===');
+function itens(){CFG={imunidade:true,iaChakra:true,iaEsperta:true,iaSapo:true};const n=NODES.floresta,L=10;console.log('\n=== ITENS: '+n.name+' (nivel '+L+'), estrategia eficiente/forte (ou curandeiro com pilulas) ===');
  console.log(pad('equipamento',38)+pad('pilulas',9)+'Sasuke   Naruto');
- for(const tier of [0,1,2])for(const pills of [0,3]){const f=(fn,s,ps)=>{setSC({[ps]:{level:L,tier,build:'padrao'},enc:n.enc,pills});return winRate(fn,pills?'curandeiro':s,ps).w.toFixed(0).padStart(4)+'%';};
-  console.log(pad(['nenhum','basico (kunai+colete+bandana)','avancado (arma rara+manto+amuleto)'][tier],38)+pad(pills,9)+f(fightSasukePlayer,'eficiente','S')+'   '+f(fightNarutoPlayer,'forte','N'));}}
+ for(const tier of [0,1,2,3])for(const pills of [0,3]){const f=(fn,s,ps)=>{setSC({[ps]:{level:L,tier,build:'padrao'},enc:n.enc,pills});return winRate(fn,pills?'curandeiro':s,ps).w.toFixed(0).padStart(4)+'%';};
+  console.log(pad(['comum (inicial)','incomum','raro','epico'][tier],38)+pad(pills,9)+f(fightSasukePlayer,'eficiente','S')+'   '+f(fightNarutoPlayer,'forte','N'));}}
 const modo=process.argv[3]||'todos';
 if(modo==='campanha'){campanha();process.exit(0);}if(modo==='niveis'){niveis();process.exit(0);}if(modo==='itens'){itens();process.exit(0);}
 if(modo==='todos'||modo==='antes'){applyTune(ANTES);relatorio('ANTES DAS CORRECOES (regras e numeros antigos)',{imunidade:false,iaChakra:false,iaEsperta:false});applyTune({'toad.hp':28,'toad.shot':4,'toad.throwKunai':2,'toad.throwShuriken':4,'toad.once':1,'kagesh.c':16,'soushuken.c':17,'cfg.regS':15});}

@@ -144,3 +144,6 @@ Antes: a estratégia "sempre o golpe mais forte" do Sasuke vencia 99% em ~3 turn
 - Pílulas: Soldado 50 de vida, Chakra 40, Pergaminho Médico 100. Equipamentos com bônus menores (ex.: Colete +5 de vida e -4% de dano).
 - Inimigos dos locais (vida x ataque): Treino 0,98x/1,12x, Floresta 1,11x/1,17x, Deserto 1,19x/1,19x, Passo Nevado 1,28x/1,21x, Vale do Fim 1,34x/1,18x.
 Resultado: o Naruto jogando bem fica entre 60% e 80% nos locais; o Sasuke jogando com Chidori/Shishi continua fácil no Deserto e no Passo Nevado (93-97%), por isso a dificuldade por personagem fica para quando houver inimigos próprios. Rode `node tools/balance-sim.js 4000 campanha` para ver.
+
+### Raridade dos itens
+Os itens também têm raridade (Comum, Incomum, Raro, Épico, Lendário) e exigem nível para vestir: 1, 8, 16, 28 e 40. Há armas, corpo e acessórios de cada faixa (ex.: Katana da Anbu raro, Kusanagi épico, Kubikiribōchō lendário, Traje do Sábio lendário). Os drops dependem do local: o item só cai se o nível dele for até 8 acima do nível recomendado do local, e os raros são bem menos comuns. Golpes novos do Naruto (Rasengan Gigante e Rasenshuriken) estão guardados em `TREES_FUTURO` até terem animação.

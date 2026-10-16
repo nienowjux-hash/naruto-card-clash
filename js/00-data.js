@@ -104,7 +104,9 @@ const TREES={
   {id:'harem',x:2,y:1,req:['oiroke'],pt:2,d:'Várias garotas com clones: quase sempre o inimigo perde o turno.'},
   {id:'kawarimi',x:3,y:0,req:[],pt:0,base:1,d:'Jutsu de Substituição: troca de lugar com um tronco e evita por completo o próximo golpe, sem o inimigo perceber (2 usos por luta).'}]};
 /* golpes guardados para personagens/fases futuras (nao aparecem na arvore nem no menu): o no pronto para recolocar */
-const TREES_FUTURO={sasuke:[{id:'amaterasu',x:2,y:1,req:['katon'],pt:12,d:'Chamas negras que não se apagam. O olho sangra e o alvo queima.'}]};
+const TREES_FUTURO={naruto:[
+  {id:'odama',x:1,y:3,req:['rasengan'],pt:4,rar:3,lvl:20,elem:'vento',d:'Rasengan Gigante: uma esfera enorme, mais dano e mais chakra.'},
+  {id:'rasenshuriken',x:1,y:4,req:['odama'],pt:12,rar:5,lvl:45,elem:'vento',d:'Rasenshuriken: o Rasengan com lâminas de vento. Lendário.'}],sasuke:[{id:'amaterasu',x:2,y:1,req:['katon'],pt:12,d:'Chamas negras que não se apagam. O olho sangra e o alvo queima.'}]};
 const MAX_LEVEL=50,PROG_KEY='rpgProgV1';
 const xpNeed=lv=>Math.round(30*lv*(1+lv/12)); /* XP para sair do nivel lv */
 function progDefault(){const p={};for(const c in TREES)p[c]={level:1,xp:0,pts:0,learned:TREES[c].filter(n=>n.base||n.start).map(n=>n.id)};return p;}
@@ -130,24 +132,37 @@ function resetProg(){PROG=progDefault();saveProg();}
    stats: hp (vida maxima extra), atk (+% de dano causado), def (-% de dano recebido), elem+pct (+% de dano de um elemento).
    use: efeito do consumivel (hp / ck). only: lista de personagens que podem equipar. */
 const SLOTS={arma:'Arma',corpo:'Corpo',acc:'Acessório'};
+/* nivel minimo para vestir, por raridade: quanto mais raro, mais nivel */
+const ITEM_LVL=[0,1,8,16,28,40];
 const ITEMS={
+ /* armas */
  kunai_ferro:{name:'Kunai de Ferro',slot:'arma',rar:1,g:'刃',stats:{atk:.03},d:'Uma kunai comum, bem afiada.'},
  lamina_chakra:{name:'Lâmina de Chakra',slot:'arma',rar:2,g:'刃',stats:{atk:.05},d:'Lâmina que conduz o chakra do usuário.'},
- kunai_tri:{name:'Kunai Trifurcado',slot:'arma',rar:3,g:'刃',stats:{atk:.07,elem:'vento',pct:.08},d:'Kunai de três pontas, leve e rápida.',only:['naruto']},
- kusanagi:{name:'Kusanagi',slot:'arma',rar:3,g:'剣',stats:{atk:.08,elem:'raio',pct:.12},d:'A espada que conduz relâmpagos.',only:['sasuke']},
+ katana_anbu:{name:'Katana da Anbu',slot:'arma',rar:3,g:'剣',stats:{atk:.07},d:'Lâmina curta usada pelos esquadrões de elite.'},
+ kunai_tri:{name:'Kunai Trifurcado',slot:'arma',rar:4,g:'刃',stats:{atk:.08,elem:'vento',pct:.10},d:'Kunai de três pontas, leve e rápida.',only:['naruto']},
+ kusanagi:{name:'Kusanagi',slot:'arma',rar:4,g:'剣',stats:{atk:.09,elem:'raio',pct:.12},d:'A espada que conduz relâmpagos.',only:['sasuke']},
+ kubikiri:{name:'Kubikiribōchō',slot:'arma',rar:5,g:'斬',stats:{atk:.14},d:'A gigantesca espada do Demônio da Névoa Oculta.'},
+ /* corpo */
  colete:{name:'Colete Shinobi',slot:'corpo',rar:1,g:'衣',stats:{hp:5,def:.04},d:'Colete tático padrão de Konoha.'},
  roupa_peso:{name:'Roupa de Treino Pesada',slot:'corpo',rar:2,g:'衣',stats:{hp:10},d:'Pesos nas roupas fortalecem o corpo.'},
- manto_nuvem:{name:'Manto da Nuvem Vermelha',slot:'corpo',rar:3,g:'衣',stats:{hp:8,def:.08},d:'Manto negro com nuvens vermelhas.'},
+ armadura_anbu:{name:'Armadura da Anbu',slot:'corpo',rar:3,g:'甲',stats:{hp:10,def:.08},d:'Proteção leve das forças especiais.'},
+ manto_nuvem:{name:'Manto da Nuvem Vermelha',slot:'corpo',rar:4,g:'衣',stats:{hp:12,def:.10},d:'Manto negro com nuvens vermelhas.'},
+ traje_sabio:{name:'Traje do Sábio',slot:'corpo',rar:5,g:'聖',stats:{hp:25,def:.14},d:'Roupa de quem domina a energia natural.'},
+ /* acessorios */
  bandana:{name:'Bandana de Konoha',slot:'acc',rar:1,g:'護',stats:{hp:4,def:.01},d:'Símbolo da vila escondida na folha.'},
  talisma_fogo:{name:'Talismã de Fogo',slot:'acc',rar:2,g:'火',stats:{elem:'fogo',pct:.10},d:'Reforça golpes de Fogo.'},
  talisma_agua:{name:'Talismã de Água',slot:'acc',rar:2,g:'水',stats:{elem:'agua',pct:.10},d:'Reforça golpes de Água.'},
  talisma_terra:{name:'Talismã de Terra',slot:'acc',rar:2,g:'土',stats:{elem:'terra',pct:.10},d:'Reforça golpes de Terra.'},
  talisma_vento:{name:'Talismã de Vento',slot:'acc',rar:2,g:'風',stats:{elem:'vento',pct:.10},d:'Reforça golpes de Vento.'},
  talisma_raio:{name:'Talismã de Raio',slot:'acc',rar:2,g:'雷',stats:{elem:'raio',pct:.10},d:'Reforça golpes de Raio.'},
- amuleto_sorte:{name:'Amuleto da Sorte',slot:'acc',rar:3,g:'福',stats:{hp:12},d:'Dizem que protege quem o carrega.'},
+ amuleto_sorte:{name:'Amuleto da Sorte',slot:'acc',rar:3,g:'福',stats:{hp:15},d:'Dizem que protege quem o carrega.'},
+ selo_protecao:{name:'Selo de Proteção',slot:'acc',rar:4,g:'封',stats:{hp:12,def:.05},d:'Um selo que desvia parte do dano.'},
+ colar_hashirama:{name:'Colar de Hashirama',slot:'acc',rar:5,g:'珠',stats:{hp:30,atk:.05},d:'Cristal lendário que pulsa com vitalidade.'},
+ /* consumiveis */
  pilula_vida:{name:'Pílula de Soldado',slot:'cons',rar:1,g:'薬',use:{hp:50},d:'Recupera 50 de vida. Gasta o turno.'},
  pilula_ck:{name:'Pílula de Chakra',slot:'cons',rar:1,g:'気',use:{ck:40},d:'Recupera 40 de chakra. Gasta o turno.'},
- pergaminho_med:{name:'Pergaminho Médico',slot:'cons',rar:3,g:'巻',use:{hp:100},d:'Recupera 100 de vida. Gasta o turno.'}};
+ pergaminho_med:{name:'Pergaminho Médico',slot:'cons',rar:3,g:'巻',use:{hp:100},d:'Recupera 100 de vida. Gasta o turno.'},
+ elixir_sabio:{name:'Elixir do Sábio',slot:'cons',rar:4,g:'丹',use:{hp:100,ck:50},d:'Recupera 100 de vida e 50 de chakra. Gasta o turno.'}};
 const RARITY={1:{name:'Comum',col:'#aab0c8'},2:{name:'Incomum',col:'#5cc878'},3:{name:'Raro',col:'#4aa8ff'},4:{name:'Épico',col:'#b070ff'},5:{name:'Lendário',col:'#ffa43a'}};
 const INV_KEY='rpgInvV1';
 function invDefault(){return{ryo:0,bag:{kunai_ferro:1,colete:1,bandana:1,pilula_vida:3,pilula_ck:3},eq:{sasuke:{},naruto:{}}};}
@@ -156,7 +171,8 @@ try{const j=JSON.parse(localStorage.getItem(INV_KEY)||'null');if(j){INV.ryo=j.ry
 function saveInv(){try{localStorage.setItem(INV_KEY,JSON.stringify(INV));}catch(e){}}
 function bagQty(id){return INV.bag[id]||0;}
 function addItem(id,n){INV.bag[id]=bagQty(id)+(n||1);saveInv();}
-function canEquip(charId,id){const it=ITEMS[id];return !!it&&it.slot!=='cons'&&(!it.only||it.only.includes(charId));}
+function equipBlock(charId,id){const it=ITEMS[id];if(!it||it.slot==='cons')return 'Não é equipável';if(it.only&&!it.only.includes(charId))return 'Este personagem não pode equipar';const need=ITEM_LVL[it.rar]||1;if(PROG[charId]&&PROG[charId].level<need)return 'Precisa do nível '+need;return '';}
+function canEquip(charId,id){return !equipBlock(charId,id);}
 /* equipa tirando da mochila; o item que estava no slot volta para a mochila */
 function equipItem(charId,id){if(!canEquip(charId,id)||bagQty(id)<1)return false;const it=ITEMS[id],old=INV.eq[charId][it.slot];if(old)INV.bag[old]=bagQty(old)+1;INV.bag[id]--;if(INV.bag[id]<=0)delete INV.bag[id];INV.eq[charId][it.slot]=id;saveInv();return true;}
 function unequipItem(charId,slot){const id=INV.eq[charId][slot];if(!id)return false;addItem(id,1);delete INV.eq[charId][slot];saveInv();return true;}
@@ -164,7 +180,7 @@ function unequipItem(charId,slot){const id=INV.eq[charId][slot];if(!id)return fa
 function statsOf(charId){const s={hp:0,atk:0,def:0,elem:{}};for(const slot in INV.eq[charId]||{}){const it=ITEMS[INV.eq[charId][slot]];if(!it||!it.stats)continue;const st=it.stats;s.hp+=st.hp||0;s.atk+=st.atk||0;s.def+=st.def||0;if(st.elem)s.elem[st.elem]=(s.elem[st.elem]||0)+(st.pct||0);}s.def=Math.min(.6,s.def);return s;}
 function resetInv(){INV=invDefault();saveInv();}
 /* sorteia um item de recompensa (pesos por raridade) */
-function rollDrop(){const w={1:60,2:30,3:10},ids=Object.keys(ITEMS);let tot=0;const pool=ids.map(i=>{const x=w[ITEMS[i].rar]||1;tot+=x;return[i,x];});let r=Math.random()*tot;for(const[i,x]of pool){if((r-=x)<=0)return i;}return ids[0];}
+function rollDrop(nodeLvl){const w={1:55,2:28,3:12,4:4,5:1},lim=(nodeLvl||99)+8,ids=Object.keys(ITEMS).filter(i=>(ITEM_LVL[ITEMS[i].rar]||1)<=lim);let tot=0;const pool=ids.map(i=>{const x=w[ITEMS[i].rar]||1;tot+=x;return[i,x];});let r=Math.random()*tot;for(const[i,x]of pool){if((r-=x)<=0)return i;}return ids[0];}
 
 /* ---------- Mapa da campanha ----------
    Locais ligados por caminhos. Um local de luta libera quando algum vizinho foi vencido (Konoha ja nasce vencida).
@@ -172,10 +188,10 @@ function rollDrop(){const w={1:60,2:30,3:10},ids=Object.keys(ITEMS);let tot=0;co
 const MAP_W=1180,MAP_H=640;
 const NODES={
  konoha:{name:'Konoha',kind:'vila',x:130,y:330,scene:'vila',d:'Sua vila. Prepare a equipe (habilidades e equipamentos) antes de partir.'},
- treino:{name:'Campo de Treino',kind:'luta',x:340,y:310,scene:'treino',lvl:1,xp:8,ryo:60,enc:{name:'Genin Rival',hp:.98,atk:1.12,afin:['terra']},d:'Um campo aberto ao amanhecer, onde genins testam suas técnicas.'},
+ treino:{name:'Campo de Treino',kind:'luta',x:340,y:310,scene:'treino',lvl:1,xp:8,ryo:60,enc:{name:'Genin Rival',hp:1.1,atk:1.2,afin:['terra']},d:'Um campo aberto ao amanhecer, onde genins testam suas técnicas.'},
  floresta:{name:'Floresta da Morte',kind:'luta',x:550,y:160,scene:'floresta',lvl:10,xp:55,ryo:90,enc:{name:'Ninja Perdido',hp:1.11,atk:1.17,afin:['agua']},d:'Mata densa e perigosa. Quem entra sem preparo raramente volta.'},
  deserto:{name:'Deserto do Vento',kind:'luta',x:540,y:480,scene:'deserto',lvl:15,xp:100,ryo:120,enc:{name:'Ninja da Areia',hp:1.19,atk:1.19,afin:['terra']},d:'Dunas sem fim e um calor que drena o chakra.'},
- neve:{name:'Passo Nevado',kind:'luta',x:810,y:500,scene:'neve',lvl:20,xp:160,ryo:160,enc:{name:'Guardião do Gelo',hp:1.28,atk:1.21,afin:['gelo']},d:'Um desfiladeiro congelado vigiado por um ninja de gelo.'},
+ neve:{name:'Passo Nevado',kind:'luta',x:810,y:500,scene:'neve',lvl:20,xp:160,ryo:160,enc:{name:'Guardião do Gelo',hp:1.31,atk:1.24,afin:['gelo']},d:'Um desfiladeiro congelado vigiado por um ninja de gelo.'},
  vale:{name:'Vale do Fim',kind:'chefe',x:985,y:285,scene:'vale',lvl:30,xp:315,ryo:300,enc:{name:'Rival Final',hp:1.34,atk:1.18,afin:null},d:'O local do confronto final, entre as estátuas e a cachoeira.'}};
 const EDGES=[['konoha','treino'],['treino','floresta'],['treino','deserto'],['floresta','vale'],['deserto','neve'],['neve','vale']];
 const CAMP_KEY='rpgCampV1';

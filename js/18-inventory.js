@@ -18,12 +18,12 @@ function renderInv(){
   return `<button class="slot${it?' full':''}" data-slot="${sl}" style="--rc:${it?RARITY[it.rar].col:'#3a2f14'}"><span class="si">${it?it.g:'＋'}</span><span class="st"><small>${SLOTS[sl]}</small><b>${it?it.name:'Vazio'}</b>${it?`<em>${statLines(it.stats).join(' · ')}</em>`:''}</span>${it?'<i class="rm" title="Desequipar">✕</i>':''}</button>`;}).join('');
  const bagIds=Object.keys(INV.bag).filter(id=>ITEMS[id]),order=id=>(ITEMS[id].slot==='cons'?9:0)+ITEMS[id].rar*-1;
  bagIds.sort((a,b)=>order(a)-order(b));
- const cards=bagIds.map(id=>{const it=ITEMS[id],ok=it.slot==='cons'||canEquip(invChar,id);return `<button class="it${invPick===id?' sel':''}${ok?'':' no'}" data-id="${id}" style="--rc:${RARITY[it.rar].col}"><span class="gi">${it.g}</span><b>${it.name}</b><small>${it.slot==='cons'?'Consumível':SLOTS[it.slot]}</small>${INV.bag[id]>1?`<i class="qt">×${INV.bag[id]}</i>`:''}</button>`;}).join('')||'<p class="hint">Mochila vazia. Vença lutas para ganhar itens.</p>';
+ const cards=bagIds.map(id=>{const it=ITEMS[id],ok=it.slot==='cons'||canEquip(invChar,id);return `<button class="it${invPick===id?' sel':''}${ok?'':' no'}" data-id="${id}" style="--rc:${RARITY[it.rar].col}"><span class="gi">${it.g}</span><b>${it.name}</b><small>${it.slot==='cons'?'Consumível':SLOTS[it.slot]+' · '+RARITY[it.rar].name}</small>${INV.bag[id]>1?`<i class="qt">×${INV.bag[id]}</i>`:''}</button>`;}).join('')||'<p class="hint">Mochila vazia. Vença lutas para ganhar itens.</p>';
  let det='<p class="hint">Escolha um item da mochila para ver os detalhes.</p>';
  if(pick){const ok=pick.slot==='cons'||canEquip(invChar,invPick);
-  det=`<div class="dtx"><h4 style="color:${RARITY[pick.rar].col}">${pick.name}</h4><small>${RARITY[pick.rar].name} · ${pick.slot==='cons'?'Consumível':SLOTS[pick.slot]}${pick.only?' · só '+pick.only.map(c=>CHARS[c].name.split(' ')[0]).join(', '):''}</small><p>${pick.d}</p>`
+  det=`<div class="dtx"><h4 style="color:${RARITY[pick.rar].col}">${pick.name}</h4><small>${RARITY[pick.rar].name} · ${pick.slot==='cons'?'Consumível':SLOTS[pick.slot]+' · nível '+(ITEM_LVL[pick.rar]||1)}${pick.only?' · só '+pick.only.map(c=>CHARS[c].name.split(' ')[0]).join(', '):''}</small><p>${pick.d}</p>`
    +(pick.slot==='cons'?`<p class="eff">${Object.keys(pick.use).map(k=>'+'+pick.use[k]+(k==='hp'?' de vida':' de chakra')).join(' · ')} — use pelo comando Itens durante a luta.</p>`:`<p class="eff">${statLines(pick.stats).join('<br>')}</p>`)+'</div>'
-   +(pick.slot==='cons'?'':!ok?'<span class="why">Este personagem não pode equipar</span>':locked?'<span class="why">Troque de equipamento fora da luta (use Resetar luta)</span>':`<button class="learn" id="eqbtn">Equipar em ${CHARS[invChar].name.split(' ')[0]}</button>`);}
+   +(pick.slot==='cons'?'':!ok?`<span class="why">${equipBlock(invChar,invPick)}</span>`:locked?'<span class="why">Troque de equipamento fora da luta (use Resetar luta)</span>':`<button class="learn" id="eqbtn">Equipar em ${CHARS[invChar].name.split(' ')[0]}</button>`);}
  t.innerHTML=`<div class="ibox"><div class="thead"><div class="tabs">${Object.keys(CHARS).map(c=>`<button class="tab${c===invChar?' on':''}" data-c="${c}">${CHARS[c].name.split(' ')[0]}</button>`).join('')}</div><div class="ryo"><b>${INV.ryo}</b><small>ryo</small></div><button class="x" id="invx">Fechar (Esc) ✕</button></div>
   <div class="imain"><section class="ileft"><div class="who"><canvas id="invpt" width="96" height="96"></canvas><div><h3>${CHARS[invChar].name}</h3><small>Nível ${PROG[invChar].level}</small></div></div>
    <div class="slots">${slots}</div>
@@ -43,6 +43,6 @@ function renderInv(){
 window.addEventListener('keydown',e=>{const t=document.getElementById('inv');if(e.key==='Escape'&&t&&!t.hidden){closeInv();e.stopImmediatePropagation();}},true);
 (function(){const b=document.createElement('button');b.id='invbtn';b.textContent='Equipamentos';b.onclick=openInv;const c=document.querySelector('.ctl');if(c)c.insertBefore(b,c.firstChild);})();
 /* recompensa de luta: ryo e um item (70% de chance) */
-function giveBattleLoot(won){if(!won)return;const nd=CAMP.active?NODES[CAMP.active.node]:null,ryo=(nd&&nd.ryo)||100;INV.ryo+=ryo;let nm='';if(Math.random()<.7){const id=rollDrop();addItem(id,1);nm=ITEMS[id].name;}saveInv();
+function giveBattleLoot(won){if(!won)return;const nd=CAMP.active?NODES[CAMP.active.node]:null,ryo=(nd&&nd.ryo)||100;INV.ryo+=ryo;let nm='';if(Math.random()<.7){const id=rollDrop(nd&&nd.lvl);addItem(id,1);nm=ITEMS[id].name;}saveInv();
  setTimeout(()=>toast('+'+ryo+' ryo'+(nm?' · item: '+nm:'')),4600);}
 syncHpMax(true);
