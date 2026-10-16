@@ -133,7 +133,7 @@ function blitSprite(x,y,flip,P,time,o,isN){
  g.translate(x,y);if(o.rot){g.translate(0,-30);g.rotate(o.rot*(flip?-1:1));g.translate(0,30);}if(o.sc)g.scale(o.sc,o.sc);if(o.flat)g.scale(1+(1-o.flat)*.35,o.flat);g.scale(flip?-1:1,1);g.globalAlpha=al;
  if(o.bend&&isN&&key==='guard'){ /* dobrado para a frente: pernas agachadas e tronco girando em torno do quadril (traseiro empinado para tras) */
   const g0=sprRefsN().find(r=>r[0]==='guard');if(g0)sprRefPose=g0[1];
-  const hipY=57,sq=.86;g.save();g.beginPath();g.rect(-S.ax-6,-S.ay+hipY,S.w+12,S.h-hipY);g.clip();g.scale(1,sq);g.drawImage(SB,0,0,S.w*4,S.h*4,-S.ax,-S.ay,S.w,S.h);g.restore();
+  const hipY=57,sq=o.bendSq||.86;g.save();g.beginPath();g.rect(-S.ax-6,-S.ay+hipY,S.w+12,S.h-hipY);g.clip();g.scale(1,sq);g.drawImage(SB,0,0,S.w*4,S.h*4,-S.ax,-S.ay,S.w,S.h);g.restore();
   g.save();g.translate(0,-(S.ay-hipY)*sq);g.rotate(o.bend);g.beginPath();g.rect(-S.ax-8,-hipY-8,S.w+16,hipY+8);g.clip();g.drawImage(SB,0,0,S.w*4,S.h*4,-S.ax,-hipY,S.w,S.h);g.restore();
  }else sprDraw(g,SB,S,P,sprRefPose,key,(o.vel||0)*(flip?-1:1),o.sq);
  g.restore();
