@@ -39,6 +39,13 @@ function buildHeroSet(from,pal,fromSh){const S2={};if(!USE_SPR||typeof from!=='f
  if(typeof sasukeThrowFrame==='function')['tw','tt','te'].forEach((k,i)=>{S2[k]=mkK(()=>sasukeThrowFrame(i),27,75);});
  for(const k in SPR)if(!S2[k])S2[k]=SPR[k];return S2;}
 const SPRK=typeof sakuraFrom==='function'?buildHeroSet(sakuraFrom,SAK_PAL):{},SPRKA=typeof kakashiFrom==='function'?buildHeroSet(kakashiFrom,KAK_PAL,fn=>kakashiFrom(fn,true)):{};
+/* inimigos com aparencia propria (Irmaos Demonios): mesmas poses do Naruto, outra cabeca e paleta (pixel/kirigakure.js) */
+const SPRE={};let enemySkin=null;
+if(USE_SPR&&typeof DEMON_SKIN!=='undefined'&&typeof naruGuard==='function'){for(const k in DEMON_SKIN){const sk=DEMON_SKIN[k];NARU_SKIN=sk;try{const mkE=(fn,ax,ay)=>{const gr=fn(),c=document.createElement('canvas');gr.draw(c,sk.pal,1);return{c,csh:c,w:gr.w,h:gr.h,ax,ay};};
+  const S2={guard:mkE(naruGuard,27,75),punch:mkE(naruPunch,27,75),hit:mkE(naruHit,25,75),down:mkE(naruDown,40,45),kick:mkE(naruKick,22,75),seal:mkE(naruSeal,27,75),block:mkE(naruBlock,27,75)};
+  if(typeof naruCharge==='function')S2.charge=mkE(naruCharge,27,75);if(typeof naruPunchWind!=='undefined'&&naruPunchWind)S2.pw=mkE(naruPunchWind,27,75);
+  for(const key in SPRN)if(!S2[key])S2[key]=SPRN[key];SPRE[k]=S2;}finally{NARU_SKIN=null;}}}
+const SPRNX=()=>(typeof roleN!=='undefined'&&!roleN&&enemySkin&&SPRE[enemySkin])||SPRN;
 const SPRX=()=>heroS==='sakura'&&SPRK.guard?SPRK:heroS==='kakashi'&&SPRKA.guard?SPRKA:SPR;
 /* Naruto de quatro (manto da Kyubi): quadros de agachar, galope e bote, escolhidos pela pose (fourKeyFor) */
 if(USE_SPR&&SPRN.four&&typeof naruFourCoil==='function'){const mkF=fn=>{const gr=fn(),a=document.createElement('canvas'),b=document.createElement('canvas');gr.draw(a,NAR_PAL,1);gr.draw(b,Object.assign({},NAR_PAL,KYU_EYES),1);return{c:a,csh:b,w:gr.w,h:gr.h,ax:48,ay:56};};
@@ -79,7 +86,7 @@ function sprDraw(c,SB,S,P,R0,key,vf,sq){vf=vf||0;sq=sq||0;const dT=((P.tilt||0)-
 const sprTmp=document.createElement('canvas');sprTmp.width=96;sprTmp.height=96;const sprTx=sprTmp.getContext('2d',{willReadFrequently:true});
 const sprBig=document.createElement('canvas');sprBig.width=384;sprBig.height=384;const sprBx=sprBig.getContext('2d');
 function blitSprite(x,y,flip,P,time,o,isN){
- const key=(isN&&o.bentSpr&&SPRN.bent)?'bent':(isN&&o.bend&&SPRN.guard)?'guard':(isN&&o.four&&SPRN.four)?((o.fourKey&&SPRN[o.fourKey])?o.fourKey:'four'):(isN&&o.sexy&&SPRN.sexy)?'sexy':sprPick(P,isN?sprRefsN():null),S=(isN?SPRN:(o.lv2px>0?(SPRL2[key]?SPRL2:(SPRL2.guard&&key==='idle'?{idle:SPRL2.guard}:SPR)):SPRX()))[key],al=o.alpha==null?1:o.alpha;
+ const key=(isN&&o.bentSpr&&SPRN.bent)?'bent':(isN&&o.bend&&SPRN.guard)?'guard':(isN&&o.four&&SPRN.four)?((o.fourKey&&SPRN[o.fourKey])?o.fourKey:'four'):(isN&&o.sexy&&SPRN.sexy)?'sexy':sprPick(P,isN?sprRefsN():null),S=(isN?SPRNX():(o.lv2px>0?(SPRL2[key]?SPRL2:(SPRL2.guard&&key==='idle'?{idle:SPRL2.guard}:SPR)):SPRX()))[key],al=o.alpha==null?1:o.alpha;
  sprTx.setTransform(1,0,0,1,0,0);sprTx.globalCompositeOperation='source-over';sprTx.clearRect(0,0,96,96);{const fr=(key==='run'&&S.fr)?S.fr[Math.floor(time*16+(isN?1:0))%4]:null,br=!fr&&(key==='idle'||key==='guard')&&S.cb&&Math.floor(time*1.15+(isN?.55:0))%2===1;sprTx.drawImage(fr?(o.sharingan&&fr.csh?fr.csh:fr.c):(o.sharingan&&S.csh?(br?S.cbsh:S.csh):(br?S.cb:S.c)),0,0);}
  sprTx.globalCompositeOperation='source-atop';
  if(o.light){const L=o.light;sprTx.globalAlpha=Math.min(.3,L.k*.25);sprTx.fillStyle=css(L.col,1,1);sprTx.fillRect(0,0,S.w,S.h);sprTx.globalAlpha=1;}

@@ -61,7 +61,8 @@ function naruDress(g,r){
  }
  for(const f of r.folds||[])g.line(f[0],f[1],f[2],f[3],f[4]||'m',['O','q','Q']);
  if(r.extra)r.extra(g);
- return g;}function naruFrom(fn,rules){return()=>{HEADHOOK={head:naruHead,lying:naruHeadLying};let g;try{g=fn();}finally{HEADHOOK=null;}
+ return g;}let NARU_SKIN=null; /* inimigo de outra aparencia (pixel/kirigakure.js): troca a cabeca do Naruto */
+function naruFrom(fn,rules){return()=>{HEADHOOK=NARU_SKIN?{head:NARU_SKIN.head,lying:NARU_SKIN.lying}:{head:naruHead,lying:naruHeadLying};let g;try{g=fn();}finally{HEADHOOK=null;}
  naruDress(g,rules);g.outline('K');g.selout('K',NAR_DARK);return g;};}
 /* so as faixas dos antebracos viram manga; a atadura da canela (y>=64, x>=36 ou x<=16) continua branca */
 const NAR_STD={collar:(x,y)=>(y>=24&&y<=30&&x>=22&&x<=38)?1:(y>=30&&y<=33&&x>=17&&x<=43)?2:(y>=44)?2:0,waist:(x,y)=>y<=46,cover:(x,y)=>y>=49&&y<=69,

@@ -2,7 +2,7 @@
    Mapa pintado por codigo (oceano, terras, regioes, caminhos). Escolha um local, a equipe e parta para a batalha.
    O cenario da luta vem do local (setScene) e o inimigo recebe a escala e os elementos do local. */
 let mapSel=null,mapHero='sasuke',mapRAF=null,mapBG=null,mapTok=null,mapMoving=false,mapHover=null;
-const NODE_GLYPH={ondas:'波',konoha:'葉',treino:'修',floresta:'森',deserto:'砂',neve:'雪',vale:'終'};
+const NODE_GLYPH={ondas2:'道',ponte:'橋',ondas:'波',konoha:'葉',treino:'修',floresta:'森',deserto:'砂',neve:'雪',vale:'終'};
 const ORIG_NAMES={s:'SASUKE UCHIHA',n:'NARUTO UZUMAKI'};
 function mapEl(){let t=document.getElementById('map');if(t)return t;t=document.createElement('div');t.id='map';t.hidden=true;document.body.appendChild(t);return t;}
 
@@ -62,13 +62,13 @@ function startEncounter(id,hero){
  applyEncounter();}
 function setEnemyName(nm){const side=roleN?'s':'n',b=document.querySelector(side==='n'?'.pl.r b':'.pl b');if(b&&b.firstChild&&b.firstChild.nodeType===3)b.firstChild.nodeValue=(nm||ORIG_NAMES[side]).toUpperCase();}
 function applyEncounter(){
- const a=CAMP.active;if(!a)return;applyHero(a.hero);setScene(NODES[a.node].scene);setEnemyName(a.name);
+ const a=CAMP.active;if(!a)return;enemySkin=(NODES[a.node].enc||{}).skin||null;portrait('ptN',NARUTO,mk({expr:5}));applyHero(a.hero);setScene(NODES[a.node].scene);setEnemyName(a.name);
  mapEl().hidden=true;if(mapRAF){cancelAnimationFrame(mapRAF);mapRAF=null;}
  $('rst').onclick();toast(NODES[a.node].name+' — '+a.name);}
 /* fim de luta: marca o local, e volta ao mapa */
 function campaignResult(won){const a=CAMP.active;if(!a)return;
  if(won&&!CAMP.cleared.includes(a.node)){CAMP.cleared.push(a.node);}CAMP.at=a.node;saveCamp();
- setTimeout(()=>{CAMP.active=null;saveCamp();applyHero('sasuke');setEnemyName(null);setScene('vale');mapSel=a.node;openMap();},6200);}
+ setTimeout(()=>{CAMP.active=null;saveCamp();enemySkin=null;portrait('ptN',NARUTO,mk({expr:5}));applyHero('sasuke');setEnemyName(null);setScene('vale');mapSel=a.node;openMap();},6200);}
 window.addEventListener('keydown',e=>{const t=document.getElementById('map');if(e.key==='Escape'&&t&&!t.hidden){closeMap();e.stopImmediatePropagation();}},true);
 (function(){const b=document.createElement('button');b.id='mapbtn';b.textContent='Mapa';b.onclick=openMap;const c=document.querySelector('.ctl');if(c)c.insertBefore(b,c.firstChild);})();
 /* ao carregar: continua a luta em andamento ou abre o mapa */
