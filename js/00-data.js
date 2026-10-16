@@ -79,7 +79,8 @@ function elemMsg(mult){return mult>1?'Vantagem elemental! (+40%)':mult<1?'Elemen
 const TREES={
  sasuke:[
   {id:'soco',x:0,y:0,req:[],pt:0,base:1,d:'Avança e acerta um soco no rosto.'},
-  {id:'shishi',x:0,y:1,req:['soco'],pt:1,d:'Barragem de Leões: combo aéreo de taijutsu copiado de Rock Lee.'},
+  {id:'chute',x:0,y:1,req:[],pt:0,base:1,d:'Salta e acerta um chute giratório.'},
+  {id:'shishi',x:0,y:2,req:['soco','chute'],pt:1,d:'Barragem de Leões: combo aéreo de taijutsu copiado de Rock Lee.'},
   {id:'shuriken',x:1,y:0,req:[],pt:0,base:1,d:'Lança estrelas ninja que giram até o alvo.'},
   {id:'soushuken',x:1,y:1,req:['shuriken'],pt:1,d:'Shuriken e kunai guiados por fios invisíveis atacam de ângulos surpresa.'},
   {id:'kagesh',x:1,y:2,req:['soushuken'],pt:1,d:'Uma shuriken escondida na sombra de outra surpreende o alvo.'},
@@ -89,7 +90,9 @@ const TREES={
   {id:'copy',x:4,y:1,req:['genjutsu'],pt:1,d:'Sharingan: copia o jutsu do inimigo para usar uma vez (Rasengan e Kage Bunshin).'},
   {id:'selo',x:5,y:0,req:[],pt:1,d:'Selo Amaldiçoado nível 1: mais dano, chakra e esquiva por 3 turnos.'},
   {id:'selo2',x:5,y:1,req:['selo'],pt:2,d:'Transformação nível 2: poder maior e libera o Chidori Sombrio.'},
-  {id:'selochidori',x:4,y:2,req:['chidori','selo2'],pt:2,d:'O Chidori negro e roxo da transformação. Dano alto e fatality.'}],
+  {id:'selochidori',x:4,y:2,req:['chidori','selo2'],pt:2,d:'O Chidori negro e roxo da transformação. Dano alto e fatality.'},
+  {id:'kunai',x:6,y:0,req:[],pt:0,base:1,d:'Arremessa um kunai direto no alvo.'},
+  {id:'kawarimi',x:6,y:1,req:[],pt:0,base:1,d:'Jutsu de Substituição: troca de lugar com um tronco e evita por completo o próximo golpe, sem o inimigo perceber (2 usos por luta).'}],
  naruto:[
   {id:'bunshin',x:0,y:0,req:[],pt:0,start:1,d:'Clones das sombras atacam em sequência.'},
   {id:'uzumaki',x:0,y:1,req:['bunshin'],pt:1,d:'Clones chutam o inimigo para o alto e o Naruto desce com o calcanhar.'},
@@ -98,7 +101,8 @@ const TREES={
   {id:'kamikaze',x:1,y:1,req:['rasengan'],pt:1,d:'Gira como um tornado com clones e atravessa o inimigo.'},
   {id:'kyuubi',x:1,y:2,req:['rasengan'],pt:2,d:'Chakra da Kyūbi: manto de raposa, cura e +35% de dano.'},
   {id:'oiroke',x:2,y:0,req:[],pt:0,start:1,d:'Vira uma garota para distrair o inimigo: ele pode perder o turno.'},
-  {id:'harem',x:2,y:1,req:['oiroke'],pt:1,d:'Várias garotas com clones: quase sempre o inimigo perde o turno.'}]};
+  {id:'harem',x:2,y:1,req:['oiroke'],pt:1,d:'Várias garotas com clones: quase sempre o inimigo perde o turno.'},
+  {id:'kawarimi',x:3,y:0,req:[],pt:0,base:1,d:'Jutsu de Substituição: troca de lugar com um tronco e evita por completo o próximo golpe, sem o inimigo perceber (2 usos por luta).'}]};
 /* golpes guardados para personagens/fases futuras (nao aparecem na arvore nem no menu): o no pronto para recolocar */
 const TREES_FUTURO={sasuke:[{id:'amaterasu',x:2,y:1,req:['katon'],pt:1,d:'Chamas negras que não se apagam. O olho sangra e o alvo queima.'}]};
 const MAX_LEVEL=10,PROG_KEY='rpgProgV1';
@@ -106,6 +110,8 @@ const xpNeed=lv=>50*lv; /* XP para sair do nivel lv */
 function progDefault(){const p={};for(const c in TREES)p[c]={level:1,xp:0,pts:0,learned:TREES[c].filter(n=>n.base||n.start).map(n=>n.id)};return p;}
 let PROG=progDefault();
 try{const j=JSON.parse(localStorage.getItem(PROG_KEY)||'null');if(j)for(const c in PROG)if(j[c])Object.assign(PROG[c],j[c]);}catch(e){}
+/* golpes base novos entram sozinhos em progressos salvos antes */
+for(const c in PROG)for(const n of TREES[c])if(n.base&&!PROG[c].learned.includes(n.id))PROG[c].learned.push(n.id);
 function saveProg(){try{localStorage.setItem(PROG_KEY,JSON.stringify(PROG));}catch(e){}}
 function treeNode(charId,id){return (TREES[charId]||[]).find(n=>n.id===id);}
 /* golpe liberado? Copias valem se 'copy' foi aprendido; golpes fora da arvore sao sempre livres */
