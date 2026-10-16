@@ -84,3 +84,5 @@ O HUD (retratos, HP e chakra) agora fica numa faixa própria acima do cenário e
 
 ### Chakra da Kyūbi (Manto da Raposa)
 Disponível uma vez por luta, com a vida do Naruto em **50 ou menos** (a IA usa sozinha quando chega a 40). O Naruto se curva, o chakra vermelho explode e um manto de chakra com orelhas e cauda de raposa o envolve, com os olhos vermelhos de pupila em fenda. Por **3 turnos** ele cura **+8 de vida** no fim de cada turno e os golpes dele causam **+35% de dano**.
+
+No manto da Kyūbi o Naruto fica **de quatro**, como uma raposa, e o **Rasengan fica vermelho** (Rasengan da Kyūbi), infundido com o chakra dela.

@@ -620,7 +620,7 @@ if(USE_SPR){const mkS=(fn,pal,ax,ay)=>{const gr=fn(),c=document.createElement('c
  SPR.seal=mkS(sasukeSeal,SAS2_PAL,27,75);SPR.chidori=mkS(sasukeChidori,SAS2_PAL,27,75);SPR.katon=mkS(sasukeKaton,SAS2_PAL,27,75);SPR.block=mkS(sasukeBlock,SAS2_PAL,27,75);SPR.log=mkS(sasukeLog,SAS2_PAL,28,70);}
 const SPRL2={};if(USE_SPR&&typeof LV2_POSES!=='undefined'){for(const k in LV2_POSES){const gr=lv2From(LV2_POSES[k])(),c=document.createElement('canvas');gr.draw(c,LV2_PAL,1);const S0=SPR[k];SPRL2[k]={c,w:gr.w,h:gr.h,ax:S0?S0.ax:27,ay:S0?S0.ay:75};}}
 const KYU_EYES={e:'#d81818',j:'#ff7a2a',E:'#2a0408'}; /* chakra da Kyuubi: olho vermelho e pupila em fenda */
-const SPRN={};if(USE_SPR&&typeof naruGuard==='function'){const mkN=(fn,ax,ay)=>{const gr=fn(),c=document.createElement('canvas'),c2=document.createElement('canvas');gr.draw(c,NAR_PAL,1);gr.draw(c2,Object.assign({},NAR_PAL,KYU_EYES),1);return{c,csh:c2,w:gr.w,h:gr.h,ax,ay};};SPRN.guard=mkN(naruGuard,27,75);SPRN.punch=mkN(naruPunch,27,75);SPRN.hit=mkN(naruHit,25,75);SPRN.down=mkN(naruDown,40,45);SPRN.kick=mkN(naruKick,22,75);SPRN.seal=mkN(naruSeal,27,75);SPRN.block=mkN(naruBlock,27,75);if(typeof naruCharge==='function')SPRN.charge=mkN(naruCharge,27,75);if(typeof naruPunchWind!=='undefined'&&naruPunchWind)SPRN.pw=mkN(naruPunchWind,27,75);if(typeof naruSexy==='function')SPRN.sexy=mkN(naruSexy,27,75);}
+const SPRN={};if(USE_SPR&&typeof naruGuard==='function'){const mkN=(fn,ax,ay)=>{const gr=fn(),c=document.createElement('canvas'),c2=document.createElement('canvas');gr.draw(c,NAR_PAL,1);gr.draw(c2,Object.assign({},NAR_PAL,KYU_EYES),1);return{c,csh:c2,w:gr.w,h:gr.h,ax,ay};};SPRN.guard=mkN(naruGuard,27,75);SPRN.punch=mkN(naruPunch,27,75);SPRN.hit=mkN(naruHit,25,75);SPRN.down=mkN(naruDown,40,45);SPRN.kick=mkN(naruKick,22,75);SPRN.seal=mkN(naruSeal,27,75);SPRN.block=mkN(naruBlock,27,75);if(typeof naruCharge==='function')SPRN.charge=mkN(naruCharge,27,75);if(typeof naruPunchWind!=='undefined'&&naruPunchWind)SPRN.pw=mkN(naruPunchWind,27,75);if(typeof naruSexy==='function')SPRN.sexy=mkN(naruSexy,27,75);if(typeof naruFours==='function')SPRN.four=mkN(naruFours,30,75);}
 /* poses de referencia: cada pose do jogo cai no sprite cuja referencia estiver mais perto */
 let SPR_REF=null;
 function sprRefs(){if(SPR_REF)return SPR_REF;const L=[];const add=(k,...ps)=>ps.forEach(p=>{if(p)L.push([k,p]);});
@@ -650,7 +650,7 @@ function sprDraw(c,SB,S,P,R0,key,vf,sq){vf=vf||0;sq=sq||0;const dT=((P.tilt||0)-
 const sprTmp=document.createElement('canvas');sprTmp.width=96;sprTmp.height=96;const sprTx=sprTmp.getContext('2d',{willReadFrequently:true});
 const sprBig=document.createElement('canvas');sprBig.width=384;sprBig.height=384;const sprBx=sprBig.getContext('2d');
 function blitSprite(x,y,flip,P,time,o,isN){
- const key=(isN&&o.sexy&&SPRN.sexy)?'sexy':sprPick(P,isN?sprRefsN():null),S=(isN?SPRN:(o.lv2px>0?(SPRL2[key]?SPRL2:(SPRL2.guard&&key==='idle'?{idle:SPRL2.guard}:SPR)):SPR))[key],al=o.alpha==null?1:o.alpha;
+ const key=(isN&&o.four&&SPRN.four)?'four':(isN&&o.sexy&&SPRN.sexy)?'sexy':sprPick(P,isN?sprRefsN():null),S=(isN?SPRN:(o.lv2px>0?(SPRL2[key]?SPRL2:(SPRL2.guard&&key==='idle'?{idle:SPRL2.guard}:SPR)):SPR))[key],al=o.alpha==null?1:o.alpha;
  sprTx.setTransform(1,0,0,1,0,0);sprTx.globalCompositeOperation='source-over';sprTx.clearRect(0,0,96,96);sprTx.drawImage(o.sharingan&&S.csh?S.csh:S.c,0,0);
  sprTx.globalCompositeOperation='source-atop';
  if(o.light){const L=o.light;sprTx.globalAlpha=Math.min(.3,L.k*.25);sprTx.fillStyle=css(L.col,1,1);sprTx.fillRect(0,0,S.w,S.h);sprTx.globalAlpha=1;}
@@ -2280,15 +2280,15 @@ ANIMS.kyuubi={enemy:true,dur:3.4,hold:KY_ON,hitT:KY_ON,hits:[],cost:0,noLift:tru
   cam:[[0,{z:1.04,cx:192,cy:116}],[.35,{z:2.0,cx:282,cy:130}],[1.25,{z:2.4,cx:284,cy:128}],[KY_ON+.1,{z:1.5,cx:268,cy:124}],[2.6,{z:1.4,cx:262,cy:124}],[3.1,{z:1.04,cx:192,cy:116}],[3.4,{z:1.04,cx:192,cy:116}]]};
 let kyuT=0,kyuUsed=false;
 /* manto em pixel: bolhas de chakra vermelho subindo em volta do corpo, contorno escuro tremendo e a cauda de chakra atras */
-function kyuAura(g,x,y,time,k,front,dir){if(k<=0)return;g.save();g.globalAlpha=Math.min(1,k);
+function kyuAura(g,x,y,time,k,front,dir,four){if(k<=0)return;g.save();g.globalAlpha=Math.min(1,k);const H=four?.72:1,hx=four?-dir*12:0; /* de quatro: manto mais baixo e a cabeca mais a frente */
  if(!front){ /* cauda de chakra, balancando atras dele */
-  for(let i=0;i<26;i++){const u=i/25,sw=Math.sin(time*4-u*4)*6*u,px=x+dir*(6+u*30)+sw*.3,py=y-18-u*22+sw,r=(5.5-u*3.5)*(1+.15*Math.sin(time*12+i));g.fillStyle='#5a0808';pxDisc(g,px,py,r+1);g.fillStyle=i%3?'#c81e10':'#e8401c';pxDisc(g,px,py,r);g.fillStyle='#ff8a3a';if(i%4===0)pxDisc(g,px-1,py-1,r*.4);}
+  for(let i=0;i<26;i++){const u=i/25,sw=Math.sin(time*4-u*4)*6*u,px=x+dir*((four?14:6)+u*30)+sw*.3,py=y-(four?24:18)-u*22+sw,r=(5.5-u*3.5)*(1+.15*Math.sin(time*12+i));g.fillStyle='#5a0808';pxDisc(g,px,py,r+1);g.fillStyle=i%3?'#c81e10':'#e8401c';pxDisc(g,px,py,r);g.fillStyle='#ff8a3a';if(i%4===0)pxDisc(g,px-1,py-1,r*.4);}
   /* manto: silhueta vermelha em volta do corpo */
-  for(let i=0;i<34;i++){const a=i/34*TAU,rx=15+Math.sin(time*9+i*1.7)*2,ry=34+Math.sin(time*7+i)*2,px=x+Math.cos(a)*rx,py=y-32+Math.sin(a)*ry;g.fillStyle='#6a0a0a';pxDisc(g,px,py,4.5);g.fillStyle=i%2?'#c81e10':'#e23418';pxDisc(g,px,py,3.4);}
+  for(let i=0;i<34;i++){const a=i/34*TAU,rx=(four?24:15)+Math.sin(time*9+i*1.7)*2,ry=(four?22:34)+Math.sin(time*7+i)*2,px=x+Math.cos(a)*rx,py=y-(four?24:32)+Math.sin(a)*ry;g.fillStyle='#6a0a0a';pxDisc(g,px,py,4.5);g.fillStyle=i%2?'#c81e10':'#e23418';pxDisc(g,px,py,3.4);}
   /* orelhas de raposa de chakra */
-  for(const s of [-1,1]){const ex=x+s*7,ey=y-74;g.fillStyle='#6a0a0a';g.beginPath();g.moveTo(ex-4,ey+10);g.lineTo(ex+s*3,ey-8);g.lineTo(ex+5,ey+10);g.closePath();g.fill();g.fillStyle='#e23418';g.beginPath();g.moveTo(ex-2.6,ey+9);g.lineTo(ex+s*2.4,ey-5);g.lineTo(ex+3.6,ey+9);g.closePath();g.fill();}}
+  for(const s of [-1,1]){const ex=x+hx+s*7,ey=y-(four?62:74);g.fillStyle='#6a0a0a';g.beginPath();g.moveTo(ex-4,ey+10);g.lineTo(ex+s*3,ey-8);g.lineTo(ex+5,ey+10);g.closePath();g.fill();g.fillStyle='#e23418';g.beginPath();g.moveTo(ex-2.6,ey+9);g.lineTo(ex+s*2.4,ey-5);g.lineTo(ex+3.6,ey+9);g.closePath();g.fill();}}
  else{ /* bolhas subindo na frente e brilho de borda */
-  for(let i=0;i<22;i++){const r=R(i+2100),ph=(time*(.6+r()*.6)+r())%1,px=x+(r()-.5)*36+Math.sin(time*3+i)*2,py=y-4-ph*76;g.globalAlpha=Math.min(1,k)*(1-ph);g.fillStyle=ph<.4?'#ff6a2a':'#c81e10';g.fillRect(Math.round(px),Math.round(py),r()<.5?2:3,r()<.5?2:3);}}
+  for(let i=0;i<22;i++){const r=R(i+2100),ph=(time*(.6+r()*.6)+r())%1,px=x+(r()-.5)*(four?50:36)+Math.sin(time*3+i)*2,py=y-4-ph*76*H;g.globalAlpha=Math.min(1,k)*(1-ph);g.fillStyle=ph<.4?'#ff6a2a':'#c81e10';g.fillRect(Math.round(px),Math.round(py),r()<.5?2:3,r()<.5?2:3);}}
  g.restore();}
 /* coracoezinhos em pixel saindo dela e, se o Sasuke cair na distracao, sangue do nariz */
 function oirokeFX(f,t,time,nx0,sx0){
@@ -2352,7 +2352,7 @@ function showNarutoMenu(){menuOpen='main';const h=$('hand');h.innerHTML='';setHe
   add('Defender','Corta o próximo dano pela metade e recupera chakra.','#8fb4ff',3,null,()=>idleActN('defend'));
   add('Concentrar','Recupera chakra.','#7fd4ff',4,null,()=>idleActN('charge'));
   setCards(!anim&&!outcome&&!turnLock);return;}
- add('Rasengan','Esfera giratória no Sasuke (30 de dano).','#6fb8ff',1,ANIMS.rasengan.cost,()=>enemyTurn('rasengan'),()=>!bunta);
+ add(kyuT>0?'Rasengan da Kyūbi':'Rasengan',kyuT>0?'Rasengan vermelho com o chakra da raposa (+35%).':'Esfera giratória no Sasuke (30 de dano).',kyuT>0?'#ff4a1a':'#6fb8ff',1,ANIMS.rasengan.cost,()=>enemyTurn('rasengan'),()=>!bunta);
  add('Kage Bunshin','Clones das sombras atacam em sequência.','#ffa43a',2,ANIMS.bunshin.cost,()=>enemyTurn('bunshin'),()=>!bunta);
  add('Oiroke no Jutsu','Vira uma garota para distrair o Sasuke: ele pode perder o turno.','#ff8ab0',4,ANIMS.oiroke.cost,()=>enemyTurn('oiroke'),()=>!bunta);
  add('Harem no Jutsu','Várias garotas com clones: quase sempre o Sasuke perde o turno.','#ff6aa0',5,ANIMS.harem.cost,()=>enemyTurn('harem'),()=>!bunta);
@@ -2393,7 +2393,7 @@ function enemyTurn(force){if(typeof force!=='string')force=null;if(outcome||anim
  else if(type==='oiroke'){const hit=Math.random()<.6;anim.oirHit=hit;later(450,()=>speak('Oiroke no Jutsu!',[roleN?'40%':'58%','16%']));later(OIR_ON*1000+250,()=>speak('Oi, Sasuke-kun~ ♥',[roleN?'38%':'52%','14%']));
   later(2850,()=>{speak(hit?'...!!':'Patético.',[roleN?'52%':'18%','14%']);if(hit){stunS=1;toast('Sasuke ficou sem reação e vai perder o próximo turno');}else toast('Não funcionou no Sasuke');});}
  else if(type==='uzumaki'){later(700,()=>banner('うずまきナルト連弾','UZUMAKI NARUTO RENDAN','Rajada Naruto Uzumaki','#ff7a2a'));['U!','ZU!','MA!','KI!'].forEach((w,i)=>later(UZK[i]*1000,()=>speak(w,[(roleN?62-i*3:30+i*3)+'%','44%'])));later((UZ_SLAM-.15)*1000,()=>speak('NARUTO UZUMAKI RENDAN!',[roleN?'52%':'22%','12%']));}
- else if(type==='rasengan')later(1500,()=>banner('螺旋丸','RASENGAN','Esfera Giratória','#7fd4ff'));else if(type==='bunshin')later(1100,()=>banner('影分身の術','KAGE BUNSHIN','Clones das Sombras','#ffa43a'));
+ else if(type==='rasengan')later(1500,()=>kyuT>0?banner('九尾螺旋丸','RASENGAN DA KYŪBI','Infundido com o chakra da raposa','#ff4a1a'):banner('螺旋丸','RASENGAN','Esfera Giratória','#7fd4ff'));else if(type==='bunshin')later(1100,()=>banner('影分身の術','KAGE BUNSHIN','Clones das Sombras','#ffa43a'));
  A.hits.forEach((h,i)=>later(h.t*1000,()=>{const v=dmv[i];hp.s=Math.max(0,hp.s-v);setBars();if(v>0)dmgPop(v,'S');applyDamageS(type,i);}));
  if(lethal)later((isLR?A.LR.koAt:A.hits[A.hits.length-1].t+1.3)*1000,()=>{outcome='N';outcomeT=performance.now()/1000;showKO('N');setCards(false);});}
 const HS=.09;
@@ -2751,10 +2751,10 @@ function drawLog(c,x,t){const age=t-1.62;if(age<0)return;
 /* Rasengan em pixel art: esfera giratoria de bandas em espiral (3 tons de azul + nucleo branco), contorno escuro e faiscas orbitando */
 const RPN=128,rasPix=document.createElement('canvas');rasPix.width=rasPix.height=RPN;const rasPx=rasPix.getContext('2d',{willReadFrequently:true});
 function rasengan(c,x,y,r,time,fr,al,clipX){c.save();c.globalAlpha=al==null?1:al;
- f.save();f.globalCompositeOperation='lighter';orb(f,x,y,r*2.6,[[0,'rgba(150,205,255,'+(.3*(al==null?1:al))+')'],[1,'rgba(40,90,255,0)']]);f.restore(); /* brilho no layer de efeitos; o pixel art fica nitido */
+ f.save();f.globalCompositeOperation='lighter';orb(f,x,y,r*2.6,kyuT>0?[[0,'rgba(255,90,40,'+(.4*(al==null?1:al))+')'],[1,'rgba(200,10,0,0)']]:[[0,'rgba(150,205,255,'+(.3*(al==null?1:al))+')'],[1,'rgba(40,90,255,0)']]);f.restore(); /* brilho no layer de efeitos; o pixel art fica nitido */
  const C=RPN/2,R0=Math.max(2,Math.min(C-8,Math.round(r))),id=rasPx.createImageData(RPN,RPN),d=id.data,spin=time*13,
   put=(px,py,rgb)=>{if(px<0||py<0||px>=RPN||py>=RPN)return;const i=(py*RPN+px)*4;d[i]=rgb[0];d[i+1]=rgb[1];d[i+2]=rgb[2];d[i+3]=255;},
-  P3=[[255,255,255],[205,240,255],[130,200,255],[70,145,245],[34,84,196],[16,38,120]];
+  P3=kyuT>0?[[255,250,230],[255,200,150],[255,120,60],[220,40,24],[150,14,14],[70,4,8]]:[[255,255,255],[205,240,255],[130,200,255],[70,145,245],[34,84,196],[16,38,120]]; /* com o chakra da raposa o Rasengan fica vermelho */
  const y0=Math.max(0,C-R0-6),y1=Math.min(RPN-1,C+R0+6);
  for(let py=y0;py<=y1;py++)for(let px=y0;px<=y1;px++){const dx=px+.5-C,dy=py+.5-C,dd=Math.hypot(dx,dy),a=Math.atan2(dy,dx);
   if(dd<=R0+1){
@@ -2973,7 +2973,8 @@ function render(ts){
  const ctx={hw,f,g,A,type,t,raw,time,fr,nx0,ny0,sx0,sy0,nP,sP,rS,nOpt,ccx,ccy,z,hw2,outcome};
  const LGk=LG(type)?A.L:(fatalKind&&!A&&outcome==='S'?ANIMS[fatalKind].L:null);
  nOpt.vel=vN;const drawN=()=>{if(ashed&&!A&&outcome==='S')return;if(onToad&&A&&!A.enemy){blit(KU_NX,GY+KU_NY,true,NARUTO,nP,time,nOpt);return;}if(LGk&&LGk.drawN){LGk.drawN(ctx);return;}const kA=(type==='kyuubi'?clamp((t-.6)/(KY_ON-.6),0,1):0)||(kyuT>0&&!onToad?1:0),fl=nOpt.flipN!=null?nOpt.flipN:true;
- kyuAura(g,nx0,GY+ny0,time,kA,false,fl?1:-1);blit(nx0,GY+ny0,fl,NARUTO,nP,time,kA>.5?Object.assign({},nOpt,{sharingan:true}):nOpt);kyuAura(g,nx0,GY+ny0,time,kA,true,fl?1:-1);};
+ const four=kA>.5&&((type==='kyuubi'&&t>KY_ON)||(kyuT>0&&(!A||!A.enemy)))&&!!SPRN.four;
+ kyuAura(g,nx0,GY+ny0,time,kA,false,fl?1:-1,four);blit(nx0,GY+ny0,fl,NARUTO,nP,time,kA>.5?Object.assign({},nOpt,{sharingan:true,four}):nOpt);kyuAura(g,nx0,GY+ny0,time,kA,true,fl?1:-1,four);};
  const pierce=(LC(type)&&t>=2.56&&t<3.75)||(type==='selochidori'&&LG(type)&&t>=3.3&&t<4.38);
  if(!(A&&A.enemy)&&!pierce)drawN();
  const sOpt={};if(LTP(type)&&t>=TPF_LAND-.04&&t<TPF_BACK+.12)sOpt.alpha=0;if((LTP(type)&&t>=TPF_BACK+.12)||(!A&&outcome==='N'&&tpKill)){sOpt.flat=.42;sP.torn=1;}if(LKM(type)&&t>=KMF_UP+.3){sP.torn=1;}else if(!A&&outcome==='N'&&kmKill)sP.torn=1;if(LR(type)&&t>=ANIMS.rasengan.LR.burst)sOpt.hole=clamp((t-ANIMS.rasengan.LR.burst)/.06,0,1)*2.5;else if(!A&&outcome==='N'&&rasKill)sOpt.hole=2.5;

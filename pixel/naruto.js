@@ -98,3 +98,28 @@ function naruSexy(){const g=naruGuard();
  for(const [cx,cy,rx,ry] of [[29,35,10,6],[22,38,6,5],[36,38,6,5],[29,44,9,5],[29,51,12,6],[20,53,6,4.5],[38,53,6,4.5]])g.ell(cx,cy,rx,ry,'W');
  for(const [cx,cy,rx,ry] of [[29,39,9,2.5],[29,55,11,2.5],[21,56,5,2],[37,56,5,2]])g.ell(cx,cy,rx,ry,'u');
  g.outline('K');return g;}
+/* Manto da Kyubi: o Naruto de quatro, como uma raposa (olhando para a direita). Corpo inclinado, maos e pes no chao,
+   cabeca baixa e projetada para a frente. Feito com as mesmas cores e o mesmo contorno dos outros sprites dele. */
+function naruFours(){const g=PixGrid(56,80);HEADHOOK=null;
+ /* perna de tras dobrada: coxa, canela e sandalia */
+ g.poly([[10,46],[20,48],[16,60],[8,58]],'q');g.poly([[8,58],[16,60],[12,72],[4,71]],'O');g.shade([[2,64],[14,64],[14,74],[2,74]],['O'],'q');
+ g.poly([[2,70],[13,70],[14,75],[1,75]],'N');g.line(2,74,13,74,'n');g.put(9,71,'SS');
+ /* braco de tras, apoiado no chao */
+ g.poly([[30,40],[36,40],[38,56],[34,70],[29,70],[32,56]],'q');g.poly([[28,68],[36,68],[37,75],[27,75]],'s');g.line(29,74,36,74,'t');
+ /* perna da frente: joelho no chao */
+ g.poly([[14,46],[24,48],[26,62],[20,66],[14,60]],'O');g.shade([[12,54],[28,54],[28,68],[12,68]],['O'],'q');
+ g.poly([[18,62],[27,62],[26,70],[16,70]],'A');g.line(18,66,26,66,'a');g.poly([[14,70],[27,70],[28,75],[13,75]],'N');g.line(14,74,27,74,'n');
+ /* tronco inclinado para a frente, do quadril (esq.) aos ombros (dir.) */
+ g.poly([[8,40],[18,34],[34,30],[44,34],[44,44],[34,48],[18,50],[8,48]],'O');
+ g.shade([[6,44],[46,44],[46,52],[6,52]],['O'],'q');g.shade([[18,30],[44,30],[44,34],[18,34]],['O'],'Q');
+ g.line(12,40,40,36,'m',['O','Q']);g.line(8,46,20,46,'N',['O','q']);g.line(8,47,20,47,'n',['O','q']);
+ /* gola de pelo branca nos ombros */
+ g.poly([[34,30],[42,30],[46,36],[40,38],[34,36]],'W');g.shade([[34,35],[47,35],[47,39],[34,39]],['W'],'A');
+ /* braco da frente esticado ate o chao, com a mao espalmada */
+ g.poly([[40,38],[46,38],[50,54],[48,68],[43,68],[44,54]],'O');g.shade([[42,52],[52,52],[52,70],[42,70]],['O'],'q');
+ g.poly([[42,64],[49,64],[48,69],[43,69]],'N');g.line(42,66,49,66,'n');
+ g.poly([[40,68],[50,68],[53,73],[52,75],[38,75]],'S');g.line(40,74,52,74,'s');for(const x of [44,47,50])g.line(x,71,x+1,75,'s');
+ /* cabeca baixa e projetada para a frente */
+ naruHead(g,16,14);
+ g.outline('K');g.selout('K',NAR_DARK);
+ return g;}
