@@ -2072,13 +2072,13 @@ ANIMS.rasengan={enemy:true,dur:4.6,hold:2.2,hitT:2.2,hits:[{t:2.2,dmg:30}],cost:
   tpN:[3.3],nX:[[0,288],[1.6,288],[1.75,270],[2.1,130],[2.9,130],[3.29,130],[3.31,288],[4.6,288]],
   cam:[[0,{z:1.04,cx:192,cy:116}],[.5,{z:1.04,cx:192,cy:116}],[.8,{z:1.6,cx:268,cy:130}],[1.5,{z:1.7,cx:272,cy:130}],[1.7,{z:1.4,cx:210,cy:130}],[2.05,{z:1.5,cx:122,cy:130}],[2.2,{z:1.75,cx:112,cy:130}],[3.0,{z:1.4,cx:90,cy:130}],[3.9,{z:1.04,cx:192,cy:116}],[4.6,{z:1.04,cx:192,cy:116}]]};
 /* ---- fatality do Rasengan: a camera vai para as costas do Sasuke e a esfera estoura as costas dele, abrindo um rombo ---- */
-ANIMS.rasengan.LR={dur:9.6,koAt:8.8,bannerAt:7.0,mirror:[2.3,3.56],burst:2.9,
+ANIMS.rasengan.LR={dur:10.6,koAt:10.0,bannerAt:9.0,speakAt:7.3,line:'Eu sou Naruto Uzumaki, tô certo!',mirror:[2.3,3.56],burst:2.9,
  map:[[0,0],[2.2,2.2],[2.4,2.28],[5.4,3.6],[6.2,4.2],[99,97]],
  sP:ANIMS.rasengan.sP.filter(k=>k[0]<=2.15).concat([[2.2,S_HIT],[3.7,S_HIT],[4.05,S_STAG],[4.7,S_DOWN],[99,S_DOWN]]),
  sX:[[0,96],[3.7,96],[4.7,86],[99,86]],
  nP:ANIMS.rasengan.nP.filter(k=>k[0]<=2.15).concat([[2.2,N_RAS_HIT],[3.75,N_RAS_HIT],[4.4,N_READY],[5.4,N_VICT],[99,N_VICT]]),
  nX:ANIMS.rasengan.nX.filter(k=>k[0]<=2.1).concat([[3.75,130],[4.5,158],[99,158]]),
- cam:ANIMS.rasengan.cam.filter(k=>k[0]<=2.2).concat([[2.26,{z:2.2,cx:98,cy:130}],[2.32,{z:3.2,cx:66,cy:132}],[2.9,{z:3.3,cx:64,cy:132}],[3.15,{z:2.4,cx:62,cy:128}],[3.55,{z:2.3,cx:68,cy:128}],[3.6,{z:1.9,cx:110,cy:130}],[4.7,{z:1.7,cx:100,cy:136}],[5.6,{z:1.3,cx:140,cy:124}],[6.6,{z:1.04,cx:192,cy:116}],[99,{z:1.04,cx:192,cy:116}]])};
+ cam:ANIMS.rasengan.cam.filter(k=>k[0]<=2.2).concat([[2.26,{z:2.2,cx:98,cy:130}],[2.32,{z:3.2,cx:66,cy:132}],[2.9,{z:3.3,cx:64,cy:132}],[3.15,{z:2.4,cx:62,cy:128}],[3.55,{z:2.3,cx:68,cy:128}],[3.6,{z:1.9,cx:110,cy:130}],[4.7,{z:1.7,cx:100,cy:136}],[5.1,{z:2.3,cx:156,cy:126}],[7.2,{z:2.5,cx:158,cy:124}],[7.9,{z:1.04,cx:192,cy:116}],[99,{z:1.04,cx:192,cy:116}]])};
 ANIMS.bunshin={enemy:true,dur:5.2,hold:3.6,hitT:3.6,hits:[{t:1.9,dmg:6},{t:2.45,dmg:6},{t:3.0,dmg:6},{t:3.6,dmg:14}],cost:25,
   clones:[{x0:250,r0:2.65,h:3.0},{x0:218,r0:2.1,h:2.45},{x0:186,r0:1.5,h:1.9}],
   sP:[[0,READY],[.45,READY],[1.8,S_GUARD],[1.88,S_GUARD],[1.92,S_FLINCH],[2.15,S_GUARD],[2.43,S_GUARD],[2.47,S_FLINCH],[2.7,S_GUARD],[2.98,S_GUARD],[3.02,S_FLINCH],[3.3,S_GUARD],[3.58,S_GUARD],[3.62,S_HIT],[4.3,S_HIT],[4.6,S_STAG],[5.0,READY],[5.2,READY]],
@@ -2139,7 +2139,7 @@ function enemyTurn(force){if(typeof force!=='string')force=null;if(outcome||anim
  const gm=guard?.5:1;guard=false;const dm=h=>Math.max(1,Math.round(h.dmg*gm));
  const total=A.hits.reduce((a,h)=>a+dm(h),0),lethal=hp.s-total<=0;
  const isLR=lethal&&type==='rasengan'&&A.LR;if(isLR)rasKill=true;
- anim={type,t0:performance.now(),dur:isLR?A.LR.dur:A.dur+HS,lethal,enemy:true};if(isLR){later(A.LR.bannerAt*1000,()=>banner('螺旋丸','FATALITY','Rasengan','#7fd4ff'));sfxFatal();}setCards(false);ck.n=Math.max(0,ck.n-A.cost);setBars();sfx(type);
+ anim={type,t0:performance.now(),dur:isLR?A.LR.dur:A.dur+HS,lethal,enemy:true};if(isLR){later(A.LR.speakAt*1000,()=>speak(A.LR.line,['44%','14%']));later(A.LR.bannerAt*1000,()=>banner('螺旋丸','FATALITY','Rasengan','#7fd4ff'));sfxFatal();}setCards(false);ck.n=Math.max(0,ck.n-A.cost);setBars();sfx(type);
  if(type==='rasengan')later(1500,()=>banner('螺旋丸','RASENGAN','Esfera Giratória','#7fd4ff'));else later(1100,()=>banner('影分身の術','KAGE BUNSHIN','Clones das Sombras','#ffa43a'));
  A.hits.forEach((h,i)=>later(h.t*1000,()=>{hp.s=Math.max(0,hp.s-dm(h));setBars();dmgPop(dm(h),'S');applyDamageS(type,i);}));
  if(lethal)later((isLR?A.LR.koAt:A.hits[A.hits.length-1].t+1.3)*1000,()=>{outcome='N';outcomeT=performance.now()/1000;showKO('N');setCards(false);});}
