@@ -2248,10 +2248,10 @@ function pierceFX(f,t,time,fr,nx0,sx0,sy0,rS,hw,ny0){
  const a=t-2.58,r2=R((fr>>1)*37+5),cx=nx0-1.5,cy=GY-40+ny0,fb=fr>>1;f.lineCap='round';
  if(t<3.6){ /* braco cravado: o Chidori crepita dentro do peito e a energia vaza pelo corpo todo */
   f.globalCompositeOperation='lighter';
-  const gl=.55+.25*Math.sin(time*40);orb(f,cx,cy,30,[[0,`rgba(190,240,255,${gl})`],[.4,`rgba(90,170,255,${gl*.45})`],[1,'rgba(40,90,255,0)']]);
+  const gl=.55+.25*Math.sin(time*40);orb(f,cx,cy,19,[[0,`rgba(190,240,255,${gl*.4})`],[.4,`rgba(90,170,255,${gl*.2})`],[1,'rgba(40,90,255,0)']]);
   const tg=[[nx0-2,GY-60+ny0],[nx0-15,GY-33+ny0],[nx0+9,GY-30+ny0],[nx0-7,GY-2],[nx0+6,GY-2],[nx0-11,GY-50+ny0],[nx0+8,GY-48+ny0]];
-  let L=[];for(let i=0;i<tg.length;i++){if(((fb+i)%3)===0)continue;L.push(...jagLines(cx,cy,tg[i][0],tg[i][1],fb*17+i*5,5));}
-  for(let i=0;i<4;i++)L.push(...boltLines(cx,cy,r2()*TAU,9+r2()*16,fb*31+i,true));drawBolts(f,L,.85);
+  let L=[];for(let i=0;i<tg.length;i++){if(((fb+i)%2)===0)continue;L.push(...jagLines(cx,cy,tg[i][0],tg[i][1],fb*17+i*5,5));}
+  for(let i=0;i<2;i++)L.push(...boltLines(cx,cy,r2()*TAU,8+r2()*12,fb*31+i,true));drawBolts(f,L,.5);
   f.globalCompositeOperation='source-over';
   for(let k=0;k<4;k++){const ak=a-k*.3;if(ak>=0&&ak<.85){bloodSpray(f,nx0+7,cy,ak,11+k,k?12:24,1);bloodSpray(f,nx0-8,cy+1,ak,21+k,k?8:16,-1);}}}
  const rp=t-3.58;
@@ -2611,7 +2611,7 @@ function render(ts){
   const spray=(t0,t1,n,posFn,dirx,seed)=>{for(let i=0;i<n;i++){const tb=t0+(t1-t0)*i/n,age=t-tb;if(age<0||age>.65)continue;const r2=R(seed+i),p0=posFn(tb),vx=(r2()-.5)*36+dirx,vy=-(24+r2()*56);const x=p0[0]+vx*age,y=p0[1]+vy*age+130*age*age;if(y>GY+4)continue;f.fillStyle=r2()<.5?`rgba(235,248,255,${1-age/.65})`:`rgba(140,196,240,${1-age/.65})`;f.beginPath();f.arc(x,y,.4+r2()*.5,0,TAU);f.fill();}};
   spray(2.15,2.56,70,tb=>[sasX(type,tb)-6,GY],-40,100);spray(2.58,3.1,50,tb=>[nx0,GY],60,300);spray(3.1,3.6,30,tb=>[sasX(type,tb),GY],20,500);
   if(LC(type)&&t>=2.58)pierceFX(f,t,time,fr,nx0,sx0,sy0,rS,hw,ny0);
-  chidoriFX(f,hw[0],hw[1],power,fr>>1,time);
+  chidoriFX(f,hw[0],hw[1],power*((LC(type)&&t>=2.58)?.4:1),fr>>1,time);
   if(power>.15&&t<2.58){const nb=t<2.15?3:2;for(let i=0;i<nb;i++){const an=time*2.6+i*TAU/nb,rr=(19+5*Math.sin(time*2+i))*Math.min(1,power);eBird(f,hw[0]+Math.cos(an)*rr,hw[1]+Math.sin(an)*rr*.8,an+Math.PI/2,1.0+.3*Math.min(1,power),time*20+i*2,fr);}}
   const a=LC(type)?(raw-2.58)*1.7:t-2.58;
   if(a>=0&&a<1.0){const cx=nx0-6,cy=GY-42;
