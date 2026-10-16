@@ -146,6 +146,7 @@ function render(ts){
  if(chestHole)nOpt.hole=(A&&LC(type))?clamp((t-3.58)/.1,0,1):((A&&type==='selochidori'&&LG(type))?clamp((t-4.2)/.1,0,1)*1.8:(fatalKind==='selochidori'?1.8:1));
  if(type==='selochidori'&&LG(type)&&t>=3.2){const kk=scaleAt(0,1,3.25,3.5,t)*(1-scaleAt(0,1,4.1,4.4,t));nOpt=Object.assign({},nOpt,{tint:[50,20,90],tk:.35*kk});}
  if(fatalKind&&!A&&outcome==='S'&&ANIMS[fatalKind].L.nRot)nOpt.rot=ANIMS[fatalKind].L.nRot(99);
+ if(typeof tsuigaNOpt==='function')tsuigaNOpt(nOpt,type,t,A,fatalKind,outcome);
  if(typeof FAT_POP!=='undefined'&&((type==='suiryudan'&&LG(type)&&t>=FAT_POP)||(fatalKind==='suiryudan'&&!A&&outcome==='S')))nOpt.noArms=1; /* o fatality do dragao de agua arranca os bracos */
  if(LA(type)&&t>=4.3)nOpt.dissolve=scaleAt(0,1,4.4,5.8,t);
  if(LK(type)&&t>2.6)nOpt.cracks=scaleAt(0,1,2.7,5.4,t);else if(burnt&&(!A||type==='katon'))nOpt.cracks=1;
@@ -167,7 +168,7 @@ function render(ts){
   if(t>=1.82&&t<2.4){const kk=(t-1.82)/.58,ee=kk*kk*.7+kk*.3;fxLights.push({x:mth[0]+(tx0-mth[0])*ee,y:mth[1]+(ty0-mth[1])*ee,col:[255,150,50],r:150,k:.85});}
   const a0=t-2.4;if(a0>=0&&a0<1.2)fxLights.push({x:tx0,y:ty0,col:[255,150,50],r:190,k:.9*(1-a0/1.2)});}
  {const DG=anim&&anim.dodge;if(DG&&t>=DG.t0&&t<DG.t1+.1){const bx=DG.who==='S'?96:288;drawLog(g,bx,t<DG.tb?1.62+((t*9)%1)*.12:t-DG.tb+1.62);puff(f,bx,GY-24,t-DG.t0,3);puff(f,bx,GY-24,t-DG.t1,4);}} /* o tronco no lugar de quem esquivou: em pe ate o golpe, depois se parte */
- const ctx={hw,f,g,A,type,t,raw,time,fr,nx0,ny0,sx0,sy0,nP,sP,rS,nOpt,ccx,ccy,z,hw2,outcome};
+ const ctx={hw,f,g,A,type,t,raw,time,fr,nx0,ny0,sx0,sy0,nP,sP,rS,nOpt,ccx,ccy,z,sx,sy,hw2,outcome};
  const LGk=LG(type)?A.L:(fatalKind&&!A&&outcome==='S'?ANIMS[fatalKind].L:null);
  nOpt.vel=vN;const drawN=()=>{if(ashed&&!A&&outcome==='S')return;if(onToad&&A&&!A.enemy){blit(KU_NX,GY+KU_NY,true,NARUTO,nP,time,nOpt);return;}if(LGk&&LGk.drawN){LGk.drawN(ctx);return;}const kA=(type==='kyuubi'?clamp((t-.6)/(KY_ON-.6),0,1):0)||(kyuT>0&&!onToad?1:0),fl=nOpt.flipN!=null?nOpt.flipN:true;
  const four=kA>.5&&!!SPRN.four&&!(type==='kyuubi'&&t<=KY_ON)&&!((type==='oiroke'||type==='harem')&&t>=OIR_ON&&t<OIR_OFF)&&!(type==='kuchiyose') /* no manto da Kyubi ele fica e ataca sempre de quatro */,dirK=fl?1:-1,fk=four?fourKeyFor(nP,time):null,nO=kA>.5?Object.assign({},nOpt,{sharingan:true,four,fourKey:fk,tint:[200,40,16],tk:.3*Math.min(1,kA)}):nOpt,kKey=four?fk:(kA>0?sprPick(nP,sprRefsN()):null),yb=GY+ny0+(four&&fk==='four'?Math.round(Math.sin(time*2.6)*1.0):four&&fk==='fourCoil'?Math.round(Math.sin(time*8)*.8):0);

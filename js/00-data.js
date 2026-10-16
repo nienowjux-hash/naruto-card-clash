@@ -42,6 +42,7 @@ const MOVES={
  kawarimi:{name:'Kawarimi',elem:'neutro',tipo:'suporte',lvl:1,rar:1},
  /* Sakura */
  raikiri:{name:'Raikiri',elem:'raio',tipo:'ninjutsu',lvl:10,rar:3},
+ tsuiga:{name:'Doton: Tsuiga no Jutsu',elem:'terra',tipo:'ninjutsu',lvl:10,rar:3},
  suijinheki:{name:'Suiton: Suijinheki',elem:'agua',tipo:'ninjutsu',lvl:15,rar:3},
  suiryudan:{name:'Suiton: Suiryūdan no Jutsu',elem:'agua',tipo:'ninjutsu',lvl:25,rar:3},
  cura:{name:'Cura Médica',elem:'yin',tipo:'suporte',lvl:1,rar:1},
@@ -137,6 +138,7 @@ const TREES={
   {id:'raikiri',x:4,y:0,req:[],pt:0,base:1,d:'Raikiri: relâmpagos na mão, a técnica que corta o raio. Dano alto e fatality.'},
   {id:'genjutsu',x:5,y:0,req:[],pt:0,base:1,d:'Prende o alvo numa ilusão do Sharingan: ele perde o próximo turno.'},
   {id:'copy',x:5,y:1,req:['genjutsu'],pt:4,d:'Ninja Copiador: copia o jutsu do inimigo para usar uma vez (Rasengan e Kage Bunshin).'},
+  {id:'tsuiga',x:7,y:0,req:[],pt:0,auto:1,d:'Técnica da Perseguição Presa: cães ninjas saem da terra, mordem e imobilizam o alvo (ele perde o próximo turno). Libera sozinho no nível 10.'},
   {id:'suijinheki',x:6,y:0,req:[],pt:0,auto:1,d:'Parede de Água: um escudo de água que absorve 80% do próximo dano. Libera sozinho no nível 15.'},
   {id:'suiryudan',x:6,y:1,req:['suijinheki'],pt:0,auto:1,d:'Dragão de Água: molda a água em um dragão que devora o inimigo. Libera sozinho no nível 25.'}]};
 /* golpes guardados para personagens/fases futuras (nao aparecem na arvore nem no menu): o no pronto para recolocar */
