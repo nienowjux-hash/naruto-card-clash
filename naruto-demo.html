@@ -598,7 +598,9 @@ function silhouette(col){const ow=.5*SR;sc.setTransform(1,0,0,1,0,0);
 let USE_SPR=typeof PixGrid==='function';
 try{if(localStorage.getItem('sasukeSprites')==='0')USE_SPR=false;}catch(e){}
 const SPR={};
-if(USE_SPR){const mkS=(fn,pal,ax,ay)=>{const gr=fn(),c=document.createElement('canvas');gr.draw(c,pal,1);return{c,w:gr.w,h:gr.h,ax,ay};};
+/* Sharingan: mesma pose com a iris vermelha (selo nivel 1, genjutsu, copia...) */
+const SHARI={E:'#b8101e',e:'#ff4636'};
+if(USE_SPR){const mkS=(fn,pal,ax,ay)=>{const gr=fn(),c=document.createElement('canvas'),c2=document.createElement('canvas');gr.draw(c,pal,1);gr.draw(c2,Object.assign({},pal,SHARI),1);return{c,csh:c2,w:gr.w,h:gr.h,ax,ay};};
  SPR.idle=mkS(sasukeIdle,SAS2_PAL,27,75); /* mesma paleta das outras poses: a bermuda nao pisca de cor ao trocar de sprite */SPR.guard=mkS(sasukeGuard,SAS2_PAL,27,75);SPR.punch=mkS(sasukePunch,SAS2_PAL,27,75);if(typeof sasukePunchWind==='function')SPR.pw=mkS(sasukePunchWind,SAS2_PAL,27,75);if(typeof sasukeKickWind==='function')SPR.kw=mkS(sasukeKickWind,SAS2_PAL,27,75);
  SPR.hit=mkS(sasukeHit,SAS2_PAL,25,75);SPR.down=mkS(sasukeDown,SAS2_PAL,40,45);SPR.kick=mkS(sasukeKick,SAS2_PAL,22,75);
  SPR.seal=mkS(sasukeSeal,SAS2_PAL,27,75);SPR.chidori=mkS(sasukeChidori,SAS2_PAL,27,75);SPR.katon=mkS(sasukeKaton,SAS2_PAL,27,75);SPR.block=mkS(sasukeBlock,SAS2_PAL,27,75);SPR.log=mkS(sasukeLog,SAS2_PAL,28,70);}
@@ -619,7 +621,7 @@ function sprRefs(){if(SPR_REF)return SPR_REF;const L=[];const add=(k,...ps)=>ps.
  add('down',S_DOWN);
  return SPR_REF=L;}
 let SPRN_REF=null;function sprRefsN(){if(SPRN_REF)return SPRN_REF;const L=[],add=(k,...ps)=>ps.forEach(p=>{if(p)L.push([k,p]);}),d=n=>typeof window[n]!=='undefined'?window[n]:null;
- add('guard',N_READY,N_GUARD,N_SURP,N_VICT,(typeof N_JUMP!=='undefined'?N_JUMP:null),(typeof N_AIR!=='undefined'?N_AIR:null),(typeof N_AIR2!=='undefined'?N_AIR2:null));add('block',(typeof N_GUARD!=='undefined'?N_GUARD:null));if(SPRN.pw)add('pw',N_COIL);else add('guard',N_COIL);add('seal',(typeof N_SEAL!=='undefined'?N_SEAL:null));add('charge',(typeof N_RAS_WIND!=='undefined'?N_RAS_WIND:null));add('punch',N_DASHP,N_PUNCH,N_UPPER,(typeof N_RAS_DASH!=='undefined'?N_RAS_DASH:null),(typeof N_RAS_HIT!=='undefined'?N_RAS_HIT:null));add('hit',N_HIT,N_STAG,N_HITB,N_BURN1,N_BURN2);add('down',N_DOWN);return SPRN_REF=L;}
+ add('guard',N_READY,N_GUARD,N_SURP,N_VICT,(typeof N_JUMP!=='undefined'?N_JUMP:null));add('block',(typeof N_GUARD!=='undefined'?N_GUARD:null));if(SPRN.pw)add('pw',N_COIL);else add('guard',N_COIL);add('seal',(typeof N_SEAL!=='undefined'?N_SEAL:null));add('charge',(typeof N_RAS_WIND!=='undefined'?N_RAS_WIND:null));add('punch',N_DASHP,N_PUNCH,N_UPPER,(typeof N_RAS_DASH!=='undefined'?N_RAS_DASH:null),(typeof N_RAS_HIT!=='undefined'?N_RAS_HIT:null));add('hit',N_HIT,N_STAG,N_HITB,N_BURN1,N_BURN2,(typeof N_AIR!=='undefined'?N_AIR:null),(typeof N_AIR2!=='undefined'?N_AIR2:null));add('down',N_DOWN);return SPRN_REF=L;}
 const SPR_W={hxF:1,hyF:1,hxB:.6,hyB:.6,ffx:.9,ffy:1.4,fbx:.6,fby:1,crouch:1.2,lean:.8,tilt:30,hr:6};
 let sprRefPose=null;
 function sprPick(P,refs){let best='guard',bd=1e9;for(const [k,R0] of (refs||sprRefs())){let d=0;for(const q in SPR_W){const v=(P[q]||0)-(R0[q]||0);d+=SPR_W[q]*v*v;}if(d<bd){bd=d;best=k;sprRefPose=R0;}}return best;}
@@ -633,7 +635,7 @@ const sprTmp=document.createElement('canvas');sprTmp.width=96;sprTmp.height=96;c
 const sprBig=document.createElement('canvas');sprBig.width=384;sprBig.height=384;const sprBx=sprBig.getContext('2d');
 function blitSprite(x,y,flip,P,time,o,isN){
  const key=sprPick(P,isN?sprRefsN():null),S=(isN?SPRN:(o.lv2px>0?(SPRL2[key]?SPRL2:(SPRL2.guard&&key==='idle'?{idle:SPRL2.guard}:SPR)):SPR))[key],al=o.alpha==null?1:o.alpha;
- sprTx.setTransform(1,0,0,1,0,0);sprTx.globalCompositeOperation='source-over';sprTx.clearRect(0,0,96,96);sprTx.drawImage(S.c,0,0);
+ sprTx.setTransform(1,0,0,1,0,0);sprTx.globalCompositeOperation='source-over';sprTx.clearRect(0,0,96,96);sprTx.drawImage(o.sharingan&&S.csh?S.csh:S.c,0,0);
  sprTx.globalCompositeOperation='source-atop';
  if(o.light){const L=o.light;sprTx.globalAlpha=Math.min(.3,L.k*.25);sprTx.fillStyle=css(L.col,1,1);sprTx.fillRect(0,0,S.w,S.h);sprTx.globalAlpha=1;}
  if(o.tint){sprTx.fillStyle=css(o.tint,1,o.tk);sprTx.fillRect(0,0,S.w,S.h);}
@@ -692,6 +694,7 @@ function blit(x,y,flip,d,P,time,o){o=o||{};
   const p2=Math.min(1,o.lv2),al0=o.alpha==null?1:o.alpha;
   if(p2<1)blitSprite(x,y,flip,P,time,Object.assign({},o,{lv2px:0}),false);
   return blitSprite(x,y,flip,P,time,Object.assign({},o,{lv2px:1,alpha:al0*p2,noRefl:o.noRefl||p2<1}),false);}
+ if(USE_SPR&&d===SASUKE&&!(o.lv2>0)&&!o.sharingan&&(P.red>.5||o.curse>0))o=Object.assign({},o,{sharingan:true});
  if(USE_SPR&&(d===SASUKE||(d===NARUTO&&SPRN.guard))&&!(o.lv2>0))return blitSprite(x,y,flip,P,time,o,d===NARUTO);if(o.lv2>0&&d.style==='s')d=lvDef(o.lv2);
  const cq=clamp(P.crouch-3,-4,6),fast=(P.tilt||0)>.25?1:0,sxq=1+cq*.006+fast*.045,syq=1-cq*.007-fast*.025;
  sc.setTransform(1,0,0,1,0,0);sc.clearRect(0,0,spW,spH);sc.globalCompositeOperation='source-over';
@@ -1760,9 +1763,11 @@ ANIMS.shishi={dur:4.2,hold:1.0,hitT:.85,dmg:36,cost:25,noLift:true,
  nYf:t=>interp([[0,0],[.85,0],[1.2,-62],[1.9,-66],[2.05,-62],[2.2,0],[99,0]],t),
  sYf:sasYShishi,
  sP:[[0,READY],[.4,READY],[.5,SH_W],[.7,PN_D],[.82,SH_UP],[1.0,SH_A],[1.2,SH_A],[1.27,SH_B],[1.42,SH_A],[1.57,SH_B],[1.72,SH_A],[1.85,SH_TOP],[2.0,SH_HEEL],[2.3,READY],[3.0,READY],[4.2,READY]],
- tp:[2.4],sX:[[0,96],[.45,96],[.8,250],[1.0,258],[2.0,262],[2.39,260],[2.41,96],[4.2,96]],
+ tp:[2.4],sX:[[0,96],[.45,96],[.8,250],[1.0,258],[2.0,262],[2.39,260],[2.41,96],[4.2,96]],sSpin:[1.82,2.02,1],
+ /* Naruto lancado: o corpo deita para tras no ar e da um tranco a cada golpe da sombra */
+ nRotf:t=>{const k=scaleAt(0,1,.85,1.15,t)*(1-scaleAt(0,1,2.0,2.2,t));let w=0;for(const h of SHT)if(t>h&&t<h+.12)w+=.3*(1-(t-h)/.12);return (-1.2+w)*k;},
  nP:[[0,N_READY],[.8,N_READY],[.85,N_HITB],[1.1,N_AIR],[1.4,N_AIR2],[1.7,N_AIR],[1.95,N_AIR2],[2.2,N_STAG],[3.0,N_READY],[4.2,N_READY]],
- nX:[[0,288],[.85,288],[1.2,292],[2.0,290],[2.3,296],[3.0,288],[4.2,288]],
+ nX:[[0,288],[.85,288],[1.2,304],[2.0,300],[2.3,296],[3.0,288],[4.2,288]],
  cam:[[0,{z:1.04,cx:192,cy:116}],[.4,{z:1.04,cx:192,cy:116}],[.7,{z:1.4,cx:180,cy:126}],[.9,{z:1.6,cx:268,cy:118}],[1.3,{z:1.5,cx:274,cy:96}],[1.9,{z:1.5,cx:278,cy:94}],[2.1,{z:1.6,cx:280,cy:122}],[2.5,{z:1.3,cx:262,cy:128}],[2.9,{z:1.1,cx:205,cy:122}],[3.3,{z:1.04,cx:192,cy:116}]],
  env:(raw,t)=>{const E={};for(const h of SHT.concat([.85])){const a=t-h;if(a>0&&a<.25)E.shk=Math.max(E.shk||0,3*(1-a/.25));}const a2=t-2.2;if(a2>0&&a2<.6)E.shk=Math.max(E.shk||0,8*(1-a2/.6));if(a2>=0&&a2<.04)E.flash=.5;return E;},
  fx:c=>{shishiFX(c,false);shishiSlamFX(c,2.2);}};
