@@ -247,3 +247,72 @@ function sasukeChidori(){const g=PixGrid(56,80);
  g.put(44,45,'S');g.put(45,46,'S');g.put(44,46,'s'); /* dedos aparecendo no meio do raio */
  g.outline('K');g.selout('K',SAS_DARK);
  return g;}
+
+/* cores do fogo (Katon) e da madeira (Kawarimi) */
+Object.assign(SAS2_PAL,{F:'#fff6c8',f:'#ffd23a',G:'#ff9a1e',g:'#e8481a',h:'#a02010',Y:'#5a1408',
+ W1:'#c68a4e',W2:'#8a5a2e',W3:'#5a3818',W4:'#d9a96a',W5:'#3a2410',U:'#eef2f6',u:'#c8d0dc'});
+
+/* ---- Katon: de pe, inclina o corpo e solta uma coluna de fogo pela boca ---- */
+function sasukeKaton(){const g=PixGrid(80,80);
+ /* o fogo e desenhado pelo jogo (efeito); o sprite so mostra a pose */
+ /* pernas: base de luta aberta, peso para tras */
+ guardLegs(g);
+ /* tronco inclinado para a frente */
+ guardTorso(g,2,2);
+ /* cabeca para frente, olhos fechados de esforco e bochechas cheias */
+ putHead(g,12,11,{shut:true});
+ g.put(33,25,'S');g.put(34,26,'S');g.line(35,27,38,27,'S');
+ /* mao em tigre diante da boca: dois indicadores */
+ g.poly([[38,26],[43,26],[44,32],[39,32]],'S');g.shade([[38,30],[44,30],[44,33],[38,33]],['S'],'s');g.line(40,27,40,31,'t');g.line(42,27,42,31,'t');
+ g.poly([[39,21],[42,21],[42,27],[39,27]],'S');g.put(40,21,'W');
+ /* bracos: do ombro ate o centro */
+ g.poly([[22,31],[27,31],[29,37],[24,38]],'c');g.shade([[21,31],[24,31],[24,39],[21,39]],['c'],'d');
+ g.poly([[26,36],[30,36],[34,33],[32,30]],'s');g.poly([[27,36],[30,36],[31,38],[28,39]],'a');
+ g.poly([[37,30],[43,32],[44,37],[38,38]],'C');g.shade([[36,30],[40,30],[40,39],[36,39]],['C'],'c');g.line(40,31,42,32,'D');
+ g.poly([[38,36],[43,36],[44,32],[39,31]],'S');g.line(41,33,43,33,'t');
+ g.outline('K');g.selout('K',SAS_DARK);
+ return g;}
+
+/* ---- Kawarimi: o Sasuke some e deixa um tronco no lugar, com fumaca, folhas e a corda do selo ---- */
+function sasukeLog(){const g=PixGrid(56,80);
+ const cx=28;
+ /* tronco de pe, de lado, mais largo que um boneco */
+ g.poly([[cx-10,16],[cx+10,16],[cx+11,70],[cx-11,70]],'W1');
+ g.shade([[cx-12,14],[cx-3,14],[cx-4,72],[cx-12,72]],['W1'],'W2');g.shade([[cx-12,14],[cx-8,14],[cx-8,72],[cx-12,72]],['W2'],'W3');
+ g.shade([[cx+6,14],[cx+12,14],[cx+12,72],[cx+6,72]],['W1'],'W4');
+ for(const [y,a,b] of [[22,-8,-2],[27,2,8],[33,-9,-4],[39,-1,6],[46,-8,-3],[52,3,9],[58,-7,-1],[64,-2,5]]){g.line(cx+a,y,cx+b,y+1,'W5');g.line(cx+a+1,y+1,cx+b-1,y+2,'W3');}
+ g.put(cx-4,30,'W3');g.put(cx+3,48,'W3');
+ /* topo cortado (anel de crescimento) */
+ g.ell(cx,17,10,3.5,'W4');g.ell(cx,17,7,2.4,'W1');g.ell(cx,17,4,1.4,'W4');g.ell(cx,17,1.5,.6,'W2');
+ /* corda enrolada */
+ g.poly([[cx-11,40],[cx+11,41],[cx+11,44],[cx-11,43]],'U');g.shade([[cx-12,43],[cx+12,44],[cx+12,46],[cx-12,46]],['U'],'u');
+ for(let x=-10;x<11;x+=3)g.line(cx+x,40,cx+x+1,44,'u');
+ g.poly([[cx+8,43],[cx+11,43],[cx+13,50],[cx+10,51]],'U');g.line(cx+10,45,cx+11,49,'u');
+ /* galho e folha */
+ g.line(cx-10,26,cx-15,22,'W3');g.line(cx-15,22,cx-17,19,'W3');g.ell(cx-18,18,2.4,1.4,'g');g.line(cx-20,18,cx-16,18,'h');
+ /* fumaca do Kage Bunshin em volta da base */
+ for(const [x,y,r] of [[14,66,6],[8,60,5],[22,72,6],[42,68,7],[48,62,5],[36,74,6],[18,58,4],[40,60,4],[48,72,4]]){g.ell(x,y,r,r*.85,'U');g.ell(x-1,y+1,r*.65,r*.55,'u');}
+ g.put(6,57,'U');g.put(50,58,'U');g.put(12,50,'u');g.put(44,52,'u');
+ /* folhas voando */
+ for(const [x,y] of [[10,36],[46,30],[6,24],[50,44],[18,10],[38,8],[52,18]]){g.put(x,y,'gh');g.set(x,y+1,'h');}
+ g.outline('K');g.selout('K',SAS_DARK);
+ return g;}
+/* ---- Defesa: bracos em X diante do peito, queixo baixo, olhos fechados ---- */
+function sasukeBlock(){const g=PixGrid(56,80);
+ guardLegs(g);guardTorso(g,0,2);
+ putHead(g,8,8,{shut:true});
+ /* manga de cada ombro descendo para o centro */
+ g.poly([[22,31],[27,31],[30,37],[25,38]],'c');g.shade([[21,31],[24,31],[24,39],[21,39]],['c'],'d');
+ g.poly([[36,29],[42,31],[42,36],[37,37]],'C');g.shade([[35,29],[39,29],[39,38],[35,38]],['C'],'c');g.line(39,30,41,31,'D');
+ /* antebraco de tras: sobe da esquerda para o rosto (pele + faixa branca) */
+ g.poly([[26,38],[31,37],[39,28],[35,25]],'s');g.shade([[26,36],[33,36],[33,39],[26,39]],['s'],'t');
+ g.poly([[33,32],[38.5,31],[41,26],[37,23.5]],'A');g.shade([[33,31],[37,31],[37,33],[33,33]],['A'],'a');g.line(34,30,39,25,'a');
+ /* antebraco da frente: cruza de baixo para cima por cima do outro */
+ g.poly([[38,37],[43,35],[33,26],[29,29]],'S');g.shade([[29,28],[36,28],[36,31],[29,31]],['S'],'s');
+ g.poly([[40,34],[44,32],[37,28],[34,31]],'A');g.shade([[38,29],[42,29],[42,32],[38,32]],['A'],'a');g.line(36,31,41,33,'a');
+ /* punhos fechados no alto de cada antebraco */
+ g.poly([[32,21],[37,21],[38,26],[33,27],[30,25]],'S');g.line(33,22,33,25,'t');g.line(35,22,35,25,'t');g.put(34,21,'W');
+ g.poly([[39,21],[44,21],[45,25],[41,27],[38,25]],'S');g.line(40,22,40,25,'t');g.line(42,22,42,25,'t');g.put(43,21,'W');
+ g.edge([[36,29],[42,31],[42,36],[37,37]],'d');
+ g.outline('K');g.selout('K',SAS_DARK);
+ return g;}
