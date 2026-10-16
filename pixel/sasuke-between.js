@@ -25,3 +25,16 @@ function sasukeKickWind(){const src=sasukeGuard(),g=PixGrid(56,80),W=56,H=80;
  g.poly([[34,55],[41,54],[40,60],[33,62]],'S');g.shade([[33,56],[37,56],[36,62],[33,62]],['S'],'s');
  g.outline('K');g.selout('K',SAS_DARK);
  return g;}
+
+/* Amaterasu: a mao tampa o olho que sangra (como no anime). Base: a base de luta, com o braco da frente refeito subindo ate o rosto. */
+SAS2_PAL.x='#a8101c';SAS2_PAL.X='#e02a3c';
+function sasukeEyeHand(){const src=sasukeGuard(),g=PixGrid(56,80),W=56,H=80;
+ for(let y=0;y<H;y++)for(let x=0;x<W;x++){const ch=src.G[y][x];if(ch==='.')continue;if(x>=42&&y>=26&&y<=52)continue;g.G[y][x]=ch;}
+ g.poly([[37,29],[45,30],[46,35],[38,36]],'C');g.shade([[36,33],[47,33],[47,37],[36,37]],['C'],'c');g.line(39,30,44,31,'D');
+ g.poly([[43,31],[47,32],[42,22],[38,23]],'S');g.shade([[41,27],[47,27],[44,33],[41,33]],['S'],'s');
+ g.poly([[40.5,25.5],[44.5,27.5],[43.5,29],[39.5,27]],'A');g.line(41,26,44,28,'a');
+ g.poly([[29,14],[38,14],[39,22],[30,23.5]],'S');g.shade([[29,20],[39,20],[39,24],[29,24]],['S'],'s');
+ g.line(32,15,32,21,'t');g.line(34,15,34,21,'t');g.line(36,15,36,21,'t');g.line(30,22,38,22,'t');
+ for(const [x,y] of [[34,24],[34,25],[35,26],[35,27],[34,28],[36,25],[33,23]])g.put(x,y,'x');g.put(34,26,'X');g.put(35,28,'x');g.put(31,23,'X');
+ g.outline('K');g.selout('K',SAS_DARK);
+ return g;}

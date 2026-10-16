@@ -12,6 +12,7 @@ h1{margin:4px 0 10px;font:900 italic 22px 'Arial Black',Impact,sans-serif;letter
 h1 small{font:600 12px 'Trebuchet MS',sans-serif;color:#8f8ab8;letter-spacing:1px;margin-left:10px;font-style:normal}
 #stage{position:relative;width:100%;background:#000;border:3px solid #2a2350;border-radius:6px;overflow:hidden;box-shadow:0 0 40px #3a1d7a55}
 canvas#c{display:block;width:100%;height:auto}
+.roleN .hud{flex-direction:row-reverse}
 .hud{position:absolute;left:0;right:0;top:0;display:flex;justify-content:space-between;gap:8px;padding:10px 14px;pointer-events:none;align-items:flex-start}
 .pl{width:42%;display:flex;gap:10px;align-items:center}.pl.r{flex-direction:row-reverse;text-align:right}
 .pt{width:clamp(44px,7.5vw,84px);height:auto;border-radius:50%;border:3px solid #000;box-shadow:0 0 0 2px #ffffffaa,0 0 14px #000a;background:#000;flex:none}
@@ -86,7 +87,7 @@ canvas#c{display:block;width:100%;height:auto}
   <div id="toast"></div>
 </div>
 <div id="hand"></div>
-<div class="ctl"><button id="rst">Resetar luta</button><button id="mute">Som: ligado</button><button id="sprbtn">Sasuke: pixel art</button><button id="nmbtn">Naruto: automático</button></div>
+<div class="ctl"><button id="rst">Resetar luta</button><button id="mute">Som: ligado</button><button id="sprbtn">Sasuke: pixel art</button><button id="nmbtn">Jogar como: Sasuke</button></div>
 <div class="note">RPG de turno: escolha um comando (ou tecle 1 a 4; Esc volta). Jutsu gasta chakra, Defender corta o próximo dano pela metade e Concentrar recupera chakra. Depois o Naruto contra-ataca. Quem zerar a vida do outro vence.</div>
 </div>
 <script src="pixel/pixgrid.js"></script><script src="pixel/sasuke.js"></script><script src="pixel/sasuke-guard.js"></script><script src="pixel/sasuke-poses.js"></script><script src="pixel/sasuke-between.js"></script><script src="pixel/naruto.js"></script><script src="pixel/sasuke-lv2.js"></script>
@@ -601,7 +602,7 @@ const SPR={};
 /* Sharingan: mesma pose com a iris vermelha (selo nivel 1, genjutsu, copia...) */
 const SHARI={E:'#b8101e',e:'#ff4636'};
 if(USE_SPR){const mkS=(fn,pal,ax,ay)=>{const gr=fn(),c=document.createElement('canvas'),c2=document.createElement('canvas');gr.draw(c,pal,1);gr.draw(c2,Object.assign({},pal,SHARI),1);return{c,csh:c2,w:gr.w,h:gr.h,ax,ay};};
- SPR.idle=mkS(sasukeIdle,SAS2_PAL,27,75); /* mesma paleta das outras poses: a bermuda nao pisca de cor ao trocar de sprite */SPR.guard=mkS(sasukeGuard,SAS2_PAL,27,75);SPR.punch=mkS(sasukePunch,SAS2_PAL,27,75);if(typeof sasukePunchWind==='function')SPR.pw=mkS(sasukePunchWind,SAS2_PAL,27,75);if(typeof sasukeKickWind==='function')SPR.kw=mkS(sasukeKickWind,SAS2_PAL,27,75);
+ SPR.idle=mkS(sasukeIdle,SAS2_PAL,27,75); /* mesma paleta das outras poses: a bermuda nao pisca de cor ao trocar de sprite */SPR.guard=mkS(sasukeGuard,SAS2_PAL,27,75);SPR.punch=mkS(sasukePunch,SAS2_PAL,27,75);if(typeof sasukePunchWind==='function')SPR.pw=mkS(sasukePunchWind,SAS2_PAL,27,75);if(typeof sasukeEyeHand==='function')SPR.eh=mkS(sasukeEyeHand,SAS2_PAL,27,75);if(typeof sasukeKickWind==='function')SPR.kw=mkS(sasukeKickWind,SAS2_PAL,27,75);
  SPR.hit=mkS(sasukeHit,SAS2_PAL,25,75);SPR.down=mkS(sasukeDown,SAS2_PAL,40,45);SPR.kick=mkS(sasukeKick,SAS2_PAL,22,75);
  SPR.seal=mkS(sasukeSeal,SAS2_PAL,27,75);SPR.chidori=mkS(sasukeChidori,SAS2_PAL,27,75);SPR.katon=mkS(sasukeKaton,SAS2_PAL,27,75);SPR.block=mkS(sasukeBlock,SAS2_PAL,27,75);SPR.log=mkS(sasukeLog,SAS2_PAL,28,70);}
 const SPRL2={};if(USE_SPR&&typeof LV2_POSES!=='undefined'){for(const k in LV2_POSES){const gr=lv2From(LV2_POSES[k])(),c=document.createElement('canvas');gr.draw(c,LV2_PAL,1);const S0=SPR[k];SPRL2[k]={c,w:gr.w,h:gr.h,ax:S0?S0.ax:27,ay:S0?S0.ay:75};}}
@@ -611,7 +612,8 @@ let SPR_REF=null;
 function sprRefs(){if(SPR_REF)return SPR_REF;const L=[];const add=(k,...ps)=>ps.forEach(p=>{if(p)L.push([k,p]);});
  add('block',S_GUARD);add('katon',TIGER,INH,EXH);add('guard',READY,K_WIND,typeof KT_W!=='undefined'&&KT_W,typeof SH_W!=='undefined'&&SH_W,typeof GZ!=='undefined'&&GZ,typeof GZ2!=='undefined'&&GZ2,typeof SEL_B!=='undefined'&&SEL_B);
  add('idle',VICTORY,AMA_A,AMA_A2,typeof FLICK!=='undefined'&&FLICK,typeof SEL_S!=='undefined'&&SEL_S,typeof PN_S!=='undefined'&&PN_S,typeof PN_R!=='undefined'&&PN_R);
- add('seal',SEAL_A,SEAL_B,SEAL_C,AMA_CLUTCH,typeof SEL_N!=='undefined'&&SEL_N,typeof SS_G!=='undefined'&&SS_G);
+ if(SPR.eh)add('eh',AMA_CLUTCH,typeof AMA_CL2!=='undefined'&&AMA_CL2);
+ add('seal',SEAL_A,SEAL_B,SEAL_C,SPR.eh?null:AMA_CLUTCH,typeof SEL_N!=='undefined'&&SEL_N,typeof SS_G!=='undefined'&&SS_G);
  add('chidori',PREP,CHARGE,COIL,typeof SEL_C!=='undefined'&&SEL_C,typeof RS_H!=='undefined'&&RS_H);
  if(SPR.pw)add('pw',PN_W);
  if(SPR.kw&&typeof CK_W!=='undefined')add('kw',CK_W);
@@ -900,6 +902,7 @@ const N_STAG=mk({tilt:-0.22,lean:-5,crouch:6,fbx:-8,ffx:6,hxF:3,hyF:11,hxB:-3,hy
 const AMA_A=mk({tilt:-0.1,crouch:2,hxF:3,hyF:11,hxB:-1,hyB:11,hr:-0.2,hdy:-1,red:2,expr:1,tw:.95});
 const AMA_CLUTCH=mk({tilt:0.05,crouch:4,hxF:2,hyF:-14,hxB:2,hyB:10,hr:0.14,hdy:1,red:2,expr:1,tw:.9,hF:3});
 const AMA_A2=mk({tilt:-0.06,crouch:0,hxF:2,hyF:12,hxB:-1,hyB:12,hr:-0.1,red:2,expr:1,tw:.95});
+const AMA_CL2=Object.assign({},AMA_CLUTCH,{crouch:5,hr:.2,hdy:2,hxF:1.2,hyF:-9.2,hF:1,hxB:2,hyB:9,tilt:.08});
 const N_BURN1=mk({tilt:-0.25,crouch:2,lean:-2,hxF:-4,hyF:-9,hxB:-6,hyB:-7,hdx:-2,hr:-0.2,expr:3,fby:-3,tw:1,wind:.5});
 const N_BURN2=mk({tilt:0.15,crouch:5,lean:2,hxF:9,hyF:-8,hxB:7,hyB:-9,hr:0.15,expr:2,ffy:-3,tw:.9});
 const S_GUARD=mk({tilt:-0.05,crouch:5,fbx:-9,ffx:7,hxF:10,hyF:-8,hxB:9,hyB:-6,expr:1,red:1,tw:.8,hF:0,hB:0});
@@ -1041,10 +1044,10 @@ function headSim(x0,y0,age){let x=x0,y=y0,vx=-34,vy=-95,r=0,w=-9,t=0,b=0;const g
  let a=0,x=ANIMS.kawarimi.L.head0[0],y=ANIMS.kawarimi.L.head0[1],vy=-95;while(a<5){vy+=260*.01;y+=vy*.01;a+=.01;if(y>GY-3)break;}ANIMS.kawarimi.L.landAge=a;}
 ANIMS.kawarimi.L.sfxFn=sfxFatalW;
 ANIMS.amaterasu={dur:5.0,hold:2.0,
-  sP:[[0,READY],[.45,READY],[.65,AMA_A],[1.0,AMA_CLUTCH],[1.55,AMA_CLUTCH],[1.9,AMA_A2],[3.6,AMA_A2],[4.3,READY],[5.0,READY]],
+  sP:[[0,READY],[.45,READY],[.65,AMA_A],[1.0,AMA_CLUTCH],[1.55,AMA_CLUTCH],[1.9,AMA_A2],[2.7,AMA_A2],[3.0,AMA_CL2],[4.2,AMA_CL2],[4.6,READY],[5.0,READY]],
   nP:[[0,N_READY],[1.7,N_READY],[1.95,N_SURP],[2.05,N_BURN1],[2.35,N_BURN2],[2.65,N_BURN1],[2.95,N_BURN2],[3.3,N_BURN1],[3.9,N_STAG],[4.5,N_READY]],
   nX:[[0,288],[2.0,288],[2.5,293],[3.0,283],[3.5,291],[4.4,288]],
-  cam:[[0,{z:1.04,cx:192,cy:116}],[.4,{z:1.04,cx:192,cy:116}],[.65,{z:1.5,cx:104,cy:126}],[1.0,{z:2.7,cx:106,cy:128}],[1.6,{z:2.7,cx:106,cy:128}],[1.9,{z:1.6,cx:240,cy:128}],[2.1,{z:1.5,cx:272,cy:128}],[3.4,{z:1.4,cx:266,cy:128}],[4.3,{z:1.04,cx:192,cy:116}],[5.0,{z:1.04,cx:192,cy:116}]],
+  cam:[[0,{z:1.04,cx:192,cy:116}],[.4,{z:1.04,cx:192,cy:116}],[.65,{z:1.5,cx:104,cy:126}],[1.0,{z:2.7,cx:106,cy:128}],[1.6,{z:2.7,cx:106,cy:128}],[1.9,{z:1.6,cx:240,cy:128}],[2.1,{z:1.5,cx:272,cy:128}],[2.6,{z:1.4,cx:266,cy:128}],[2.95,{z:2.5,cx:110,cy:126}],[4.2,{z:2.7,cx:106,cy:127}],[4.8,{z:1.04,cx:192,cy:116}],[5.0,{z:1.04,cx:192,cy:116}]],
   hitT:2.0,dmg:40,cost:50};
 /* ---- golpe final do Amaterasu: o Naruto tenta apagar as chamas negras, vira cinzas, e a camera volta para o Sasuke com a mao no olho ---- */
 const LA=type=>type==='amaterasu'&&!!ANIMS.amaterasu.L&&((anim&&anim.lethal)||!!window.__LETHA);
@@ -1054,7 +1057,7 @@ const PAT_B=mk({tilt:.25,lean:2,crouch:6,fbx:-7,ffx:6,hxF:5,hyF:11,hxB:-2,hyB:9,
 const PAT_C=mk({tilt:-.1,lean:0,crouch:3,fbx:-6,ffx:6,hxF:9,hyF:-8,hxB:-8,hyB:-10,hdx:0,hdy:0,hr:-.2,expr:3,tw:1,wind:.8});
 const N_AKNEEL=mk({tilt:.2,lean:0,crouch:11,fbx:-7,ffx:6,hxF:6,hyF:8,hxB:3,hyB:10,hdx:0,hdy:3,hr:.3,expr:3,tw:1,wind:.6});
 const N_AKNEEL2=mk({tilt:.28,lean:0,crouch:13,fbx:-8,ffx:6,hxF:4,hyF:12,hxB:2,hyB:12,hdx:0,hdy:4,hr:.4,expr:3,tw:1,wind:.4});
-const AMA_CL2=Object.assign({},AMA_CLUTCH,{crouch:5,hr:.2,hdy:2,hxF:1.2,hyF:-9.2,hF:1,hxB:2,hyB:9,tilt:.08});
+
 ANIMS.amaterasu.L={dur:10.8,koAt:10.0,bannerAt:8.2,banner:['焼','FATALITY','Amaterasu','#e0306c'],sfxFn:null,
  /* mapa raw->t: pausa no acender das chamas, camera lenta no desespero e nas cinzas, volta ao Sasuke ainda lenta */
  map:[[0,0],[2.0,2.0],[2.3,2.04],[7.6,5.5],[9.4,6.9],[99,103.5]],
@@ -2098,20 +2101,33 @@ function applyDamageS(kind,idx){const S_=WOUNDS.s,t0=performance.now()/1000;
 function showKO(w){const k=$('ko');k.querySelector('span').textContent=w==='N'?'NARUTO VENCEU':'SASUKE VENCEU';k.classList.remove('on');void k.offsetWidth;k.classList.add('on');}
 let turnLock=false;
 function afterAnim(was){if(!was)return;
- if(was.enemy){if(seal2T>0){seal2T--;hp.s=Math.max(1,hp.s-3);ck.s=Math.min(100,ck.s+15);if(!seal2T)toast('A transformação se desfaz');}else if(sealT>0){sealT--;hp.s=Math.max(1,hp.s-2);ck.s=Math.min(100,ck.s+10);if(!sealT)toast('O selo amaldiçoado se acalma');}ck.s=Math.min(100,ck.s+20);ck.n=Math.min(100,ck.n+15);setBars();turnLock=false;showMenu('main');setCards(!outcome);}
+ if(was.enemy){if(seal2T>0){seal2T--;hp.s=Math.max(1,hp.s-3);ck.s=Math.min(100,ck.s+15);if(!seal2T)toast('A transformação se desfaz');}else if(sealT>0){sealT--;hp.s=Math.max(1,hp.s-2);ck.s=Math.min(100,ck.s+10);if(!sealT)toast('O selo amaldiçoado se acalma');}ck.s=Math.min(100,ck.s+20);ck.n=Math.min(100,ck.n+15);setBars();endEnemyTurn();}
  else if(outcome){setCards(false);}
+ else if(roleN){turnLock=false;if(stunN){stunN=false;toast('Naruto está preso na ilusão e perde o turno');turnLock=true;setCards(false);setTimeout(()=>{if(!outcome&&!anim)aiSasuke();},1300);}else{showMenu('main');setCards(true);}}
  else{setCards(false);setTimeout(()=>{if(!outcome&&!anim)enemyTurn();},1000);}}
-function skipEnemy(msg){toast(msg);if(seal2T>0){seal2T--;hp.s=Math.max(1,hp.s-3);ck.s=Math.min(100,ck.s+15);if(!seal2T)toast('A transformação se desfaz');}else if(sealT>0){sealT--;hp.s=Math.max(1,hp.s-2);ck.s=Math.min(100,ck.s+10);if(!sealT)toast('O selo amaldiçoado se acalma');}ck.n=Math.min(100,ck.n+15);ck.s=Math.min(100,ck.s+10);setBars();turnLock=false;showMenu('main');setCards(true);}
-let narutoManual=false;try{narutoManual=localStorage.getItem('narutoManual')==='1';}catch(e){}
-/* modo de teste: o jogador escolhe o jutsu do Naruto no turno dele */
-function showNarutoMenu(){menuOpen='naruto';const h=$('hand');h.innerHTML='';
- const add=(name,desc,col,k,fn)=>{const b=document.createElement('button');b.className='cmd';b.style.setProperty('--cc',col);b.innerHTML=`<span class="k">${k}</span>${name}<small>${desc}</small>`;b.onclick=fn;h.appendChild(b);};
- add('Rasengan','Esfera giratória no Sasuke (30 de dano).','#6fb8ff',1,()=>enemyTurn('rasengan'));
- add('Kage Bunshin','Clones das sombras atacam em sequência.','#ffa43a',2,()=>enemyTurn('bunshin'));
- add('Passar','Naruto não ataca neste turno.','#888',3,()=>{ck.n=Math.min(100,ck.n+15);setBars();turnLock=false;showMenu('main');setCards(true);});
- toast('Turno do Naruto: escolha o jutsu');setCards(true);}
-function enemyTurn(force){if(typeof force!=='string')force=null;if(outcome||anim)return;if(stunN){stunN=false;skipEnemy('Naruto está preso na ilusão e perde o turno');return;}if((sealT>0&&Math.random()<.3)||(seal2T>0&&Math.random()<.4)){skipEnemy('Sasuke desvia com a velocidade do selo!');return;}if(narutoManual&&!force){showNarutoMenu();return;}
- const type=force||(Math.random()<.5?'rasengan':'bunshin'),A=ANIMS[type];lastEnemy=type;ensureAudio();
+function skipEnemy(msg){toast(msg);if(seal2T>0){seal2T--;hp.s=Math.max(1,hp.s-3);ck.s=Math.min(100,ck.s+15);if(!seal2T)toast('A transformação se desfaz');}else if(sealT>0){sealT--;hp.s=Math.max(1,hp.s-2);ck.s=Math.min(100,ck.s+10);if(!sealT)toast('O selo amaldiçoado se acalma');}ck.n=Math.min(100,ck.n+15);ck.s=Math.min(100,ck.s+10);setBars();if(roleN)turnLock=true;endEnemyTurn();}
+/* modo "jogar como Naruto": a tela e espelhada (Naruto a esquerda), o jogador escolhe os jutsus do Naruto e o Sasuke e jogado pela IA */
+let roleN=false,gdN=false;try{roleN=localStorage.getItem('playNaruto')==='1';}catch(e){}
+document.body.classList.toggle('roleN',roleN);
+function showNarutoMenu(){menuOpen='main';const h=$('hand');h.innerHTML='';
+ const add=(name,desc,col,k,cost,fn)=>{const b=document.createElement('button');b.className='cmd';b.style.setProperty('--cc',col);b.innerHTML=(cost!=null?`<span class="cost">${cost}</span>`:'')+`<span class="k">${k}</span>${name}<small>${desc}</small>`;b.onclick=fn;b._cost=cost;h.appendChild(b);};
+ add('Rasengan','Esfera giratória no Sasuke (30 de dano).','#6fb8ff',1,ANIMS.rasengan.cost,()=>enemyTurn('rasengan'));
+ add('Kage Bunshin','Clones das sombras atacam em sequência.','#ffa43a',2,ANIMS.bunshin.cost,()=>enemyTurn('bunshin'));
+ add('Defender','Corta o próximo dano pela metade e recupera chakra.','#8fb4ff',3,null,()=>idleActN('defend'));
+ add('Concentrar','Recupera chakra.','#7fd4ff',4,null,()=>idleActN('charge'));
+ setCards(!anim&&!outcome&&!turnLock);}
+function idleActN(t){if(anim||outcome||turnLock)return;ensureAudio();turnLock=true;
+ if(t==='defend'){gdN=true;ck.n=Math.min(100,ck.n+10);toast('Naruto se defende: próximo dano cai pela metade');}else{ck.n=Math.min(100,ck.n+25);toast('Naruto concentra chakra');}
+ setBars();setCards(false);setTimeout(()=>{if(!outcome&&!anim)aiSasuke();},900);}
+/* o Sasuke (IA): escolhe um golpe que consegue pagar; com a vida do Naruto baixa, vai no mais forte */
+function aiSasuke(){if(outcome||anim)return;turnLock=false;
+ const pool=ATKS.concat(CARDS).filter(cd=>cd.live&&ANIMS[cd.id]&&(!cd.show||cd.show())&&(!cd.ok||cd.ok())&&ck.s>=ANIMS[cd.id].cost);
+ if(!pool.length||ck.s<12||Math.random()<.1){ck.s=Math.min(100,ck.s+25);setBars();toast('Sasuke concentra chakra');turnLock=true;setTimeout(()=>{turnLock=false;showMenu('main');setCards(true);},1100);return;}
+ let cd;if(hp.n<=40){cd=pool.slice().sort((a,b)=>effDmg(b,ANIMS[b.id])-effDmg(a,ANIMS[a.id]))[0];}else cd=pool[Math.floor(Math.random()*pool.length)];
+ play(cd);}
+/* fim do turno do jogador (Naruto): no modo normal volta o menu, no modo Naruto passa a vez para o Sasuke */
+function endEnemyTurn(){if(roleN){if(outcome){setCards(false);return;}turnLock=true;setCards(false);setTimeout(()=>{if(!outcome&&!anim)aiSasuke();},900);}else{turnLock=false;showMenu('main');setCards(!outcome);}}
+function enemyTurn(force){if(typeof force!=='string')force=null;if(outcome||anim)return;if(stunN&&!roleN){stunN=false;skipEnemy('Naruto está preso na ilusão e perde o turno');return;}if((sealT>0&&Math.random()<.3)||(seal2T>0&&Math.random()<.4)){skipEnemy('Sasuke desvia com a velocidade do selo!');return;} const type=force||(Math.random()<.5?'rasengan':'bunshin'),A=ANIMS[type];if(roleN){if(turnLock||ck.n<A.cost){if(!turnLock)toast('Chakra insuficiente para '+(type==='rasengan'?'o Rasengan':'o Kage Bunshin'));return;}turnLock=true;}lastEnemy=type;ensureAudio();
  const gm=guard?.5:1;guard=false;const dm=h=>Math.max(1,Math.round(h.dmg*gm));
  const total=A.hits.reduce((a,h)=>a+dm(h),0),lethal=hp.s-total<=0;
  anim={type,t0:performance.now(),dur:A.dur+HS,lethal,enemy:true};setCards(false);ck.n=Math.max(0,ck.n-A.cost);setBars();sfx(type);
@@ -2343,7 +2359,7 @@ let outcome=null,anim=null,frozen=null,hp={s:100,n:100},ck={s:100,n:100},sound=t
 function setBars(){$('hpS').style.width=hp.s+'%';$('hpSg').style.width=hp.s+'%';$('hpN').style.width=hp.n+'%';$('hpNg').style.width=hp.n+'%';$('ckS').style.width=ck.s+'%';$('ckN').style.width=ck.n+'%';}
 function later(ms,fn){pending.push(setTimeout(fn,ms))}
 function banner(jp,nm,sb,col){const b=$('banner');b.style.setProperty('--bc',col);b.querySelector('.jp').textContent=jp;b.querySelector('.nm').textContent=nm;b.querySelector('.sb').textContent=sb;b.classList.remove('on');void b.offsetWidth;b.classList.add('on');}
-function dmgPop(n,side){const d=$('dmg');d.style.left=side==='S'?'16%':'70%';d.textContent='-'+n;d.classList.remove('on');void d.offsetWidth;d.classList.add('on');}
+function dmgPop(n,side){const d=$('dmg');d.style.left=((side==='S')!==roleN)?'16%':'70%';d.textContent='-'+n;d.classList.remove('on');void d.offsetWidth;d.classList.add('on');}
 function toast(m){const t=$('toast');t.textContent=m;t.classList.add('on');clearTimeout(toast.h);toast.h=setTimeout(()=>t.classList.remove('on'),1800);}
 
 /* ---------- audio ---------- */
@@ -2485,6 +2501,7 @@ function waterColumn(c,x,a,w,hgt){const k=Math.min(1,a/.25),h=hgt*(1-(1-k)*(1-k)
 
 /* ---------- render ---------- */
 function scaleAt(a,b,t0,t1,t){return t<=t0?a:t>=t1?b:a+(b-a)*(t-t0)/(t1-t0)}
+const mirc=document.createElement('canvas');mirc.width=PW;mirc.height=PH;const mirx=mirc.getContext('2d');
 function render(ts){
  let raw=-1,type=null;
  if(frozen){raw=frozen.t;type=frozen.type;}
@@ -2751,6 +2768,7 @@ function render(ts){
  if(burning&&!ashed&&type!=='amaterasu')ameFlames(f,nx0,5,fr,.5+.08*Math.sin(time*5),rigW(nP),ny0);
  if(type==='amaterasu'){
   if(t>2.0){ameFlames(f,nx0,t-2.0,fr,LA(type)?ameLInt(t):null,rigW(nP),ny0);scraps(f,nx0,GY-40,t-2.0,8,22,[[20,14,18],[60,16,30]],0);}
+  if(!LA(type)&&t>=3.0&&t<4.7){f.save();f.globalAlpha=scaleAt(0,1,3.0,3.3,t)*(1-scaleAt(0,1,4.3,4.7,t));eyeBleedFX(f,6.4,time,sx0,sy0,rS);f.restore();} /* o Sasuke volta na camera, com a mao no olho que sangra */
   if(LA(type)){ashFlakes(f,t,time,nx0,ny0,nP);ashPile(f,time,nx0,scaleAt(0,1,4.5,5.8,t));if(t>=5.8)eyeBleedFX(f,t,time,sx0,sy0,rS);}
   if(t>1.0&&t<2.3){const ex=sx0+rS.C[0]+.5,ey=GY+sy0+rS.C[1]+.5,pu=.6+.4*Math.sin(time*14);f.globalCompositeOperation='lighter';orb(f,ex,ey,14*pu,[[0,'rgba(255,40,60,.9)'],[.4,'rgba(200,10,40,.4)'],[1,'rgba(120,0,20,0)']]);f.globalCompositeOperation='source-over';}
  }
@@ -2776,6 +2794,7 @@ function render(ts){
  if(LG(type)&&A.L.lens)A.L.lens(g,ctx);
  const vg=g.createRadialGradient(PW/2,PH/2,PH*.35,PW/2,PH/2,PW*.62);vg.addColorStop(0,'rgba(0,0,12,0)');vg.addColorStop(1,'rgba(0,0,12,.55)');g.fillStyle=vg;g.fillRect(0,0,PW,PH);
  if(bars>0){const bh=bars*K;g.fillStyle='#000';g.fillRect(0,0,PW,bh);g.fillRect(0,PH-bh,PW,bh);}
+ if(roleN){mirx.clearRect(0,0,PW,PH);mirx.drawImage(cv,0,0);g.save();g.setTransform(-1,0,0,1,PW,0);g.imageSmoothingEnabled=false;g.drawImage(mirc,0,0);g.restore();}
 }
 function loop(ts){render(ts);requestAnimationFrame(loop)}
 requestAnimationFrame(loop);
@@ -2807,13 +2826,13 @@ const CMDS=[
  {name:'Jutsu',desc:'Escolher uma técnica',col:'#7fd4ff',run:()=>showMenu('jutsu')},
  {name:'Defender',desc:'Reduz à metade o próximo dano e recupera 10 de chakra',col:'#c9b27a',run:()=>idleAct('defend')},
  {name:'Concentrar',desc:'Recupera 25 de chakra',col:'#9fe0ff',run:()=>idleAct('focus')}];
-function showMenu(m){menuOpen=m;const h=$('hand');h.innerHTML='';
+function showMenu(m){if(roleN){showNarutoMenu();return;}menuOpen=m;const h=$('hand');h.innerHTML='';
  const add=(name,desc,col,k,cost,fn,ok)=>{const b=document.createElement('button');b.className='cmd';b.style.setProperty('--cc',col);b.innerHTML=(cost!=null?`<span class="cost">${cost}</span>`:'')+`<span class="k">${k}</span>${name}<small>${desc}</small>`;b.onclick=fn;b._cost=cost;b._ok=ok||null;h.appendChild(b);};
  if(m==='main')CMDS.forEach((c,i)=>add(c.name,c.desc,c.col,i+1,null,c.run));
  else{(m==='atk'?ATKS:CARDS.filter(cd=>!cd.show||cd.show())).forEach((cd,i)=>add(cd.name,typeof cd.desc==='function'?cd.desc():cd.desc,cd.col,i+1,cd.cost,()=>play(cd),cd.ok));add('Voltar','Menu principal','#888','Esc',null,()=>showMenu('main'));}
  setCards(!anim&&!outcome&&!turnLock);}
 function buildCards(){showMenu('main');}
-function setCards(on){[...$('hand').children].forEach(b=>{b.disabled=!on||(b._cost!=null&&ck.s<b._cost)||(b._ok&&!b._ok());});}
+function setCards(on){[...$('hand').children].forEach(b=>{b.disabled=!on||(b._cost!=null&&(roleN?ck.n:ck.s)<b._cost)||(b._ok&&!b._ok());});}
 function speak(line,pos){const s=$('speech');s.textContent=line;s.style.left=pos?pos[0]:'31%';s.style.top=pos?pos[1]:'18%';s.classList.remove('on');void s.offsetWidth;s.classList.add('on');later(2200,()=>s.classList.remove('on'));}
 function idleAct(t){if(anim||frozen||outcome||turnLock)return;ensureAudio();turnLock=true;
  if(t==='defend'){guard=true;ck.s=Math.min(100,ck.s+10);toast('Sasuke se defende: próximo dano cai pela metade');}
@@ -2822,7 +2841,7 @@ function idleAct(t){if(anim||frozen||outcome||turnLock)return;ensureAudio();turn
 function play(cd){
  if(anim||frozen)return;
  if(!cd.live){toast(cd.name+': ainda não animada nesta demo');return;}
- if(outcome||turnLock)return;const A=ANIMS[cd.id];if(ck.s<A.cost){toast('Chakra insuficiente para '+cd.name);return;}ensureAudio();const dm=effDmg(cd,A),lethal=dm>0&&hp.n-dm<=0;turnLock=true;if(cd.onUse)cd.onUse();
+ if(outcome||turnLock)return;const A=ANIMS[cd.id];if(ck.s<A.cost){toast('Chakra insuficiente para '+cd.name);return;}ensureAudio();const dm=Math.round(effDmg(cd,A)*(roleN&&gdN?.5:1)),lethal=dm>0&&hp.n-dm<=0;if(roleN&&gdN&&dm>0)gdN=false;turnLock=true;if(cd.onUse)cd.onUse();
  anim={type:cd.id,t0:performance.now(),dur:((lethal&&A.L)?A.L.dur:A.dur)+HS,lethal};setCards(false);ck.s=Math.max(0,ck.s-A.cost);setBars();if(!(lethal&&A.L&&A.L.g))sfx(cd.id);
  const BNR=({selo2:[1000,'呪印','SELO AMALDIÇOADO','Nível 2','#8a7ab8'],chidori:[1350,'千鳥','CHIDORI','Mil Pássaros','#7fd4ff'],soushuken:[700,'操手剣','SŌSHŪKEN NO JUTSU','Manipulação da Shuriken','#9fc8ff'],kagesh:[700,'手裏剣影','SHURIKEN KAGE NO JUTSU','Técnica da Shuriken Sombra','#8a7ad0'],copy:[600,'写輪眼','SHARINGAN','Cópia de Técnicas','#e0306c'],genjutsu:[600,'幻術','GENJUTSU SHARINGAN','Ilusão do Sharingan','#e0306c'],shishi:[600,'獅子連弾','SHISHI RENDAN','Barragem de Leões','#ffb04a'],selochidori:[900,'呪印','SELO AMALDIÇOADO','Chidori Sombrio','#8a50c8'],cop_rasengan:[800,'螺旋丸','RASENGAN COPIADO','Sharingan: Cópia de Técnica','#6fb8ff'],cop_bunshin:[900,'影分身の術','KAGE BUNSHIN COPIADO','Sharingan: Cópia de Técnica','#ffa43a'],selo:[900,'呪印','SELO AMALDIÇOADO','Nível 1','#9a9aa8'],kawarimi:[1550,'変わり身の術','KAWARIMI NO JUTSU','Técnica da Substituição','#d9b878'],amaterasu:[1500,'天照','AMATERASU','Chamas Negras','#e0306c'],katon:[1500,'豪火球の術','KATON: GOUKAKYUU','Bola de Fogo Suprema','#ffa43a']})[cd.id];if(BNR)later(BNR[0],()=>banner(BNR[1],BNR[2],BNR[3],BNR[4]));
  later(A.hitT*1000,()=>{hp.n=Math.max(0,hp.n-dm);setBars();if(dm>0){dmgPop(dm);applyDamage(cd.id);}if(cd.id==='amaterasu')burning=true;});
@@ -2834,7 +2853,7 @@ window.addEventListener('keydown',e=>{if(e.key==='Escape'&&menuOpen!=='main'){sh
 $('rst').onclick=()=>{pending.forEach(clearTimeout);pending=[];chestHole=0;burnt=0;decap=0;ashed=0;fatalKind=null;copied=null;lastEnemy=null;sealT=0;seal2T=0;stunN=false;$('speech').classList.remove('on');anim=null;outcome=null;burning=false;turnLock=false;guard=false;showMenu('main');WOUNDS.s.length=0;WOUNDS.n.length=0;$('ko').querySelector('span').textContent='SASUKE VENCEU';$('ko').classList.remove('on');hp={s:100,n:100};ck={s:100,n:100};setBars();setCards(true);$('banner').classList.remove('on');$('dmg').classList.remove('on');};
 $('mute').onclick=()=>{sound=!sound;$('mute').textContent='Som: '+(sound?'ligado':'desligado');ensureAudio();};
 buildCards();setBars();
-$('nmbtn').textContent='Naruto: '+(narutoManual?'manual':'automático');$('nmbtn').onclick=()=>{narutoManual=!narutoManual;try{localStorage.setItem('narutoManual',narutoManual?'1':'0');}catch(e){}$('nmbtn').textContent='Naruto: '+(narutoManual?'manual':'automático');toast(narutoManual?'Você escolhe os jutsus do Naruto':'Naruto volta a escolher sozinho');};
+$('nmbtn').textContent='Jogar como: '+(roleN?'Naruto':'Sasuke');$('nmbtn').onclick=()=>{try{localStorage.setItem('playNaruto',roleN?'0':'1');}catch(e){}location.reload();};
 $('sprbtn').textContent='Sasuke: '+(USE_SPR?'pixel art':'desenho antigo');$('sprbtn').onclick=()=>{try{localStorage.setItem('sasukeSprites',USE_SPR?'0':'1');}catch(e){}location.reload();};
 portrait('ptS',SASUKE,mk({red:1,expr:1,hr:.05}));portrait('ptN',NARUTO,mk({expr:5}));
 
@@ -2844,7 +2863,7 @@ function sheet(mode){let cs=document.getElementById('sheet');if(!cs){cs=document
  const items=mode===2?[[SASUKE,mk({red:0,expr:0}),0],[SASUKE,mk({red:1,expr:1}),1],[NARUTO,mk({expr:5}),2],[NARUTO,mk({expr:2}),3]]:[[SASUKE,READY,0],[SASUKE,CHARGE,1],[NARUTO,N_READY,2],[NARUTO,N_GUARD,3]];
  for(const [d,P,i] of items){c.save();if(mode===2){c.translate(160+i*320,330);c.scale(11.5/HEADS,11.5/HEADS);const r=rig(P);c.translate(-r.C[0],-r.C[1]);drawHead(c,d,P,r,1);}else{c.translate(150+i*320,680);c.scale(6.2,6.2);drawFig(c,d,P,1);}c.restore();}}
 window.debug={hurt:applyDamage,burn:()=>{burning=true},sheet,freeze:(type,t)=>{frozen=type?{type,t}:null},play:id=>play(CARDS.concat(ATKS).find(c=>c.id===id))};
-setTimeout(()=>{if(!anim&&!frozen)play(CARDS[0]);},900);
+setTimeout(()=>{if(!roleN&&!anim&&!frozen)play(CARDS[0]);},900);
 </script>
 </body>
 </html>

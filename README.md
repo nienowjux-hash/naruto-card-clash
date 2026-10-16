@@ -55,5 +55,5 @@ Cada uma tem um fatality diferente: Tsukuyomi (Genjutsu), calcanhar que crava a 
 
 A pasta `pixel/` guarda os novos sprites em pixel art desenhados por codigo (`pixgrid.js` e o Sasuke em `sasuke.js` e `sasuke-guard.js`). Para ver: `node serve.js` e abra http://localhost:8123/pixel/view.html (ou `?s=idle` para o Sasuke parado). O jogo ainda usa os bonecos antigos.
 
-## Modo de teste: controlar o Naruto
-O botão **Naruto: automático / manual** (abaixo do jogo) liga o modo manual: no turno do Naruto aparece um menu para escolher **Rasengan**, **Kage Bunshin** ou **Passar**. A escolha fica salva no navegador.
+## Jogar como Naruto
+O botão **Jogar como: Sasuke / Naruto** (abaixo do jogo) troca de lado: a tela é espelhada (Naruto à esquerda), você escolhe **Rasengan**, **Kage Bunshin**, **Defender** ou **Concentrar**, e o Sasuke é jogado pela IA (escolhe um golpe que consegue pagar e vai no mais forte quando sua vida está baixa). A escolha fica salva no navegador.
