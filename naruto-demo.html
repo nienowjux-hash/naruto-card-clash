@@ -612,7 +612,14 @@ function sprRefs(){if(SPR_REF)return SPR_REF;const L=[];const add=(k,...ps)=>ps.
 let SPRN_REF=null;function sprRefsN(){if(SPRN_REF)return SPRN_REF;const L=[],add=(k,...ps)=>ps.forEach(p=>{if(p)L.push([k,p]);}),d=n=>typeof window[n]!=='undefined'?window[n]:null;
  add('guard',N_READY,N_GUARD,N_COIL,N_SURP,N_VICT,d('N_JUMP'),d('N_AIR'),d('N_AIR2'));add('block',d('N_GUARD'));add('seal',d('N_SEAL'));add('charge',d('N_RAS_WIND'));add('punch',N_DASHP,N_PUNCH,N_UPPER,d('N_RAS_WIND'),d('N_RAS_DASH'),d('N_RAS_HIT'));add('hit',N_HIT,N_STAG,N_HITB,N_BURN1,N_BURN2);add('down',N_DOWN);return SPRN_REF=L;}
 const SPR_W={hxF:1,hyF:1,hxB:.6,hyB:.6,ffx:.9,ffy:1.4,fbx:.6,fby:1,crouch:1.2,lean:.8,tilt:30,hr:6};
-function sprPick(P,refs){let best='guard',bd=1e9;for(const [k,R0] of (refs||sprRefs())){let d=0;for(const q in SPR_W){const v=(P[q]||0)-(R0[q]||0);d+=SPR_W[q]*v*v;}if(d<bd){bd=d;best=k;}}return best;}
+let sprRefPose=null;
+function sprPick(P,refs){let best='guard',bd=1e9;for(const [k,R0] of (refs||sprRefs())){let d=0;for(const q in SPR_W){const v=(P[q]||0)-(R0[q]||0);d+=SPR_W[q]*v*v;}if(d<bd){bd=d;best=k;sprRefPose=R0;}}return best;}
+/* a diferenca entre a pose real e a pose do sprite escolhido vira um deslocamento em degraus de 1 pixel: tronco inclina (cisalhamento) e o corpo agacha/estica, assim o movimento fica continuo entre um sprite e outro */
+function sprDraw(c,SB,S,P,R0,key){const dT=((P.tilt||0)-(R0&&R0.tilt||0)),dC=((P.crouch||0)-(R0&&R0.crouch||0)),dL=((P.lean||0)-(R0&&R0.lean||0));
+ const sh=key==='down'?0:Math.max(-.32,Math.min(.32,dT*.7+dL*.03)),sy=key==='down'?1:Math.max(.9,Math.min(1.08,1-dC*.014));
+ if(Math.abs(sh)<.012&&Math.abs(sy-1)<.008){c.drawImage(SB,0,0,S.w*4,S.h*4,-S.ax,-S.ay,S.w,S.h);return;}
+ const hip=S.h*.6;for(let r=0;r<S.h;r++){const up=Math.max(0,hip-r),dx=Math.round(sh*up*(r<hip?1:0)*10)/10;c.drawImage(SB,0,r*4,S.w*4,4,-S.ax+Math.round(sh*up),(r-S.ay)*sy,S.w,sy+.03);}}
+
 const sprTmp=document.createElement('canvas');sprTmp.width=96;sprTmp.height=96;const sprTx=sprTmp.getContext('2d',{willReadFrequently:true});
 const sprBig=document.createElement('canvas');sprBig.width=384;sprBig.height=384;const sprBx=sprBig.getContext('2d');
 function blitSprite(x,y,flip,P,time,o,isN){
@@ -648,7 +655,7 @@ function blitSprite(x,y,flip,P,time,o,isN){
  if(!o.noRefl&&!o.rot){g.save();g.translate(x,GY);g.scale(flip?-1:1,-.5);g.globalAlpha=.16*al;g.drawImage(SB,0,0,S.w*4,S.h*4,-S.ax,-S.ay,S.w,S.h);g.restore();}
  if(o.vel&&!o.rot&&Math.abs(o.vel)>160){const dir=Math.sign(o.vel),va=Math.min(Math.abs(o.vel),900),ka=Math.min(1,(Math.abs(o.vel)-160)/220);for(let i=3;i>=1;i--){g.save();g.translate(x-dir*va*.011*i,y);g.scale(flip?-1:1,1);g.globalAlpha=al*(.34-.09*i)*ka;g.drawImage(SB,0,0,S.w*4,S.h*4,-S.ax,-S.ay+ys,S.w,S.h);g.restore();}}
  g.translate(x,y);if(o.rot){g.translate(0,-30);g.rotate(o.rot*(flip?-1:1));g.translate(0,30);}g.scale(flip?-1:1,1);g.globalAlpha=al;
- g.drawImage(SB,0,0,S.w*4,S.h*4,-S.ax,-S.ay+ys,S.w,S.h);
+ sprDraw(g,SB,S,P,sprRefPose,key);
  g.restore();
  return rigW(P);}
 function blit(x,y,flip,d,P,time,o){o=o||{};if(USE_SPR&&(d===SASUKE||(d===NARUTO&&SPRN.guard))&&!(o.lv2>0))return blitSprite(x,y,flip,P,time,o,d===NARUTO);if(o.lv2>0&&d.style==='s')d=lvDef(o.lv2);
