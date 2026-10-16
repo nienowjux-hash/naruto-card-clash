@@ -150,6 +150,9 @@ let PROG=progDefault();
 try{const j=JSON.parse(localStorage.getItem(PROG_KEY)||'null');if(j)for(const c in PROG)if(j[c])Object.assign(PROG[c],j[c]);}catch(e){}
 /* golpes base novos entram sozinhos em progressos salvos antes */
 for(const c in PROG)for(const n of TREES[c])if(n.base&&!PROG[c].learned.includes(n.id))PROG[c].learned.push(n.id);
+/* MODO TESTE: libera todos os golpes do Kakashi (nivel 25). Para voltar ao normal, ponha false. */
+const TEST_UNLOCK_KAKASHI=true;
+if(TEST_UNLOCK_KAKASHI){const P=PROG.kakashi;P.level=Math.max(P.level,25);for(const n of TREES.kakashi)if(!P.learned.includes(n.id))P.learned.push(n.id);}
 autoLearn();
 /* golpes com auto:1 (jutsus raros bloqueados por nivel) entram sozinhos quando o personagem chega no nivel deles */
 function autoLearn(){let got=[];for(const c in TREES){const P=PROG[c];if(!P)continue;for(const n of TREES[c])if(n.auto&&!P.learned.includes(n.id)&&MOVES[n.id].lvl<=P.level&&n.req.every(r=>P.learned.includes(r))){P.learned.push(n.id);got.push(n.id);}}return got;}
