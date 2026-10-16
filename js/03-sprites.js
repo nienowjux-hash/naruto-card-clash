@@ -28,17 +28,17 @@ if(USE_SPR&&typeof sasukeThrowFrame==='function'){const mkT=i=>{const gr=sasukeT
 /* Sakura (Parte 1): mesmas poses do Sasuke com a cabeca/roupa dela; quem nao tem sprite proprio usa o do Sasuke. heroS diz quem joga no lado esquerdo */
 let heroS=(typeof CAMP!=='undefined'&&CAMP.active&&(CAMP.active.hero==='sakura'||CAMP.active.hero==='kakashi'))?CAMP.active.hero:'sasuke';
 /* conjunto de sprites de um heroi que usa as poses do Sasuke com cabeca/roupa propria; o que nao tem sprite proprio usa o do Sasuke */
-function buildHeroSet(from,pal){const S2={};if(!USE_SPR||typeof from!=='function')return S2;
- const mkK=(fn,ax,ay)=>{const gr=from(fn)(),c=document.createElement('canvas');gr.draw(c,pal,1);return{c,csh:c,w:gr.w,h:gr.h,ax,ay};};
+function buildHeroSet(from,pal,fromSh){const S2={};if(!USE_SPR||typeof from!=='function')return S2;
+ const mkK=(fn,ax,ay)=>{const gr=from(fn)(),c=document.createElement('canvas');gr.draw(c,pal,1);let c2=c;if(fromSh){c2=document.createElement('canvas');fromSh(fn)().draw(c2,pal,1);}return{c,csh:c2,w:gr.w,h:gr.h,ax,ay};};
  const defs={idle:[sasukeIdle,27,75],guard:[sasukeGuard,27,75],punch:[sasukePunch,27,75],hit:[sasukeHit,25,75],down:[sasukeDown,40,45],kick:[sasukeKick,22,75],seal:[sasukeSeal,27,75],chidori:[sasukeChidori,27,75],katon:[sasukeKaton,27,75],block:[sasukeBlock,27,75]};
  if(typeof sasukePunchWind==='function')defs.pw=[sasukePunchWind,27,75];if(typeof sasukeEyeHand==='function')defs.eh=[sasukeEyeHand,27,75];if(typeof sasukeKickWind==='function')defs.kw=[sasukeKickWind,27,75];
  for(const k in defs)S2[k]=mkK(...defs[k]);
- if(S2.idle&&typeof sasukeIdleB==='function')S2.idle.cb=S2.idle.cbsh=mkK(()=>sasukeIdleB(1),27,75).c;
- if(S2.guard&&typeof sasukeGuardB==='function')S2.guard.cb=S2.guard.cbsh=mkK(sasukeGuardB,27,75).c;
- if(typeof sasukeRunFrame==='function'){const fr=[0,1,2,3].map(i=>mkK(()=>sasukeRunFrame(i),27,75));S2.run={c:fr[0].c,csh:fr[0].c,fr,w:56,h:80,ax:27,ay:75};}
+ if(S2.idle&&typeof sasukeIdleB==='function'){const k=mkK(()=>sasukeIdleB(1),27,75);S2.idle.cb=k.c;S2.idle.cbsh=k.csh;}
+ if(S2.guard&&typeof sasukeGuardB==='function'){const k=mkK(sasukeGuardB,27,75);S2.guard.cb=k.c;S2.guard.cbsh=k.csh;}
+ if(typeof sasukeRunFrame==='function'){const fr=[0,1,2,3].map(i=>mkK(()=>sasukeRunFrame(i),27,75));S2.run={c:fr[0].c,csh:fr[0].csh,fr:fr,w:56,h:80,ax:27,ay:75};}
  if(typeof sasukeThrowFrame==='function')['tw','tt','te'].forEach((k,i)=>{S2[k]=mkK(()=>sasukeThrowFrame(i),27,75);});
  for(const k in SPR)if(!S2[k])S2[k]=SPR[k];return S2;}
-const SPRK=typeof sakuraFrom==='function'?buildHeroSet(sakuraFrom,SAK_PAL):{},SPRKA=typeof kakashiFrom==='function'?buildHeroSet(kakashiFrom,KAK_PAL):{};
+const SPRK=typeof sakuraFrom==='function'?buildHeroSet(sakuraFrom,SAK_PAL):{},SPRKA=typeof kakashiFrom==='function'?buildHeroSet(kakashiFrom,KAK_PAL,fn=>kakashiFrom(fn,true)):{};
 const SPRX=()=>heroS==='sakura'&&SPRK.guard?SPRK:heroS==='kakashi'&&SPRKA.guard?SPRKA:SPR;
 /* Naruto de quatro (manto da Kyubi): quadros de agachar, galope e bote, escolhidos pela pose (fourKeyFor) */
 if(USE_SPR&&SPRN.four&&typeof naruFourCoil==='function'){const mkF=fn=>{const gr=fn(),a=document.createElement('canvas'),b=document.createElement('canvas');gr.draw(a,NAR_PAL,1);gr.draw(b,Object.assign({},NAR_PAL,KYU_EYES),1);return{c:a,csh:b,w:gr.w,h:gr.h,ax:48,ay:56};};
