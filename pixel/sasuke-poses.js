@@ -9,14 +9,14 @@ function sasHeadRows(mod){
   set(14,16,'SSSSSSSS');set(14,24,'SSSSSK2K');}
  if(mod&&mod.mouth){set(18,20,'oKKo');}
  return rows;}
-function putHead(g,ox,oy,mod){sasHeadRows(mod).forEach((r,y)=>g.put(ox,y+oy,r.join('')));
+function putHead(g,ox,oy,mod){if(typeof HEADHOOK!=='undefined'&&HEADHOOK)return HEADHOOK.head(g,ox,oy,mod);sasHeadRows(mod).forEach((r,y)=>g.put(ox,y+oy,r.join('')));
  const dx=ox-4,dy=oy-1,L=(a,b,c,d,k)=>g.line(a+dx,b+dy,c+dx,d+dy,k,['3']);
  L(33,7,24,6,'2');L(28,5,17,7,'2');L(21,6,11,9,'2');L(16,9,8,11,'2');
  L(33,6,25,5,'4');L(27,4,18,6,'4');L(20,5,12,8,'4');L(15,8,9,10,'4');
  g.put(29+dx,4+dy,'5');g.put(21+dx,5+dy,'5');g.put(14+dx,6+dy,'5');
  g.put(14+dx,10+dy,'b');g.put(12+dx,11+dy,'bBb');g.put(11+dx,12+dy,'bBB');g.put(10+dx,13+dy,'bB');g.put(10+dx,14+dy,'b');g.put(14+dx,13+dy,'Bb');g.put(15+dx,14+dy,'b');}
 /* cabeca deitada (girada 90 graus: topo para a esquerda, rosto para cima); o que passa do chao nao e desenhado */
-function putHeadLying(g,ox,oy,groundY,mod){const rows=sasHeadRows(mod),Wd=rows[0].length;
+function putHeadLying(g,ox,oy,groundY,mod){if(typeof HEADHOOK!=='undefined'&&HEADHOOK)return HEADHOOK.lying(g,ox,oy,groundY,mod);const rows=sasHeadRows(mod),Wd=rows[0].length;
  for(let y=0;y<rows.length;y++)for(let x=0;x<Wd;x++){const ch=rows[y][x];if(ch==='.')continue;const nx=ox+y,ny=oy+(Wd-1-x);if(ny<=groundY)g.set(nx,ny,ch);}}
 /* sandalia (reuso) */
 function sandal(g,x0,front){const k=front?'N':'n',hi=front?'D':'v',sk=front?'S':'s';
