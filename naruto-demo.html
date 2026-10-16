@@ -2071,6 +2071,14 @@ ANIMS.rasengan={enemy:true,dur:4.6,hold:2.2,hitT:2.2,hits:[{t:2.2,dmg:30}],cost:
   sX:[[0,96],[2.15,96],[2.2,96],[2.55,48],[3.4,40],[4.2,96]],sArc:[2.2,2.7,16],sSpin:[2.22,2.7,-1],
   tpN:[3.3],nX:[[0,288],[1.6,288],[1.75,270],[2.1,130],[2.9,130],[3.29,130],[3.31,288],[4.6,288]],
   cam:[[0,{z:1.04,cx:192,cy:116}],[.5,{z:1.04,cx:192,cy:116}],[.8,{z:1.6,cx:268,cy:130}],[1.5,{z:1.7,cx:272,cy:130}],[1.7,{z:1.4,cx:210,cy:130}],[2.05,{z:1.5,cx:122,cy:130}],[2.2,{z:1.75,cx:112,cy:130}],[3.0,{z:1.4,cx:90,cy:130}],[3.9,{z:1.04,cx:192,cy:116}],[4.6,{z:1.04,cx:192,cy:116}]]};
+/* ---- fatality do Rasengan: a camera vai para as costas do Sasuke e a esfera estoura as costas dele, abrindo um rombo ---- */
+ANIMS.rasengan.LR={dur:9.6,koAt:8.8,bannerAt:7.0,mirror:[2.3,3.56],burst:2.9,
+ map:[[0,0],[2.2,2.2],[2.4,2.28],[5.4,3.6],[6.2,4.2],[99,97]],
+ sP:ANIMS.rasengan.sP.filter(k=>k[0]<=2.15).concat([[2.2,S_HIT],[3.7,S_HIT],[4.05,S_STAG],[4.7,S_DOWN],[99,S_DOWN]]),
+ sX:[[0,96],[3.7,96],[4.7,86],[99,86]],
+ nP:ANIMS.rasengan.nP.filter(k=>k[0]<=2.15).concat([[2.2,N_RAS_HIT],[3.75,N_RAS_HIT],[4.4,N_READY],[5.4,N_VICT],[99,N_VICT]]),
+ nX:ANIMS.rasengan.nX.filter(k=>k[0]<=2.1).concat([[3.75,130],[4.5,158],[99,158]]),
+ cam:ANIMS.rasengan.cam.filter(k=>k[0]<=2.2).concat([[2.26,{z:2.2,cx:98,cy:130}],[2.32,{z:3.2,cx:66,cy:132}],[2.9,{z:3.3,cx:64,cy:132}],[3.15,{z:2.4,cx:62,cy:128}],[3.55,{z:2.3,cx:68,cy:128}],[3.6,{z:1.9,cx:110,cy:130}],[4.7,{z:1.7,cx:100,cy:136}],[5.6,{z:1.3,cx:140,cy:124}],[6.6,{z:1.04,cx:192,cy:116}],[99,{z:1.04,cx:192,cy:116}]])};
 ANIMS.bunshin={enemy:true,dur:5.2,hold:3.6,hitT:3.6,hits:[{t:1.9,dmg:6},{t:2.45,dmg:6},{t:3.0,dmg:6},{t:3.6,dmg:14}],cost:25,
   clones:[{x0:250,r0:2.65,h:3.0},{x0:218,r0:2.1,h:2.45},{x0:186,r0:1.5,h:1.9}],
   sP:[[0,READY],[.45,READY],[1.8,S_GUARD],[1.88,S_GUARD],[1.92,S_FLINCH],[2.15,S_GUARD],[2.43,S_GUARD],[2.47,S_FLINCH],[2.7,S_GUARD],[2.98,S_GUARD],[3.02,S_FLINCH],[3.3,S_GUARD],[3.58,S_GUARD],[3.62,S_HIT],[4.3,S_HIT],[4.6,S_STAG],[5.0,READY],[5.2,READY]],
@@ -2078,7 +2086,7 @@ ANIMS.bunshin={enemy:true,dur:5.2,hold:3.6,hitT:3.6,hits:[{t:1.9,dmg:6},{t:2.45,
   sX:[[0,96],[1.85,96],[1.95,90],[2.45,90],[2.5,82],[3.0,82],[3.05,74],[3.6,74],[3.65,74],[4.0,40],[4.4,44],[5.0,96]],sArc:[3.6,4.3,40],sSpin:[3.62,4.3,-1],
   tpN:[4.5],nX:[[0,288],[3.1,288],[3.25,270],[3.55,134],[4.2,134],[4.49,134],[4.51,288],[5.2,288]],nArc:[3.55,4.0,10],
   cam:[[0,{z:1.04,cx:192,cy:116}],[.5,{z:1.04,cx:192,cy:116}],[.9,{z:1.4,cx:262,cy:128}],[1.5,{z:1.3,cx:200,cy:128}],[1.9,{z:1.5,cx:120,cy:128}],[3.0,{z:1.4,cx:130,cy:128}],[3.6,{z:1.7,cx:112,cy:126}],[4.4,{z:1.3,cx:100,cy:128}],[5.0,{z:1.04,cx:192,cy:116}],[5.2,{z:1.04,cx:192,cy:116}]]};
-function buildLethalE(A){if(A.sPL)return;const h=A.hitT,cut=k=>k[0]<=h+.4;
+function buildLethalE(A){if(A.sPL)return;if(A.LR){A.sPL=A.LR.sP;A.sXL=A.LR.sX;A.nPL=A.LR.nP;A.nXL=A.LR.nX;return;}const h=A.hitT,cut=k=>k[0]<=h+.4;
  A.sPL=A.sP.filter(cut).concat([[h+.9,S_STAG],[h+1.5,S_DOWN],[99,S_DOWN]]);
  A.sXL=A.sX.filter(cut).concat([[h+.9,50],[99,50]]);
  A.nPL=A.nP.filter(k=>k[0]<A.dur-1.0).concat([[A.dur-.4,N_VICT],[99,N_VICT]]);
@@ -2107,7 +2115,7 @@ function afterAnim(was){if(!was)return;
  else{setCards(false);setTimeout(()=>{if(!outcome&&!anim)enemyTurn();},1000);}}
 function skipEnemy(msg){toast(msg);if(seal2T>0){seal2T--;hp.s=Math.max(1,hp.s-3);ck.s=Math.min(100,ck.s+15);if(!seal2T)toast('A transformação se desfaz');}else if(sealT>0){sealT--;hp.s=Math.max(1,hp.s-2);ck.s=Math.min(100,ck.s+10);if(!sealT)toast('O selo amaldiçoado se acalma');}ck.n=Math.min(100,ck.n+15);ck.s=Math.min(100,ck.s+10);setBars();if(roleN)turnLock=true;endEnemyTurn();}
 /* modo "jogar como Naruto": a tela e espelhada (Naruto a esquerda), o jogador escolhe os jutsus do Naruto e o Sasuke e jogado pela IA */
-let roleN=false,gdN=false;try{roleN=localStorage.getItem('playNaruto')==='1';}catch(e){}
+let roleN=false,gdN=false,rasKill=false;try{roleN=localStorage.getItem('playNaruto')==='1';}catch(e){}
 document.body.classList.toggle('roleN',roleN);
 function showNarutoMenu(){menuOpen='main';const h=$('hand');h.innerHTML='';
  const add=(name,desc,col,k,cost,fn)=>{const b=document.createElement('button');b.className='cmd';b.style.setProperty('--cc',col);b.innerHTML=(cost!=null?`<span class="cost">${cost}</span>`:'')+`<span class="k">${k}</span>${name}<small>${desc}</small>`;b.onclick=fn;b._cost=cost;h.appendChild(b);};
@@ -2130,12 +2138,14 @@ function endEnemyTurn(){if(roleN){if(outcome){setCards(false);return;}turnLock=t
 function enemyTurn(force){if(typeof force!=='string')force=null;if(outcome||anim)return;if(stunN&&!roleN){stunN=false;skipEnemy('Naruto está preso na ilusão e perde o turno');return;}if((sealT>0&&Math.random()<.3)||(seal2T>0&&Math.random()<.4)){skipEnemy('Sasuke desvia com a velocidade do selo!');return;} const type=force||(Math.random()<.5?'rasengan':'bunshin'),A=ANIMS[type];if(roleN){if(turnLock||ck.n<A.cost){if(!turnLock)toast('Chakra insuficiente para '+(type==='rasengan'?'o Rasengan':'o Kage Bunshin'));return;}turnLock=true;}lastEnemy=type;ensureAudio();
  const gm=guard?.5:1;guard=false;const dm=h=>Math.max(1,Math.round(h.dmg*gm));
  const total=A.hits.reduce((a,h)=>a+dm(h),0),lethal=hp.s-total<=0;
- anim={type,t0:performance.now(),dur:A.dur+HS,lethal,enemy:true};setCards(false);ck.n=Math.max(0,ck.n-A.cost);setBars();sfx(type);
+ const isLR=lethal&&type==='rasengan'&&A.LR;if(isLR)rasKill=true;
+ anim={type,t0:performance.now(),dur:isLR?A.LR.dur:A.dur+HS,lethal,enemy:true};if(isLR){later(A.LR.bannerAt*1000,()=>banner('螺旋丸','FATALITY','Rasengan','#7fd4ff'));sfxFatal();}setCards(false);ck.n=Math.max(0,ck.n-A.cost);setBars();sfx(type);
  if(type==='rasengan')later(1500,()=>banner('螺旋丸','RASENGAN','Esfera Giratória','#7fd4ff'));else later(1100,()=>banner('影分身の術','KAGE BUNSHIN','Clones das Sombras','#ffa43a'));
  A.hits.forEach((h,i)=>later(h.t*1000,()=>{hp.s=Math.max(0,hp.s-dm(h));setBars();dmgPop(dm(h),'S');applyDamageS(type,i);}));
- if(lethal)later((A.hits[A.hits.length-1].t+1.3)*1000,()=>{outcome='N';outcomeT=performance.now()/1000;showKO('N');setCards(false);});}
+ if(lethal)later((isLR?A.LR.koAt:A.hits[A.hits.length-1].t+1.3)*1000,()=>{outcome='N';outcomeT=performance.now()/1000;showKO('N');setCards(false);});}
 const HS=.09;
-function warp(type,raw){if(LC(type))return mapL(raw);if(LK(type))return mapK(raw);if(LW(type))return mapW(raw);if(LA(type))return mapA(raw);if(LG(type))return mapGen(ANIMS[type].L.map,raw);const h=ANIMS[type].hold;if(raw<h)return raw;if(raw<h+HS)return h+(raw-h)*.06;return raw-HS*.94;}
+const LR=type=>type==='rasengan'&&!!ANIMS.rasengan.LR&&((anim&&anim.lethal)||!!window.__LETHR);
+function warp(type,raw){if(LR(type))return mapGen(ANIMS.rasengan.LR.map,raw);if(LC(type))return mapL(raw);if(LK(type))return mapK(raw);if(LW(type))return mapW(raw);if(LA(type))return mapA(raw);if(LG(type))return mapGen(ANIMS[type].L.map,raw);const h=ANIMS[type].hold;if(raw<h)return raw;if(raw<h+HS)return h+(raw-h)*.06;return raw-HS*.94;}
 const LC=type=>type==='chidori'&&!!ANIMS.chidori.L&&((anim&&anim.lethal)||!!window.__LETH);
 function sasX(type,t){{const a_=ANIMS[type];if(LG(type)&&a_.L.sX)return interp(a_.L.sX,t);if(a_&&a_.sX)return interp(a_.sX,t);}if(LC(type)&&t>=2.55)return interp(ANIMS.chidori.L.sX,t);if(LW(type))return interp(ANIMS.kawarimi.L.sX,t);if(type==='kawarimi')return interp([[0,96],[1.58,96],[1.9,170],[3.0,150],[3.59,150],[3.61,96]],t);if(type==='chidori'){if(t<2.15)return 96;if(t<2.55){const k=(t-2.15)/.4;return 96+(246-96)*Math.pow(k,1.7);}if(t<3.15)return 246;return 96;}return 96;}
 function sasY(type,t){if(LG(type)&&ANIMS[type].L.sYf)return ANIMS[type].L.sYf(t);if(!LG(type)&&ANIMS[type].sYf)return ANIMS[type].sYf(t);if(LG(type)){const q=ANIMS[type].L.sArc;if(q&&t>q[0]&&t<q[1])return -Math.sin((t-q[0])/(q[1]-q[0])*Math.PI)*q[2];return 0;}if(LC(type)&&t>3.0)return 0;{const a_=ANIMS[type];if(a_&&a_.sArc){const q=a_.sArc;if(t>q[0]&&t<q[1])return -Math.sin((t-q[0])/(q[1]-q[0])*Math.PI)*q[2];return 0;}}if(type==='kawarimi'&&t>1.9&&t<2.12){const k=(t-1.9)/.22;return -48*(1-k)*(1-k);}return 0;}
@@ -2471,22 +2481,45 @@ function drawLog(c,x,t){const age=t-1.62;if(age<0)return;
  const r2=R(5);for(let i=0;i<16;i++){const an=-Math.PI/2+(r2()-.5)*2.6,sp=30+r2()*70,px=x+Math.cos(an)*sp*q,py=GY-16+Math.sin(an)*sp*q+140*q*q;if(py>GY+3)continue;c.save();c.translate(px,py);c.rotate(q*10+i);c.fillStyle=i%2?'#9a6a36':'#5a3414';c.fillRect(-1.2,-.6,2.4,1.2);c.restore();}
  c.globalAlpha=1;}
 /* Rasengan em pixel art: esfera giratoria de bandas em espiral (3 tons de azul + nucleo branco), contorno escuro e faiscas orbitando */
-const rasPix=document.createElement('canvas');rasPix.width=rasPix.height=44;const rasPx=rasPix.getContext('2d',{willReadFrequently:true});
-function rasengan(c,x,y,r,time,fr,al){c.save();c.globalAlpha=al==null?1:al;
- f.save();f.globalCompositeOperation='lighter';orb(f,x,y,r*2.4,[[0,'rgba(150,205,255,.28)'],[1,'rgba(40,90,255,0)']]);f.restore(); /* brilho no layer de efeitos; o pixel art fica no canvas principal, sem bloom
- */
- const id=rasPx.createImageData(44,44),d=id.data,C=22,spin=time*13,put=(px,py,rgb)=>{if(px<0||py<0||px>=44||py>=44)return;const i=(py*44+px)*4;d[i]=rgb[0];d[i+1]=rgb[1];d[i+2]=rgb[2];d[i+3]=255;};
- const R0=Math.max(2,Math.round(r)),P3=[[255,255,255],[190,232,255],[110,185,255],[58,128,238],[26,66,170],[14,32,110]];
- for(let py=0;py<44;py++)for(let px=0;px<44;px++){const dx=px+.5-C,dy=py+.5-C,dd=Math.hypot(dx,dy);if(dd>R0+1)continue;
-  if(dd>R0){put(px,py,P3[5]);continue;}
-  if(dd>R0-1.2){put(px,py,P3[4]);continue;}
-  const a=Math.atan2(dy,dx),u=((a+dd*.62-spin)/(TAU/5))%1,f=u<0?u+1:u;
-  let k;if(dd<R0*.28)k=0;else if(f<.22)k=0;else if(f<.5)k=1;else if(f<.78)k=2;else k=3;
-  if(dd>R0*.8&&k<3)k++;
-  put(px,py,P3[k]);}
- for(let i=0;i<8;i++){const aa=time*7+i*TAU/8,rr=R0+3+((i*5)%3),px=Math.round(C+Math.cos(aa)*rr),py=Math.round(C+Math.sin(aa)*rr*.92);put(px,py,P3[i%2?0:1]);if(i%3===0)put(px+1,py,P3[2]);}
- rasPx.putImageData(id,0,0);c.imageSmoothingEnabled=false;c.drawImage(rasPix,Math.round(x)-C,Math.round(y)-C);
+const RPN=128,rasPix=document.createElement('canvas');rasPix.width=rasPix.height=RPN;const rasPx=rasPix.getContext('2d',{willReadFrequently:true});
+function rasengan(c,x,y,r,time,fr,al,clipX){c.save();c.globalAlpha=al==null?1:al;
+ f.save();f.globalCompositeOperation='lighter';orb(f,x,y,r*2.6,[[0,'rgba(150,205,255,'+(.3*(al==null?1:al))+')'],[1,'rgba(40,90,255,0)']]);f.restore(); /* brilho no layer de efeitos; o pixel art fica nitido */
+ const C=RPN/2,R0=Math.max(2,Math.min(C-8,Math.round(r))),id=rasPx.createImageData(RPN,RPN),d=id.data,spin=time*13,
+  put=(px,py,rgb)=>{if(px<0||py<0||px>=RPN||py>=RPN)return;const i=(py*RPN+px)*4;d[i]=rgb[0];d[i+1]=rgb[1];d[i+2]=rgb[2];d[i+3]=255;},
+  P3=[[255,255,255],[205,240,255],[130,200,255],[70,145,245],[34,84,196],[16,38,120]];
+ const y0=Math.max(0,C-R0-6),y1=Math.min(RPN-1,C+R0+6);
+ for(let py=y0;py<=y1;py++)for(let px=y0;px<=y1;px++){const dx=px+.5-C,dy=py+.5-C,dd=Math.hypot(dx,dy),a=Math.atan2(dy,dx);
+  if(dd<=R0+1){
+   if(dd>R0){put(px,py,P3[5]);continue;}
+   if(dd>R0-1.2){put(px,py,P3[4]);continue;}
+   /* bandas em espiral que giram; o nucleo e branco e a borda escurece */
+   const u=((a+dd*.6-spin)/(TAU/5))%1,fq=u<0?u+1:u;let k=dd<R0*.26?0:fq<.2?0:fq<.48?1:fq<.76?2:3;if(dd>R0*.82&&k<3)k++;
+   /* brilho de esfera: canto de cima clareia */
+   if(dx<-R0*.15&&dy<-R0*.15&&dd>R0*.45&&dd<R0*.7&&k>1)k--;
+   put(px,py,P3[k]);continue;}
+  /* aneis de vento girando em volta (tracos com falhas) */
+  for(const [rr,sp,gap] of [[R0+2.5,-9,.55],[R0+4.5,7,.62]]){if(Math.abs(dd-rr)<.6){const v=((a*3+time*sp)/TAU)%1;if((v<0?v+1:v)<gap)put(px,py,P3[dd<R0+3.5?2:1]);}}}
+ for(let i=0;i<10;i++){const aa=time*8+i*TAU/10,rr=R0+6+((i*5)%3),px=Math.round(C+Math.cos(aa)*rr),py=Math.round(C+Math.sin(aa)*rr*.9);put(px,py,P3[i%2?0:1]);}
+ rasPx.putImageData(id,0,0);c.imageSmoothingEnabled=false;
+ if(clipX!=null){c.beginPath();c.rect(clipX-400,-400,400,1000);c.clip();}
+ c.drawImage(rasPix,Math.round(x)-C,Math.round(y)-C);
  c.restore();}
+/* fatality do Rasengan: a esfera empurra as costas do Sasuke (calombo girando), estoura abrindo um rombo, sai voando e explode, com sangue e pedacos de roupa e carne em pixel */
+function rasFatalFX(g,f,t,raw,time,fr,sx0,z,sx,sy,ccx,ccy){const L=ANIMS.rasengan.LR,B=L.burst,cy=GY-38,back=sx0-7;
+ g.save();setCam(g,z,sx,sy,ccx,ccy);
+ if(t>=2.3&&t<B){const k=scaleAt(0,1,2.3,B,t);rasengan(g,back+1+k*3,cy,2+k*7+Math.sin(time*40)*.5,time*1.3,fr,1,back+1); /* so a parte que ja passou das costas aparece */
+  const r2=R(fr*11);for(let i=0;i<10*k;i++){g.fillStyle=r2()<.5?'#9a0f1c':'#d4202e';g.fillRect(Math.round(back-r2()*6),Math.round(cy+(r2()-.5)*14),1,1);}}
+ const a=t-B;
+ if(a>=0&&a<.55){const k=a/.55,bx=back-a*110,br=9+a*12;rasengan(g,bx,cy,br,time*1.6,fr,1-Math.max(0,(k-.75)/.25));}
+ g.restore();
+ if(a>=0&&a<1.6){
+  bloodSpray(f,back,cy,a*1.1,71,70,-1.4);bloodSpray(f,back,cy+3,a*.9,72,50,-1.1);bloodSpray(f,back,cy-4,a*1.3,73,40,-1.6);
+  scraps(f,back,cy,a,74,22,[[42,79,184],[30,50,130],[236,190,160],[150,16,24]],-1);
+  if(a<.3){f.save();f.globalCompositeOperation='lighter';const k=a/.3;ringFX(f,back,cy,4+40*k,2*(1-k)+.2,`rgba(255,255,255,${1-k})`);ringFX(f,back,cy,(4+40*k)*.75,1.4*(1-k)+.2,`rgba(130,200,255,${1-k})`);f.restore();}}
+ const pop=a-.55;if(pop>=0&&pop<.6){const px=back-.55*110,k=pop/.6;f.save();f.globalCompositeOperation='lighter';orb(f,px,cy,30*(1-k*.4),[[0,`rgba(230,245,255,${.8*(1-k)})`],[.4,`rgba(120,190,255,${.45*(1-k)})`],[1,'rgba(40,90,255,0)']]);ringFX(f,px,cy,6+60*(1-(1-k)*(1-k)),2.2*(1-k)+.2,`rgba(200,235,255,${1-k})`);f.restore();}
+ if(t>=3.6&&t<7.5){const k=clamp((t-3.6)/.3,0,1),wy=cy+5;for(let i=0;i<5;i++){const ph=((t*(.4+i*.07)+i*.23)%1),x0=sx0+((i*53)%7)-3,yy=wy+ph*(GY-wy-2);f.fillStyle=`rgba(${120+(i*13)%40},8,18,${.9*k})`;f.fillRect(Math.round(x0),Math.round(yy),1,2);}
+  const pr=Math.min(14,(t-3.8)*3.6);if(pr>0){f.fillStyle='rgba(110,6,14,.6)';f.beginPath();f.ellipse(sx0-4,GY+2,pr,pr*.24,0,0,TAU);f.fill();}}
+}
 function ringFX(c,cx,cy,r,w,col){c.strokeStyle=col;c.lineWidth=Math.max(.1,w);c.beginPath();c.ellipse(cx,cy,r,r*.92,0,0,TAU);c.stroke();}
 function explosionFX(c,x,y,a,fr){
  const k=Math.min(1,a/.26),rr=10+30*(1-(1-k)*(1-k)),fade=a<.5?1:Math.max(0,1-(a-.5)/.45);if(fade<=0)return;const r=rr*(.55+.45*fade),ph=fr*.9,up=a*14;
@@ -2546,13 +2579,16 @@ function render(ts){
   if(a>=0&&a<.04)flashA=.95;else if(a>=.04&&a<.14)flashA=.5;else if(a>=.14&&a<.3)flashA=.18;
   dim=.45*scaleAt(0,1,.4,.85,t)*(1-.35*scaleAt(0,1,7.0,8.2,raw)-.65*scaleAt(0,1,9.0,9.6,raw));bars=14*scaleAt(0,1,.4,.8,t)*(1-scaleAt(0,1,9.0,9.6,raw));
   const ti=scaleAt(0,1,2.4,3.0,raw)*(1-scaleAt(0,1,6.5,8.0,raw)),tp=scaleAt(0,1,1.2,1.9,t)*(1-scaleAt(0,1,2.4,3.0,raw));if(ti>0)tint=`rgba(190,60,10,${.26*ti})`;else if(tp>0)tint=`rgba(140,40,10,${.22*tp})`;}
+ else if(LR(type)){const L=ANIMS.rasengan.LR,a=t-2.2,b=t-L.burst;if(a>0&&a<.5)shk=6*(1-a/.5);if(t>2.3&&t<L.burst)shk=Math.max(shk,1.6);if(b>0&&b<.8)shk=Math.max(shk,9*(1-b/.8));
+  if(a>=0&&a<.04)flashA=.5;if(b>=0&&b<.04)flashA=.9;else if(b>=.04&&b<.14)flashA=.4;
+  dim=.4*scaleAt(0,1,1.6,2.2,t)*(1-scaleAt(0,1,4.6,5.6,t));bars=14*scaleAt(0,1,2.0,2.3,t)*(1-scaleAt(0,1,6.0,6.8,t));}
  else if(type==='katon'){const a=t-2.4;if(a>0&&a<1)shk=7*(1-a/1);
   if(a>=0&&a<.04)flashA=.9;else if(a>=.04&&a<.14)flashA=.4;
   dim=.45*scaleAt(0,1,.4,.85,t)*(1-scaleAt(0,1,2.9,3.5,t));bars=14*scaleAt(0,1,.4,.8,t)*(1-scaleAt(0,1,3.0,3.6,t));
   const ti=scaleAt(0,1,1.2,1.9,t)*(1-scaleAt(0,1,2.9,3.6,t));if(ti>0)tint=`rgba(140,40,10,${.22*ti})`;}
  const rn=R(fr*7+3);const idleCam=A?0:1;const sx=(shk?(rn()-.5)*2*shk*K:0)+idleCam*Math.sin(time*.45)*5,sy=(shk?(rn()-.5)*2*shk*K:0)+idleCam*Math.sin(time*.6+1)*2.5;
  // camera
- let cam=A?interp((LC(type)||LK(type)||LW(type)||LA(type)||LG(type))?A.L.cam:A.cam,t):{z:1.04,cx:192,cy:116};
+ let cam=A?interp(LR(type)?A.LR.cam:(LC(type)||LK(type)||LW(type)||LA(type)||LG(type))?A.L.cam:A.cam,t):{z:1.04,cx:192,cy:116};
  if(window.__CAM)cam=window.__CAM;let z=cam.z,ccx=cam.cx,ccy=cam.cy;
  {const q=Math.round(clamp(z*1.3,1.6,3.4)*5)/5;SR=K*q;spW=Math.round(SW*SR);spH=Math.round(SH*SR);}
  if(type==='chidori'&&t>2.15&&t<2.56){const k=scaleAt(0,1,2.15,2.3,t);ccx=ccx*(1-k)+(sasX(type,t)+34)*k*(t<2.5?1:0)+ccx*k*(t<2.5?0:1);}
@@ -2562,7 +2598,7 @@ function render(ts){
  drawEnv(g,time,tint);
  const bob=Math.sin(time*3)*.7;
  let sP,nP,sx0=96,sy0=0,nx0=288;
- const lethal=!!(anim&&anim.lethal)||LC(type)||LK(type)||LW(type)||LA(type)||LG(type);if(lethal)(A.enemy?buildLethalE(A):buildLethal(A));
+ const lethal=!!(anim&&anim.lethal)||LC(type)||LK(type)||LW(type)||LA(type)||LG(type)||LR(type);if(lethal)(A.enemy?buildLethalE(A):buildLethal(A));
  if(A){sP=evalPose(lethal?A.sPL:A.sP,t);nP=evalPose(lethal?A.nPL:A.nP,t);nx0=interp(lethal?A.nXL:A.nX,t);sx0=sasX(type,t);sy0=sasY(type,t);if(lethal&&A.enemy&&A.sXL)sx0=interp(A.sXL,t);}
  else if(outcome==='N'){sP=Object.assign({},S_DOWN);nP=Object.assign({},N_VICT);sx0=90;nx0=288;}
  else if(outcome){sP=Object.assign({},VICTORY);nP=Object.assign({},N_DOWN);nx0=300;if(chestHole){nP.turn=.35;nP.torn=1;}if(decap){nx0=112;sx0=152;nP.nohead=1;}if(ashed){sP=Object.assign({},AMA_CL2);}if(fatalKind){const S2=ANIMS[fatalKind].L.stat;if(S2){if(S2.nx0!=null)nx0=S2.nx0;if(S2.sx0!=null)sx0=S2.sx0;if(S2.nP)nP=Object.assign({},S2.nP);if(S2.sP)sP=Object.assign({},S2.sP);}}}
@@ -2573,7 +2609,7 @@ function render(ts){
   const bs=Math.sin(time*2.3),bn=Math.sin(time*3.1+1);
   sP.crouch+=bs*.45+Math.sin(time*.85+1.3)*.25;sP.lean+=bs*.15;sP.hyF-=bs*.25;sP.hyB-=bs*.25;
   nP.crouch+=bn*.6+Math.sin(time*1.25+.4)*.3;nP.lean+=bn*.2;nP.hyF-=bn*.3;nP.hyB-=bn*.3;}
- let ny0=0,sRot=0;if(A){ny0=nY(type,t);sRot=sRotF(type,t);}
+ let ny0=0,sRot=0;if(A){ny0=nY(type,t);sRot=sRotF(type,t);}if(LR(type)){sRot=0;sy0=0;}
  else if(fatalKind&&outcome==='S'&&ANIMS[fatalKind].L.nY)ny0=ANIMS[fatalKind].L.nY(99); /* corpo deitado depois do fatality: mesma altura do fim da animacao, senao fica no ar */
  if(LC(type)&&t>2.62&&t<3.7)ny0=-3*scaleAt(0,1,2.62,2.8,t)*(1-scaleAt(0,1,3.56,3.7,t)); /* o braco do Sasuke levanta o Naruto do chao */
  if(LC(type)&&t>=3.58)chestHole=1;
@@ -2634,7 +2670,7 @@ function render(ts){
  if(LK(type)&&t>2.6)nOpt.cracks=scaleAt(0,1,2.7,5.4,t);else if(burnt&&(!A||type==='katon'))nOpt.cracks=1;
  const rS=rigW(sP);
  const hw=[sx0+rS.hf.hx,GY+sy0+rS.hf.hy];
- let ras=null;if(type==='rasengan'){const rNn=rigW(nP),rr=t<.75?0:t<1.55?clamp((t-.75)/.7,0,1)*9:t<2.2?9.5:0;if(rr>0){ras={x:nx0-rNn.hf.hx-5,y:GY+ny0+rNn.hf.hy-1,r:rr};
+ let ras=null;if(type==='rasengan'){const rNn=rigW(nP),rr=t<.75?0:t<1.55?clamp((t-.75)/.7,0,1)*9:t<2.2?9.5:(LR(type)&&t<2.26)?9.5:0; /* no fatality a esfera entra no peito e so reaparece saindo pelas costas */if(rr>0){ras={x:nx0-rNn.hf.hx-5,y:GY+ny0+rNn.hf.hy-1,r:rr};
   /* com sprites, a esfera fica na mao desenhada do sprite (mao baixa ao carregar, punho esticado ao avancar) */
   if(USE_SPR&&SPRN.guard){const k=sprPick(nP,sprRefsN()),HO={charge:[20,33],punch:[31,45]}[k];if(HO){ras.x=nx0-HO[0]-rr*.6;ras.y=GY+ny0-HO[1];}}}}
  fxLights=[];
@@ -2654,7 +2690,7 @@ function render(ts){
  nOpt.vel=vN;const drawN=()=>{if(ashed&&!A&&outcome==='S')return;if(LGk&&LGk.drawN){LGk.drawN(ctx);return;}blit(nx0,GY+ny0,true,NARUTO,nP,time,nOpt);};
  const pierce=(LC(type)&&t>=2.56&&t<3.75)||(type==='selochidori'&&LG(type)&&t>=3.3&&t<4.38);
  if(!(A&&A.enemy)&&!pierce)drawN();
- const sOpt={};
+ const sOpt={};if(LR(type)&&t>=ANIMS.rasengan.LR.burst)sOpt.hole=clamp((t-ANIMS.rasengan.LR.burst)/.06,0,1)*2.5;else if(!A&&outcome==='N'&&rasKill)sOpt.hole=2.5;
  if(type==='kawarimi')sOpt.alpha=(t>1.6&&t<1.9)?0:1;
  if(power>0)sOpt.light={x:rS.hf.hx,y:rS.hf.hy,r:34,col:[110,185,255],k:.75*Math.min(1,power)};
  if(type==='katon'&&t>1.82&&t<2.4)sOpt.light={x:rS.C[0]+3.2,y:rS.C[1]+2.6,r:28,col:[255,150,50],k:.7};
@@ -2741,14 +2777,15 @@ function render(ts){
  g.setTransform(1,0,0,1,0,0);g.globalCompositeOperation='source-over';g.globalAlpha=1;
 
  if(type==='rasengan'){
+  if(LR(type))rasFatalFX(g,f,t,raw,time,fr,sx0,z,sx,sy,ccx,ccy);
   if(ras){g.save();setCam(g,z,sx,sy,ccx,ccy);rasengan(g,ras.x,ras.y,ras.r,time,fr);g.restore();
-   if(t<1.55){const r2=R(fr*3+1);f.globalCompositeOperation='lighter';f.lineCap='round';for(let i=0;i<14;i++){const an=r2()*TAU,d0=14+r2()*22,ph=(time*3+i*.17)%1,dd=d0*(1-ph);f.strokeStyle='rgba(190,230,255,'+(.7*ph)+')';f.lineWidth=.4;f.beginPath();f.moveTo(ras.x+Math.cos(an)*dd,ras.y+Math.sin(an)*dd*.8);f.lineTo(ras.x+Math.cos(an)*(dd+3),ras.y+Math.sin(an)*(dd+3)*.8);f.stroke();}f.globalCompositeOperation='source-over';}}
+   if(t<1.55){const r2=R(fr*3+1);for(let i=0;i<18;i++){const an=r2()*TAU+time*2,d0=14+r2()*22,ph=(time*2.4+i*.17)%1,dd=d0*(1-ph);g.save();setCam(g,z,sx,sy,ccx,ccy);g.fillStyle=i%3?'#bfe6ff':'#ffffff';g.globalAlpha=Math.min(1,ph*1.6);g.fillRect(Math.round(ras.x+Math.cos(an)*dd),Math.round(ras.y+Math.sin(an)*dd*.8),1,1);g.restore();}}} /* chakra em pixels sendo puxado para a esfera */
   if(t>1.65&&t<2.2){const r2=R(fr*97);f.lineCap='round';for(let i=0;i<26;i++){const y=22+r2()*160,x=ccx-hw2+r2()*W/z,l=20+r2()*70;f.strokeStyle=r2()<.5?'rgba(210,240,255,'+(.25+r2()*.5)+')':'rgba(110,170,255,'+(.25+r2()*.5)+')';f.lineWidth=.3+r2()*.5;f.beginPath();f.moveTo(x,y);f.lineTo(x-l,y);f.stroke();}}
   const a=t-2.2;if(a>=0&&a<1.0){const rNn=rigW(nP),ex=nx0-rNn.hf.hx-8,ey=GY+ny0+rNn.hf.hy;
    waterColumn(f,ex-6,a,11,46);bloodSpray(f,ex-4,ey-2,a,4,30,-1);scraps(f,ex,ey,a,5,18,[[51,68,154],[236,238,248],[250,210,176]],-1);
    f.globalCompositeOperation='lighter';
    if(a<.6)orb(f,ex,ey,44*(1-a/.9),[[0,'rgba(255,255,255,.5)'],[.3,'rgba(150,215,255,.3)'],[1,'rgba(60,120,255,0)']]);
-   if(a<.5){const k=a/.5,e2=1-(1-k)*(1-k);rasengan(f,ex,ey,9+40*e2,time*1.4,fr,.8*(1-k));ringFX(f,ex,ey,6+66*e2,2.2*(1-k)+.2,'rgba(255,255,255,'+(1-k)+')');ringFX(f,ex,ey,(6+66*e2)*.8,1.4*(1-k)+.2,'rgba(120,190,255,'+(1-k)+')');}
+   if(a<.5&&!LR(type)){const k=a/.5,e2=1-(1-k)*(1-k);rasengan(f,ex,ey,9+40*e2,time*1.4,fr,.8*(1-k));ringFX(f,ex,ey,6+66*e2,2.2*(1-k)+.2,'rgba(255,255,255,'+(1-k)+')');ringFX(f,ex,ey,(6+66*e2)*.8,1.4*(1-k)+.2,'rgba(120,190,255,'+(1-k)+')');}
    if(a<.35){f.lineCap='round';const r2=R(61);for(let i=0;i<22;i++){const an=i/22*TAU+.1,r0=10+a*80,r1=r0+14+r2()*30;f.strokeStyle='rgba(255,255,255,'+.7*(1-a/.35)+')';f.lineWidth=.5;f.beginPath();f.moveTo(ex+Math.cos(an)*r0,ey+Math.sin(an)*r0);f.lineTo(ex+Math.cos(an)*r1,ey+Math.sin(an)*r1);f.stroke();}}
    f.globalCompositeOperation='source-over';}
  }
@@ -2794,7 +2831,8 @@ function render(ts){
  if(LG(type)&&A.L.lens)A.L.lens(g,ctx);
  const vg=g.createRadialGradient(PW/2,PH/2,PH*.35,PW/2,PH/2,PW*.62);vg.addColorStop(0,'rgba(0,0,12,0)');vg.addColorStop(1,'rgba(0,0,12,.55)');g.fillStyle=vg;g.fillRect(0,0,PW,PH);
  if(bars>0){const bh=bars*K;g.fillStyle='#000';g.fillRect(0,0,PW,bh);g.fillRect(0,PH-bh,PW,bh);}
- if(roleN){mirx.clearRect(0,0,PW,PH);mirx.drawImage(cv,0,0);g.save();g.setTransform(-1,0,0,1,PW,0);g.imageSmoothingEnabled=false;g.drawImage(mirc,0,0);g.restore();}
+ const mShot=LR(type)&&t>=ANIMS.rasengan.LR.mirror[0]&&t<ANIMS.rasengan.LR.mirror[1]; /* corte para tras do Sasuke: o quadro inteiro inverte */
+ if(roleN!==mShot){mirx.clearRect(0,0,PW,PH);mirx.drawImage(cv,0,0);g.save();g.setTransform(-1,0,0,1,PW,0);g.imageSmoothingEnabled=false;g.drawImage(mirc,0,0);g.restore();}
 }
 function loop(ts){render(ts);requestAnimationFrame(loop)}
 requestAnimationFrame(loop);
@@ -2850,7 +2888,7 @@ function play(cd){
  if(lethal)later(((A.L?A.L.koAt:A.hitT+1.3))*1000,()=>{outcome='S';outcomeT=performance.now()/1000;const k=$('ko');k.classList.remove('on');void k.offsetWidth;k.classList.add('on');setCards(false);});
 }
 window.addEventListener('keydown',e=>{if(e.key==='Escape'&&menuOpen!=='main'){showMenu('main');return;}const n=parseInt(e.key,10);if(!(n>=1))return;const b=$('hand').children[n-1];if(b&&!b.disabled)b.click();});
-$('rst').onclick=()=>{pending.forEach(clearTimeout);pending=[];chestHole=0;burnt=0;decap=0;ashed=0;fatalKind=null;copied=null;lastEnemy=null;sealT=0;seal2T=0;stunN=false;$('speech').classList.remove('on');anim=null;outcome=null;burning=false;turnLock=false;guard=false;showMenu('main');WOUNDS.s.length=0;WOUNDS.n.length=0;$('ko').querySelector('span').textContent='SASUKE VENCEU';$('ko').classList.remove('on');hp={s:100,n:100};ck={s:100,n:100};setBars();setCards(true);$('banner').classList.remove('on');$('dmg').classList.remove('on');};
+$('rst').onclick=()=>{pending.forEach(clearTimeout);pending=[];rasKill=false;chestHole=0;burnt=0;decap=0;ashed=0;fatalKind=null;copied=null;lastEnemy=null;sealT=0;seal2T=0;stunN=false;$('speech').classList.remove('on');anim=null;outcome=null;burning=false;turnLock=false;guard=false;showMenu('main');WOUNDS.s.length=0;WOUNDS.n.length=0;$('ko').querySelector('span').textContent='SASUKE VENCEU';$('ko').classList.remove('on');hp={s:100,n:100};ck={s:100,n:100};setBars();setCards(true);$('banner').classList.remove('on');$('dmg').classList.remove('on');};
 $('mute').onclick=()=>{sound=!sound;$('mute').textContent='Som: '+(sound?'ligado':'desligado');ensureAudio();};
 buildCards();setBars();
 $('nmbtn').textContent='Jogar como: '+(roleN?'Naruto':'Sasuke');$('nmbtn').onclick=()=>{try{localStorage.setItem('playNaruto',roleN?'0':'1');}catch(e){}location.reload();};
