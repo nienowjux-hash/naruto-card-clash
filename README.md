@@ -70,5 +70,5 @@ Oiroke + Kage Bunshin: seis garotas (cobertas por fumaça) cercam o Sasuke. Com 
 ### Uzumaki Naruto Kamikaze (30 de chakra, 34 de dano)
 O Naruto gira como um tornado com três clones em volta e atravessa o Sasuke cinco vezes. **Fatality:** o tornado puxa o Sasuke para o alto, gira ele rasgando a roupa num redemoinho de sangue e o arremessa no chão; o Naruto diz "Ninguém me para, dattebayo!".
 
-### Kuchiyose no Jutsu (45 de chakra, 32 de dano)
-O Naruto morde o polegar e bate a mão no chão com o chakra vermelho da Kurama; o selo de invocação aparece e o **Gama Bunta** surge numa nuvem de fumaça, com o Naruto em cima da cabeça. O sapo dispara a bala de água (*Suiton: Teppōdama*) no Sasuke e some.
+### Kuchiyose no Jutsu (45 de chakra)
+O Naruto morde o polegar e bate a mão no chão com o chakra vermelho da Kurama; o selo aparece e o **Gama Bunta** surge numa nuvem de fumaça, com o Naruto em cima da cabeça. O sapo **fica em campo com 70 de vida**: os golpes do Sasuke acertam ele em vez do Naruto, e a cada turno ele dispara sozinho a bala de água (*Suiton: Teppōdama*, 14 de dano). Quando a vida acaba, ele some na fumaça e o Naruto volta ao chão.
