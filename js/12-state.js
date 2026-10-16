@@ -13,7 +13,7 @@ function missPop(side){const d=$('dmg');d.style.left=((side==='S')!==roleN)?'16%
 
 /* ---- equipamento na batalha: so o personagem que o jogador controla recebe os bonus ---- */
 function sideChar(side){return side==='s'?'sasuke':'naruto';}
-function fightStats(side){const mine=roleN?'n':'s';return side===mine?statsOf(sideChar(side)):{hp:0,atk:0,def:0,elem:{}};}
+function fightStats(side){const mine=roleN?'n':'s';if(side===mine)return statsOf(sideChar(side));const a=CAMP.active;return a?{hp:Math.round(100*(a.hp-1)),atk:a.atk-1,def:0,elem:{}}:{hp:0,atk:0,def:0,elem:{}};}
 function dmgMod(att,def,elem){const a=fightStats(att),d=fightStats(def);return(1+a.atk)*(1+((a.elem||{})[elem]||0))*(1-d.def);}
 /* recalcula a vida maxima; full = enche a vida, senao mantem a proporcao */
 function syncHpMax(full){const o={s:HPMAX.s,n:HPMAX.n};HPMAX={s:100+fightStats('s').hp,n:100+fightStats('n').hp};

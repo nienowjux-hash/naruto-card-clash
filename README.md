@@ -127,3 +127,8 @@ O Naruto de quatro tem **vários quadros** (em `pixel/naruto-fours.js`): **agach
 - Bônus: vida máxima, ataque (+% de dano), defesa (-% de dano recebido) e dano de um elemento. Só o personagem que você controla recebe os bônus (`fightStats` em `js/12-state.js`).
 - Consumíveis (pílulas e pergaminho) são usados pelo comando "Itens" na luta e gastam o turno. Trocar equipamento só é possível fora da luta.
 - Vitória dá 100 ryo e 70% de chance de um item.
+
+## Mapa da campanha
+- `js/19-map.js` pinta o mapa por código (oceano, terras, regiões, caminhos) e abre ao carregar o jogo. Os locais, ligações e inimigos ficam em `NODES`/`EDGES` (`js/00-data.js`); o progresso fica em `CAMP` (`rpgCampV1`).
+- Um local abre quando algum vizinho foi vencido. Ao escolher o local e quem vai lutar, a ficha viaja pelo caminho e a batalha começa com o cenário do local (`setScene` em `js/04-scenery.js`, por enquanto o Vale do Fim recolorido) e o inimigo com a vida, o ataque e os elementos do local.
+- Vitória marca o local, dá XP e ryo do local e volta ao mapa. Derrota também volta ao mapa, sem marcar o local.

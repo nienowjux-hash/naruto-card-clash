@@ -64,4 +64,4 @@ function sheet(mode){let cs=document.getElementById('sheet');if(!cs){cs=document
  const items=mode===2?[[SASUKE,mk({red:0,expr:0}),0],[SASUKE,mk({red:1,expr:1}),1],[NARUTO,mk({expr:5}),2],[NARUTO,mk({expr:2}),3]]:[[SASUKE,READY,0],[SASUKE,CHARGE,1],[NARUTO,N_READY,2],[NARUTO,N_GUARD,3]];
  for(const [d,P,i] of items){c.save();if(mode===2){c.translate(160+i*320,330);c.scale(11.5/HEADS,11.5/HEADS);const r=rig(P);c.translate(-r.C[0],-r.C[1]);drawHead(c,d,P,r,1);}else{c.translate(150+i*320,680);c.scale(6.2,6.2);drawFig(c,d,P,1);}c.restore();}}
 window.debug={hurt:applyDamage,burn:()=>{burning=true},sheet,freeze:(type,t)=>{frozen=type?{type,t}:null},play:id=>play(SASUKE_JUTSUS.concat(ATKS).find(c=>c.id===id))};
-setTimeout(()=>{if(!roleN&&!anim&&!frozen){play(SASUKE_JUTSUS[0]);battleOn=false;}},900);
+

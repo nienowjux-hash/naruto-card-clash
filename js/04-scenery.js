@@ -100,6 +100,14 @@ function buildBG(){
   x.drawImage(bgSky,0,(152-70)*RES,BW,70*RES,0,0,BW,70*RES);x.drawImage(bgFront,0,(152-70)*RES,BW,70*RES,0,0,BW,70*RES);bgRefl=rc;}
 }
 buildBG();
+/* variacoes de cenario: o Vale do Fim e recolorido por filtro (placeholder ate termos um cenario desenhado para cada local) */
+const SCENE_FILTER={vale:'none',vila:'hue-rotate(110deg) saturate(1.25) brightness(1.2)',treino:'hue-rotate(140deg) saturate(1.3) brightness(1.35)',floresta:'hue-rotate(-115deg) saturate(1.25) brightness(1.2)',deserto:'sepia(.9) hue-rotate(-20deg) saturate(1.8) brightness(1.35)',neve:'hue-rotate(-15deg) saturate(.4) brightness(1.6)'};
+const bgBase=(()=>{const mk=c=>{const k=document.createElement('canvas');k.width=c.width;k.height=c.height;k.getContext('2d').drawImage(c,0,0);return k;};return{sky:mk(bgSky),front:mk(bgFront)};})();
+let curScene='vale';
+function setScene(t){if(!SCENE_FILTER[t])t='vale';curScene=t;
+ for(const [dst,src] of [[bgSky,bgBase.sky],[bgFront,bgBase.front]]){const g=dst.getContext('2d');g.setTransform(1,0,0,1,0,0);g.clearRect(0,0,dst.width,dst.height);g.filter=SCENE_FILTER[t];g.drawImage(src,0,0);g.filter='none';}
+ const rc=document.createElement('canvas');rc.width=BW;rc.height=Math.round(70*RES);const x=rc.getContext('2d');x.setTransform(1,0,0,-1,0,rc.height);
+ x.drawImage(bgSky,0,(152-70)*RES,BW,70*RES,0,0,BW,70*RES);x.drawImage(bgFront,0,(152-70)*RES,BW,70*RES,0,0,BW,70*RES);bgRefl=rc;}
 function drawBird(c,x,y,s,ph){c.strokeStyle='rgba(14,6,30,.85)';c.lineWidth=.55*s;c.lineCap='round';const w=Math.sin(ph)*2.2*s;c.beginPath();c.moveTo(x-4*s,y-w*.6);c.quadraticCurveTo(x-2*s,y-w-1*s,x,y);c.quadraticCurveTo(x+2*s,y-w-1*s,x+4*s,y-w*.6);c.stroke();}
 function drawEnv(c,time,tint){
  c.save();c.imageSmoothingEnabled=false;c.drawImage(bgSky,0,0,W,H);c.restore();

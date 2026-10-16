@@ -70,7 +70,7 @@ function elemMatch(att,def){ /* >0 vantagem, <0 desvantagem, 0 neutro */
  const A=elemParts(att),D=Array.isArray(def)?def.flatMap(elemParts):elemParts(def);let w=false,l=false;
  for(const a of A)for(const d of D){if(ELEM_BEATS[a]===d)w=true;if(ELEM_BEATS[d]===a)l=true;}
  return w&&!l?1:l&&!w?-1:0;}
-function elemMult(att,defCharId){const c=CHARS[defCharId];if(!att||!c)return 1;const m=elemMatch(att,c.afin);return m>0?ELEM_ADV:m<0?ELEM_DIS:1;}
+function elemMult(att,defCharId){const c=CHARS[defCharId];if(!att||!c)return 1;const a=CAMP.active,af=(a&&a.afin&&defCharId===(a.hero==='sasuke'?'naruto':'sasuke'))?a.afin:c.afin,m=elemMatch(att,af);return m>0?ELEM_ADV:m<0?ELEM_DIS:1;}
 function elemMsg(mult){return mult>1?'Vantagem elemental! (+40%)':mult<1?'Elemento fraco contra o alvo (-25%)':'';}
 
 /* ---------- Arvore de habilidades ----------
@@ -158,3 +158,23 @@ function statsOf(charId){const s={hp:0,atk:0,def:0,elem:{}};for(const slot in IN
 function resetInv(){INV=invDefault();saveInv();}
 /* sorteia um item de recompensa (pesos por raridade) */
 function rollDrop(){const w={1:60,2:30,3:10},ids=Object.keys(ITEMS);let tot=0;const pool=ids.map(i=>{const x=w[ITEMS[i].rar]||1;tot+=x;return[i,x];});let r=Math.random()*tot;for(const[i,x]of pool){if((r-=x)<=0)return i;}return ids[0];}
+
+/* ---------- Mapa da campanha ----------
+   Locais ligados por caminhos. Um local de luta libera quando algum vizinho foi vencido (Konoha ja nasce vencida).
+   enc: inimigo (hp/atk = escala sobre o valor base, afin = elementos do inimigo), scene = cenario da batalha, xp/ryo = recompensa. */
+const MAP_W=1180,MAP_H=640;
+const NODES={
+ konoha:{name:'Konoha',kind:'vila',x:130,y:330,scene:'vila',d:'Sua vila. Prepare a equipe (habilidades e equipamentos) antes de partir.'},
+ treino:{name:'Campo de Treino',kind:'luta',x:340,y:310,scene:'treino',lvl:1,xp:60,ryo:60,enc:{name:'Genin Rival',hp:.7,atk:.8,afin:['terra']},d:'Um campo aberto ao amanhecer, onde genins testam suas técnicas.'},
+ floresta:{name:'Floresta da Morte',kind:'luta',x:550,y:160,scene:'floresta',lvl:2,xp:80,ryo:90,enc:{name:'Ninja Perdido',hp:.9,atk:.95,afin:['agua']},d:'Mata densa e perigosa. Quem entra sem preparo raramente volta.'},
+ deserto:{name:'Deserto do Vento',kind:'luta',x:540,y:480,scene:'deserto',lvl:3,xp:100,ryo:120,enc:{name:'Ninja da Areia',hp:1,atk:1,afin:['terra']},d:'Dunas sem fim e um calor que drena o chakra.'},
+ neve:{name:'Passo Nevado',kind:'luta',x:810,y:500,scene:'neve',lvl:4,xp:130,ryo:160,enc:{name:'Guardião do Gelo',hp:1.1,atk:1.05,afin:['gelo']},d:'Um desfiladeiro congelado vigiado por um ninja de gelo.'},
+ vale:{name:'Vale do Fim',kind:'chefe',x:985,y:285,scene:'vale',lvl:6,xp:200,ryo:300,enc:{name:'Rival Final',hp:1.3,atk:1.15,afin:null},d:'O local do confronto final, entre as estátuas e a cachoeira.'}};
+const EDGES=[['konoha','treino'],['treino','floresta'],['treino','deserto'],['floresta','vale'],['deserto','neve'],['neve','vale']];
+const CAMP_KEY='rpgCampV1';
+let CAMP={cleared:['konoha'],at:'konoha',active:null};
+try{const j=JSON.parse(localStorage.getItem(CAMP_KEY)||'null');if(j){CAMP.cleared=j.cleared||CAMP.cleared;CAMP.at=j.at||CAMP.at;CAMP.active=j.active||null;}}catch(e){}
+function saveCamp(){try{localStorage.setItem(CAMP_KEY,JSON.stringify(CAMP));}catch(e){}}
+function nodeNeighbors(id){return EDGES.filter(e=>e.includes(id)).map(e=>e[0]===id?e[1]:e[0]);}
+function nodeState(id){if(CAMP.cleared.includes(id))return'cleared';return nodeNeighbors(id).some(n=>CAMP.cleared.includes(n))?'open':'locked';}
+function resetCamp(){CAMP={cleared:['konoha'],at:'konoha',active:null};saveCamp();}

@@ -43,6 +43,6 @@ function renderInv(){
 window.addEventListener('keydown',e=>{const t=document.getElementById('inv');if(e.key==='Escape'&&t&&!t.hidden){closeInv();e.stopImmediatePropagation();}},true);
 (function(){const b=document.createElement('button');b.id='invbtn';b.textContent='Equipamentos';b.onclick=openInv;const c=document.querySelector('.ctl');if(c)c.insertBefore(b,c.firstChild);})();
 /* recompensa de luta: ryo e um item (70% de chance) */
-function giveBattleLoot(won){if(!won)return;const ryo=100;INV.ryo+=ryo;let nm='';if(Math.random()<.7){const id=rollDrop();addItem(id,1);nm=ITEMS[id].name;}saveInv();
+function giveBattleLoot(won){if(!won)return;const nd=CAMP.active?NODES[CAMP.active.node]:null,ryo=(nd&&nd.ryo)||100;INV.ryo+=ryo;let nm='';if(Math.random()<.7){const id=rollDrop();addItem(id,1);nm=ITEMS[id].name;}saveInv();
  setTimeout(()=>toast('+'+ryo+' ryo'+(nm?' · item: '+nm:'')),4600);}
 syncHpMax(true);
