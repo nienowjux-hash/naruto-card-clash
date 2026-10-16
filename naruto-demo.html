@@ -2445,12 +2445,22 @@ function drawLog(c,x,t){const age=t-1.62;if(age<0)return;
  for(const sd of [-1,1]){c.save();c.translate(x+sd*(2+q*46),GY-Math.sin(Math.min(1,q/.6)*Math.PI)*12*(1)+Math.max(0,q-.6)*0);c.rotate(sd*q*3.4);c.beginPath();if(sd<0)c.rect(-cw,-ch,cw,ch+4);else c.rect(0,-ch,cw,ch+4);c.clip();logD(c);c.restore();}
  const r2=R(5);for(let i=0;i<16;i++){const an=-Math.PI/2+(r2()-.5)*2.6,sp=30+r2()*70,px=x+Math.cos(an)*sp*q,py=GY-16+Math.sin(an)*sp*q+140*q*q;if(py>GY+3)continue;c.save();c.translate(px,py);c.rotate(q*10+i);c.fillStyle=i%2?'#9a6a36':'#5a3414';c.fillRect(-1.2,-.6,2.4,1.2);c.restore();}
  c.globalAlpha=1;}
-function rasengan(c,x,y,r,time,fr,al){c.save();c.globalAlpha=al==null?1:al;c.globalCompositeOperation='lighter';
- orb(c,x,y,r*3.2,[[0,'rgba(150,205,255,.5)'],[.5,'rgba(70,140,255,.2)'],[1,'rgba(40,90,255,0)']]);
- orb(c,x,y,r,[[0,'rgba(255,255,255,.98)'],[.55,'rgba(185,230,255,.9)'],[1,'rgba(100,175,255,.55)']]);
- c.lineCap='round';const cols=['rgba(255,255,255,.9)','rgba(160,215,255,.8)','rgba(100,170,255,.7)'];
- for(let k=0;k<3;k++){c.strokeStyle=cols[k];c.lineWidth=.55;for(let i=0;i<6;i++){const a0=time*(16+k*5)+i*TAU/6+k;c.beginPath();for(let q=0;q<=12;q++){const u=q/12,aa=a0+u*3.6,rr=r*(.12+.9*u),px=x+Math.cos(aa)*rr,py=y+Math.sin(aa)*rr*.92;q?c.lineTo(px,py):c.moveTo(px,py);}c.stroke();}}
- for(let i=0;i<8;i++){const aa=time*9+i*TAU/8;c.fillStyle='rgba(220,245,255,.8)';c.fillRect(x+Math.cos(aa)*r*1.25,y+Math.sin(aa)*r*1.1,.7,.7);}
+/* Rasengan em pixel art: esfera giratoria de bandas em espiral (3 tons de azul + nucleo branco), contorno escuro e faiscas orbitando */
+const rasPix=document.createElement('canvas');rasPix.width=rasPix.height=44;const rasPx=rasPix.getContext('2d',{willReadFrequently:true});
+function rasengan(c,x,y,r,time,fr,al){c.save();c.globalAlpha=al==null?1:al;
+ f.save();f.globalCompositeOperation='lighter';orb(f,x,y,r*2.4,[[0,'rgba(150,205,255,.28)'],[1,'rgba(40,90,255,0)']]);f.restore(); /* brilho no layer de efeitos; o pixel art fica no canvas principal, sem bloom
+ */
+ const id=rasPx.createImageData(44,44),d=id.data,C=22,spin=time*13,put=(px,py,rgb)=>{if(px<0||py<0||px>=44||py>=44)return;const i=(py*44+px)*4;d[i]=rgb[0];d[i+1]=rgb[1];d[i+2]=rgb[2];d[i+3]=255;};
+ const R0=Math.max(2,Math.round(r)),P3=[[255,255,255],[190,232,255],[110,185,255],[58,128,238],[26,66,170],[14,32,110]];
+ for(let py=0;py<44;py++)for(let px=0;px<44;px++){const dx=px+.5-C,dy=py+.5-C,dd=Math.hypot(dx,dy);if(dd>R0+1)continue;
+  if(dd>R0){put(px,py,P3[5]);continue;}
+  if(dd>R0-1.2){put(px,py,P3[4]);continue;}
+  const a=Math.atan2(dy,dx),u=((a+dd*.62-spin)/(TAU/5))%1,f=u<0?u+1:u;
+  let k;if(dd<R0*.28)k=0;else if(f<.22)k=0;else if(f<.5)k=1;else if(f<.78)k=2;else k=3;
+  if(dd>R0*.8&&k<3)k++;
+  put(px,py,P3[k]);}
+ for(let i=0;i<8;i++){const aa=time*7+i*TAU/8,rr=R0+3+((i*5)%3),px=Math.round(C+Math.cos(aa)*rr),py=Math.round(C+Math.sin(aa)*rr*.92);put(px,py,P3[i%2?0:1]);if(i%3===0)put(px+1,py,P3[2]);}
+ rasPx.putImageData(id,0,0);c.imageSmoothingEnabled=false;c.drawImage(rasPix,Math.round(x)-C,Math.round(y)-C);
  c.restore();}
 function ringFX(c,cx,cy,r,w,col){c.strokeStyle=col;c.lineWidth=Math.max(.1,w);c.beginPath();c.ellipse(cx,cy,r,r*.92,0,0,TAU);c.stroke();}
 function explosionFX(c,x,y,a,fr){
@@ -2705,7 +2715,7 @@ function render(ts){
  g.setTransform(1,0,0,1,0,0);g.globalCompositeOperation='source-over';g.globalAlpha=1;
 
  if(type==='rasengan'){
-  if(ras){rasengan(f,ras.x,ras.y,ras.r,time,fr);
+  if(ras){g.save();setCam(g,z,sx,sy,ccx,ccy);rasengan(g,ras.x,ras.y,ras.r,time,fr);g.restore();
    if(t<1.55){const r2=R(fr*3+1);f.globalCompositeOperation='lighter';f.lineCap='round';for(let i=0;i<14;i++){const an=r2()*TAU,d0=14+r2()*22,ph=(time*3+i*.17)%1,dd=d0*(1-ph);f.strokeStyle='rgba(190,230,255,'+(.7*ph)+')';f.lineWidth=.4;f.beginPath();f.moveTo(ras.x+Math.cos(an)*dd,ras.y+Math.sin(an)*dd*.8);f.lineTo(ras.x+Math.cos(an)*(dd+3),ras.y+Math.sin(an)*(dd+3)*.8);f.stroke();}f.globalCompositeOperation='source-over';}}
   if(t>1.65&&t<2.2){const r2=R(fr*97);f.lineCap='round';for(let i=0;i<26;i++){const y=22+r2()*160,x=ccx-hw2+r2()*W/z,l=20+r2()*70;f.strokeStyle=r2()<.5?'rgba(210,240,255,'+(.25+r2()*.5)+')':'rgba(110,170,255,'+(.25+r2()*.5)+')';f.lineWidth=.3+r2()*.5;f.beginPath();f.moveTo(x,y);f.lineTo(x-l,y);f.stroke();}}
   const a=t-2.2;if(a>=0&&a<1.0){const rNn=rigW(nP),ex=nx0-rNn.hf.hx-8,ey=GY+ny0+rNn.hf.hy;
