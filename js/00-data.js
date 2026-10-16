@@ -117,3 +117,44 @@ function learnSkill(charId,id){if(learnBlock(charId,id))return false;const P=PRO
 /* da XP ao personagem; cada nivel novo da 1 ponto de habilidade. Devolve quantos niveis subiu. */
 function awardXp(charId,amount){const P=PROG[charId];if(!P)return 0;let up=0;if(P.level>=MAX_LEVEL){saveProg();return 0;}P.xp+=amount;while(P.level<MAX_LEVEL&&P.xp>=xpNeed(P.level)){P.xp-=xpNeed(P.level);P.level++;P.pts++;up++;}if(P.level>=MAX_LEVEL)P.xp=0;saveProg();return up;}
 function resetProg(){PROG=progDefault();saveProg();}
+
+/* ---------- Itens, equipamentos e mochila ----------
+   slot: arma / corpo / acc (equipaveis) ou cons (consumivel). rar: 1 comum, 2 incomum, 3 raro.
+   stats: hp (vida maxima extra), atk (+% de dano causado), def (-% de dano recebido), elem+pct (+% de dano de um elemento).
+   use: efeito do consumivel (hp / ck). only: lista de personagens que podem equipar. */
+const SLOTS={arma:'Arma',corpo:'Corpo',acc:'Acessório'};
+const ITEMS={
+ kunai_ferro:{name:'Kunai de Ferro',slot:'arma',rar:1,g:'刃',stats:{atk:.05},d:'Uma kunai comum, bem afiada.'},
+ lamina_chakra:{name:'Lâmina de Chakra',slot:'arma',rar:2,g:'刃',stats:{atk:.08},d:'Lâmina que conduz o chakra do usuário.'},
+ kunai_tri:{name:'Kunai Trifurcado',slot:'arma',rar:3,g:'刃',stats:{atk:.10,elem:'vento',pct:.10},d:'Kunai de três pontas, leve e rápida.',only:['naruto']},
+ kusanagi:{name:'Kusanagi',slot:'arma',rar:3,g:'剣',stats:{atk:.12,elem:'raio',pct:.15},d:'A espada que conduz relâmpagos.',only:['sasuke']},
+ colete:{name:'Colete Shinobi',slot:'corpo',rar:1,g:'衣',stats:{hp:8,def:.06},d:'Colete tático padrão de Konoha.'},
+ roupa_peso:{name:'Roupa de Treino Pesada',slot:'corpo',rar:2,g:'衣',stats:{hp:15},d:'Pesos nas roupas fortalecem o corpo.'},
+ manto_nuvem:{name:'Manto da Nuvem Vermelha',slot:'corpo',rar:3,g:'衣',stats:{hp:10,def:.12},d:'Manto negro com nuvens vermelhas.'},
+ bandana:{name:'Bandana de Konoha',slot:'acc',rar:1,g:'護',stats:{hp:6,def:.02},d:'Símbolo da vila escondida na folha.'},
+ talisma_fogo:{name:'Talismã de Fogo',slot:'acc',rar:2,g:'火',stats:{elem:'fogo',pct:.15},d:'Reforça golpes de Fogo.'},
+ talisma_agua:{name:'Talismã de Água',slot:'acc',rar:2,g:'水',stats:{elem:'agua',pct:.15},d:'Reforça golpes de Água.'},
+ talisma_terra:{name:'Talismã de Terra',slot:'acc',rar:2,g:'土',stats:{elem:'terra',pct:.15},d:'Reforça golpes de Terra.'},
+ talisma_vento:{name:'Talismã de Vento',slot:'acc',rar:2,g:'風',stats:{elem:'vento',pct:.15},d:'Reforça golpes de Vento.'},
+ talisma_raio:{name:'Talismã de Raio',slot:'acc',rar:2,g:'雷',stats:{elem:'raio',pct:.15},d:'Reforça golpes de Raio.'},
+ amuleto_sorte:{name:'Amuleto da Sorte',slot:'acc',rar:3,g:'福',stats:{hp:20},d:'Dizem que protege quem o carrega.'},
+ pilula_vida:{name:'Pílula de Soldado',slot:'cons',rar:1,g:'薬',use:{hp:30},d:'Recupera 30 de vida. Gasta o turno.'},
+ pilula_ck:{name:'Pílula de Chakra',slot:'cons',rar:1,g:'気',use:{ck:30},d:'Recupera 30 de chakra. Gasta o turno.'},
+ pergaminho_med:{name:'Pergaminho Médico',slot:'cons',rar:3,g:'巻',use:{hp:60},d:'Recupera 60 de vida. Gasta o turno.'}};
+const RARITY={1:{name:'Comum',col:'#aab0c8'},2:{name:'Incomum',col:'#5cc878'},3:{name:'Raro',col:'#b070ff'}};
+const INV_KEY='rpgInvV1';
+function invDefault(){return{ryo:0,bag:{kunai_ferro:1,colete:1,bandana:1,pilula_vida:3,pilula_ck:3},eq:{sasuke:{},naruto:{}}};}
+let INV=invDefault();
+try{const j=JSON.parse(localStorage.getItem(INV_KEY)||'null');if(j){INV.ryo=j.ryo||0;INV.bag=j.bag||INV.bag;INV.eq=Object.assign({sasuke:{},naruto:{}},j.eq||{});}}catch(e){}
+function saveInv(){try{localStorage.setItem(INV_KEY,JSON.stringify(INV));}catch(e){}}
+function bagQty(id){return INV.bag[id]||0;}
+function addItem(id,n){INV.bag[id]=bagQty(id)+(n||1);saveInv();}
+function canEquip(charId,id){const it=ITEMS[id];return !!it&&it.slot!=='cons'&&(!it.only||it.only.includes(charId));}
+/* equipa tirando da mochila; o item que estava no slot volta para a mochila */
+function equipItem(charId,id){if(!canEquip(charId,id)||bagQty(id)<1)return false;const it=ITEMS[id],old=INV.eq[charId][it.slot];if(old)INV.bag[old]=bagQty(old)+1;INV.bag[id]--;if(INV.bag[id]<=0)delete INV.bag[id];INV.eq[charId][it.slot]=id;saveInv();return true;}
+function unequipItem(charId,slot){const id=INV.eq[charId][slot];if(!id)return false;addItem(id,1);delete INV.eq[charId][slot];saveInv();return true;}
+/* soma dos bonus do que o personagem veste */
+function statsOf(charId){const s={hp:0,atk:0,def:0,elem:{}};for(const slot in INV.eq[charId]||{}){const it=ITEMS[INV.eq[charId][slot]];if(!it||!it.stats)continue;const st=it.stats;s.hp+=st.hp||0;s.atk+=st.atk||0;s.def+=st.def||0;if(st.elem)s.elem[st.elem]=(s.elem[st.elem]||0)+(st.pct||0);}s.def=Math.min(.6,s.def);return s;}
+function resetInv(){INV=invDefault();saveInv();}
+/* sorteia um item de recompensa (pesos por raridade) */
+function rollDrop(){const w={1:60,2:30,3:10},ids=Object.keys(ITEMS);let tot=0;const pool=ids.map(i=>{const x=w[ITEMS[i].rar]||1;tot+=x;return[i,x];});let r=Math.random()*tot;for(const[i,x]of pool){if((r-=x)<=0)return i;}return ids[0];}

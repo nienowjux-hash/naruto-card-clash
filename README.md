@@ -121,3 +121,9 @@ O Naruto de quatro tem **vários quadros** (em `pixel/naruto-fours.js`): **agach
 - `js/00-data.js` guarda elementos, golpes, fichas e as árvores (`TREES`); o progresso (nível, XP, pontos, golpes aprendidos) fica em `PROG`, salvo no navegador (`rpgProgV1`).
 - Vitória dá 80 XP e derrota 25 XP ao personagem que você controla; cada nível dá 1 ponto de habilidade (nível máximo 10).
 - O botão "Árvore de habilidades" abre a tela (`js/17-skilltree.js`): cada golpe exige nível mínimo, golpes anteriores e pontos. O menu de comandos só mostra o que foi aprendido.
+
+## Itens, equipamentos e mochila
+- `js/00-data.js` define `ITEMS` (arma, corpo, acessório e consumíveis, com raridade) e a mochila `INV` (salva em `rpgInvV1`); `js/18-inventory.js` é a tela "Equipamentos".
+- Bônus: vida máxima, ataque (+% de dano), defesa (-% de dano recebido) e dano de um elemento. Só o personagem que você controla recebe os bônus (`fightStats` em `js/12-state.js`).
+- Consumíveis (pílulas e pergaminho) são usados pelo comando "Itens" na luta e gastam o turno. Trocar equipamento só é possível fora da luta.
+- Vitória dá 100 ryo e 70% de chance de um item.

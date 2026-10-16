@@ -136,3 +136,46 @@ canvas#c{display:block;width:100%;height:auto}
 #tree .tdev .lg{margin-right:auto;font:600 10px Georgia,serif;color:#a89a78;display:flex;align-items:center;gap:6px}
 #tree .tdev .lg i{display:inline-block;width:10px;height:10px;border-radius:50%;margin-left:8px}
 #tree .tdev .lg .a{background:#ffd97a}#tree .tdev .lg .b{background:#3fd070}#tree .tdev .lg .c{background:#444}
+
+/* ---------- equipamentos e mochila ---------- */
+#inv{position:fixed;inset:0;z-index:50;background:radial-gradient(#0a0a1acc,#020208f2);display:flex;align-items:center;justify-content:center;padding:12px}
+#inv[hidden]{display:none}
+#inv .ibox{width:min(1180px,96vw);height:min(760px,94vh);display:flex;flex-direction:column;background:radial-gradient(ellipse at 40% 30%,#1a1634,#0b0a18 70%);border:3px solid #b8924a;border-radius:14px;box-shadow:0 0 0 2px #2a1d08,0 0 0 5px #6e5424,0 0 50px #000;overflow:hidden}
+#inv .thead{display:flex;align-items:center;gap:18px;padding:10px 16px;background:linear-gradient(#2a2140,#14102a);border-bottom:2px solid #6e5424}
+#inv .tabs{display:flex;gap:6px}
+#inv .tab{background:#1a1630;color:#b9a97a;border:1px solid #6e5424;border-radius:4px;padding:6px 16px;font:700 13px Georgia,serif;cursor:pointer;letter-spacing:1px}
+#inv .tab.on{background:linear-gradient(#6e5424,#3f300f);color:#ffe9b0;border-color:#e0b860}
+#inv .ryo{text-align:center;margin-left:12px}#inv .ryo b{display:block;font:700 22px Georgia,serif;color:#ffd97a;line-height:1}#inv .ryo small{color:#a89a78;font:600 10px Georgia,serif}
+#inv .x{margin-left:auto;background:#2a1d08;color:#ffe9b0;border:1px solid #b8924a;border-radius:4px;padding:6px 12px;font:700 12px Georgia,serif;cursor:pointer}
+#inv .imain{display:flex;flex:1;min-height:0}
+#inv .ileft{width:430px;flex:none;padding:16px 18px;border-right:2px solid #6e5424;overflow:auto;background:linear-gradient(#1c1736,#100c22)}
+#inv .who{display:flex;align-items:center;gap:14px;margin-bottom:14px}
+#inv .who canvas{width:84px;height:84px;border:3px solid #b8924a;border-radius:8px;image-rendering:pixelated;background:#000}
+#inv .who h3{margin:0;font:700 20px Georgia,serif;color:#ffe9b0}#inv .who small{color:#a89a78;font:600 12px Georgia,serif}
+#inv .slots{display:flex;flex-direction:column;gap:8px;margin-bottom:14px}
+#inv .slot{position:relative;display:flex;align-items:center;gap:12px;text-align:left;background:#0e0c1e;border:2px solid var(--rc);border-radius:8px;padding:8px 12px;cursor:pointer;color:#e8e0c8}
+#inv .slot:hover{background:#171432}
+#inv .slot .si{width:46px;height:46px;border-radius:50%;display:grid;place-items:center;background:radial-gradient(circle at 35% 30%,#3a3050,#0a0814);border:2px solid var(--rc);font:700 24px 'Yu Mincho','MS Mincho',serif;color:#fff}
+#inv .slot:not(.full) .si{color:#6e5424;font-size:22px}
+#inv .slot small{display:block;font:600 10px Georgia,serif;color:#a89a78;text-transform:uppercase;letter-spacing:1px}
+#inv .slot b{display:block;font:700 14px Georgia,serif;color:#fff}#inv .slot em{display:block;font:italic 11px Georgia,serif;color:#9ff0b8;font-style:normal}
+#inv .slot .rm{position:absolute;right:10px;top:8px;color:#a89a78;font-style:normal;font-size:12px}
+#inv .sum{background:#0a0814;border:1px solid #3a2f14;border-radius:8px;padding:10px 14px}
+#inv h5{margin:0 0 8px;font:700 11px Georgia,serif;color:#b8924a;text-transform:uppercase;letter-spacing:2px}
+#inv .sum .row{display:flex;justify-content:space-between;padding:3px 0;font:600 13px Georgia,serif;color:#cfc6a8;border-bottom:1px solid #1c1730}
+#inv .sum .row b{color:#ffe9b0}#inv .sum .row i{font-style:normal;font-weight:700}#inv .up{color:#9ff0b8}#inv .dn{color:#ff9a8a}
+#inv .iright{flex:1;min-width:0;display:flex;flex-direction:column;padding:16px 18px}
+#inv .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px;overflow:auto;flex:1;align-content:start}
+#inv .it{position:relative;display:flex;flex-direction:column;align-items:center;gap:3px;background:#0e0c1e;border:2px solid var(--rc);border-radius:10px;padding:12px 6px 8px;cursor:pointer;color:#e8e0c8}
+#inv .it:hover{background:#171432}#inv .it.sel{outline:3px solid #fff;outline-offset:2px}#inv .it.no{opacity:.4}
+#inv .it .gi{width:50px;height:50px;border-radius:50%;display:grid;place-items:center;background:radial-gradient(circle at 35% 30%,#3a3050,#0a0814);border:2px solid var(--rc);font:700 26px 'Yu Mincho','MS Mincho',serif;color:#fff;margin-bottom:3px}
+#inv .it b{font:700 12px Georgia,serif;text-align:center;line-height:1.15}#inv .it small{font:600 10px Georgia,serif;color:#a89a78}
+#inv .it .qt{position:absolute;right:8px;top:6px;font:700 12px Georgia,serif;color:#ffd97a;font-style:normal}
+#inv .idet{display:flex;align-items:center;gap:14px;border-top:2px solid #6e5424;margin-top:12px;padding-top:12px;min-height:100px}
+#inv .idet h4{margin:0 0 2px;font:700 17px Georgia,serif}#inv .idet small,#inv .hint{color:#a89a78;font:600 11px Georgia,serif;margin:0}
+#inv .idet p{margin:5px 0 0;font:400 13px Georgia,serif;color:#cfc6a8}#inv .idet .eff{color:#9ff0b8;font-weight:600}
+#inv .dtx{flex:1}
+#inv .learn{background:linear-gradient(#e0b860,#9a6e1e);color:#241606;border:2px solid #ffe9b0;border-radius:6px;padding:9px 18px;font:700 14px Georgia,serif;cursor:pointer}
+#inv .why{color:#e8b050;font:700 12px Georgia,serif}#inv .why.lock{margin:10px 0 0}
+#inv .tdev{display:flex;gap:8px;padding:6px 14px;background:#0a0814;justify-content:flex-end}
+#inv .tdev button{background:transparent;color:#6d6f96;border:1px dashed #3a3a60;border-radius:4px;padding:3px 9px;font:600 10px Georgia,serif;cursor:pointer}

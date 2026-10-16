@@ -72,4 +72,5 @@ window.addEventListener('keydown',e=>{const t=document.getElementById('tree');if
 (function(){const b=document.createElement('button');b.id='treebtn';b.textContent='Árvore de habilidades';b.onclick=openTree;const c=document.querySelector('.ctl');if(c)c.insertBefore(b,c.firstChild);})();
 /* XP no fim da luta: quem o jogador controla ganha XP por vitoria (mais) ou derrota (menos) */
 function giveBattleXp(winner){const me=roleN?'naruto':'sasuke',won=(winner==='N')===roleN,xp=won?80:25,up=awardXp(me,xp);
+ if(typeof giveBattleLoot==='function')giveBattleLoot(won);
  setTimeout(()=>toast(CHARS[me].name.split(' ')[0]+' ganhou '+xp+' XP'+(up?' · subiu para o nível '+PROG[me].level+'! (+'+up+' pt)':'')),2600);}
