@@ -46,7 +46,7 @@ Projeto de fã, sem fins comerciais. Naruto e seus personagens pertencem aos seu
 
 | Tecnica | Chakra | Dano | Observacao |
 |---|---|---|---|
-| Genjutsu Sharingan | 12 | 14 | O inimigo perde o proximo turno |
+| Genjutsu Sharingan | 12 | 14 | O inimigo perde o proximo turno (nao funciona em turnos seguidos) |
 | Shishi Rendan | 25 | 36 | Combo aereo de taijutsu copiado de Rock Lee |
 | Selo Amaldicoado (Nivel 1) | 20 | 0 | Perde 8 de vida. Por 3 turnos: +30% de dano, +10 de chakra por turno, 30% de chance de desviar (custa 2 de vida por turno). Marcas pretas tribais, sem Chidori roxo (esse fica para a transformacao total) |
 | Selo Amaldicoado (Nivel 2) | 40 | 0 | Transformacao: perde 15 de vida. Por 3 turnos: +60% de dano, +15 de chakra por turno, 40% de chance de desviar (custa 3 de vida por turno). Transformacao completa, sem as marcas do Nivel 1: pele azul-acinzentada, cabelo azul-grisalho e duas maos gigantes saindo das costas. Libera o Chidori Sombrio |
@@ -56,6 +56,16 @@ Projeto de fã, sem fins comerciais. Naruto e seus personagens pertencem aos seu
 | Copia: Kage Bunshin | 15 | 24 | 60% do chakra e 75% do dano do original (25 de chakra, 32 de dano). Uso unico |
 
 Cada uma tem um fatality diferente: Tsukuyomi (Genjutsu), calcanhar que crava a cabeca na agua (Shishi Rendan), a espiral que tritura em fatias (Rasengan copiado) e seis clones que lancam kunais (Kage Bunshin copiado).
+## Regras de equilíbrio do RPG
+
+- **Sem atordoamento em sequência:** depois de perder um turno por **Genjutsu Sharingan**, **Oiroke** ou **Harem no Jutsu**, o alvo fica imune a atordoamento até agir de novo (aparece "resistiu"). Antes dava para repetir o Genjutsu para sempre e o Naruto nunca jogava.
+- **Chakra de verdade:** o chakra do Sasuke volta **+15 por turno** (era +20, o que deixava quase todo golpe de graça) e o do Naruto também **+15**. O Naruto controlado pela IA agora **só usa o que consegue pagar** e, sem chakra, concentra (+25). Concentrar dá +25 e Defender +10.
+- **Gama Bunta:** só pode ser invocado **uma vez por luta**, fica com **40 de vida**, o Teppōdama causa **6** e os arremessos do Naruto em cima dele causam **3** (kunai) ou **2+2+2** (shuriken). A invocação continua causando 32.
+- **Custos ajustados:** Shuriken Kage no Jutsu 12→**16** e Sōshūken 15→**17** de chakra (eram os golpes mais eficientes de longe).
+- **IAs mais espertas:** o Sasuke da IA prefere golpes eficientes, usa o Genjutsu (quando o Naruto não está imune), se transforma com o Selo nível 2 e, com o sapo em campo ou o Naruto com pouca vida, vai no golpe mais forte para derrubá-lo logo.
+
+`tools/balance-sim.js` simula milhares de lutas com esses números e várias estratégias (`node tools/balance-sim.js 5000`). Resultado antes → depois, em % de vitória: Genjutsu em sequência (Sasuke) 100 → 78; Harem repetido (Naruto) 99 → 32; Naruto invocando o sapo 100 → 56. Ponto ainda em aberto: jogar sempre o golpe mais forte (Amaterasu, Shishi, Chidori) ainda vence quase sempre em ~3 turnos; cortar esse dano faz o sapo voltar a dominar, então precisa de teste jogando antes de mexer.
+
 ## Pixel art (em andamento)
 
 A pasta `pixel/` guarda os novos sprites em pixel art desenhados por codigo (`pixgrid.js` e os sprites do Sasuke e do Naruto). Para ver: `node serve.js` e abra http://localhost:8123/pixel/view.html (ou `?s=idle` para o Sasuke parado). 
@@ -76,12 +86,12 @@ Oiroke + Kage Bunshin: seis garotas (cobertas por fumaça) cercam o Sasuke. Com 
 O Naruto gira como um tornado com três clones em volta e atravessa o Sasuke cinco vezes. **Fatality:** o tornado puxa o Sasuke para o alto, gira ele rasgando a roupa num redemoinho de sangue e o arremessa no chão; o Naruto diz "Ninguém me para, dattebayo!".
 
 ### Kuchiyose no Jutsu (45 de chakra)
-O Naruto morde o polegar e bate a mão no chão com o chakra vermelho da Kurama; o selo aparece e o **Gama Bunta** surge numa nuvem de fumaça, com o Naruto em cima da cabeça. O sapo **fica em campo com 70 de vida**: os golpes do Sasuke acertam ele em vez do Naruto, e a cada turno ele dispara sozinho a bala de água (*Suiton: Teppōdama*, 14 de dano). Quando a vida acaba, ele some na fumaça e o Naruto volta ao chão.
+O Naruto morde o polegar e bate a mão no chão com o chakra vermelho da Kurama; o selo aparece e o **Gama Bunta** surge numa nuvem de fumaça, com o Naruto em cima da cabeça. O sapo (**uma vez por luta**) **fica em campo com 40 de vida**: os golpes do Sasuke acertam ele em vez do Naruto, e a cada turno ele dispara sozinho a bala de água (*Suiton: Teppōdama*, 6 de dano). Quando a vida acaba, ele some na fumaça e o Naruto volta ao chão.
 
 ### Layout de combate
 O HUD agora tem placas de RPG com retrato, nome, **HP e chakra numéricos** (e a barra do sapo invocado, "SAPO") e os comandos ficam num painel com ícone, nome, descrição e custo de chakra. Com o Gama Bunta em campo ele vira o **alvo** dos golpes do Sasuke (o Naruto fica em pé na cabeça dele, sem apanhar), e os jutsus próprios do Naruto ficam bloqueados enquanto o sapo ataca sozinho.
 
-Em cima do Gama Bunta o Naruto **não ataca de perto**: ele só pode arremessar **Kunai** (6 de dano) ou **Shuriken** (14 de dano) ficando na cabeça do sapo, ou usar Defender/Concentrar. Depois do turno dele, o sapo dispara o Teppōdama sozinho.
+Em cima do Gama Bunta o Naruto **não ataca de perto**: ele só pode arremessar **Kunai** (3 de dano) ou **Shuriken** (2+2+2 de dano) ficando na cabeça do sapo, ou usar Defender/Concentrar. Depois do turno dele, o sapo dispara o Teppōdama sozinho.
 
 **Fatality do Gama Bunta:** se a bala de água zera a vida do Sasuke, o sapo salta e o esmaga com o corpo inteiro (câmera lenta no impacto), levanta, e o Sasuke fica achatado numa cratera de sangue; o Gama Bunta diz "Isso é o que dá mexer com o chefe do Monte Myōboku!".
 

@@ -320,7 +320,7 @@ function kuWater(g,f,t,time,sx0,tF,tH){const S=KU_BS,mx=KU_BX+(8-75)*S,my=GY+(46
   if(a<.3){f.save();f.globalCompositeOperation='lighter';const k=a/.3;orb(f,tx,ty,40*(1-k*.6),[[0,'rgba(200,230,255,.55)'],[1,'rgba(60,120,255,0)']]);f.restore();}}}
 /* ---- Teppodama: o sapo invocado ataca sozinho, uma bala de agua por turno ---- */
 const TP_FIRE=1.15,TP_HIT=1.65;
-ANIMS.teppodama={enemy:true,dur:3.6,hold:TP_HIT,hitT:TP_HIT,hits:[{t:TP_HIT,dmg:14}],cost:0,noLift:true,
+ANIMS.teppodama={enemy:true,dur:3.6,hold:TP_HIT,hitT:TP_HIT,hits:[{t:TP_HIT,dmg:6}],cost:0,noLift:true,
   sP:[[0,READY],[1.0,READY],[1.2,S_GUARD],[1.55,S_GUARD],[TP_HIT,S_HIT],[2.3,S_HIT],[2.7,S_STAG],[3.2,READY],[3.6,READY]],
   sX:[[0,96],[TP_HIT,96],[2.2,56],[2.8,56],[3.3,96],[3.6,96]],
   nP:[[0,N_READY],[99,N_READY]],nX:[[0,KU_NX],[99,KU_NX]],nYf:t=>KU_NY+(LE('teppodama')?tpJy(t):0),
@@ -347,11 +347,11 @@ function tpFatalFX(g,f,t,sx0){const a=t-TPF_LAND;if(a<0)return;
   g.save();g.globalAlpha=.55*Math.max(0,1-a/1.2);for(let i=0;i<16;i++){const r=R(i+170),side=i%2?1:-1,k=Math.min(1,a/.3);g.fillStyle=i%3?'#5a5068':'#7a7088';pxDisc(g,sx0+side*(40+r()*70)*k,GY-(2+r()*16)*k,(5+r()*7)*(.5+k*.6));}g.restore();}}
 /* ---- em cima do Gama Bunta o Naruto nao ataca de perto: so arremessa kunai e shuriken, sem sair da cabeca do sapo ---- */
 const NK_THROW=.55,NK_HIT=.95;
-ANIMS.nkunai={enemy:true,dur:2.2,hold:NK_HIT,hitT:NK_HIT,hits:[{t:NK_HIT,dmg:6}],cost:0,noLift:true,
+ANIMS.nkunai={enemy:true,dur:2.2,hold:NK_HIT,hitT:NK_HIT,hits:[{t:NK_HIT,dmg:3}],cost:0,noLift:true,
   sP:[[0,READY],[.8,READY],[.9,S_GUARD],[NK_HIT,S_FLINCH],[1.4,S_FLINCH],[1.8,READY],[2.2,READY]],sX:[[0,96],[99,96]],
   nP:[[0,N_READY],[.35,N_READY],[.45,N_COIL],[NK_THROW,N_PUNCH],[.9,N_PUNCH],[1.2,N_READY],[2.2,N_READY]],nX:[[0,KU_NX],[99,KU_NX]],nYf:t=>KU_NY,
   cam:[[0,{z:1.04,cx:192,cy:116}],[.3,{z:1.2,cx:215,cy:108}],[1.0,{z:1.2,cx:190,cy:112}],[1.8,{z:1.04,cx:192,cy:116}],[2.2,{z:1.04,cx:192,cy:116}]]};
-ANIMS.nshuriken={enemy:true,dur:2.6,hold:1.15,hitT:1.15,hits:[{t:.95,dmg:4},{t:1.15,dmg:5},{t:1.35,dmg:5}],cost:0,noLift:true,
+ANIMS.nshuriken={enemy:true,dur:2.6,hold:1.15,hitT:1.15,hits:[{t:.95,dmg:2},{t:1.15,dmg:2},{t:1.35,dmg:2}],cost:0,noLift:true,
   sP:[[0,READY],[.9,READY],[1.0,S_GUARD],[1.15,S_FLINCH],[1.5,S_HIT],[2.0,READY],[2.6,READY]],sX:[[0,96],[99,96]],
   nP:[[0,N_READY],[.35,N_READY],[.45,N_COIL],[.55,N_PUNCH],[1.0,N_PUNCH],[1.3,N_READY],[2.6,N_READY]],nX:[[0,KU_NX],[99,KU_NX]],nYf:t=>KU_NY,
   cam:[[0,{z:1.04,cx:192,cy:116}],[.3,{z:1.2,cx:215,cy:108}],[1.2,{z:1.2,cx:190,cy:112}],[2.0,{z:1.04,cx:192,cy:116}],[2.6,{z:1.04,cx:192,cy:116}]]};
