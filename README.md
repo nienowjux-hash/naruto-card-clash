@@ -75,3 +75,5 @@ O Naruto morde o polegar e bate a mão no chão com o chakra vermelho da Kurama;
 
 ### Layout de combate
 O HUD agora tem placas de RPG com retrato, nome, **HP e chakra numéricos** (e a barra do sapo invocado, "SAPO") e os comandos ficam num painel com ícone, nome, descrição e custo de chakra. Com o Gama Bunta em campo ele vira o **alvo** dos golpes do Sasuke (o Naruto fica em pé na cabeça dele, sem apanhar), e os jutsus próprios do Naruto ficam bloqueados enquanto o sapo ataca sozinho.
+
+Em cima do Gama Bunta o Naruto **não ataca de perto**: ele só pode arremessar **Kunai** (6 de dano) ou **Shuriken** (14 de dano) ficando na cabeça do sapo, ou usar Defender/Concentrar. Depois do turno dele, o sapo dispara o Teppōdama sozinho.
