@@ -144,16 +144,25 @@ function suiFatalFX(c){const {f,t,time,nx0}=c,tt=c.A?t:99;
   const r2=R(404);for(let i=0;i<70;i++){const an=r2()*TAU,sp=40+r2()*110,x=cx+Math.cos(an)*sp*e,y=cy+Math.sin(an)*sp*e*.8+k*k*90;f.fillStyle=`rgba(${160+(r2()*80|0)},${215+(r2()*40|0)},255,${1-k})`;f.fillRect(Math.round(x),Math.round(y),2,2);}
   f.fillStyle=`rgba(120,190,255,${.35*(1-k)})`;for(let i=0;i<28;i++){const x=cx-70+r2()*140,y=GY-120+((k*1.6+r2())%1)*120;f.fillRect(Math.round(x),Math.round(y),1,4);}}
  /* bracos arrancados pela explosao: voam girando, deixam sangue e caem na poca */
- {const a2=tt-FAT_POP;if(a2>=0){const bx=288,by=GY-34-fatLift(FAT_POP);
+ {const a2=tt-FAT_POP;if(a2>=0){f.save();f.globalCompositeOperation='source-over';f.globalAlpha=1;const bx=288,by=GY-34-fatLift(FAT_POP);
   for(let q=0;q<2;q++){const dir=q?1:-1,vx=dir*(48+q*26),vy0=-70-q*22,g0=210;let x=bx+dir*8,y=by-10,vy=vy0,ang=0,land=false;const steps=Math.min(a2,3.0)/.02;
-   for(let k=0;k<steps;k++){if(land)break;x+=vx*.02;vy+=g0*.02;y+=vy*.02;ang+=dir*.18;if(y>=GY-1){y=GY-1;land=true;ang=dir*(1.2+q*.5);}}
-   f.save();f.translate(x,y);f.rotate(ang);f.fillStyle='#cf620e';f.fillRect(-7,-1,10,3);f.fillStyle='#f58a18';f.fillRect(-7,-2,10,2);f.fillStyle='#9a0f1c';f.fillRect(-8,-2,2,5);f.fillStyle='#f6c9a0';f.beginPath();f.arc(5,0,2.4,0,TAU);f.fill();f.fillStyle='#de9c70';f.fillRect(3,1,3,1);f.restore();
+   for(let k=0;k<steps;k++){if(land)break;x+=vx*.02;vy+=g0*.02;y+=vy*.02;ang+=dir*.18;if(y>=GY-1){y=GY-1;land=true;ang=dir*(.12+q*.25);y=GY-2;}}
+   suiArm(f,x,y,ang);
    if(!land&&a2<1.4){bloodSpray(f,x,y,a2*.7,610+q*13,6,dir);}
-   if(land&&a2<3.2){f.fillStyle='rgba(140,10,20,.7)';f.beginPath();f.ellipse(x-dir*3,GY+1,6,1.4,0,0,TAU);f.fill();}}
-  if(a2<1.1){bloodSpray(f,bx-8,by-10,a2,621,16,-1);bloodSpray(f,bx+8,by-10,a2,622,16,1);}}
+   if(land&&a2<3.2){f.fillStyle='rgba(140,10,20,.75)';f.beginPath();f.ellipse(x-dir*10,GY+1,9,1.8,0,0,TAU);f.fill();}}
+  if(a2<1.1){bloodSpray(f,bx-8,by-10,a2,621,16,-1);bloodSpray(f,bx+8,by-10,a2,622,16,1);}f.restore();}
  }
  /* depois: poca de agua no chao */
  const pu=tt>=FAT_POP+.5?scaleAt(0,1,FAT_POP+.5,FAT_POP+1.8,tt):0;if(pu>0){f.save();f.fillStyle=`rgba(80,160,235,${.4*pu})`;f.beginPath();f.ellipse(nx0+4,GY+2,40*pu,6*pu,0,0,TAU);f.fill();f.strokeStyle=`rgba(210,240,255,${.6*pu})`;f.lineWidth=.7;f.stroke();f.restore();}}
+/* braco arrancado: manga laranja com dobras, punho, mao com dedos e a ponta cortada em carne sangrando */
+function suiArm(f,x,y,ang){f.save();f.translate(Math.round(x),Math.round(y));f.rotate(ang);
+ f.fillStyle='#8a380a';f.fillRect(-12,-3,17,7);f.fillStyle='#cf620e';f.fillRect(-12,-3,17,5);f.fillStyle='#f58a18';f.fillRect(-12,-3,17,3);f.fillStyle='#ffb347';f.fillRect(-10,-3,12,1);
+ f.fillStyle='#8a380a';for(let q=0;q<3;q++)f.fillRect(-9+q*5,-3,1,7);
+ f.fillStyle='#e9e4d0';f.fillRect(5,-2,3,5);
+ f.fillStyle='#de9c70';f.fillRect(8,-3,6,7);f.fillStyle='#f6c9a0';f.fillRect(8,-3,6,4);
+ f.fillStyle='#b06c4c';for(let q=0;q<4;q++)f.fillRect(14,-3+q*2,3,1);
+ f.fillStyle='#7a0a14';f.fillRect(-15,-4,3,9);f.fillStyle='#d01828';f.fillRect(-14,-3,2,6);f.fillStyle='#f5e6d8';f.fillRect(-14,-1,1,2);
+ f.restore();}
 ANIMS.suiryudan.L={g:true,dur:8.0,koAt:7.3,bannerAt:5.05,banner:['水龍弾','FATALITY','Suiryūdan','#4aa8ff'],latchT:2.3,line:'Respire fundo. Pela última vez.',speakAt:3.5,speechPos:['18%','14%'],
  map:[[0,0],[99,99]],
  sP:[[0,READY],[.4,READY],[.7,SUI_SEAL],[1.5,SUI_SEAL],[1.75,READY],[99,READY]],
