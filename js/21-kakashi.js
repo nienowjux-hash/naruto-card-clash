@@ -57,10 +57,14 @@ function suiryudanFX(c){const {f,t,time,sx0,nx0}=c,x0=sx0+12,x1=nx0-8,hitAt=2.3;
  f.save();f.globalAlpha=fade;
  /* crina de agua ao longo do pescoco e do dorso (atras do corpo) */
  for(let i=2;i<N-6;i+=2){const r=dragonR(i/N)*sc,[nx,ny]=nrm[i],[px,py]=P[i],len=(15-i*.17)*sc,sw=Math.sin(time*6+i*.5)*1.6;f.fillStyle=i%4?'#2f86e6':'#8fd0ff';f.beginPath();f.moveTo(px+nx*r*.7-2.2,py+ny*r*.7);f.quadraticCurveTo(px+nx*(r+len*.6)-1+sw,py+ny*(r+len*.6)-1,px+nx*(r+len)-4.5+sw,py+ny*(r+len)+1);f.lineTo(px+nx*r*.7+2.2,py+ny*r*.7);f.closePath();f.fill();}
- /* quatro patas com garras (duas na frente, duas atras), sempre do lado de baixo do corpo */
- for(const [ix,far] of [[10,1],[11,0],[30,1],[31,0]]){const r=dragonR(ix/N)*sc,[nx,ny]=nrm[ix],[px,py]=P[ix],bx=px-nx*r*.6,by=py-ny*r*.6,sw=Math.sin(time*9+ix)*2,kx=bx-3+(far?4:0),ky=by+9*sc,fx=kx+4+sw,fy=ky+8*sc;
-  f.strokeStyle=far?'#164f9c':'#1d63bd';f.lineWidth=(far?3.2:4)*sc;f.lineCap='round';f.beginPath();f.moveTo(bx,by);f.lineTo(kx,ky);f.lineTo(fx,fy);f.stroke();
-  f.strokeStyle='#e8f6ff';f.lineWidth=1.1;for(let q=-1;q<=1;q++){f.beginPath();f.moveTo(fx,fy);f.lineTo(fx+3+q*1.2,fy+3+Math.abs(q)*.6);f.stroke();}f.lineCap='butt';}
+ /* quatro patas de dragao: coxa, canela e pata com tres garras; as de tras do corpo (far) saem antes do corpo, as da frente depois */
+ const leg=(ix,far)=>{const r=dragonR(ix/N)*sc,[nx,ny]=nrm[ix],[px,py]=P[ix],sw=Math.sin(time*9+ix+far*2)*2.5,bx=px-nx*r*.55+(far?5:-2),by=py-ny*r*.55,kx=bx+(far?7:-6)*sc+sw,ky=by+13*sc,fx=kx+(far?-3:4)*sc+sw*.6,fy=ky+13*sc,w=(far?6:8)*sc;
+  f.lineCap='round';f.lineJoin='round';f.strokeStyle='#0c3a80';f.lineWidth=w+1.6;f.beginPath();f.moveTo(bx,by);f.lineTo(kx,ky);f.lineTo(fx,fy);f.stroke();
+  f.strokeStyle=far?'#2a78d0':'#3a94f0';f.lineWidth=w;f.beginPath();f.moveTo(bx,by);f.lineTo(kx,ky);f.lineTo(fx,fy);f.stroke();
+  f.strokeStyle='#bfe6ff';f.lineWidth=Math.max(1,w*.28);f.beginPath();f.moveTo(bx-1,by);f.lineTo(kx-1,ky);f.lineTo(fx-1,fy);f.stroke();
+  f.fillStyle='#2a78d0';f.beginPath();f.arc(fx,fy,w*.62,0,TAU);f.fill();
+  f.strokeStyle='#f2fbff';f.lineWidth=1.5;for(let q=-1;q<=1;q++){f.beginPath();f.moveTo(fx+q*2,fy+w*.3);f.quadraticCurveTo(fx+q*3.5+2,fy+w*.8,fx+q*4+4,fy+w*.5+4);f.stroke();}f.lineCap='butt';f.lineJoin='miter';};
+ for(const ix of [13,34])leg(ix,1);
  /* ponta da cauda em penacho de agua */
  {const [tx,ty]=P[N],[ux,uy]=nrm[N];f.fillStyle='#2f86e6';for(let q=-2;q<=2;q++){f.beginPath();f.moveTo(tx,ty);f.quadraticCurveTo(tx-8*sc+q*1.4,ty+q*5*sc-4,tx-17*sc+Math.sin(time*7+q)*2,ty+q*7*sc+Math.cos(time*6+q)*2);f.quadraticCurveTo(tx-8*sc,ty+q*3*sc+3,tx,ty);f.fill();}}
  poly(edge(1,-1),'#1d63bd','#0c3a80');
@@ -68,6 +72,7 @@ function suiryudanFX(c){const {f,t,time,sx0,nx0}=c,x0=sx0+12,x1=nx0-8,hitAt=2.3;
  poly(edge(-.25,-.85),'#9fd8ff');
  f.strokeStyle='rgba(230,248,255,.9)';f.lineWidth=.9;f.beginPath();for(let i=0;i<=N;i++){const r=dragonR(i/N)*sc*.72,[nx,ny]=nrm[i],x=P[i][0]+nx*r,y=P[i][1]+ny*r;i?f.lineTo(x,y):f.moveTo(x,y);}f.stroke();
  f.strokeStyle='rgba(235,250,255,.4)';f.lineWidth=.6;for(let i=5;i<N-2;i+=3){const r=dragonR(i/N)*sc,[nx,ny]=nrm[i],[px,py]=P[i];f.beginPath();f.moveTo(px+nx*r*.7,py+ny*r*.7);f.quadraticCurveTo(px+nx*r*.1+1.5,py+ny*r*.1,px-nx*r*.5,py-ny*r*.5);f.stroke();}
+ for(const ix of [14,35])leg(ix,0);
  /* cabeca */
  const hd=P[0],nk=P[3],ang=Math.atan2(hd[1]-nk[1],hd[0]-nk[0]),hr=17*sc,open=Math.max(0,(.55+.25*Math.sin(time*7))*(1-scaleAt(0,1,hitAt-.35,hitAt,t)));
  f.translate(hd[0],hd[1]);f.rotate(ang);f.scale(1.3,.86);
