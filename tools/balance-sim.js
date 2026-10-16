@@ -46,7 +46,7 @@ const KAW_MAX=2; /* usos do Kawarimi por luta (cada personagem) */
 function newState(){const ps=SC.pSide||'S',es=ps==='S'?'N':'S',own=ps==='S'?'sasuke':'naruto';
  const P={S:{hp:0,atk:0,def:0,elem:{}},N:{hp:0,atk:0,def:0,elem:{}}},af={S:CHARS.sasuke.afin,N:CHARS.naruto.afin},hm={S:100,N:100};
  let learned=null;
- if(SC.gated){P[ps]=gearStats(GEAR[own][SC[ps].tier]);learned=learnedAt(own,SC[ps].level);hm[ps]=100+P[ps].hp;if(SC.enc){hm[es]=Math.round(100*SC.enc.hp);P[es]={hp:0,atk:SC.enc.atk-1,def:0,elem:{}};if(SC.enc.afin)af[es]=SC.enc.afin;}}
+ if(SC.gated){P[ps]=gearStats(GEAR[own][SC[ps].tier]);learned=learnedAt(own,SC[ps].level);hm[ps]=100+P[ps].hp;if(SC.enc){hm[es]=Math.round(100*(SC.enc.hp||1));P[es]={hp:0,atk:(SC.enc.atk||1)-1,def:0,elem:{}};if(SC.enc.afin)af[es]=SC.enc.afin;}}
  const kitE=(SC.gated&&SC.enc&&SC.enc.kitLvl)?DATA.enemyKit(es==='N'?'naruto':'sasuke',SC.enc.kitLvl):null;
  return{kitE,P,af,hmS:hm.S,hmN:hm.N,learned,pSide:ps,pills:SC.gated?SC.pills:0,kuS:0,kuN:0,kawS:false,kawN:false,toadCD:0,toadUsed:false,hs:hm.S,hn:hm.N,cs:CFG_TUNE.cs0,cn:CFG_TUNE.cn0,sealT:0,seal2T:0,stunN:false,stunS:0,immN:false,immS:false,guardS:false,kyuT:0,kyuUsed:false,bunta:null,burning:false,copied:null,usedCopy:{},lastN:null,turns:0};}
 /* ---------- Sasuke ---------- */
@@ -154,7 +154,7 @@ const heroEnc=(enc,ps)=>{const v=enc.vs&&enc.vs[ps==='S'?'sasuke':'naruto'];retu
 function setSC(o){SC=Object.assign({gated:true,S:{level:10,tier:0,build:'padrao'},N:{level:10,tier:0,build:'padrao'},enc:null,pills:0},o);}
 function campanha(){CFG={imunidade:true,iaChakra:true,iaEsperta:true,iaSapo:true};console.log('\n=== CAMPANHA: cada local no nivel recomendado (equipamento por faixa de nivel, 3 pilulas no curandeiro) ===');
  console.log(pad('local',20)+pad('nv',4)+pad('inimigo',18)+pad('elem.',12)+'Sasuke: eficiente / forte / esquivador / curandeiro   |  Naruto: forte / esquivador / curandeiro');
- const NS=JSON.parse(process.env.NODE_SCALE||'{}');for(const id in NODES){const n=NODES[id];if(!n.enc)continue;if(NS[id])n.enc=Object.assign({},n.enc,{hp:NS[id][0],atk:NS[id][1]});n.enc=Object.assign({},n.enc,{kitLvl:n.lvl});const L=n.lvl,tier=tierFor(L),afin=(n.enc.afin||[]).join('+')||'padrao';
+ const NS=JSON.parse(process.env.NODE_SCALE||'{}');for(const id in NODES){const n=NODES[id];if(!n.enc)continue;if(NS[id])n.enc=Object.assign({},n.enc,{hp:NS[id][0],atk:NS[id][1]});n.enc=Object.assign({},n.enc,{kitLvl:n.lvl+(+process.env.KIT_PLUS||0)});const L=n.lvl,tier=tierFor(L),afin=(n.enc.afin||[]).join('+')||'padrao';
   const f=(fn,strats,ps)=>strats.map(s=>{setSC({[ps]:{level:L,tier,build:'padrao'},enc:heroEnc(n.enc,ps),pills:s==='curandeiro'?3:0});const r=winRate(fn,s,ps);return(r.w.toFixed(0)+'%').padStart(4);}).join(' ');
   console.log(pad(n.name,20)+pad(L,4)+pad(n.enc.name,18)+pad(afin,12)+f(fightSasukePlayer,['eficiente','forte','esquivador','curandeiro'],'S')+'      |  '+f(fightNarutoPlayer,['forte','esquivador','curandeiro'],'N'));}
  console.log('\n(meta de projeto: ~60-80% no nivel recomendado com a melhor estrategia; abaixo de 40% = dificil demais, acima de 90% = facil demais)');}

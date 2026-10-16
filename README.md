@@ -131,7 +131,7 @@ O Naruto de quatro tem **vários quadros** (em `pixel/naruto-fours.js`): **agach
 
 ## Mapa da campanha
 - `js/19-map.js` pinta o mapa por código (oceano, terras, regiões, caminhos) e abre ao carregar o jogo. Os locais, ligações e inimigos ficam em `NODES`/`EDGES` (`js/00-data.js`); o progresso fica em `CAMP` (`rpgCampV1`).
-- Um local abre quando algum vizinho foi vencido. Ao escolher o local e quem vai lutar, a ficha viaja pelo caminho e a batalha começa com o cenário do local (`setScene` em `js/04-scenery.js`, por enquanto o Vale do Fim recolorido) e o inimigo com a vida, o ataque e os elementos do local.
+- Um local abre quando algum vizinho foi vencido. Ao escolher o local e quem vai lutar, a ficha viaja pelo caminho e a batalha começa com o cenário do local (`setScene` em `js/04-scenery.js`, por enquanto o Vale do Fim recolorido) e o inimigo do local (com seus elementos).
 - Vitória marca o local, dá XP e ryo do local e volta ao mapa. Derrota também volta ao mapa, sem marcar o local.
 
 ### Simulador com elementos, níveis e itens
@@ -142,7 +142,7 @@ Antes: a estratégia "sempre o golpe mais forte" do Sasuke vencia 99% em ~3 turn
 - Dano dos golpes do Sasuke -10%: Chidori 31, Katon 23, Shishi Rendan 32, Sōshūken 25, Shuriken Kage 27 (custos iguais). O **Amaterasu saiu do Sasuke criança**: continua guardado em `js/00-data.js` (`MOVES.amaterasu.futuro` e `TREES_FUTURO`), com a animação e o fatality no código, para o Sasuke adulto.
 - Sapo: 28 de vida, invocação custa 50 e causa 20, Teppōdama 4, kunai 2 e shuriken 2+1+1; o Sasuke da IA derruba o sapo com o golpe mais barato que o mata.
 - Pílulas: Soldado 50 de vida, Chakra 40, Pergaminho Médico 100. Equipamentos com bônus menores (ex.: Colete +5 de vida e -4% de dano).
-- Inimigos dos locais (vida x ataque): Treino 0,98x/1,12x, Floresta 1,11x/1,17x, Deserto 1,19x/1,19x, Passo Nevado 1,28x/1,21x, Vale do Fim 1,34x/1,18x.
+- **O local não muda os status do inimigo** (o ambiente só dá o cenário). O que muda a vantagem ou desvantagem são os **elementos** do inimigo e do golpe; o nível do inimigo só define quais golpes ele tem.
 Resultado: o Naruto jogando bem fica entre 60% e 80% nos locais; o Sasuke jogando com Chidori/Shishi continua fácil no Deserto e no Passo Nevado (93-97%), por isso a dificuldade por personagem fica para quando houver inimigos próprios. Rode `node tools/balance-sim.js 4000 campanha` para ver.
 
 ### Raridade dos itens
@@ -151,7 +151,7 @@ Os itens também têm raridade (Comum, Incomum, Raro, Épico, Lendário) e exige
 ### Kits iniciais e inimigos por nível
 - No nível 1 o **Sasuke** só tem os ataques básicos (Kunai, Shuriken, Soco, Chute), o Kawarimi e a Bola de Fogo (Katon); o **Naruto** tem Soco, Chute, Kawarimi e o Kage Bunshin. Todo o resto é conquistado subindo de nível e gastando pontos: Genjutsu nv 6, Shishi nv 10, **Chidori nv 14 (Raro)**, Sōshūken nv 18, Shuriken Kage nv 22, Copiar nv 26, Selo nv 30...; Naruto: Oiroke nv 3, Uzumaki nv 8, Harem nv 10, **Rasengan nv 14 (Raro)**, Kamikaze nv 20, Kuchiyose nv 28, Kyūbi nv 40.
 - O Naruto ganhou **Soco, Chute, Kunai (8 de dano) e Shuriken (4+4+4)** (as animações dos golpes do Sasuke, espelhadas), no menu de comandos e na árvore.
-- Na campanha o inimigo só usa os golpes que o nível do local liberaria (`enemyKit` em `js/00-data.js`): o Genin Rival do Campo de Treino só tem o básico e o Clone das Sombras. A vida e o ataque do inimigo têm um valor por herói (`enc.vs`).
+- Na campanha o inimigo só usa os golpes que o nível dele liberaria (`enemyKit` em `js/00-data.js`): o Genin Rival do Campo de Treino só tem o básico e o Clone das Sombras. Vida e ataque ficam no valor base, sem escala por local.
 - O progresso salvo foi reiniciado (`rpgProgV2`) por causa da nova ordem.
 
 Raridades ajustadas: Chidori e Rasengan **Raros** (4 pontos); Katon, Oiroke, Sōshūken e Shuriken Kage **Incomuns** (os golpes de shuriken do Sasuke são no máximo Incomum); Harem **Raro**.

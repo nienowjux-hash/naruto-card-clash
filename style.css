@@ -223,3 +223,5 @@ canvas#c{display:block;width:100%;height:auto}
 #tree .nd.got .orb{border-color:var(--rc);box-shadow:inset 0 0 14px #000,0 0 14px var(--rc)}
 #tree .nd.can .orb{border-color:var(--rc)}
 #tree .nd .rr{font:700 10px Georgia,serif;color:var(--rc);letter-spacing:.5px}
+
+#map .stats{grid-template-columns:repeat(3,1fr)}

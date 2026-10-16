@@ -192,11 +192,11 @@ function rollDrop(nodeLvl){const w={1:55,2:28,3:12,4:4,5:1},lim=(nodeLvl||99)+8,
 const MAP_W=1180,MAP_H=640;
 const NODES={
  konoha:{name:'Konoha',kind:'vila',x:130,y:330,scene:'vila',d:'Sua vila. Prepare a equipe (habilidades e equipamentos) antes de partir.'},
- treino:{name:'Campo de Treino',kind:'luta',x:340,y:310,scene:'treino',lvl:1,xp:8,ryo:60,enc:{name:'Genin Rival',vs:{sasuke:[0.97,1.06],naruto:[1.32,1.44]},hp:0.97,atk:1.06,afin:['terra']},d:'Um campo aberto ao amanhecer, onde genins testam suas técnicas.'},
- floresta:{name:'Floresta da Morte',kind:'luta',x:550,y:160,scene:'floresta',lvl:10,xp:55,ryo:90,enc:{name:'Ninja Perdido',vs:{sasuke:[1.05,1.11],naruto:[1.11,1.17]},hp:1.05,atk:1.11,afin:['agua']},d:'Mata densa e perigosa. Quem entra sem preparo raramente volta.'},
- deserto:{name:'Deserto do Vento',kind:'luta',x:540,y:480,scene:'deserto',lvl:15,xp:100,ryo:120,enc:{name:'Ninja da Areia',vs:{sasuke:[1.09,1.09],naruto:[1.13,1.13]},hp:1.09,atk:1.09,afin:['terra']},d:'Dunas sem fim e um calor que drena o chakra.'},
- neve:{name:'Passo Nevado',kind:'luta',x:810,y:500,scene:'neve',lvl:20,xp:160,ryo:160,enc:{name:'Guardião do Gelo',vs:{sasuke:[1.31,1.24],naruto:[1.36,1.29]},hp:1.31,atk:1.24,afin:['gelo']},d:'Um desfiladeiro congelado vigiado por um ninja de gelo.'},
- vale:{name:'Vale do Fim',kind:'chefe',x:985,y:285,scene:'vale',lvl:30,xp:315,ryo:300,enc:{name:'Rival Final',vs:{sasuke:[1.37,1.2],naruto:[1.41,1.24]},hp:1.37,atk:1.2,afin:null},d:'O local do confronto final, entre as estátuas e a cachoeira.'}};
+ treino:{name:'Campo de Treino',kind:'luta',x:340,y:310,scene:'treino',lvl:1,xp:8,ryo:60,enc:{name:'Genin Rival',afin:['terra']},d:'Um campo aberto ao amanhecer, onde genins testam suas técnicas.'},
+ floresta:{name:'Floresta da Morte',kind:'luta',x:550,y:160,scene:'floresta',lvl:10,xp:55,ryo:90,enc:{name:'Ninja Perdido',afin:['agua']},d:'Mata densa e perigosa. Quem entra sem preparo raramente volta.'},
+ deserto:{name:'Deserto do Vento',kind:'luta',x:540,y:480,scene:'deserto',lvl:15,xp:100,ryo:120,enc:{name:'Ninja da Areia',afin:['terra']},d:'Dunas sem fim e um calor que drena o chakra.'},
+ neve:{name:'Passo Nevado',kind:'luta',x:810,y:500,scene:'neve',lvl:20,xp:160,ryo:160,enc:{name:'Guardião do Gelo',afin:['gelo']},d:'Um desfiladeiro congelado vigiado por um ninja de gelo.'},
+ vale:{name:'Vale do Fim',kind:'chefe',x:985,y:285,scene:'vale',lvl:30,xp:315,ryo:300,enc:{name:'Rival Final',afin:null},d:'O local do confronto final, entre as estátuas e a cachoeira.'}};
 const EDGES=[['konoha','treino'],['treino','floresta'],['treino','deserto'],['floresta','vale'],['deserto','neve'],['neve','vale']];
 const CAMP_KEY='rpgCampV1';
 let CAMP={cleared:['konoha'],at:'konoha',active:null};
