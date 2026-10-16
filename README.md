@@ -153,3 +153,5 @@ Os itens também têm raridade (Comum, Incomum, Raro, Épico, Lendário) e exige
 - O Naruto ganhou **Soco e Chute** (as animações dos golpes do Sasuke, espelhadas), no menu de comandos e na árvore.
 - Na campanha o inimigo só usa os golpes que o nível do local liberaria (`enemyKit` em `js/00-data.js`): o Genin Rival do Campo de Treino só tem o básico e o Clone das Sombras. A vida e o ataque do inimigo têm um valor por herói (`enc.vs`).
 - O progresso salvo foi reiniciado (`rpgProgV2`) por causa da nova ordem.
+
+Raridades ajustadas: Chidori e Rasengan **Raros** (4 pontos); Katon, Oiroke, Sōshūken e Shuriken Kage **Incomuns** (os golpes de shuriken do Sasuke são no máximo Incomum); Harem **Raro**.
