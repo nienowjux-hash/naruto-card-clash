@@ -2300,33 +2300,35 @@ function buildCloak(S,hint,fr){const P=34,W=S.w+P*2,H=S.h+P*2,cx=S.c.getContext(
  const ctl=(hint.tailPts||[[0,0],[-12,-14],[-10,-32],[4,-40],[16,-34]]).map(([dx,dy],i)=>[hint.tail[0]+P+dx+(i>1?Math.sin(fr*1.57+i)*1.6:0),hint.tail[1]+P+dy+(i>1?Math.cos(fr*1.57+i)*1.2:0)]);
  const cr=(a,b,c,d,u)=>{const u2=u*u,u3=u2*u;return .5*((2*b)+(-a+c)*u+(2*a-5*b+4*c-d)*u2+(-a+3*b-3*c+d)*u3);},sp=[];
  const pts=[ctl[0]].concat(ctl,[ctl[ctl.length-1]]);for(let s2=0;s2<pts.length-3;s2++)for(let i=0;i<12;i++){const u=i/12,px=cr(pts[s2][0],pts[s2+1][0],pts[s2+2][0],pts[s2+3][0],u),py=cr(pts[s2][1],pts[s2+1][1],pts[s2+2][1],pts[s2+3][1],u);sp.push([px,py]);}
- sp.forEach((q,i)=>q.push(7.5-6*(i/(sp.length-1))));
- for(const [px,py,r] of sp)stamp(tail,px,py,r);
+ sp.forEach((q,i)=>q.push(9.5-7*(i/(sp.length-1))));
+ /* a cauda e chakra, nao carne: entra na mesma casca translucida, com a borda borbulhando e bolhas se soltando */
+ sp.forEach(([px,py,r],i)=>{const w=r*(1+.22*Math.sin(i*.9+fr*1.9)+.12*Math.sin(i*2.3-fr*2.7));stamp(cloak,px,py,w);stamp(tail,px,py,Math.max(1,w*.42));});
+ for(let i=0;i<9;i++){const q=sp[Math.floor(((i*37+fr*11)%97)/97*(sp.length-1))],a=(i*2.4+fr*.8),d=q[2]+2+((i+fr)%4);stamp(cloak,q[0]+Math.cos(a)*d,q[1]+Math.sin(a)*d-((fr+i)%4)*1.5,1.2+((i*3+fr)%3)*.6);}
+ for(let i=0;i<6;i++){const a=i*1.05+fr*.7,bx=W/2+Math.cos(a)*(W*.3),by=P+S.h*.5-((fr*3+i*7)%20)-S.h*.2;stamp(cloak,bx,by,1+(i%2));} /* bolhas soltas em volta do corpo */
  /* pinta: fill (translucido, por cima do corpo) e linhas (opacas) */
  const mk=()=>{const c=document.createElement('canvas');c.width=W;c.height=H;return c;};const fill=mk(),line=mk(),fx=fill.getContext('2d'),lx=line.getContext('2d'),fd=fx.createImageData(W,H),ld=lx.createImageData(W,H);
  const put=(d,x,y,c,a)=>{const i=(y*W+x)*4;d.data[i]=c[0];d.data[i+1]=c[1];d.data[i+2]=c[2];d.data[i+3]=a;};
  const C_OUT=[110,10,4],C_RIM=[255,150,70],C_FILL=[240,70,24],C_T1=[150,22,8],C_T2=[226,58,20],C_T3=[255,120,50],C_T4=[255,196,140];
  const any=(arr,x,y)=>x>=0&&y>=0&&x<W&&y<H&&arr[y*W+x];
  for(let y=0;y<H;y++)for(let x=0;x<W;x++){const i=y*W+x;
-  if(tail[i]){ /* cauda opaca com volume: contorno, sombra embaixo, luz em cima */
-   const edge=!any(tail,x-1,y)||!any(tail,x+1,y)||!any(tail,x,y-1)||!any(tail,x,y+1);
-   if(edge){put(ld,x,y,C_OUT,255);continue;}
-   const up=!any(tail,x,y-2)||!any(tail,x-1,y-2),dn=!any(tail,x,y+2)||!any(tail,x+1,y+2),up3=!any(tail,x-1,y-3);
-   put(ld,x,y,up?C_T4:up3?C_T3:dn?C_T1:C_T2,255);continue;}
   if(!cloak[i])continue;
   const edge=!any(cloak,x-1,y)||!any(cloak,x+1,y)||!any(cloak,x,y-1)||!any(cloak,x,y+1);
   if(edge){put(ld,x,y,C_OUT,255);continue;}
   const rim=!any(cloak,x-2,y)||!any(cloak,x+2,y)||!any(cloak,x,y-2)||!any(cloak,x,y+2);
   if(rim&&!body[i]){put(ld,x,y,C_RIM,235);continue;}
   put(fd,x,y,C_FILL,255);
+  if(tail[i]){const core=!any(tail,x,y-1)||!any(tail,x-1,y);put(ld,x,y,core?[255,224,180]:[255,140,64],core?200:130);}
   /* bolhas: pontinhos claros perto da borda */
   if(!body[i]&&((x*7+y*13+fr*5)%23===0))put(ld,x,y,[255,200,150],220);}
- fx.putImageData(fd,0,0);lx.putImageData(ld,0,0);return {fill,line,P,W,H};}
+ for(let n=0;n<4;n++){const q=sp[Math.floor((n+1)/5*(sp.length-1))],r0=q[2]*.45;for(let a=0;a<5.2;a+=.35){const rr=r0*(a/5.2),x=Math.round(q[0]+Math.cos(a+fr+n)*rr),y=Math.round(q[1]+Math.sin(a+fr+n)*rr);if(x>=0&&y>=0&&x<W&&y<H&&cloak[y*W+x])put(ld,x,y,[150,24,8],160);}}
+ fx.putImageData(fd,0,0);lx.putImageData(ld,0,0);return {fill,line,P,W,H,sp};}
 function getCloak(key,fr){const k=key+':'+fr;if(kyuCache[k])return kyuCache[k];const S=SPRN[key];if(!S)return null;return kyuCache[k]=buildCloak(S,KYU_HINT[key]||KYU_HINT.def,fr);}
 /* desenha o manto do sprite que o Naruto esta usando agora */
 function kyuAura(g,x,y,time,k,front,dir,four,key){if(k<=0||!key)return;const fr=Math.floor(time*7)%4,C=getCloak(key,fr),S=SPRN[key];if(!C)return;
  g.save();g.imageSmoothingEnabled=false;g.translate(x,y);g.scale(dir>0?-1:1,1);
- if(front){g.globalAlpha=.42*Math.min(1,k);g.drawImage(C.fill,-S.ax-C.P,-S.ay-C.P);g.globalAlpha=Math.min(1,k);g.drawImage(C.line,-S.ax-C.P,-S.ay-C.P);}
+ if(front){g.globalAlpha=.42*Math.min(1,k);g.drawImage(C.fill,-S.ax-C.P,-S.ay-C.P);g.globalAlpha=Math.min(1,k);g.drawImage(C.line,-S.ax-C.P,-S.ay-C.P);
+  /* brilho de chakra ao longo da cauda (no layer de efeitos, com bloom) */
+  const M=g.getTransform();f.save();f.setTransform(M);f.globalCompositeOperation='lighter';C.sp.forEach(([px,py,r],i)=>{if(i%4)return;orb(f,px-S.ax-C.P,py-S.ay-C.P,r*2.2,[[0,`rgba(255,120,40,${.22*Math.min(1,k)})`],[1,'rgba(255,60,0,0)']]);});f.restore();}
  else{ /* aura escura atras e ondas na agua */
   g.globalAlpha=.25*Math.min(1,k);g.drawImage(C.fill,-S.ax-C.P,-S.ay-C.P);}
  g.restore();
