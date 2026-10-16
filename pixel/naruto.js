@@ -98,31 +98,37 @@ function naruSexy(){const g=naruGuard();
  for(const [cx,cy,rx,ry] of [[29,35,10,6],[22,38,6,5],[36,38,6,5],[29,44,9,5],[29,51,12,6],[20,53,6,4.5],[38,53,6,4.5]])g.ell(cx,cy,rx,ry,'W');
  for(const [cx,cy,rx,ry] of [[29,39,9,2.5],[29,55,11,2.5],[21,56,5,2],[37,56,5,2]])g.ell(cx,cy,rx,ry,'u');
  g.outline('K');return g;}
-/* Manto da Kyubi: o Naruto de quatro, como uma raposa, olhando para a direita (72x80, ancora no pe).
-   Seguindo a referencia: corpo baixo e esticado, bracos retos com as maos espalmadas na frente, pes atras, cabeca erguida
-   olhando para a frente com cara de raiva. Mesmas cores e contorno dos outros sprites dele. */
-function naruFours(){const g=PixGrid(72,80);HEADHOOK=null;
- /* perna de tras (esquerda): coxa dobrada, canela encostada no chao, sandalia */
- g.poly([[4,52],[16,50],[18,60],[6,62]],'q');g.poly([[2,60],[14,60],[12,70],[0,70]],'O');g.shade([[0,64],[14,64],[14,72],[0,72]],['O'],'q');
- g.poly([[0,68],[14,68],[15,74],[0,74]],'N');g.line(0,73,14,73,'n');g.put(8,69,'SSS');
- /* perna da frente (direita da traseira): mais a frente, joelho no chao */
- g.poly([[14,50],[26,50],[28,62],[24,66],[14,62]],'O');g.shade([[12,56],[30,56],[30,68],[12,68]],['O'],'q');
- g.poly([[18,64],[29,64],[28,70],[18,70]],'A');g.line(18,67,28,67,'a');g.poly([[16,70],[30,70],[31,75],[15,75]],'N');g.line(16,74,30,74,'n');
- /* tronco baixo e esticado: quadril (esq.) baixo, ombros (dir.) um pouco mais altos */
- g.poly([[4,44],[14,38],[34,34],[50,34],[56,40],[56,48],[44,52],[22,54],[6,52]],'O');
- g.shade([[2,48],[58,48],[58,56],[2,56]],['O'],'q');g.shade([[14,34],[52,34],[52,38],[14,38]],['O'],'Q');
- g.line(10,44,46,40,'m',['O','Q']);g.line(4,50,16,49,'N',['O','q']);g.line(4,51,16,50,'n',['O','q']);
- /* bolsa e zipper */
- g.line(30,36,42,36,'m',['O','Q']);g.put(24,46,'W');
- /* gola de pelo branca nos ombros */
- g.poly([[44,32],[54,32],[58,38],[52,42],[44,40]],'W');g.shade([[44,38],[60,38],[60,43],[44,43]],['W'],'A');
- /* braco de tras (atras do tronco), reto ate o chao */
- g.poly([[38,42],[46,42],[50,60],[48,70],[42,70],[42,58]],'q');g.poly([[40,68],[50,68],[52,75],[40,75]],'s');g.line(41,74,51,74,'t');
- /* braco da frente, reto e inclinado para a frente, com a mao espalmada no chao */
- g.poly([[50,40],[58,40],[66,58],[66,70],[60,70],[58,58]],'O');g.shade([[56,52],[70,52],[70,72],[56,72]],['O'],'q');
- g.poly([[58,64],[67,64],[66,70],[59,70]],'N');g.line(58,67,67,67,'n');
- g.poly([[56,70],[68,70],[71,74],[70,75],[54,75]],'S');g.line(56,74,70,74,'s');for(const x of [60,63,66])g.line(x,71,x+1,75,'s');
- /* cabeca erguida, projetada para a frente e um pouco acima dos ombros, com cara de raiva */
- naruHead(g,30,8,{mouth:true});
+/* Manto da Kyubi: o Naruto de quatro, como uma raposa, olhando para a direita (80x80, ancora no pe da frente).
+   Pela referencia: tronco inclinado descendo para a frente, cabeca baixa e erguida olhando para a frente com cara de raiva,
+   bracos retos apoiados nas maos (dedos em garra), pernas dobradas atras com os pes no chao. Cada membro e uma forma
+   separada com sombra, como nos outros sprites dele. */
+function naruFours(){const g=PixGrid(80,80);HEADHOOK=null;
+ /* perna de tras (mais longe): coxa dobrada e canela voltando, pe no chao */
+ g.poly([[6,46],[18,44],[20,56],[8,58]],'q');g.shade([[4,52],[22,52],[22,60],[4,60]],['q'],'m');
+ g.poly([[6,56],[18,56],[16,68],[4,68]],'q');g.poly([[4,66],[17,66],[18,72],[3,72]],'n');g.line(4,71,17,71,'b');
+ /* braco de tras (mais longe), reto, mao em garra no chao */
+ g.poly([[42,38],[50,38],[54,56],[52,66],[46,66],[46,56]],'q');g.shade([[40,56],[56,56],[56,68],[40,68]],['q'],'m');
+ g.poly([[44,64],[54,64],[55,69],[43,69]],'s');g.poly([[42,68],[56,68],[58,73],[40,73]],'s');for(const x of [44,48,52])g.line(x,70,x+2,74,'t');
+ /* perna da frente: coxa dobrada, canela no chao, sandalia */
+ g.poly([[12,44],[26,42],[30,54],[18,58]],'O');g.shade([[10,50],[32,50],[32,60],[10,60]],['O'],'q');g.line(14,46,26,44,'Q',['O']);
+ g.poly([[16,56],[30,56],[28,68],[14,68]],'O');g.shade([[12,62],[32,62],[32,70],[12,70]],['O'],'q');
+ g.poly([[16,64],[29,64],[28,70],[16,70]],'A');g.line(17,67,28,67,'a');
+ g.poly([[12,70],[30,70],[32,75],[11,75]],'N');g.line(12,74,31,74,'n');g.put(26,71,'v');
+ /* tronco: do quadril alto (esq.) descendo para os ombros (dir.) */
+ g.poly([[10,36],[22,30],[40,28],[56,32],[60,40],[58,48],[44,50],[26,48],[12,46]],'O');
+ g.shade([[8,42],[62,42],[62,52],[8,52]],['O'],'q');g.shade([[22,28],[56,28],[56,33],[22,33]],['O'],'Q');
+ g.line(16,38,50,34,'m',['O','Q']);g.line(26,30,46,30,'m',['O','Q']);
+ g.line(10,44,24,43,'N',['O','q']);g.line(10,45,24,44,'n',['O','q']); /* faixa azul da cintura */
+ g.put(34,40,'W');g.line(36,36,44,36,'m',['O','Q']); /* zipper e bolsa */
+ /* ombro e manga da frente com a faixa azul */
+ g.poly([[50,34],[60,34],[64,42],[58,48],[50,46]],'O');g.shade([[48,42],[66,42],[66,50],[48,50]],['O'],'q');g.line(52,36,60,36,'N',['O']);g.line(52,37,60,37,'n',['O']);
+ /* gola de pelo branca */
+ g.poly([[48,30],[58,30],[62,36],[56,40],[48,38]],'W');g.shade([[48,36],[64,36],[64,41],[48,41]],['W'],'A');
+ /* braco da frente: reto, inclinado para a frente, antebraco e mao em garra espalmada */
+ g.poly([[56,42],[64,42],[70,56],[70,68],[64,68],[62,56]],'O');g.shade([[60,52],[72,52],[72,70],[60,70]],['O'],'q');
+ g.poly([[62,64],[71,64],[70,70],[63,70]],'N');g.line(62,67,71,67,'n');
+ g.poly([[60,70],[72,70],[78,74],[78,76],[58,76]],'S');g.line(60,75,77,75,'s');for(const x of [64,68,72,76])g.line(x,71,x+1,76,'t');g.put(77,74,'t');
+ /* cabeca baixa e erguida para a frente */
+ naruHead(g,36,10,{mouth:true});
  g.outline('K');g.selout('K',NAR_DARK);
  return g;}
