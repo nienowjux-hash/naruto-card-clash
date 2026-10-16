@@ -30,42 +30,40 @@ function pxHand(g,p,dir,open){
  for(let i=0;i<4;i++){const q=Q(2.6,-1.8+i*1.15);g.line(q[0],q[1],Q(open?5.4:3.9,-1.8+i*1.15)[0],Q(open?5.4:3.9,-1.8+i*1.15)[1],'t',['S','s']);}
  const th=Q(1.2,-2.7);g.put(Math.round(th[0]),Math.round(th[1]),'S');g.put(Math.round(Q(2.8,-2.8)[0]),Math.round(Q(2.8,-2.8)[1]),'W');
 }
-/* cabeca do Naruto, pixel a pixel por regioes: (ox,oy) como a cabeca do Sasuke */
+/* cabeca do Naruto no mesmo tamanho e jeito da do Sasuke (rosto ~16px de largura, de frente, levemente para a direita) */
 function naruHead(g,ox,oy,mod){
  const T=pts=>pts.map(p=>[p[0]+ox,p[1]+oy]),L=(a,b,c,d,k,o)=>g.line(a+ox,b+oy,c+ox,d+oy,k,o),P=(x,y,s)=>g.put(x+ox,y+oy,s);
- /* cabelo de tras: espetos para a esquerda */
- g.poly(T([[17,11],[9,7],[3,4],[7,10],[1,12],[8,14],[2,19],[10,18],[7,24],[15,20],[20,18]]),'Y');
- g.shade(T([[1,12],[20,14],[20,26],[6,26]]),['Y'],'y');g.shade(T([[1,17],[12,17],[12,26],[5,26]]),['y'],'x');
- L(15,12,5,8,'x',['Y','y']);L(15,15,4,13,'x',['Y','y']);L(15,18,8,20,'x',['Y','y']);L(8,9,4,5,'X',['Y']);L(6,12,2,12,'X',['Y']);
- g.put(ox+3,oy+4,'X');g.put(ox+2,oy+12,'X');
- /* cabelo do alto: tres espetos grandes */
- g.poly(T([[16,12],[15,3],[20,9],[22,0],[27,7],[32,1],[34,8],[38,5],[37,13]]),'Y');
- g.shade(T([[15,3],[22,3],[20,13],[15,13]]),['Y'],'y');g.shade(T([[22,0],[26,0],[25,9],[22,9]]),['Y'],'X');g.shade(T([[32,1],[35,1],[35,8],[33,8]]),['Y'],'X');g.shade(T([[36,6],[38,6],[37,12],[36,12]]),['Y'],'y');
- L(18,10,17,5,'y',['Y']);L(25,8,24,2,'y',['Y']);L(31,8,32,3,'y',['Y']);L(23,5,23,1,'k',['Y','X']);
- /* rosto */
- g.poly(T([[19,13],[36,12],[38,17],[37,22],[33,26],[25,26],[20,22]]),'S');
- g.shade(T([[18,11],[24,11],[22,27],[18,27]]),['S'],'s');g.shade(T([[20,23],[35,23],[33,27],[24,27]]),['S'],'s');
- g.shade(T([[19,17],[22,17],[22,23],[19,23]]),['s'],'t');
- P(19,17,'sss');P(20,18,'ts'); /* orelha */
- /* testa */
- g.shade(T([[30,13],[37,13],[37,15],[30,15]]),['S'],'k');
- /* bandana: faixa azul com placa metalica e o no atras */
- g.poly(T([[12,10],[38,9],[39,13],[12,14.4]]),'B');g.shade(T([[12,12.6],[39,11.4],[39,13.6],[12,15]]),['B'],'b');g.line(14+ox,11+oy,36+ox,10+oy,'j',['B']);
- g.poly(T([[23,9.4],[34,8.6],[34.6,13.2],[23.6,14]]),'M');g.edge(T([[23,9.4],[34,8.6],[34.6,13.2],[23.6,14]]),'L');g.shade(T([[24,12],[34,11.4],[34,13.2],[24,13.6]]),['M'],'L');
- P(27,10,'L');P(28,11,'L');P(29,10,'L');P(28,12,'L');
- P(11,13,'bB');P(8,14,'bBBb');P(7,15,'bBb');P(6,17,'bB');P(7,18,'b');P(10,15,'b');
- /* franja por cima da bandana */
- g.poly(T([[17,11],[20,3],[25,11]]),'Y');g.poly(T([[24,10],[28,1],[32,10]]),'Y');g.poly(T([[31,10],[36,4],[38,11]]),'Y');
- L(19,4,18,10,'y',['Y']);L(27,3,26,9,'y',['Y']);L(35,6,33,10,'y',['Y']);P(20,4,'X');P(28,2,'X');P(36,5,'X');
- /* olho, sobrancelha, bigodes, nariz e boca */
+ /* cabelo: massa fina + espetos apontando para tras (esquerda) e para cima, como o cabelo do Sasuke */
+ g.poly(T([[13,12],[17,7],[30,6],[35,10],[35,15],[13,16]]),'Y');
+ for(const s of [[[13,11],[5,5],[15,8]],[[12,14],[2,12],[13,17]],[[13,17],[4,21],[14,18]],[[16,8],[17,0],[22,7]],[[21,7],[26,-1],[28,7]],[[27,7],[34,0],[33,9]],[[32,9],[39,5],[36,12]]])g.poly(T(s),'Y');
+ g.shade(T([[0,12],[24,12],[24,24],[0,24]]),['Y'],'y');
+ g.shade(T([[21,-1],[27,-1],[26,7],[22,7]]),['Y','y'],'X');g.shade(T([[28,0],[34,0],[33,7],[29,7]]),['Y'],'X');g.shade(T([[16,0],[19,0],[19,7],[16,7]]),['Y','y'],'X');
+ L(14,12,6,9,'x',['y']);L(14,16,4,16,'x',['y']);L(14,19,6,21,'x',['y']);L(23,7,24,2,'y',['Y','X']);L(30,7,32,2,'y',['Y','X']);L(18,7,18,3,'y',['Y','X']);
+ /* orelha */
+ g.ell(16+ox,19.5+oy,1.3,2,'S');P(16,19,'t');
+ /* rosto estreito */
+ g.poly(T([[17,13],[32,13],[33,18],[32,23],[28,27],[22,27],[18,23],[16,18]]),'S');
+ g.shade(T([[15,13],[20,13],[19,28],[15,28]]),['S'],'s');g.shade(T([[19,24],[31,24],[28,28],[21,28]]),['S'],'s');
+ g.shade(T([[27,15],[32,15],[32,21],[29,21]]),['S'],'k');
+ /* bandana fina + placa pequena */
+ g.poly(T([[11,11],[36,10],[36,13.6],[11,14.6]]),'B');g.shade(T([[11,13],[36,12],[36,13.8],[11,14.8]]),['B'],'b');L(12,11.4,35,10.4,'j',['B']);
+ g.poly(T([[19.5,10.3],[27.5,10],[27.9,13.7],[19.9,14]]),'M');g.edge(T([[19.5,10.3],[27.5,10],[27.9,13.7],[19.9,14]]),'L');P(22,12,'L');P(23,11,'LL');P(24,12,'L');
+ P(10,13,'bB');P(8,14,'bBBb');P(7,16,'bB');P(8,18,'b');
+ /* mecha da franja */
+ g.poly(T([[17,14],[20,14],[18,19]]),'Y');g.poly(T([[28,14],[31,14],[30,18]]),'Y');L(18,14,18,17,'y',['Y']);
+ /* olhos (pequenos como o do Sasuke), sobrancelhas, nariz */
  const shut=mod&&mod.shut;
- if(shut){L(27,17,33,18,'K');L(27,15,33,15,'x',['S','s']);}
- else{L(27,14,34,14,'x',['S','s']);L(28,15,34,15,'K');P(28,16,'W');P(29,16,'WeeW');P(29,17,'WeEe');P(30,18,'s');P(34,16,'W');}
- L(23,19,29,18,'t');L(22,21,29,21,'t');L(23,23,29,24,'t',['S','s']);
- P(35,19,'s');P(36,20,'o');
- if(mod&&mod.mouth){L(30,24,35,24,'K');P(31,25,'oo');}else{L(31,24,35,23,'o');P(32,24,'s');}
-}
-/* cabeca deitada */
+ if(shut){L(19,19,22,20,'K');L(26,20,29,19,'K');L(19,17,22,17,'x',['S','s']);L(26,17,29,17,'x',['S','s']);}
+ else{L(19,16,22,16,'x',['S','s']);L(26,16,29,16,'x',['S','s']);
+  L(19,17,22,17,'K');L(26,17,29,17,'K');P(19,18,'WeeE');P(26,18,'EeeW');P(20,19,'ee');P(27,19,'ee');}
+ P(24,21,'s');P(24,22,'t');
+ /* bigodes: 3 riscos curtos em cada bochecha */
+ L(17,21,19,21,'t',['S','s']);L(17,23,19,22,'t',['S','s']);L(17,19,18,19,'t',['S','s']);
+ L(30,21,32,21,'t',['S','s']);L(30,23,32,22,'t',['S','s']);L(30,19,31,19,'t',['S','s']);
+ /* boca */
+ if(mod&&mod.mouth){g.ell(25+ox,25+oy,2.3,1.4,'K');P(24,26,'oo');}
+ else{L(22,25,27,25,'K');P(21,24,'o');P(28,24,'o');P(23,26,'WW');}
+}/* cabeca deitada */
 function naruHeadLying(g,ox,oy,groundY,mod){
  const tmp=PixGrid(40,28);naruHead(tmp,0,0,mod);const rows=tmp.G,Wd=40;
  for(let y=0;y<rows.length;y++)for(let x=0;x<Wd;x++){const ch=rows[y][x];if(ch==='.')continue;const nx=ox+y,ny=oy+(Wd-1-x);if(ny<=groundY)g.set(nx,ny,ch);}}
@@ -89,13 +87,13 @@ function naruTorso(g,S,H,ws,wh,lean){
 }
 /* uma perna: coxa -> joelho -> pe, calca laranja, com ataduras brancas na canela da frente */
 function naruLeg(g,hip,knee,foot,front,wrap){
- pxLimb(g,hip,knee,7.6,6.8,NM);pxLimb(g,knee,foot,6.6,5.6,NM);
+ pxLimb(g,hip,knee,6.6,6.0,NM);pxLimb(g,knee,foot,5.8,5.0,NM);
  g.put(Math.round(knee[0]+(front?2:-1)),Math.round(knee[1]-1),'k');
  if(wrap){const a=[knee[0]+(foot[0]-knee[0])*.55,knee[1]+(foot[1]-knee[1])*.55];pxLimb(g,a,[foot[0],foot[1]-.5],6,5.2,{base:'A',shade:'a',hi:'W',dark:'r',fold:'r'});for(let i=0;i<3;i++){const u=.1+i*.3,c=[a[0]+(foot[0]-a[0])*u,a[1]+(foot[1]-a[1])*u];g.line(c[0]-3,c[1],c[0]+3,c[1]+.6,'r',['A','a']);}}
 }
 /* um braco com manga laranja e a mao */
 function naruArm(g,sh,el,ha,hdir,open){
- pxLimb(g,sh,el,6.4,5.6,NM);pxLimb(g,el,ha,5.6,4.6,NM,'m');
+ pxLimb(g,sh,el,5.4,4.8,NM);pxLimb(g,el,ha,4.8,4.0,NM,'m');
  g.ell(sh[0],sh[1]+.5,3.1,3.3,'O');g.put(Math.round(sh[0]-1),Math.round(sh[1]-1),'Q');g.put(Math.round(sh[0]-2),Math.round(sh[1]+1),'q');
  pxHand(g,[ha[0]+Math.cos(hdir)*2,ha[1]+Math.sin(hdir)*2],hdir,open);
 }
@@ -104,7 +102,7 @@ function naruFinish(g){g.outline('K');g.selout('K',NAR_DARK);return g;}
 function naruPelvis(g,hB,hF,yTop){
  const mx=(hB[0]+hF[0])/2;
  g.poly([[hB[0]-5,yTop],[hF[0]+4,yTop],[hF[0]+7,hF[1]+1],[hF[0]+2,hF[1]+5],[mx,hF[1]+1],[hB[0]+1,hB[1]+5],[hB[0]-5,hB[1]+1]],'O');
- g.poly([[hB[0]-5,yTop],[hB[0]+3,yTop],[hB[0]+2,hB[1]+6],[hB[0]-5,hB[1]+1]],'q');g.shade([[hB[0]-5,hB[1]-1],[hB[0]+2,hB[1]-1],[hB[0]+2,hB[1]+6],[hB[0]-5,hB[1]+6]],['q'],'m');
+ g.poly([[hB[0]-5,yTop],[hB[0]+1,yTop],[hB[0]+1,hB[1]+5],[hB[0]-5,hB[1]+1]],'q');g.line(hB[0]-4,hB[1]+1,hB[0],hB[1]+4,'m',['q']);
  g.poly([[hF[0]-2,yTop+2],[hF[0]+4,yTop+1],[hF[0]+7,hF[1]+1],[hF[0]+3,hF[1]+4]],'Q');
  g.line(mx-1,yTop+2,mx,hF[1]+1,'m');g.line(hB[0]+1,hB[1]-3,hB[0]+4,hB[1]+1,'m',['O','q']);g.line(hF[0]-1,hF[1]-3,hF[0]+2,hF[1]+1,'q',['O','Q']);g.put(Math.round(hF[0]+5),Math.round(yTop+3),'k');}
 /* monta um Naruto a partir das juntas */
@@ -114,20 +112,20 @@ function naruBuild(c){const g=PixGrid(56,80);
  if(c.extra)c.extra(g,'legs');
  naruArm(g,c.ba[0],c.ba[1],c.ba[2],c.ba[3],false);
  naruPelvis(g,c.bl[0],c.fl[0],c.H[1]-2);
- naruTorso(g,c.S,c.H,c.ws||18,c.wh||15);
+ naruTorso(g,c.S,c.H,c.ws||16,c.wh||13);
  naruHead(g,c.head[0],c.head[1],c.head[2]);
  if(c.mid)c.mid(g);
  naruArm(g,c.fa[0],c.fa[1],c.fa[2],c.fa[3],!!c.fa[4]);
  if(c.extra)c.extra(g,'top');
  return naruFinish(g);}
-const naruGuard=()=>naruBuild({bl:[[19,51],[13,60.5],[11,71]],bs:5,fl:[[34,51],[42.5,58],[43.5,71]],fs:38.5,S:[29,29],H:[28,46],head:[8,6],ba:[[22,31],[15,36],[8,44],2.2],fa:[[37,30],[43,35],[49,43],.7]});
-const naruPunch=()=>naruBuild({bl:[[20,51],[13,60],[7,70.5]],bs:0,fl:[[34,50],[43,56],[44.5,71]],fs:38.5,S:[31,29],H:[28,46],head:[10,6,{mouth:true}],ba:[[23,31],[17,38],[17,45],1.6],fa:[[39,29],[47,30],[54,30],0]});
-const naruHit=()=>naruBuild({bl:[[19,51],[16,61],[14,71]],bs:8,fl:[[32,51],[37,61],[38,71]],fs:32.5,S:[25,29],H:[26,46],ws:17,head:[1,4,{shut:true,mouth:true}],ba:[[18,31],[12,36],[5,41],2.5],fa:[[31,29],[37,33],[42,38],.9]});
-const naruKick=()=>naruBuild({bl:[[22,51],[21,61],[20,71]],bs:14,fl:[[34,47],[44,46.5],[52,46]],S:[26,28],H:[26,45],head:[2,3],ba:[[17,29],[11,31.5],[4,34],3.3],fa:[[31,28],[36,29],[38,23],-1.3],
+const naruGuard=()=>naruBuild({bl:[[19,51],[13,60.5],[11,71]],bs:5,fl:[[34,51],[42.5,58],[43.5,71]],fs:38.5,S:[29,29],H:[28,46],head:[6,7],ba:[[22,31],[15,36],[8,44],2.2],fa:[[37,30],[43,35],[49,43],.7]});
+const naruPunch=()=>naruBuild({bl:[[20,51],[13,60],[7,70.5]],bs:0,fl:[[34,50],[43,56],[44.5,71]],fs:38.5,S:[31,29],H:[28,46],head:[8,7,{mouth:true}],ba:[[23,31],[17,38],[17,45],1.6],fa:[[39,29],[47,30],[54,30],0]});
+const naruHit=()=>naruBuild({bl:[[19,51],[16,61],[14,71]],bs:8,fl:[[32,51],[37,61],[38,71]],fs:32.5,S:[25,29],H:[26,46],ws:17,head:[2,5,{shut:true,mouth:true}],ba:[[18,31],[12,36],[5,41],2.5],fa:[[31,29],[37,33],[42,38],.9]});
+const naruKick=()=>naruBuild({bl:[[22,51],[21,61],[20,71]],bs:14,fl:[[34,47],[44,46.5],[52,46]],S:[26,28],H:[26,45],head:[3,4],ba:[[17,29],[11,31.5],[4,34],3.3],fa:[[31,28],[36,29],[38,23],-1.3],
  extra:(g,w)=>{if(w==='legs'){g.poly([[50.5,41],[53.5,41],[55.5,43],[55.5,51],[50.5,51]],'N');g.line(55,42,55,50,'n');g.line(51,42,51,50,'v');g.put(52,42,'S');}}});
-const naruSeal=()=>naruBuild({bl:[[19,51],[13,60.5],[11,71]],bs:5,fl:[[34,51],[42.5,58],[43.5,71]],fs:38.5,S:[29,29],H:[28,46],head:[8,6],ba:[[22,31],[26,36],[31,36],0],fa:[[37,30],[41,35],[36,36],3.0],
+const naruSeal=()=>naruBuild({bl:[[19,51],[13,60.5],[11,71]],bs:5,fl:[[34,51],[42.5,58],[43.5,71]],fs:38.5,S:[29,29],H:[28,46],head:[6,7],ba:[[22,31],[26,36],[31,36],0],fa:[[37,30],[41,35],[36,36],3.0],
  extra:(g,w)=>{if(w==='top'){g.poly([[31.5,25],[34.5,25],[34.5,31.5],[31.5,31.5]],'S');g.line(33,25,33,30,'t');g.put(32,25,'W');}}});
-const naruBlock=()=>naruBuild({bl:[[19,51],[13,60.5],[11,71]],bs:5,fl:[[34,51],[42.5,58],[43.5,71]],fs:38.5,S:[29,31],H:[28,47],head:[8,8,{shut:true}],ba:[[22,33],[28,38],[37,27],-.8],fa:[[37,32],[40,37],[31,26],-2.3]});
+const naruBlock=()=>naruBuild({bl:[[19,51],[13,60.5],[11,71]],bs:5,fl:[[34,51],[42.5,58],[43.5,71]],fs:38.5,S:[29,31],H:[28,47],head:[6,9,{shut:true}],ba:[[22,33],[28,38],[37,27],-.8],fa:[[37,32],[40,37],[31,26],-2.3]});
 /* caido: deitado de costas, grade mais larga */
 function naruDown(){const g=PixGrid(84,48),GYd=45;
  pxLimb(g,[44,38],[53,28],7,6.4,NM);pxLimb(g,[53,28],[58,42],6.4,5.6,NM);g.poly([[57,40],[66,39.5],[69,41.5],[69,45],[57,45]],'N');g.line(58,44,68,44,'n');g.line(58,41,63,41,'v');
