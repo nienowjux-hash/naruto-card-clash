@@ -34,13 +34,13 @@ const SM={ /* Sasuke: custo c, dano base d */
  copRas:{c:18,d:22,once:true,needsCopy:'rasengan'},copBun:{c:15,d:24,once:true,needsCopy:'bunshin'},copy:{c:8,d:0,copy:true}};
 const NM={ /* Naruto: custo c, acertos h */
  rasengan:{c:30,h:[30]},bunshin:{c:25,h:[6,6,6,14]},uzumaki:{c:35,h:[6,6,6,6,16]},kamikaze:{c:30,h:[5,5,5,5,14]},
- kuchiyose:{c:50,h:[20],summon:true},oiroke:{c:10,h:[],stun:.6,stunN:1},harem:{c:20,h:[],stun:.9,stunN:2},soco:{c:0,h:[10]},chute:{c:0,h:[12]}};
+ kuchiyose:{c:50,h:[20],summon:true},oiroke:{c:10,h:[],stun:.6,stunN:1},harem:{c:20,h:[],stun:.9,stunN:2},soco:{c:0,h:[10]},chute:{c:0,h:[12]},kunai:{c:0,h:[8]},shuriken:{c:0,h:[4,4,4]}};
 function applyTune(obj){for(const [k,v] of Object.entries(obj)){const [mv,f]=k.split('.');if(SM[mv]&&f in SM[mv])SM[mv][f]=v;else if(NM[mv]&&f in NM[mv])NM[mv][f]=v;else if(mv==='toad')TOAD[f]=v;else if(mv==='cfg')CFG_TUNE[f]=v;else if(mv==='elem')EL_TUNE[f]=v;else console.log('parametro desconhecido',k);}}
 const ANTES={'toad.hp':70,'toad.shot':14,'toad.throwKunai':6,'toad.throwShuriken':14,'toad.once':0,'kagesh.c':12,'soushuken.c':15,'cfg.regS':20};
 if(process.argv[4])applyTune(JSON.parse(process.argv[4]));
 const toadOK=st=>!(st.toadCD>0)&&!(TOAD.once&&st.toadUsed);
 const NAR_MOVES=['rasengan','bunshin','uzumaki','kamikaze','kuchiyose','oiroke','harem'];
-const NAR_BASIC=st=>['chute','soco'].filter(k=>nOK(st,k))[0]||'C'; /* sem chakra para golpes: ataque basico gratis */
+const NAR_BASIC=st=>['shuriken','chute','kunai','soco'].filter(k=>nOK(st,k))[0]||'C'; /* sem chakra para golpes: ataque basico gratis */
 const tot=k=>NM[k].h.reduce((a,v)=>a+v,0);
 const KAW_MAX=2; /* usos do Kawarimi por luta (cada personagem) */
 function newState(){const ps=SC.pSide||'S',es=ps==='S'?'N':'S',own=ps==='S'?'sasuke':'naruto';
@@ -100,7 +100,7 @@ function afterNaru(st){if(st.toadCD>0)st.toadCD--;if(st.seal2T>0){st.seal2T--;st
 /* IA do jogo para o Naruto (sem a correcao ela ignora o proprio chakra) */
 function naruAI(st){if(st.kitE&&st.pSide==='S'){if(!st.bunta&&!st.kawN&&st.kuN<KAW_MAX&&st.cn>=10&&st.hn<80&&rnd()<(st.hn<50?.3:.12))return'nkawarimi';if(st.bunta)return rnd()<.5?'nkunai':'nshuriken';if(!st.kyuUsed&&st.hn<=40&&st.kitE.has('kyuubi'))return'kyuubi';
   const jut=NAR_MOVES.filter(j=>st.kitE.has(j)&&NM[j].c<=st.cn&&(j!=='kuchiyose'||toadOK(st))&&!((j==='oiroke'||j==='harem')&&(st.stunS>0||st.immS)));
-  if(jut.length&&rnd()<.8)return jut[Math.floor(rnd()*jut.length)];return rnd()<.5?'soco':'chute';}
+  if(jut.length&&rnd()<.8)return jut[Math.floor(rnd()*jut.length)];const bs=['soco','chute','kunai','shuriken'].filter(b=>st.kitE.has(b));return bs[Math.floor(rnd()*bs.length)];}
  if(st.bunta)return rnd()<.5?'nkunai':'nshuriken';if(!st.kawN&&st.kuN<KAW_MAX&&st.cn>=10&&st.hn<80&&rnd()<(st.hn<50?.3:.12))return'nkawarimi';if(!st.kyuUsed&&st.hn<=40)return'kyuubi';
  const r=rnd(),p=r<.26?'rasengan':r<.48?'bunshin':r<.66?'uzumaki':r<.8?'kamikaze':r<.9?'kuchiyose':r<.96?'oiroke':'harem';
  if(p==='kuchiyose'&&!toadOK(st))return 'rasengan';

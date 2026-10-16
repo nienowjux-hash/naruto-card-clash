@@ -7,7 +7,7 @@ function closeTree(){stopPreview();treeEl().hidden=true;if(!anim&&!outcome&&!tur
 function treeSkillDesc(id){const n=treeNode(treeChar,id);return n?n.d:'';}
 /* simbolo (kanji) de cada golpe no medalhao do no */
 const SKILL_GLYPH={chute:'蹴',kunai:'刃',kawarimi:'替',soco:'拳',shishi:'獅',shuriken:'手',soushuken:'操',kagesh:'影',katon:'火',amaterasu:'天',chidori:'千',genjutsu:'幻',copy:'写',selo:'呪',selo2:'魔',selochidori:'雷',bunshin:'分',uzumaki:'渦',kuchiyose:'蛙',rasengan:'螺',kamikaze:'嵐',kyuubi:'狐',oiroke:'色',harem:'艶'};
-const TREE_BRANCH={sasuke:['Taijutsu','Armas','Fogo','Raio','Sharingan','Selo','Básico'],naruto:['Clones','Vento','Ilusão','Básico']};
+const TREE_BRANCH={sasuke:['Taijutsu','Armas','Fogo','Raio','Sharingan','Selo','Básico'],naruto:['Clones','Vento','Ilusão','Básico','Armas']};
 /* ---- previa animada: grava quadros da propria animacao do golpe (o motor desenha o golpe congelado em cada instante) e toca em loop ---- */
 const PREV={};let prevTimer=null,prevToken=0;
 async function buildPreview(id){

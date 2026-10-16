@@ -104,7 +104,9 @@ const TREES={
   {id:'harem',x:2,y:1,req:['oiroke'],pt:4,d:'Várias garotas com clones: quase sempre o inimigo perde o turno.'},
   {id:'kawarimi',x:3,y:0,req:[],pt:0,base:1,d:'Jutsu de Substituição: troca de lugar com um tronco e evita por completo o próximo golpe, sem o inimigo perceber (2 usos por luta).'},
   {id:'soco',x:3,y:1,req:[],pt:0,base:1,d:'Avança e acerta um soco no rosto.'},
-  {id:'chute',x:3,y:2,req:[],pt:0,base:1,d:'Salta e acerta um chute.'}]};
+  {id:'chute',x:3,y:2,req:[],pt:0,base:1,d:'Salta e acerta um chute.'},
+  {id:'kunai',x:4,y:0,req:[],pt:0,base:1,d:'Arremessa um kunai direto no alvo.'},
+  {id:'shuriken',x:4,y:1,req:[],pt:0,base:1,d:'Lança três shurikens seguidas.'}]};
 /* golpes guardados para personagens/fases futuras (nao aparecem na arvore nem no menu): o no pronto para recolocar */
 const TREES_FUTURO={naruto:[
   {id:'odama',x:1,y:3,req:['rasengan'],pt:4,rar:3,lvl:20,elem:'vento',d:'Rasengan Gigante: uma esfera enorme, mais dano e mais chakra.'},

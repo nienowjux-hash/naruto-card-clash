@@ -150,7 +150,7 @@ Os itens também têm raridade (Comum, Incomum, Raro, Épico, Lendário) e exige
 
 ### Kits iniciais e inimigos por nível
 - No nível 1 o **Sasuke** só tem os ataques básicos (Kunai, Shuriken, Soco, Chute), o Kawarimi e a Bola de Fogo (Katon); o **Naruto** tem Soco, Chute, Kawarimi e o Kage Bunshin. Todo o resto é conquistado subindo de nível e gastando pontos: Genjutsu nv 6, Shishi nv 10, **Chidori nv 14 (Raro)**, Sōshūken nv 18, Shuriken Kage nv 22, Copiar nv 26, Selo nv 30...; Naruto: Oiroke nv 3, Uzumaki nv 8, Harem nv 10, **Rasengan nv 14 (Raro)**, Kamikaze nv 20, Kuchiyose nv 28, Kyūbi nv 40.
-- O Naruto ganhou **Soco e Chute** (as animações dos golpes do Sasuke, espelhadas), no menu de comandos e na árvore.
+- O Naruto ganhou **Soco, Chute, Kunai (8 de dano) e Shuriken (4+4+4)** (as animações dos golpes do Sasuke, espelhadas), no menu de comandos e na árvore.
 - Na campanha o inimigo só usa os golpes que o nível do local liberaria (`enemyKit` em `js/00-data.js`): o Genin Rival do Campo de Treino só tem o básico e o Clone das Sombras. A vida e o ataque do inimigo têm um valor por herói (`enc.vs`).
 - O progresso salvo foi reiniciado (`rpgProgV2`) por causa da nova ordem.
 

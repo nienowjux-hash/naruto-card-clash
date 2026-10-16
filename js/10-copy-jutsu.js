@@ -381,3 +381,31 @@ function mirrorBasic(baseId,fxKind){const B=ANIMS[baseId],mir=arr=>arr.map(([t,x
    const h=t-A.hitT;impactFX(f,sx0+6,GY-(baseId==='soco'?53:40),h,5,false);}};}
 ANIMS.nsoco=mirrorBasic('soco');
 ANIMS.nchute=mirrorBasic('chute');
+
+/* ---- arremessos do Naruto no chao (Kunai e Shuriken): a pose de arremesso do Sasuke espelhada; o projetil sai da mao do Naruto e vai ate o Sasuke ---- */
+const vicPose=p=>p===N_HIT||p===N_HITB?S_HIT:p===N_STAG?S_STAG:READY;
+function gKunaiFX(c){
+ const {f,A,t}=c,T0=.85,T1=1.25,hr=rigW(evalPose(A.nP,T0)),P0=[288-hr.hf.hx-3,GY+hr.hf.hy],P1=[interp(A.sX,T1)+6,GY-42];
+ const dx=P1[0]-P0[0],dy=P1[1]-P0[1],dir=Math.atan2(dy,dx);
+ if(t>=T0&&t<T1){const k=(t-T0)/(T1-T0),pos=kk=>[P0[0]+dx*kk,P0[1]+dy*kk-Math.sin(kk*Math.PI)*10];
+  f.globalCompositeOperation='lighter';for(let i=1;i<=9;i++){const kk=k-i*.025;if(kk<0)break;const q=pos(kk);f.fillStyle='rgba(255,225,190,'+((1-i/10)*.7)+')';f.beginPath();f.arc(q[0],q[1],1.1*(1-i/12),0,TAU);f.fill();}
+  f.globalCompositeOperation='source-over';const q=pos(k);drawKunai(f,q[0],q[1],dir+(1-k)*12,1);}
+ const a=t-T1;
+ if(a>=0){if(t<2.7)drawKunai(f,P1[0]+8.5,P1[1],Math.PI+.08,1.05);
+  if(a<.55){f.globalCompositeOperation='lighter';if(a<.3)orb(f,P1[0],P1[1],16*(1-a/.45),[[0,'rgba(255,255,255,.8)'],[.4,'rgba(200,225,255,.4)'],[1,'rgba(120,160,255,0)']]);f.globalCompositeOperation='source-over';}
+  bloodSpray(f,P1[0],P1[1],a,71,14,1);}}
+function gShurikenFX(c){
+ const {f,A,t}=c,R0=[.82,1.02,1.22],H=[1.32,1.52,1.72],sx0=interp(A.sX,1.32),T=[[sx0+6,GY-44],[sx0+3,GY-54],[sx0+5,GY-24]];
+ for(let i=0;i<3;i++){const hr=rigW(evalPose(A.nP,R0[i])),P0=[288-hr.hf.hx-3,GY+hr.hf.hy-1],a=t-H[i];
+  if(t>=R0[i]&&t<H[i]){const k=(t-R0[i])/.5,x=P0[0]+(T[i][0]-P0[0])*k,y=P0[1]+(T[i][1]-P0[1])*k-Math.sin(k*Math.PI)*(8+i*3);
+   f.globalCompositeOperation='lighter';for(let j=1;j<=7;j++){const kk=k-j*.03;if(kk<0)break;const qx=P0[0]+(T[i][0]-P0[0])*kk,qy=P0[1]+(T[i][1]-P0[1])*kk-Math.sin(kk*Math.PI)*(8+i*3);f.fillStyle='rgba(255,220,190,'+((1-j/8)*.6)+')';f.beginPath();f.arc(qx,qy,1.1*(1-j/9),0,TAU);f.fill();}
+   f.globalCompositeOperation='source-over';drawShuriken(f,x,y,t*40+i,.9,false);}
+  if(a>=0){if(t<2.8)drawShuriken(f,T[i][0]+1.2,T[i][1],.4+i*1.1,.8,false);
+   if(a<.4){f.globalCompositeOperation='lighter';orb(f,T[i][0],T[i][1],12*(1-a/.5),[[0,'rgba(255,255,255,.7)'],[.4,'rgba(200,225,255,.35)'],[1,'rgba(120,160,255,0)']]);f.globalCompositeOperation='source-over';}
+   bloodSpray(f,T[i][0],T[i][1],a,91+i,9,1);}}}
+function mirrorShot(baseId,hits,fx){const B=ANIMS[baseId],mir=arr=>arr.map(([t,x])=>[t,384-x]);
+ return{enemy:true,dur:B.dur,hold:B.hold,hitT:B.hitT,hits,cost:0,noLift:true,
+  nP:B.sP,nX:[[0,288],[99,288]],sP:B.nP.map(([t,p])=>[t,vicPose(p)]),sX:mir(B.nX),
+  cam:B.cam.map(([t,c])=>[t,Object.assign({},c,{cx:384-c.cx})]),env:B.env,fx};}
+ANIMS.gkunai=mirrorShot('kunai',[{t:1.25,dmg:8}],gKunaiFX);
+ANIMS.gshuriken=mirrorShot('shuriken',[{t:1.32,dmg:4},{t:1.52,dmg:4},{t:1.72,dmg:4}],gShurikenFX);

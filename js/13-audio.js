@@ -17,7 +17,7 @@ function sfxFatal(){
  [5.6,5.95,6.4,6.9].forEach(a=>{tone('sine',320,110,.07,.12,a);});
  tone('sine',95,34,.45,.65,8.5);nz(.35,'lowpass',1800,150,.55,8.5);
  tone('sine',55,35,1.4,.5,8.7);}
-function sfx(type){if(type==='nsoco')type='soco';if(type==='nchute')type='chute';if(type==='cop_rasengan')type='rasengan';if(type==='cop_bunshin')type='bunshin';
+function sfx(type){if(type==='nsoco')type='soco';if(type==='gkunai')type='kunai';if(type==='gshuriken')type='shuriken';if(type==='nchute')type='chute';if(type==='cop_rasengan')type='rasengan';if(type==='cop_bunshin')type='bunshin';
  if(type==='shishi'){nz(.3,'bandpass',500,2400,.22,.5);nz(.12,'highpass',3000,8000,.3,.85);tone('sine',110,38,.4,.7,.85);[1.2,1.35,1.5,1.65,1.8].forEach(a=>{nz(.08,'bandpass',1500,700,.4,a);tone('sine',130,50,.15,.45,a);});nz(.3,'highpass',2500,8000,.3,2.1);tone('sine',60,26,.9,.9,2.2);nz(.7,'lowpass',2600,160,.8,2.2);return;}
  if(type==='selochidori'){tone('sine',55,48,1.8,.35,.7);nz(1.6,'bandpass',200,900,.22,.8);tone('sawtooth',90,400,1.1,.05,1.0,8);nz(.5,'highpass',3000,9000,.25,1.9);tone('sine',2600,3600,.7,.04,2.4);nz(.3,'highpass',3500,9000,.6,3.2);nz(.5,'lowpass',2000,150,.8,3.2);tone('sine',90,28,.7,.8,3.2);return;}
  if(type==='selo2'){tone('sine',48,40,2.4,.45,.6);nz(2.0,'bandpass',180,1000,.28,.7);tone('sawtooth',80,520,1.6,.06,.9,9);[1.3,1.6,1.9,2.2].forEach(a=>tone('sine',60,34,.22,.45,a));nz(.6,'highpass',3000,9000,.4,2.0);tone('sine',90,28,1.0,.9,2.4);nz(.9,'lowpass',2600,150,.8,2.4);nz(.5,'highpass',3500,9000,.5,2.45);return;}

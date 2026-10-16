@@ -120,6 +120,8 @@ function showNarutoMenu(){menuOpen='main';const h=$('hand');h.innerHTML='';setHe
   add('Defender','Corta o próximo dano pela metade e recupera chakra.','#8fb4ff',3,null,()=>idleActN('defend'));
   add('Concentrar','Recupera chakra.','#7fd4ff',4,null,()=>idleActN('charge'));
   setCommands(!anim&&!outcome&&!turnLock);return;}
+ add('Kunai','Arremessa um kunai direto no Sasuke (8 de dano, sem custo).','#b8c4d8',0,null,()=>enemyTurn('gkunai'),()=>!bunta);
+ add('Shuriken','Lança três shurikens seguidas (4+4+4 de dano, sem custo).','#9fb0c8',0,null,()=>enemyTurn('gshuriken'),()=>!bunta);
  add('Soco','Avança e acerta um soco no rosto (10 de dano, sem custo).','#ffb04a',0,null,()=>enemyTurn('nsoco'),()=>!bunta);
  add('Chute','Salta e acerta um chute (12 de dano, sem custo).','#ff8a4a',0,null,()=>enemyTurn('nchute'),()=>!bunta);
  add(kyuT>0?'Rasengan da Kyūbi':'Rasengan',kyuT>0?'Rasengan vermelho com o chakra da raposa (+35%).':'Esfera giratória no Sasuke (30 de dano).',kyuT>0?'#ff4a1a':'#6fb8ff',1,ANIMS.rasengan.cost,()=>enemyTurn('rasengan'),()=>!bunta);
@@ -161,7 +163,7 @@ function endEnemyTurn(){kyuTick();if(stunS>0&&!outcome){stunS--;if(stunS===0)imm
 /* IA do Naruto com kit limitado (campanha): escolhe entre os jutsus liberados que consegue pagar; sem chakra ou 20% das vezes, ataque basico */
 function kitHasN(id){const K=enemyKitOf('naruto');return !K||K.has(id);}
 function naruKitPick(){const K=enemyKitOf('naruto');if(!K)return null;
- const jut=['rasengan','bunshin','uzumaki','kamikaze','kuchiyose','oiroke','harem'].filter(j=>K.has(j)&&ANIMS[j].cost<=ck.n&&!(j==='kuchiyose'&&(bunta||toadUsed))&&!((j==='oiroke'||j==='harem')&&(stunS>0||immS))),bas=['nsoco','nchute'];
+ const jut=['rasengan','bunshin','uzumaki','kamikaze','kuchiyose','oiroke','harem'].filter(j=>K.has(j)&&ANIMS[j].cost<=ck.n&&!(j==='kuchiyose'&&(bunta||toadUsed))&&!((j==='oiroke'||j==='harem')&&(stunS>0||immS))),bas=['nsoco','nchute','gkunai','gshuriken'].filter(b=>{const id={nsoco:'soco',nchute:'chute',gkunai:'kunai',gshuriken:'shuriken'}[b];return K.has(id);});
  if(jut.length&&Math.random()<.8)return jut[Math.floor(Math.random()*jut.length)];return bas[Math.floor(Math.random()*bas.length)];}
 function enemyTurn(force){if(typeof force!=='string')force=null;if(outcome||anim)return;battleOn=true;const isToad=force==='teppodama';if(!isToad&&stunN&&!roleN){stunN=false;immN=true;skipEnemy('Naruto está preso na ilusão e perde o turno');return;}if(!isToad&&((sealT>0&&Math.random()<.3)||(seal2T>0&&Math.random()<.4))){skipEnemy('Sasuke desvia com a velocidade do selo!');return;} if(!isToad)immN=false; const type=force||(!bunta&&!kyuUsed&&hp.n<=40&&kitHasN('kyuubi')?'kyuubi':null)||(bunta?(Math.random()<.5?'nkunai':'nshuriken'):null)||(()=>{if(!roleN&&!kawN&&kawUseN<KAWARIMI_MAX&&ck.n>=KAWARIMI_COST&&hp.n<80&&Math.random()<(hp.n<50?.3:.12))return'nkawarimi';const kp=naruKitPick();if(kp)return kp;const r=Math.random();const pick=r<.26?'rasengan':r<.48?'bunshin':r<.66?'uzumaki':r<.8?'kamikaze':r<.9?'kuchiyose':r<.96?'oiroke':'harem';let p=pick;if(p==='kuchiyose'&&(bunta||toadUsed))p='rasengan';if((p==='oiroke'||p==='harem')&&(stunS>0||immS))p='rasengan';
   if(!roleN&&ANIMS[p].cost>ck.n){const ok=['rasengan','bunshin','uzumaki','kamikaze'].concat((bunta||toadUsed)?[]:['kuchiyose']).concat((stunS>0||immS)?[]:['oiroke','harem']).filter(k=>ANIMS[k].cost<=ck.n);p=(ok.length&&Math.random()<.75)?ok[Math.floor(Math.random()*ok.length)]:'concentrate';}
