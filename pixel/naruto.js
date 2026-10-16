@@ -31,16 +31,17 @@ function naruHeadRows(mod){
  const set=(y,x,s)=>{for(let i=0;i<s.length;i++)rows[y][x+i]=s[i];};
  if(!(mod&&mod.shut)){set(12,16,'sKKKKSSSKKKKSK');set(13,16,'sWeEWSSSWEeWSK');set(14,16,'SKjeKSSSKejKSK');}
  /* bigodes de raposa (3 em cada bochecha) */
- set(15,16,'tt');set(15,27,'tt');set(16,16,'t');set(16,17,'t');set(16,26,'tt');set(17,17,'t');set(17,26,'t');
+ set(15,16,'oo');set(15,27,'oo');set(16,17,'o');set(16,27,'o');set(17,17,'o');set(17,26,'o');
  /* sorriso largo com dentes, ou boca aberta */
- if(!(mod&&mod.mouth)){set(17,19,'oKKKKo');set(18,20,'WWWW');}
+ if(!(mod&&mod.mouth)){set(17,20,'KWWK');set(18,21,'KK');}else{set(17,20,'KKK');set(18,20,'KoK');}
  return rows;}
 function r0len(rows,y){return rows[y].length;}
 function naruHead(g,ox,oy,mod){
  naruHeadRows(mod).forEach((r,y)=>g.put(ox,y+oy,r.join('')));
  const dx=ox-4,dy=oy-1,L=(a,b,c,d,k)=>g.line(a+dx,b+dy,c+dx,d+dy,k,['Y']);
  L(33,7,24,6,'y');L(28,5,17,7,'y');L(21,6,11,9,'y');L(16,9,8,11,'y');
- g.put(14+dx,10+dy,'b');g.put(12+dx,11+dy,'bBb');g.put(11+dx,12+dy,'bBB');g.put(10+dx,13+dy,'bB');g.put(10+dx,14+dy,'b');g.put(14+dx,13+dy,'Bb');g.put(15+dx,14+dy,'b');
+ /* mechas soltas atras da faixa (no lugar das pontas azuis) */
+ g.put(14+dx,10+dy,'y');g.put(12+dx,11+dy,'yYy');g.put(11+dx,12+dy,'yYY');g.put(10+dx,13+dy,'yY');g.put(10+dx,14+dy,'x');g.put(14+dx,13+dy,'Yy');g.put(15+dx,14+dy,'y');
 }/* cabeca deitada (rosto para cima) */
 function naruHeadLying(g,ox,oy,groundY,mod){
  const tmp=PixGrid(44,34);naruHead(tmp,0,6,mod);const rows=tmp.G,Wd=44;
