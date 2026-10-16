@@ -1221,11 +1221,12 @@ function socoFX(c){
  for(let i=3;i>=1;i--){const tt=t-i*.04;if(tt<.55||tt>.88)continue;const P2=evalPose(ANIMS.soco.sP,tt),x2=interp(ANIMS.soco.sX,tt);blit(x2,GY,false,SASUKE,P2,c.time,{tint:[255,255,255],tk:.5,alpha:.28-i*.07,noRefl:true});}
  const a=t-.85;impactFX(f,nx0-6,GY-53,a,5,false);if(a>=0)bloodSpray(f,nx0-6,GY-52,a,7,16,-1);}
 ANIMS.soco={dur:3.0,hold:.85,hitT:.85,dmg:10,cost:0,
- sP:[[0,READY],[.4,READY],[.5,PN_W],[.62,PN_D],[.8,PN_D],[.85,PN_P],[1.1,PN_P],[1.5,PN_R],[2.0,READY],[3.0,READY]],
- sX:[[0,96],[.4,96],[.52,88],[.62,150],[.82,252],[1.2,252],[1.9,96],[3.0,96]],
+ tp:[1.3],
+ sP:[[0,READY],[.4,READY],[.5,PN_W],[.62,PN_D],[.8,PN_D],[.85,PN_P],[1.1,PN_P],[1.29,PN_P],[1.31,READY],[3.0,READY]],
+ sX:[[0,96],[.4,96],[.52,88],[.62,150],[.82,252],[1.29,252],[1.31,96],[3.0,96]],
  nP:[[0,N_READY],[.8,N_READY],[.85,N_HIT],[1.3,N_STAG],[2.0,N_READY],[3.0,N_READY]],
  nX:[[0,288],[.83,288],[.95,298],[1.4,304],[2.4,290],[3.0,288]],
- cam:[[0,{z:1.04,cx:192,cy:116}],[.4,{z:1.04,cx:192,cy:116}],[.7,{z:1.3,cx:170,cy:128}],[.9,{z:1.5,cx:262,cy:130}],[1.5,{z:1.3,cx:230,cy:128}],[2.2,{z:1.04,cx:192,cy:116}],[3.0,{z:1.04,cx:192,cy:116}]],
+ cam:[[0,{z:1.04,cx:192,cy:116}],[.4,{z:1.04,cx:192,cy:116}],[.7,{z:1.3,cx:170,cy:128}],[.9,{z:1.5,cx:262,cy:130}],[1.38,{z:1.45,cx:250,cy:130}],[1.75,{z:1.15,cx:205,cy:122}],[2.2,{z:1.04,cx:192,cy:116}],[3.0,{z:1.04,cx:192,cy:116}]],
  env:(raw,t)=>{const a=t-.85,E={};if(a>0&&a<.4)E.shk=5*(1-a/.4);if(a>=0&&a<.03)E.flash=.35;else if(a>=.03&&a<.1)E.flash=.12;return E;},
  fx:c=>socoFX(c)};
 /* ---- fatality do Soco: o soco quebra o pescoco, a cabeca gira para tras ---- */
@@ -1278,12 +1279,13 @@ function chuteFX(c){
  for(let i=3;i>=1;i--){const tt=t-i*.04;if(tt<.6||tt>.95)continue;const P2=evalPose(ANIMS.chute.sP,tt),x2=interp(ANIMS.chute.sX,tt),y2=GY+(function(){const q=ANIMS.chute.sArc;return (tt>q[0]&&tt<q[1])?-Math.sin((tt-q[0])/(q[1]-q[0])*Math.PI)*q[2]:0;})();blit(x2,y2,false,SASUKE,P2,c.time,{tint:[255,255,255],tk:.5,alpha:.28-i*.07,noRefl:true});}
  const a=t-.95;impactFX(f,nx0-5,GY-40,a,6,false);if(a>=0)bloodSpray(f,nx0-5,GY-40,a,8,12,-1);}
 ANIMS.chute={dur:3.2,hold:.95,hitT:.95,dmg:12,cost:0,
- sP:[[0,READY],[.4,READY],[.55,CK_W],[.7,PN_D],[.85,CK_K],[1.15,CK_K],[1.5,CK_L],[2.1,READY],[3.2,READY]],
- sX:[[0,96],[.4,96],[.54,87],[.7,170],[.93,256],[1.2,256],[2.0,96],[3.2,96]],
+ tp:[1.35],
+ sP:[[0,READY],[.4,READY],[.55,CK_W],[.7,PN_D],[.85,CK_K],[1.15,CK_K],[1.34,CK_K],[1.36,READY],[3.2,READY]],
+ sX:[[0,96],[.4,96],[.54,87],[.7,170],[.93,256],[1.34,256],[1.36,96],[3.2,96]],
  sArc:[.7,1.15,26],
  nP:[[0,N_READY],[.9,N_READY],[.95,N_HITB],[1.4,N_STAG],[2.1,N_READY],[3.2,N_READY]],
  nX:[[0,288],[.93,288],[1.1,318],[1.5,325],[2.4,300],[3.0,288]],
- cam:[[0,{z:1.04,cx:192,cy:116}],[.4,{z:1.04,cx:192,cy:116}],[.7,{z:1.3,cx:190,cy:128}],[.95,{z:1.5,cx:272,cy:130}],[1.6,{z:1.3,cx:262,cy:128}],[2.4,{z:1.04,cx:192,cy:116}],[3.2,{z:1.04,cx:192,cy:116}]],
+ cam:[[0,{z:1.04,cx:192,cy:116}],[.4,{z:1.04,cx:192,cy:116}],[.7,{z:1.3,cx:190,cy:128}],[.95,{z:1.5,cx:272,cy:130}],[1.42,{z:1.45,cx:255,cy:130}],[1.8,{z:1.15,cx:205,cy:122}],[2.4,{z:1.04,cx:192,cy:116}],[3.2,{z:1.04,cx:192,cy:116}]],
  env:(raw,t)=>{const a=t-.95,E={};if(a>0&&a<.4)E.shk=6*(1-a/.4);if(a>=0&&a<.03)E.flash=.35;else if(a>=.03&&a<.1)E.flash=.12;return E;},
  fx:c=>chuteFX(c)};
 /* ---- fatality do Chute: o Naruto voa e se arrebenta contra a parede de pedra ---- */
@@ -2566,12 +2568,14 @@ function render(ts){
  if(type==='katon'&&t>1.82&&t<2.4)sOpt.light={x:rS.C[0]+3.2,y:rS.C[1]+2.6,r:28,col:[255,150,50],k:.7};
  const sFlip=(type==='kawarimi'&&t>1.9&&(LW(type)||t<3.2))||(LC(type)&&t>6.7)||(decap&&!A&&outcome==='S');
  {const l2=(type==='selo2')?scaleAt(0,1,1.0,2.4,t):(type==='selochidori'?1:(seal2T>0?1:0));const cs=(l2>0)?0:(type==='selo'?scaleAt(0,1,.8,2.0,t):(sealT>0?1:0));if(l2>0){sOpt.lv2=l2;sOpt.lv2h=(type==='selo2')?scaleAt(0,1,2.35,2.95,t):1;if(type==='selochidori'){sOpt.tint=[50,20,90];sOpt.tk=.2;}}else if(cs>0)sOpt.curse=cs;}
+ if(A&&A.tp&&!LG(type)&&!lethal)sOpt.alpha=clamp(Math.abs(t-A.tp[0])/.07,0,1); /* teleporte: some no lugar do golpe e aparece na posicao inicial */
  sOpt.rot=sRot;sOpt.vel=vS;blit(sx0,GY+sy0,sFlip,SASUKE,sP,time,sOpt);
  if(pierce){drawN(); /* o braco entra no peito do Naruto: ele e desenhado por cima do Sasuke e so a parte de fora da frente do corpo reaparece */
   const o2=Object.assign({},sOpt,{noRefl:true});
   g.save();g.beginPath();g.rect(-50,-50,nx0-7+50,H+100);g.clip();blit(sx0,GY+sy0,false,SASUKE,sP,time,o2);g.restore();}
  if((LW(type)&&t>=2.68)||(decap&&!A&&outcome==='S')){const LL2=ANIMS.kawarimi.L,age2=LW(type)?t-2.68:99,hs2=headSim(LL2.head0[0],LL2.head0[1],age2);drawFlyHead(g,hs2.x,hs2.y,hs2.r,nP,time);}
  if(A&&A.clonesFn&&!LG(type))A.clonesFn(ctx);
+ if(A&&A.tp&&!LG(type)&&!lethal){const k=A.tp[0],xo=interp(A.sX,k-.02);puff(f,xo,GY-24,t-k,5);puff(f,96,GY-24,t-k-.04,6);}
  if(A&&A.enemy){if(type==='bunshin')drawClones(t,time);drawN();}
 
  /* ---- FX ---- */
