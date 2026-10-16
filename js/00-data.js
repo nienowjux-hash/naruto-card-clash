@@ -51,13 +51,13 @@ const MOVES={
  kyuubi:{name:'Chakra da Kyūbi',elem:'yang',tipo:'suporte',lvl:6}};
 /* alias para nomes que aparecem no menu com texto diferente do cadastro */
 const MOVE_ALIAS={'Rasengan da Kyūbi':'rasengan','Kawarimi no Jutsu':'kawarimi'};
+function moveIdByName(n){if(MOVE_ALIAS[n])return MOVE_ALIAS[n];for(const k in MOVES)if(MOVES[k].name===n)return k;return null;}
 function moveByName(n){const id=MOVE_ALIAS[n];if(id)return MOVES[id];for(const k in MOVES)if(MOVES[k].name===n)return MOVES[k];return null;}
 
-/* Fichas de personagem: nivel atual, atributos-base e elementos de afinidade. Os golpes liberados saem de MOVES (lvl <= nivel). */
+/* Fichas de personagem: atributos-base e elementos de afinidade. Nivel, XP e golpes aprendidos ficam em PROG (progresso salvo). */
 const CHARS={
- sasuke:{id:'sasuke',name:'Sasuke Uchiha',level:10,hp:100,ck:100,afin:['fogo','raio'],extras:['yin']},
- naruto:{id:'naruto',name:'Naruto Uzumaki',level:10,hp:100,ck:100,afin:['vento'],extras:['yang']}};
-function moveUnlocked(charId,moveId){const m=MOVES[moveId],c=CHARS[charId];return !m||!c||m.lvl<=c.level;}
+ sasuke:{id:'sasuke',name:'Sasuke Uchiha',hp:100,ck:100,afin:['fogo','raio'],extras:['yin']},
+ naruto:{id:'naruto',name:'Naruto Uzumaki',hp:100,ck:100,afin:['vento'],extras:['yang']}};
 function elemChip(m){if(!m||!m.elem||m.elem==='neutro')return '';const e=ELEMENTS[m.elem];return `<em class="el" style="--ec:${e.col}">${e.name}</em>`;}
 
 /* ---------- Vantagem entre elementos ----------
@@ -72,3 +72,48 @@ function elemMatch(att,def){ /* >0 vantagem, <0 desvantagem, 0 neutro */
  return w&&!l?1:l&&!w?-1:0;}
 function elemMult(att,defCharId){const c=CHARS[defCharId];if(!att||!c)return 1;const m=elemMatch(att,c.afin);return m>0?ELEM_ADV:m<0?ELEM_DIS:1;}
 function elemMsg(mult){return mult>1?'Vantagem elemental! (+40%)':mult<1?'Elemento fraco contra o alvo (-25%)':'';}
+
+/* ---------- Arvore de habilidades ----------
+   Cada no e um golpe: x/y = posicao na tela, req = golpes que precisam estar aprendidos, pt = pontos de habilidade, d = descricao curta.
+   base = ja nasce aprendido (sem custo); start = aprendido no nivel 1. O nivel minimo vem de MOVES[id].lvl. */
+const TREES={
+ sasuke:[
+  {id:'soco',x:0,y:0,req:[],pt:0,base:1,d:'Avança e acerta um soco no rosto.'},
+  {id:'shishi',x:0,y:1,req:['soco'],pt:1,d:'Barragem de Leões: combo aéreo de taijutsu copiado de Rock Lee.'},
+  {id:'shuriken',x:1,y:0,req:[],pt:0,base:1,d:'Lança estrelas ninja que giram até o alvo.'},
+  {id:'soushuken',x:1,y:1,req:['shuriken'],pt:1,d:'Shuriken e kunai guiados por fios invisíveis atacam de ângulos surpresa.'},
+  {id:'kagesh',x:1,y:2,req:['soushuken'],pt:1,d:'Uma shuriken escondida na sombra de outra surpreende o alvo.'},
+  {id:'katon',x:2,y:0,req:[],pt:0,start:1,d:'Uma enorme bola de fogo sai da boca e explode no alvo, causando queimadura.'},
+  {id:'amaterasu',x:2,y:1,req:['katon'],pt:1,d:'Chamas negras que não se apagam. O olho sangra e o alvo queima.'},
+  {id:'chidori',x:3,y:0,req:[],pt:0,start:1,d:'Relâmpagos concentrados na mão: perfura o inimigo em alta velocidade.'},
+  {id:'genjutsu',x:4,y:0,req:[],pt:1,d:'Prende o alvo numa ilusão: ele perde o próximo turno.'},
+  {id:'copy',x:4,y:1,req:['genjutsu'],pt:1,d:'Sharingan: copia o jutsu do inimigo para usar uma vez (Rasengan e Kage Bunshin).'},
+  {id:'selo',x:5,y:0,req:[],pt:1,d:'Selo Amaldiçoado nível 1: mais dano, chakra e esquiva por 3 turnos.'},
+  {id:'selo2',x:5,y:1,req:['selo'],pt:2,d:'Transformação nível 2: poder maior e libera o Chidori Sombrio.'},
+  {id:'selochidori',x:4,y:2,req:['chidori','selo2'],pt:2,d:'O Chidori negro e roxo da transformação. Dano alto e fatality.'}],
+ naruto:[
+  {id:'bunshin',x:0,y:0,req:[],pt:0,start:1,d:'Clones das sombras atacam em sequência.'},
+  {id:'uzumaki',x:0,y:1,req:['bunshin'],pt:1,d:'Clones chutam o inimigo para o alto e o Naruto desce com o calcanhar.'},
+  {id:'kuchiyose',x:0,y:2,req:['bunshin'],pt:2,d:'Invoca o sapo chefe Gama Bunta (uma vez por luta).'},
+  {id:'rasengan',x:1,y:0,req:[],pt:0,start:1,d:'Esfera giratória de chakra de Vento no inimigo.'},
+  {id:'kamikaze',x:1,y:1,req:['rasengan'],pt:1,d:'Gira como um tornado com clones e atravessa o inimigo.'},
+  {id:'kyuubi',x:1,y:2,req:['rasengan'],pt:2,d:'Chakra da Kyūbi: manto de raposa, cura e +35% de dano.'},
+  {id:'oiroke',x:2,y:0,req:[],pt:0,start:1,d:'Vira uma garota para distrair o inimigo: ele pode perder o turno.'},
+  {id:'harem',x:2,y:1,req:['oiroke'],pt:1,d:'Várias garotas com clones: quase sempre o inimigo perde o turno.'}]};
+const MAX_LEVEL=10,PROG_KEY='rpgProgV1';
+const xpNeed=lv=>50*lv; /* XP para sair do nivel lv */
+function progDefault(){const p={};for(const c in TREES)p[c]={level:1,xp:0,pts:0,learned:TREES[c].filter(n=>n.base||n.start).map(n=>n.id)};return p;}
+let PROG=progDefault();
+try{const j=JSON.parse(localStorage.getItem(PROG_KEY)||'null');if(j)for(const c in PROG)if(j[c])Object.assign(PROG[c],j[c]);}catch(e){}
+function saveProg(){try{localStorage.setItem(PROG_KEY,JSON.stringify(PROG));}catch(e){}}
+function treeNode(charId,id){return (TREES[charId]||[]).find(n=>n.id===id);}
+/* golpe liberado? Copias valem se 'copy' foi aprendido; golpes fora da arvore sao sempre livres */
+function moveUnlocked(charId,id){const P=PROG[charId];if(!P)return true;if(id==='cop_rasengan'||id==='cop_bunshin')id='copy';return !treeNode(charId,id)||P.learned.includes(id);}
+/* motivo pelo qual um no ainda nao pode ser aprendido ('' = pode) */
+function learnBlock(charId,id){const P=PROG[charId],n=treeNode(charId,id),m=MOVES[id];if(!n||!P)return 'Golpe inexistente';if(P.learned.includes(id))return 'Já aprendido';
+ if(m.lvl>P.level)return 'Precisa do nível '+m.lvl;const miss=n.req.filter(r=>!P.learned.includes(r));if(miss.length)return 'Antes aprenda: '+miss.map(r=>MOVES[r].name).join(', ');
+ if(P.pts<n.pt)return 'Faltam pontos ('+n.pt+' necessários)';return '';}
+function learnSkill(charId,id){if(learnBlock(charId,id))return false;const P=PROG[charId];P.pts-=treeNode(charId,id).pt;P.learned.push(id);saveProg();return true;}
+/* da XP ao personagem; cada nivel novo da 1 ponto de habilidade. Devolve quantos niveis subiu. */
+function awardXp(charId,amount){const P=PROG[charId];if(!P)return 0;let up=0;if(P.level>=MAX_LEVEL){saveProg();return 0;}P.xp+=amount;while(P.level<MAX_LEVEL&&P.xp>=xpNeed(P.level)){P.xp-=xpNeed(P.level);P.level++;P.pts++;up++;}if(P.level>=MAX_LEVEL)P.xp=0;saveProg();return up;}
+function resetProg(){PROG=progDefault();saveProg();}

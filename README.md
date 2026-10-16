@@ -116,3 +116,8 @@ No manto da Kyūbi o Naruto fica **de quatro**, como uma raposa, e o **Rasengan 
 O Naruto de quatro tem **vários quadros** (em `pixel/naruto-fours.js`): **agacha** com o corpo baixo e a cauda enrolada enquanto a esfera cresce, **corre em galope** (dois quadros alternando, com um salto no arranque e a cauda esticada para trás) e **golpeia em bote**, com o corpo esticado e a pata à frente, vibrando enquanto mói a esfera no Sasuke. O quadro é escolhido pela pose da animação (`fourKeyFor` em `js/03-sprites.js`) e o manto (orelhas e cauda) acompanha cada um.
 
 **Fatality do Rasengan da Kyūbi:** se o Rasengan vermelho mata o Sasuke, a esfera cresce moendo o corpo inteiro, explode em vermelho e deixa um rombo maior, o corpo carbonizado com rachaduras em brasa e uma espiral queimada no chão; o Naruto volta de quatro e ruge.
+
+## Progressão (nível, XP e árvore de habilidades)
+- `js/00-data.js` guarda elementos, golpes, fichas e as árvores (`TREES`); o progresso (nível, XP, pontos, golpes aprendidos) fica em `PROG`, salvo no navegador (`rpgProgV1`).
+- Vitória dá 80 XP e derrota 25 XP ao personagem que você controla; cada nível dá 1 ponto de habilidade (nível máximo 10).
+- O botão "Árvore de habilidades" abre a tela (`js/17-skilltree.js`): cada golpe exige nível mínimo, golpes anteriores e pontos. O menu de comandos só mostra o que foi aprendido.

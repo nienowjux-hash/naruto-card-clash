@@ -98,7 +98,7 @@ function applyDamageS(kind,idx){const S_=WOUNDS.s,t0=performance.now()/1000;
  const BR=(part,u,v,r)=>add({k:'bruise',part,u,v,r,seed:rs()});
  if(kind==='rasengan'){TE('torso',.4,.55,3.2,'#d9b090','#1d2760');for(let i=0;i<3;i++)CU('torso',.35+i*.1,.45,2.2,.5+i*.3);B('torso',.5,.5,2.8,1);BR('armF',.5,0,2.4);B('armF',.6,0,1.2,1);TE('armF',.45,0,2,'#d9b090','#1d2760');F('eyeBruise');F('nose');F('lip');F('cheekCut');}
  else if(kind==='bunshin'){if(idx===0){F('lip');BR('torso',.35,.5,2.6);}else if(idx===1){F('cheekCut');BR('armF',.5,0,2.4);CU('armF',.4,0,2,.4);}else if(idx===2){F('eyeBruise');B('torso',.55,.45,2,1);TE('torso',.6,.5,2.2,'#d9b090','#1d2760');}else{F('nose');F('brow');B('torso',.45,.5,3,1);CU('torso',.5,.4,2.6,-.4);BR('legF',.4,0,2.4);}}}
-function showKO(w){const k=$('ko');k.querySelector('span').textContent=w==='N'?'NARUTO VENCEU':'SASUKE VENCEU';k.classList.remove('on');void k.offsetWidth;k.classList.add('on');}
+function showKO(w){if(typeof giveBattleXp==='function')giveBattleXp(w);const k=$('ko');k.querySelector('span').textContent=w==='N'?'NARUTO VENCEU':'SASUKE VENCEU';k.classList.remove('on');void k.offsetWidth;k.classList.add('on');}
 let turnLock=false;
 function afterAnim(was){if(!was)return;
  if(was.chainKill&&bunta&&!outcome){turnLock=true;setCommands(false);setTimeout(()=>{if(!outcome&&!anim)enemyTurn('teppodama');},400);return;}
@@ -113,7 +113,7 @@ let rasKyu=false;const RAS_KYU_TXT={line:'GRRRAAAAAAH!!!',banner:['九尾螺旋�
 let roleN=false,gdN=false,rasKill=false,uzKill=false,kmKill=false,tpKill=false,stunS=0,immN=false,immS=false,toadUsed=false,kawS=false,kawN=false,kawUseS=0,kawUseN=0;try{roleN=localStorage.getItem('playNaruto')==='1';}catch(e){}
 document.body.classList.toggle('roleN',roleN);
 function showNarutoMenu(){menuOpen='main';const h=$('hand');h.innerHTML='';setHead(bunta?'COMANDOS · GAMA BUNTA EM CAMPO':'JUTSUS DO NARUTO');
- const add=(name,desc,col,k,cost,fn,ok)=>{const b=document.createElement('button');b.className='cmd';b.style.setProperty('--cc',col);b._ok=ok||null;b.innerHTML=`<span class="ic">${h.children.length+1}</span><span class="tx"><b>${name}${elemChip(moveByName(name))}</b><small>${desc}</small></span>`+(cost!=null?`<span class="cost">${cost}<em>CK</em></span>`:'<span></span>');b.onclick=fn;b._cost=cost;h.appendChild(b);};
+ const add=(name,desc,col,k,cost,fn,ok)=>{const mid=moveIdByName(name);if(mid&&!moveUnlocked('naruto',mid))return;const b=document.createElement('button');b.className='cmd';b.style.setProperty('--cc',col);b._ok=ok||null;b.innerHTML=`<span class="ic">${h.children.length+1}</span><span class="tx"><b>${name}${elemChip(moveByName(name))}</b><small>${desc}</small></span>`+(cost!=null?`<span class="cost">${cost}<em>CK</em></span>`:'<span></span>');b.onclick=fn;b._cost=cost;h.appendChild(b);};
  if(bunta){
   add('Kunai','Arremessa um kunai de cima do sapo (3 de dano).','#b8c4d8',1,null,()=>enemyTurn('nkunai'));
   add('Shuriken','Três shurikens de cima do sapo (6 de dano).','#9fb0c8',2,null,()=>enemyTurn('nshuriken'));
@@ -137,7 +137,7 @@ function idleActN(t){if(anim||outcome||turnLock)return;ensureAudio();turnLock=tr
  setBars();setCommands(false);setTimeout(()=>{if(outcome||anim)return;if(bunta)enemyTurn('teppodama');else aiSasuke();},900);}
 /* o Sasuke (IA): escolhe um golpe que consegue pagar; com a vida do Naruto baixa, vai no mais forte */
 function aiSasuke(){if(outcome||anim)return;turnLock=false;
- const pool=ATKS.concat(SASUKE_JUTSUS).filter(cd=>moveUnlocked('sasuke',cd.id)&&cd.live&&ANIMS[cd.id]&&(!cd.show||cd.show())&&(!cd.ok||cd.ok())&&ck.s>=ANIMS[cd.id].cost);
+ const pool=ATKS.concat(SASUKE_JUTSUS).filter(cd=>cd.live&&ANIMS[cd.id]&&(!cd.show||cd.show())&&(!cd.ok||cd.ok())&&ck.s>=ANIMS[cd.id].cost);
  if(!kawS&&kawUseS<KAWARIMI_MAX&&ck.s>=KAWARIMI_COST&&hp.s<70&&Math.random()<(hp.s<45?.3:.12)){ck.s=Math.max(0,ck.s-KAWARIMI_COST);kawS=true;kawUseS++;setBars();toast('Sasuke se prepara...');turnLock=true;setTimeout(()=>{turnLock=false;showMenu('main');setCommands(true);},1100);return;}
  const eff=cd=>effDmg(cd,ANIMS[cd.id]),dmg=pool.filter(cd=>eff(cd)>0);
  if(!dmg.length||ck.s<12||Math.random()<.08){ck.s=Math.min(100,ck.s+25);setBars();toast('Sasuke concentra chakra');turnLock=true;setTimeout(()=>{turnLock=false;showMenu('main');setCommands(true);},1100);return;}
