@@ -197,44 +197,23 @@ ANIMS.suiryudan.L.sfxFn=sfxFatalSui;
 /* ---------- Doton: Tsuiga no Jutsu (Tecnica da Perseguicao Presa) ----------
    O Kakashi bate a palma no chao, uma rachadura corre ate o inimigo e os caes ninja saem da terra, mordem e o prendem (ele perde o turno).
    Fatality: os caes arrastam o Naruto para dentro da terra, que se fecha sobre ele e deixa so uma mao para fora. */
-/* os ninken da referencia: Bull (buldogue grande com coleira de espinhos), Pakkun, dois shibas laranja, um cinza e um filhote */
-const DOG_TYPES={
- bull:{T:'#5c3a22',D:'#34200f',L:'#8a6a48',vest:'#1f2c66',vest2:'#3a4a96',band:'#243276',sn:5.4,collar:1,sc:1.12},
- pakkun:{T:'#a07a40',D:'#5e4220',L:'#cdb07a',vest:'#24388a',vest2:'#4a63b8',band:'#2c3f94',sn:6.5,sc:.74},
- shiba:{T:'#d3822c',D:'#8a4e16',L:'#f1e6cf',vest:'#24388a',vest2:'#4a63b8',band:'#2c3f94',sn:8,sc:.76},
- gray:{T:'#8c8c92',D:'#4a4a52',L:'#d8d8dc',vest:'#24388a',vest2:'#4a63b8',band:'#2c3f94',sn:8,sc:.76},
- pup:{T:'#b88a4a',D:'#6a4a22',L:'#e6d2a4',vest:'#24388a',vest2:'#4a63b8',band:'#2c3f94',sn:6,sc:.5}};
+/* os ninken da referencia (sprites em pixel/ninken.js): Bull (buldogue grande com coleira de espinhos), Pakkun, dois shibas, um cinza e um filhote */
+const DOG_SC={bull:1.1,pug:.84,shiba:.86,gray:.86,pup:.58};
 const TS_DOGS=[
  {sx:-52,bx:-14,by:-8,face:1,ang:-.3,d:0,ty:'shiba'},{sx:-34,bx:-14,by:-28,face:1,ang:-.6,d:.1,ty:'shiba'},
  {sx:44,bx:10,by:-9,face:-1,ang:-.3,d:.05,ty:'gray'},{sx:36,bx:13,by:-33,face:-1,ang:-.55,d:.14,ty:'pakkun'},
  {sx:-18,bx:-5,by:-47,face:1,ang:-.9,d:.18,ty:'bull'},{sx:16,bx:3,by:-24,face:-1,ang:-.8,d:.22,ty:'pup'}];
 /* desenha objetos solidos direto na camada principal (a camada de FX recebe brilho/bloom, que estoura cores escuras) */
 function withG(c,fn){const g=c.g;g.save();setCam(g,c.z,c.sx,c.sy,c.ccx,c.ccy);g.globalAlpha=1;g.globalCompositeOperation='source-over';fn(g);g.restore();}
-function dogDraw(f,x,y,face,ang,jaw,al,sc,P){P=P||DOG_TYPES.pakkun;sc=sc||P.sc;f.save();f.globalCompositeOperation='source-over';f.globalAlpha=al;f.translate(Math.round(x),Math.round(y));f.scale(face*sc,sc);f.rotate(ang);
- const T=P.T,D=P.D,L=P.L,K='#1c1008',SN=P.sn;
- f.strokeStyle=D;f.lineWidth=2.6;f.lineCap='round';f.beginPath();f.moveTo(-10,-1);f.quadraticCurveTo(-17,-6,-14,-12);f.stroke();f.lineCap='butt';
- f.fillStyle=D;f.fillRect(-10,2,3,7);f.fillRect(-5,3,3,7);
- f.fillStyle=T;f.beginPath();f.ellipse(-1,-1,11.5,5.8,0,0,TAU);f.fill();
- f.fillStyle=L;f.beginPath();f.ellipse(0,2.2,8.5,2.6,0,0,TAU);f.fill();
- f.fillStyle=D;f.beginPath();f.ellipse(-3,-4.2,7.5,2.1,0,0,TAU);f.fill();
- f.fillStyle=P.vest;f.fillRect(2,-6.5,4.5,8.5);f.fillStyle=P.vest2;f.fillRect(2,-6.5,4.5,1.2);
- f.fillStyle=T;f.fillRect(6,2,3,7);f.fillRect(9,1,3,7);f.fillStyle=L;f.fillRect(6,8,3,1.6);f.fillRect(9,8,3,1.6);
- f.fillStyle=T;f.beginPath();f.ellipse(9.5,-4.2,4.6,4.4,0,0,TAU);f.fill();
- if(P.collar){f.fillStyle='#454650';f.fillRect(5.2,-6.5,2.4,8);f.fillStyle='#c8ccd8';for(let q=0;q<3;q++){f.beginPath();f.moveTo(5.2,-5.5+q*2.8);f.lineTo(2.4,-6.4+q*2.8);f.lineTo(5.2,-3.9+q*2.8);f.closePath();f.fill();}}
- f.fillStyle=D;f.beginPath();f.moveTo(8,-8);f.lineTo(4.5,-13);f.lineTo(5,-6);f.closePath();f.fill();
- f.fillStyle=T;f.fillRect(11,-5.8,SN,3.6);f.fillStyle=K;f.fillRect(10.6+SN,-6.2,2.6,2.8);
- f.save();f.translate(11,-2.2);f.rotate(jaw);f.fillStyle=L;f.fillRect(0,0,SN,2.6);f.fillStyle='#d94a6a';f.fillRect(0.5,-0.4,SN-1.5,1);f.fillStyle='#fff';f.fillRect(2,-1.6,1.1,1.6);f.fillRect(Math.min(5,SN-2),-1.6,1.1,1.6);f.restore();
- f.fillStyle='#fff';f.fillRect(13.5,-2.2,1.1,1.8);if(SN>7)f.fillRect(16.5,-2.2,1.1,1.8);
- f.fillStyle='#fff';f.fillRect(11.5,-7,2.2,2.2);f.fillStyle='#c0141e';f.fillRect(12.4,-6.8,1.2,1.8);
- f.fillStyle=P.band;f.fillRect(6.5,-9,6,1.6);f.fillStyle='#9aa4c0';f.fillRect(8.4,-9,2,1.6);
- f.restore();}
+/* cao em pixel art: gira em torno do centro do corpo; (face -1 espelha para olhar para a esquerda) */
+function dogDrawS(G,x,y,face,ang,kind,pose,jaw,al){const S=ninkenSprite(kind,pose,jaw),sc=DOG_SC[kind];G.save();G.imageSmoothingEnabled=false;G.globalAlpha=al;G.translate(Math.round(x),Math.round(y));G.scale(face*sc,sc);G.rotate(ang);G.drawImage(S.c,-S.ax,-S.ay);G.restore();}
 /* posicao do cao i em um instante: salto do chao ate a mordida, mantem, e (so na versao normal) volta para o chao */
-function dogState(d,t,nx0,fat){const st=2.0+d.d,u=scaleAt(0,1,st,st+.4,t),rel=fat?99:3.4+d.d,v=scaleAt(0,1,rel,rel+.45,t);
- const fx=Math.cos(d.ang)*13*d.face,fy=Math.sin(d.ang)*13,bpx=nx0+d.bx,bpy=GY+d.by,cx=bpx-fx,cy=bpy-fy,sx=nx0+d.sx,sy=GY;
+function dogState(d,t,nx0,fat,rel0){const st=2.0+d.d,u=scaleAt(0,1,st,st+.4,t),rel=rel0!=null?rel0:(fat?99:3.4+d.d),v=scaleAt(0,1,rel,rel+.5,t),rr=20*DOG_SC[d.ty];
+ const fx=Math.cos(d.ang)*rr*d.face,fy=Math.sin(d.ang)*rr,bpx=nx0+d.bx,bpy=GY+d.by,cx=bpx-fx,cy=bpy-fy,sx=nx0+d.sx,sy=GY;
  let x=sx+(cx-sx)*u,y=sy+(cy-sy)*u-Math.sin(Math.PI*u)*16,ang=d.ang+(1-u)*-.9;
  let al=1,jaw=u<1?.7:Math.max(0,.1+.05*Math.sin(t*14));
  if(v>0){x=cx+(sx-cx)*v;y=cy+(sy-cy)*v-Math.sin(Math.PI*v)*10;al=1-v;ang=d.ang*(1-v);jaw=.4*v;}
- if(u>=1&&!fat){x+=Math.sin(t*38+d.sx)*.7;y+=Math.cos(t*33+d.sx)*.5;}
+ if(u>=1&&v<=0){const w=Math.sin(t*14+d.sx),tug=w*1.6;x+=Math.cos(d.ang)*d.face*tug*-1;y+=Math.sin(d.ang)*tug*-1+Math.cos(t*29+d.sx)*.4;jaw=Math.max(0,1.2+1.2*Math.sin(t*11+d.sx*.1));}
  return{x,y,ang,jaw,al,u,v,bx:bpx,by:bpy,face:d.face,st};}
 function tsPull(t){return scaleAt(0,1,2.9,4.3,t);}
 function moundFX(f,x,k,time){if(k<=0)return;f.save();
@@ -249,10 +228,10 @@ function tsuigaFX(c,fat){const {f,t,time,sx0,nx0}=c,tt=c.A?t:99;
  if(p>0&&tt<(fat?5.2:3.9)){const x0=sx0+16,x1=nx0-6,r2=R(66);f.save();f.strokeStyle='#1c0e06';f.lineWidth=1.3;f.beginPath();f.moveTo(x0,GY+1);const n=Math.round(30*p);for(let i=1;i<=n;i++){const u=i/30;f.lineTo(x0+(x1-x0)*u,GY+1+Math.sin(i*1.7)*1.3+(r2()-.5)*1.4);}f.stroke();
   f.fillStyle='#7a5630';for(let i=0;i<n;i+=2){const u=i/30,x=x0+(x1-x0)*u,ph=((tt*3+i*.37)%1);f.fillRect(Math.round(x),Math.round(GY-1-ph*7),2,2);}f.restore();}
  /* caes */
- for(const [i,d] of TS_DOGS.entries()){const s=dogState(d,tt,nx0,fat);if(tt<s.st||s.al<=0)continue;
+ for(const [i,d] of TS_DOGS.entries()){const s=dogState(d,tt,nx0,fat,fat?undefined:999);if(tt<s.st||s.al<=0)continue;
   const pull=fat?tsPull(tt):0,fadeD=fat?1-scaleAt(0,1,4.1,4.5,tt):1;
   if(tt<s.st+.5){const k=(tt-s.st)/.5;f.save();f.fillStyle=`rgba(130,92,52,${.8*(1-k)})`;const r2=R(900+i);for(let q=0;q<14;q++){const a=-Math.PI*(.05+r2()*.9),sp=8+r2()*22;f.fillRect(Math.round(nx0+d.sx+Math.cos(a)*sp*k),Math.round(GY+Math.sin(a)*sp*k+k*k*18),2,2);}f.restore();}
-  withG(c,G=>dogDraw(G,s.x,s.y+pull*30,s.face,s.ang+(fat?pull*.45*s.face:0),s.jaw,s.al*fadeD,0,DOG_TYPES[d.ty]));
+  const pose=s.u<1||s.v>0?'leap':'bite';withG(c,G=>dogDrawS(G,s.x,s.y+pull*30,s.face,s.ang+(fat?pull*.45*s.face:0),d.ty,pose,Math.round(s.jaw),s.al*fadeD));
   const a=tt-(s.st+.4);if(a>=0&&a<1.0)bloodSpray(f,s.bx,s.by+pull*30,a,700+i*11,6,s.face);}
  /* fatality: terra se fecha sobre ele */
  if(fat){const k=scaleAt(0,1,3.7,4.7,tt);if(k>0){withG(c,G=>moundFX(G,nx0,k,time));
@@ -284,5 +263,15 @@ function sfxFatalTsuiga(){
  nz(1.6,'bandpass',200,700,.3,2.9);tone('sawtooth',90,60,1.4,.08,2.9,7);[3.1,3.4,3.7].forEach(a=>{tone('sawtooth',380,200,.25,.07,a);nz(.15,'bandpass',800,300,.4,a);});
  nz(.7,'lowpass',1400,100,.9,4.3);tone('sine',70,24,1.0,1.0,4.3);nz(.8,'highpass',2500,8000,.4,4.35);nz(1.2,'bandpass',300,1200,.25,4.5);}
 ANIMS.tsuiga.L.sfxFn=sfxFatalTsuiga;
-KAKASHI_JUTSUS.push({id:'tsuiga',name:'Doton: Tsuiga no Jutsu',cost:22,col:'#c99a5a',desc:'Cães ninja saem da terra, mordem e prendem o alvo: 18 de dano e ele perde o próximo turno.',live:true,
- onUse:()=>{if(immN)later(2400,()=>toast('Naruto se soltou dos cães!'));else{stunN=true;later(2400,()=>toast('Naruto está preso pelos cães: perde o próximo turno'));}}});
+KAKASHI_JUTSUS.push({id:'tsuiga',name:'Doton: Tsuiga no Jutsu',cost:22,col:'#c99a5a',desc:'Cães ninja saem da terra, mordem e prendem o alvo: 18 de dano e ele fica imobilizado por 2 turnos, com os cães mordendo.',live:true,
+ onUse:()=>{if(immN)later(2400,()=>toast('Naruto se soltou dos cães!'));else{stunN=true;later(2200,()=>{tsHold=2;tsRelT=-9;toast('Os cães prendem o Naruto: ele perde os próximos 2 turnos');});}}});
+
+/* ---- Tsuiga: o alvo fica preso por 2 turnos dele; os caes continuam mordendo e soltam no fim ---- */
+let tsHold=0,tsRelT=-9; /* turnos do inimigo ainda presos (visual e logica) */
+function tsTurn(){if(tsHold<=0)return null;tsHold--;hp.n=Math.max(1,hp.n-4);dmgPop(4);setBars();const more=tsHold>0;if(!more)tsRelT=performance.now()/1000;
+ return{more,msg:more?'Os cães seguram o Naruto: ele perde o turno (falta mais 1)':'Os cães soltam o Naruto: ele perde o turno'};}
+function tsStatic(c){const {time,nx0}=c,now=performance.now()/1000;
+ for(const [i,d] of TS_DOGS.entries()){const rel=tsHold>0?999:tsRelT;const s=dogState(d,tsHold>0?99:now-tsRelT+2.0+d.d+.0,nx0,false,tsHold>0?999:2.0+d.d+0);
+  if(tsHold>0){const pose='bite';withG(c,G=>dogDrawS(G,s.x,s.y,s.face,s.ang,d.ty,pose,Math.round(s.jaw),1));
+   const r2=R(300+i);if(Math.floor(time*6+i)%3===0){c.f.fillStyle='rgba(150,10,22,.8)';c.f.fillRect(Math.round(s.bx+(r2()-.5)*4),Math.round(s.by+(r2()-.3)*4),2,2);}}
+  else{const k=(now-tsRelT)/.7;if(k<1){const x=s.bx+(nx0+d.sx-s.bx)*k,y=s.by+(GY-s.by)*k-Math.sin(Math.PI*k)*10;withG(c,G=>dogDrawS(G,x,y,s.face,s.ang*(1-k),d.ty,'leap',1,1-k));}}}}

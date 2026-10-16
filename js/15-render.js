@@ -71,7 +71,7 @@ function render(ts){
  else if(outcome==='N'){sP=Object.assign({},S_DOWN);nP=Object.assign({},N_VICT);sx0=tpKill?74:90;nx0=288;}
  else if(outcome){sP=Object.assign({},VICTORY);nP=Object.assign({},N_DOWN);nx0=300;if(chestHole){nP.turn=.35;nP.torn=1;}if(ashed){sP=Object.assign({},AMA_CL2);}if(fatalKind){const S2=ANIMS[fatalKind].L.stat;if(S2){if(S2.nx0!=null)nx0=S2.nx0;if(S2.sx0!=null)sx0=S2.sx0;if(S2.nP)nP=Object.assign({},S2.nP);if(S2.sP)sP=Object.assign({},S2.sP);}}}
  else if(burning){sP=Object.assign({},READY);nP=Object.assign({},interp([[0,N_STAG],[1,N_BURN1],[2,N_STAG],[3,N_BURN2],[4,N_STAG]],(time*.9)%4));}
- else{sP=Object.assign({},READY);nP=Object.assign({},N_READY);}
+ else{sP=Object.assign({},READY);const held=typeof tsHold!=='undefined'&&tsHold>0&&!roleN;nP=Object.assign({},held?N_STAG:N_READY);if(held)nx0+=Math.sin(time*26)*.7;}
  sP=Object.assign({},sP);nP=Object.assign({},nP);
  if(!A||t<.4||t>3.8){ /* respiracao irregular e diferente em cada um: Sasuke calmo, Naruto inquieto */
   const bs=Math.sin(time*2.3),bn=Math.sin(time*3.1+1);
@@ -263,6 +263,7 @@ function render(ts){
    f.globalCompositeOperation='source-over';}
  }
  {const FXF=LG(type)?A.L.fx:(A&&A.fx);if(FXF)FXF(ctx);else if(fatalKind&&!A&&outcome==='S'&&ANIMS[fatalKind].L.fxStatic)ANIMS[fatalKind].L.fxStatic(ctx);}
+ if(typeof tsStatic==='function'&&!roleN&&!outcome&&!lethal&&!(A&&type==='tsuiga')&&(tsHold>0||performance.now()/1000-tsRelT<.7))tsStatic(ctx);
  if(typeof wallStatic==='function'&&!roleN&&!(A&&type==='suijinheki')&&(wallShow||performance.now()/1000-wallBreakT<.8))wallStatic(ctx);
  if(burnt&&!A&&outcome==='S')ashFX(f,time,fr,nx0);
  if(seal2T>0&&type!=='selo2'&&type!=='selochidori'&&!(A&&A.L&&LG(type)))curseAura2(f,sx0,.3,time,fr);else if(sealT>0&&type!=='selo'&&type!=='selochidori'&&!(A&&A.L&&LG(type)))curseAura(f,sx0,.22,time,fr);
