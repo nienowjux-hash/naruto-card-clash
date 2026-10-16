@@ -27,7 +27,7 @@ function soushukenFX(c){
   const a=t-w.t2;if(a>=0&&a<.5){f.globalCompositeOperation='lighter';orb(f,p[0],p[1],14*(1-a/.6),[[0,'rgba(255,255,255,.75)'],[.4,'rgba(200,225,255,.35)'],[1,'rgba(120,160,255,0)']]);f.globalCompositeOperation='source-over';}
   if(a>=0)bloodSpray(f,p[0],p[1],a,121+(front?0:5),front?14:10,1);}
 }
-ANIMS.soushuken={dur:3.4,hold:1.8,hitT:1.8,dmg:28,cost:17,noLift:true,
+ANIMS.soushuken={dur:3.4,hold:1.8,hitT:1.8,dmg:20,cost:17,noLift:true,
  sP:[[0,READY],[.4,READY],[.6,KT_W],[.75,SS_T],[.95,SS_G],[1.6,SS_G],[1.8,SS_P],[2.2,SS_P],[2.7,READY],[3.4,READY]],
  nP:[[0,N_READY],[.9,N_READY],[1.1,N_GUARD],[1.7,N_GUARD],[1.8,N_HITB],[2.0,N_HITB],[2.4,N_STAG],[3.0,N_READY],[3.4,N_READY]],
  nX:[[0,288],[1.75,288],[1.85,280],[2.1,276],[2.8,288],[3.4,288]],
@@ -115,7 +115,7 @@ function kageFlight(c,L,fatal){
  }
  f.strokeStyle='rgba(15,10,30,.8)';f.lineWidth=.5;if(t>=KG.t1+.05){for(let i=0;i<6;i++){const an=i*1.0+.2,l=6+((i*37)%7);f.beginPath();f.moveTo(KG.W1[0]+4,KG.W1[1]);f.lineTo(KG.W1[0]+4+Math.cos(an+Math.PI/2)*l*.5,KG.W1[1]+Math.sin(an+Math.PI/2)*l);f.stroke();}}
 }
-ANIMS.kagesh={dur:3.4,hold:1.5,hitT:1.5,dmg:30,cost:16,noLift:true,
+ANIMS.kagesh={dur:3.4,hold:1.5,hitT:1.5,dmg:21,cost:16,noLift:true,
  nYk:[[0,0],[1.05,0],[1.3,-30],[1.5,-26],[2.0,0],[99,0]],
  sP:[[0,READY],[.4,READY],[.6,KT_W],[.82,KT_T],[1.0,KT_T],[1.5,KT_F],[2.1,READY],[3.4,READY]],
  nP:[[0,N_READY],[.9,N_READY],[1.0,N_GUARD],[1.12,N_JUMP],[1.45,N_JUMP],[1.5,N_HIT],[1.75,N_STAG],[2.3,N_STAG],[2.9,N_READY],[3.4,N_READY]],

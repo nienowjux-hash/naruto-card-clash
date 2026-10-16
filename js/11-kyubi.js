@@ -115,8 +115,8 @@ document.body.classList.toggle('roleN',roleN);
 function showNarutoMenu(){menuOpen='main';const h=$('hand');h.innerHTML='';setHead(bunta?'COMANDOS · GAMA BUNTA EM CAMPO':'JUTSUS DO NARUTO');
  const add=(name,desc,col,k,cost,fn,ok)=>{const mid=moveIdByName(name);if(mid&&!moveUnlocked('naruto',mid))return;const b=document.createElement('button');b.className='cmd';b.style.setProperty('--cc',col);b._ok=ok||null;b.innerHTML=`<span class="ic">${h.children.length+1}</span><span class="tx"><b>${name}${elemChip(moveByName(name))}</b><small>${desc}</small></span>`+(cost!=null?`<span class="cost">${cost}<em>CK</em></span>`:'<span></span>');b.onclick=fn;b._cost=cost;h.appendChild(b);};
  if(bunta){
-  add('Kunai','Arremessa um kunai de cima do sapo (3 de dano).','#b8c4d8',1,null,()=>enemyTurn('nkunai'));
-  add('Shuriken','Três shurikens de cima do sapo (6 de dano).','#9fb0c8',2,null,()=>enemyTurn('nshuriken'));
+  add('Kunai','Arremessa um kunai de cima do sapo (2 de dano).','#b8c4d8',1,null,()=>enemyTurn('nkunai'));
+  add('Shuriken','Três shurikens de cima do sapo (4 de dano).','#9fb0c8',2,null,()=>enemyTurn('nshuriken'));
   add('Defender','Corta o próximo dano pela metade e recupera chakra.','#8fb4ff',3,null,()=>idleActN('defend'));
   add('Concentrar','Recupera chakra.','#7fd4ff',4,null,()=>idleActN('charge'));
   setCommands(!anim&&!outcome&&!turnLock);return;}
@@ -144,7 +144,7 @@ function aiSasuke(){if(outcome||anim)return;turnLock=false;
  if(!dmg.length||ck.s<12||Math.random()<.08){ck.s=Math.min(100,ck.s+25);setBars();toast('Sasuke concentra chakra');turnLock=true;setTimeout(()=>{turnLock=false;showMenu('main');setCommands(true);},1100);return;}
  let cd=null;
  /* com a vida do Naruto baixa, ou com o sapo em campo, vai no golpe mais forte (derruba o sapo logo) */
- if(hp.n<=40||bunta)cd=dmg.slice().sort((a,b)=>eff(b)-eff(a))[0];
+ if(bunta){const kill=dmg.filter(c=>eff(c)>=bunta.hp).sort((a,b)=>ANIMS[a.id].cost-ANIMS[b.id].cost)[0],dr=c=>eff(c)/Math.max(5,ANIMS[c.id].cost);cd=kill||dmg.slice().sort((a,b)=>dr(b)-dr(a))[0];}else if(hp.n<=40)cd=dmg.slice().sort((a,b)=>eff(b)-eff(a))[0];
  else{
   const s2=pool.find(c=>c.id==='selo2');if(s2&&seal2T<=0&&hp.s>55&&ck.s>=55&&Math.random()<.3)cd=s2;
   const gj=dmg.find(c=>c.id==='genjutsu');if(!cd&&gj&&!stunN&&!immN&&Math.random()<.45)cd=gj;
@@ -168,7 +168,7 @@ function enemyTurn(force){if(typeof force!=='string')force=null;if(outcome||anim
  const isLR=lethal&&A.LR;if(type==='rasengan')rasKyu=!!(isLR&&kyuT>0);const LRc=(type==='rasengan'&&rasKyu)?Object.assign({},A.LR||{},RAS_KYU_TXT):A.LR;if(isLR){if(type==='rasengan')rasKill=true;if(type==='uzumaki')uzKill=true;if(type==='kamikaze')kmKill=true;if(type==='teppodama')tpKill=true;}
  anim={type,t0:performance.now(),dur:isLR?A.LR.dur:A.dur+HS,lethal,enemy:true,chainKill,dodge:dodge?mkDodge('S',A):null};if(isLR){later(LRc.speakAt*1000,()=>speak(LRc.line,LRc.speechPos||['44%','14%']));later(LRc.bannerAt*1000,()=>banner(...(LRc.banner||['螺旋丸','FATALITY','Rasengan','#7fd4ff'])));sfxFatal();}setCommands(false);ck.n=Math.max(0,ck.n-A.cost);setBars();sfx(type);
  if(type==='kyuubi'){kyuUsed=true;later(500,()=>speak('Grrrraaaah!!',[roleN?'40%':'58%','14%']));later(KY_ON*1000,()=>{kyuT=KY_TURNS;banner('九尾','CHAKRA DA KYŪBI','Manto da Raposa: cura e força','#ff4a1a');setBars();});}
- if(type==='kuchiyose'){toadUsed=true;later(KU_IN*1000,()=>{bunta={hp:40,max:40};setBars();});}
+ if(type==='kuchiyose'){toadUsed=true;later(KU_IN*1000,()=>{bunta={hp:28,max:28};setBars();});}
  if(type==='teppodama')later(TP_FIRE*1000-300,()=>speak('Teppōdama!',[roleN?'24%':'52%','10%']));
  if(type==='kuchiyose'){later(1150,()=>speak('Kuchiyose no Jutsu!',[roleN?'40%':'56%','16%']));later(1650,()=>banner('口寄せの術','KUCHIYOSE NO JUTSU','Invocação: Gama Bunta','#e8703a'));later(2150,()=>speak('Quem me chamou, moleque?!',[roleN?'24%':'52%','10%']));later(2650,()=>speak('Suiton: Teppōdama!',[roleN?'28%':'48%','10%']));}
  if(type==='kamikaze')later(700,()=>banner('うずまきナルト神風','UZUMAKI NARUTO KAMIKAZE','Tornado com clones','#ffb347'));

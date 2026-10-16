@@ -9,7 +9,7 @@ const DATA=new Function('localStorage',fs.readFileSync(path.join(__dirname,'../j
 const {MOVES,CHARS,TREES,NODES,ITEMS,elemMatch,ELEM_ADV,ELEM_DIS}=DATA;
 /* id do golpe no jogo para cada chave do simulador */
 const SID={copRas:'cop_rasengan',copBun:'cop_bunshin'};const sid=k=>SID[k]||k;
-const eMult=(elem,afin)=>{const m=elemMatch(elem,afin);return m>0?ELEM_ADV:m<0?ELEM_DIS:1;};
+const EL_TUNE={adv:ELEM_ADV,dis:ELEM_DIS};const eMult=(elem,afin)=>{const m=elemMatch(elem,afin);return m>0?EL_TUNE.adv:m<0?EL_TUNE.dis:1;};
 /* cenario atual: nivel/arvore/equipamento de cada lado e inimigo da campanha. gated=false mantem o comportamento antigo (tudo liberado, sem bonus) */
 let SC={gated:false,S:{level:10,tier:0,build:'padrao'},N:{level:10,tier:0,build:'padrao'},enc:null,pills:0};
 const BUILD_ORDER={sasuke:['genjutsu','shishi','soushuken','amaterasu','copy','kagesh','selo','selo2','selochidori'],naruto:['uzumaki','harem','kamikaze','kuchiyose','kyuubi']};
@@ -24,17 +24,17 @@ const rnd=()=>Math.random();
    iaChakra : a IA do Naruto so escolhe golpes que consegue pagar (senao concentra)
    iaEsperta: a IA do Sasuke prefere golpes eficientes e usa o Genjutsu com criterio */
 let CFG={imunidade:false,iaChakra:false,iaEsperta:false};
-const TOAD={hp:40,shot:6,throwKunai:3,throwShuriken:6,cd:0,once:1};const CFG_TUNE={cs0:100,cn0:100,regS:15,regN:15};
+const TOAD={hp:28,shot:4,throwKunai:2,throwShuriken:4,cd:0,once:1};const CFG_TUNE={cs0:100,cn0:100,regS:15,regN:15};
 const SM={ /* Sasuke: custo c, dano base d */
- chidori:{c:30,d:34},katon:{c:20,d:26},amaterasu:{c:50,d:40,burn:true},
- genjutsu:{c:12,d:14,stun:true},shishi:{c:25,d:36},soushuken:{c:17,d:28},kagesh:{c:16,d:30},
+ chidori:{c:30,d:24},katon:{c:20,d:18},amaterasu:{c:50,d:28,burn:true},
+ genjutsu:{c:12,d:14,stun:true},shishi:{c:25,d:25},soushuken:{c:17,d:20},kagesh:{c:16,d:21},
  kunai:{c:0,d:8},shuriken:{c:0,d:12},soco:{c:0,d:10},chute:{c:0,d:12},
  selo:{c:20,d:0,buff:1},selo2:{c:40,d:0,buff:2},selochidori:{c:35,d:44,needs2:true,noSeal:true},
  copRas:{c:18,d:22,once:true,needsCopy:'rasengan'},copBun:{c:15,d:24,once:true,needsCopy:'bunshin'},copy:{c:8,d:0,copy:true}};
 const NM={ /* Naruto: custo c, acertos h */
  rasengan:{c:30,h:[30]},bunshin:{c:25,h:[6,6,6,14]},uzumaki:{c:35,h:[6,6,6,6,16]},kamikaze:{c:30,h:[5,5,5,5,14]},
- kuchiyose:{c:45,h:[32],summon:true},oiroke:{c:10,h:[],stun:.6,stunN:1},harem:{c:20,h:[],stun:.9,stunN:2}};
-function applyTune(obj){for(const [k,v] of Object.entries(obj)){const [mv,f]=k.split('.');if(SM[mv]&&f in SM[mv])SM[mv][f]=v;else if(NM[mv]&&f in NM[mv])NM[mv][f]=v;else if(mv==='toad')TOAD[f]=v;else if(mv==='cfg')CFG_TUNE[f]=v;else console.log('parametro desconhecido',k);}}
+ kuchiyose:{c:50,h:[20],summon:true},oiroke:{c:10,h:[],stun:.6,stunN:1},harem:{c:20,h:[],stun:.9,stunN:2}};
+function applyTune(obj){for(const [k,v] of Object.entries(obj)){const [mv,f]=k.split('.');if(SM[mv]&&f in SM[mv])SM[mv][f]=v;else if(NM[mv]&&f in NM[mv])NM[mv][f]=v;else if(mv==='toad')TOAD[f]=v;else if(mv==='cfg')CFG_TUNE[f]=v;else if(mv==='elem')EL_TUNE[f]=v;else console.log('parametro desconhecido',k);}}
 const ANTES={'toad.hp':70,'toad.shot':14,'toad.throwKunai':6,'toad.throwShuriken':14,'toad.once':0,'kagesh.c':12,'soushuken.c':15,'cfg.regS':20};
 if(process.argv[4])applyTune(JSON.parse(process.argv[4]));
 const toadOK=st=>!(st.toadCD>0)&&!(TOAD.once&&st.toadUsed);
@@ -59,7 +59,7 @@ function sasukeAct(st,k){const m=SM[k];st.cs=Math.max(0,st.cs-m.c);
  if(m.d){if(st.bunta){st.bunta.hp-=dm;if(st.bunta.hp<=0){st.bunta=null;st.toadCD=TOAD.cd;}}else if(!dodgeN)st.hn=Math.max(0,st.hn-dm);}
  if(m.stun&&!dodgeN){if(CFG.imunidade&&st.immN){}else st.stunN=true;}
  if(m.burn&&!dodgeN)st.burning=true;st.guardS=false;}
-const pill=(st,side)=>{st.pills--;if(side==='S')st.hs=Math.min(st.hmS,st.hs+30);else st.hn=Math.min(st.hmN,st.hn+30);};
+const PILL_HP=()=>ITEMS.pilula_vida.use.hp;const pill=(st,side)=>{st.pills--;if(side==='S')st.hs=Math.min(st.hmS,st.hs+PILL_HP());else st.hn=Math.min(st.hmN,st.hn+PILL_HP());};
 const SAS_CONC=st=>{st.cs=Math.min(100,st.cs+25);};
 const SAS_DEF=st=>{st.guardS=true;st.cs=Math.min(100,st.cs+10);};
 /* estrategias do jogador Sasuke */
@@ -76,7 +76,8 @@ const SAS={
 /* IA do Sasuke (quando o jogador e o Naruto) */
 function aiSasuke(st){const pool=Object.keys(SM).filter(k=>can(st,k));if(!st.kawS&&st.kuS<KAW_MAX&&st.cs>=10&&st.hs<70&&rnd()<(st.hs<45?.3:.12))return'K';
  if(CFG.iaEsperta){const dmg=pool.filter(k=>SM[k].d>0&&!SM[k].once);if(!dmg.length||st.cs<12)return'C';
-  if(st.hn<=40||st.bunta)return dmg.sort((a,b)=>effD(st,SM[b])-effD(st,SM[a]))[0]; /* com o sapo em campo: derruba o sapo logo */
+  if(st.bunta&&CFG.iaSapo){const kill=dmg.filter(k=>effD(st,SM[k])>=st.bunta.hp).sort((x,y)=>SM[x].c-SM[y].c)[0];if(kill)return kill;const dr=k=>effD(st,SM[k])/Math.max(5,SM[k].c);return dmg.sort((x,y)=>dr(y)-dr(x))[0];} /* com o sapo em campo: derruba o sapo gastando o minimo de chakra */
+  if(st.hn<=40||st.bunta)return dmg.sort((a,b)=>effD(st,SM[b])-effD(st,SM[a]))[0];
   if(!st.stunN&&can(st,'genjutsu')&&!st.bunta&&rnd()<.5)return'genjutsu';
   const dr=k=>effD(st,SM[k])/Math.max(5,SM[k].c);const w=dmg.map(k=>[k,dr(k)+.4]);const sum=w.reduce((a,x)=>a+x[1],0);let r=rnd()*sum;for(const [k,v] of w){r-=v;if(r<=0)return k;}return w[0][0];}
  if(!pool.length||st.cs<12||rnd()<.1)return'C';if(st.hn<=40)return pool.sort((a,b)=>effD(st,SM[b])-effD(st,SM[a]))[0];return pool[Math.floor(rnd()*pool.length)];}
@@ -144,21 +145,21 @@ function relatorio(nome,cfg){CFG=cfg;console.log('\n=== '+nome+' ('+JSON.stringi
 function winRate(fn,strat,pSide){let w=0,t=0;for(let i=0;i<N;i++){const r=fn(strat);if(r.win===pSide)w++;t+=r.turns;}return{w:100*w/N,t:t/N};}
 const pad=(v,n)=>String(v).padEnd(n);
 function setSC(o){SC=Object.assign({gated:true,S:{level:10,tier:0,build:'padrao'},N:{level:10,tier:0,build:'padrao'},enc:null,pills:0},o);}
-function campanha(){CFG={imunidade:true,iaChakra:true,iaEsperta:true};console.log('\n=== CAMPANHA: cada local no nivel recomendado (equipamento por faixa de nivel, 3 pilulas no curandeiro) ===');
+function campanha(){CFG={imunidade:true,iaChakra:true,iaEsperta:true,iaSapo:true};console.log('\n=== CAMPANHA: cada local no nivel recomendado (equipamento por faixa de nivel, 3 pilulas no curandeiro) ===');
  console.log(pad('local',20)+pad('nv',4)+pad('inimigo',18)+pad('elem.',12)+'Sasuke: eficiente / forte / esquivador / curandeiro   |  Naruto: forte / esquivador / curandeiro');
- for(const id in NODES){const n=NODES[id];if(!n.enc)continue;const L=n.lvl,tier=tierFor(L),afin=(n.enc.afin||[]).join('+')||'padrao';
+ const NS=JSON.parse(process.env.NODE_SCALE||'{}');for(const id in NODES){const n=NODES[id];if(!n.enc)continue;if(NS[id])n.enc=Object.assign({},n.enc,{hp:NS[id][0],atk:NS[id][1]});const L=n.lvl,tier=tierFor(L),afin=(n.enc.afin||[]).join('+')||'padrao';
   const f=(fn,strats,ps)=>strats.map(s=>{setSC({[ps]:{level:L,tier,build:'padrao'},enc:n.enc,pills:s==='curandeiro'?3:0});const r=winRate(fn,s,ps);return(r.w.toFixed(0)+'%').padStart(4);}).join(' ');
   console.log(pad(n.name,20)+pad(L,4)+pad(n.enc.name,18)+pad(afin,12)+f(fightSasukePlayer,['eficiente','forte','esquivador','curandeiro'],'S')+'      |  '+f(fightNarutoPlayer,['forte','esquivador','curandeiro'],'N'));}
  console.log('\n(meta de projeto: ~60-80% no nivel recomendado com a melhor estrategia; abaixo de 40% = dificil demais, acima de 90% = facil demais)');}
-function niveis(){CFG={imunidade:true,iaChakra:true,iaEsperta:true};console.log('\n=== NIVEIS: duelo sem equipamento e sem escala (inimigo com arsenal completo) ===');
+function niveis(){CFG={imunidade:true,iaChakra:true,iaEsperta:true,iaSapo:true};console.log('\n=== NIVEIS: duelo sem equipamento e sem escala (inimigo com arsenal completo) ===');
  console.log(pad('nivel',7)+'Sasuke: eficiente / forte / esquivador   |  Naruto: forte / esquivador');
  for(const L of [1,2,3,4,5,6,8,10]){const f=(fn,strats,ps)=>strats.map(s=>{setSC({[ps]:{level:L,tier:0,build:'padrao'},pills:0});const r=winRate(fn,s,ps);return(r.w.toFixed(0)+'%').padStart(4);}).join(' ');
   console.log(pad(L,7)+f(fightSasukePlayer,['eficiente','forte','esquivador'],'S')+'      |  '+f(fightNarutoPlayer,['forte','esquivador'],'N'));}}
-function itens(){CFG={imunidade:true,iaChakra:true,iaEsperta:true};const n=NODES.floresta,L=3;console.log('\n=== ITENS: '+n.name+' (nivel '+L+'), estrategia eficiente/forte (ou curandeiro com pilulas) ===');
+function itens(){CFG={imunidade:true,iaChakra:true,iaEsperta:true,iaSapo:true};const n=NODES.floresta,L=3;console.log('\n=== ITENS: '+n.name+' (nivel '+L+'), estrategia eficiente/forte (ou curandeiro com pilulas) ===');
  console.log(pad('equipamento',38)+pad('pilulas',9)+'Sasuke   Naruto');
  for(const tier of [0,1,2])for(const pills of [0,3]){const f=(fn,s,ps)=>{setSC({[ps]:{level:L,tier,build:'padrao'},enc:n.enc,pills});return winRate(fn,pills?'curandeiro':s,ps).w.toFixed(0).padStart(4)+'%';};
   console.log(pad(['nenhum','basico (kunai+colete+bandana)','avancado (arma rara+manto+amuleto)'][tier],38)+pad(pills,9)+f(fightSasukePlayer,'eficiente','S')+'   '+f(fightNarutoPlayer,'forte','N'));}}
 const modo=process.argv[3]||'todos';
 if(modo==='campanha'){campanha();process.exit(0);}if(modo==='niveis'){niveis();process.exit(0);}if(modo==='itens'){itens();process.exit(0);}
-if(modo==='todos'||modo==='antes'){applyTune(ANTES);relatorio('ANTES DAS CORRECOES (regras e numeros antigos)',{imunidade:false,iaChakra:false,iaEsperta:false});applyTune({'toad.hp':40,'toad.shot':6,'toad.throwKunai':3,'toad.throwShuriken':6,'toad.once':1,'kagesh.c':16,'soushuken.c':17,'cfg.regS':15});}
-if(modo==='todos'||modo==='atual'||modo==='novo')relatorio('JOGO ATUAL (com as correcoes)'+(process.argv[4]?' + '+process.argv[4]:''),{imunidade:true,iaChakra:true,iaEsperta:true});
+if(modo==='todos'||modo==='antes'){applyTune(ANTES);relatorio('ANTES DAS CORRECOES (regras e numeros antigos)',{imunidade:false,iaChakra:false,iaEsperta:false});applyTune({'toad.hp':28,'toad.shot':4,'toad.throwKunai':2,'toad.throwShuriken':4,'toad.once':1,'kagesh.c':16,'soushuken.c':17,'cfg.regS':15});}
+if(modo==='todos'||modo==='atual'||modo==='novo')relatorio('JOGO ATUAL (com as correcoes)'+(process.argv[4]?' + '+process.argv[4]:''),{imunidade:true,iaChakra:true,iaEsperta:true,iaSapo:true});

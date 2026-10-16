@@ -76,13 +76,13 @@ const ANIMS={
   nP:[[0,N_READY],[2.12,N_READY],[2.28,N_SURP],[2.42,N_GUARD],[2.55,N_GUARD],[2.58,N_HIT],[3.0,N_HIT],[3.4,N_STAG],[4.0,N_READY]],
   nX:[[0,288],[2.55,288],[2.58,290],[3.0,318],[3.5,312],[4.2,288]],
   cam:[[0,{z:1.04,cx:192,cy:116}],[.4,{z:1.04,cx:192,cy:116}],[.9,{z:1.3,cx:100,cy:128}],[1.4,{z:1.5,cx:104,cy:132}],[2.1,{z:1.55,cx:108,cy:132}],[2.2,{z:1.25,cx:150,cy:130}],[2.5,{z:1.3,cx:240,cy:132}],[2.58,{z:1.5,cx:262,cy:132}],[3.05,{z:1.4,cx:266,cy:132}],[3.3,{z:1.25,cx:215,cy:122}],[3.7,{z:1.04,cx:192,cy:116}],[4.0,{z:1.04,cx:192,cy:116}]],
-  tp:[3.15],hitT:2.58,dmg:34,cost:30},
+  tp:[3.15],hitT:2.58,dmg:24,cost:30},
  katon:{dur:4.5,hold:2.4,
   sP:[[0,READY],[.4,READY],[.5,SEAL_A],[.7,SEAL_B],[.9,SEAL_C],[1.1,SEAL_A],[1.3,SEAL_B],[1.5,TIGER],[1.8,INH],[1.84,EXH],[2.5,EXH],[3.0,READY],[3.8,READY]],
   nP:[[0,N_READY],[1.9,N_READY],[2.05,N_SURP],[2.18,N_GUARD],[2.36,N_GUARD],[2.4,N_HIT],[2.85,N_HIT],[3.2,N_STAG],[3.8,N_READY]],
   nX:[[0,288],[2.38,288],[2.42,290],[2.9,312],[3.4,306],[4.0,288]],
   cam:[[0,{z:1.04,cx:192,cy:116}],[.4,{z:1.04,cx:192,cy:116}],[.9,{z:1.3,cx:104,cy:128}],[1.5,{z:1.6,cx:104,cy:126}],[1.9,{z:1.3,cx:170,cy:130}],[2.3,{z:1.3,cx:256,cy:132}],[2.42,{z:1.5,cx:272,cy:130}],[3.0,{z:1.3,cx:262,cy:132}],[3.6,{z:1.04,cx:192,cy:116}]],
-  hitT:2.4,dmg:26,cost:20}
+  hitT:2.4,dmg:18,cost:20}
 };
 /* ---- golpe final do Chidori: o braco atravessa o peito, e o Sasuke puxa de volta sangrando ---- */
 const CH_PULL=mk({tilt:.2,crouch:5,lean:2,fbx:-12,ffx:7,hxF:9,hyF:-2,hxB:-6,hyB:4,red:1,expr:2,tw:.88,hr:.06,wind:.5});
@@ -135,7 +135,7 @@ ANIMS.amaterasu={dur:5.0,hold:2.0,
   nP:[[0,N_READY],[1.7,N_READY],[1.95,N_SURP],[2.05,N_BURN1],[2.35,N_BURN2],[2.65,N_BURN1],[2.95,N_BURN2],[3.3,N_BURN1],[3.9,N_STAG],[4.5,N_READY]],
   nX:[[0,288],[2.0,288],[2.5,293],[3.0,283],[3.5,291],[4.4,288]],
   cam:[[0,{z:1.04,cx:192,cy:116}],[.4,{z:1.04,cx:192,cy:116}],[.65,{z:1.5,cx:104,cy:126}],[1.0,{z:2.7,cx:106,cy:128}],[1.6,{z:2.7,cx:106,cy:128}],[1.9,{z:1.6,cx:240,cy:128}],[2.1,{z:1.5,cx:272,cy:128}],[2.6,{z:1.4,cx:266,cy:128}],[2.95,{z:2.5,cx:110,cy:126}],[4.2,{z:2.7,cx:106,cy:127}],[4.8,{z:1.04,cx:192,cy:116}],[5.0,{z:1.04,cx:192,cy:116}]],
-  hitT:2.0,dmg:40,cost:50};
+  hitT:2.0,dmg:28,cost:50};
 /* ---- golpe final do Amaterasu: o Naruto tenta apagar as chamas negras, vira cinzas, e a camera volta para o Sasuke com a mao no olho ---- */
 const LA=type=>type==='amaterasu'&&!!ANIMS.amaterasu.L&&((anim&&anim.lethal)||!!window.__LETHA);
 let ashed=0;

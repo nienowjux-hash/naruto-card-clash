@@ -47,7 +47,7 @@ Projeto de fã, sem fins comerciais. Naruto e seus personagens pertencem aos seu
 | Tecnica | Chakra | Dano | Observacao |
 |---|---|---|---|
 | Genjutsu Sharingan | 12 | 14 | O inimigo perde o proximo turno (nao funciona em turnos seguidos) |
-| Shishi Rendan | 25 | 36 | Combo aereo de taijutsu copiado de Rock Lee |
+| Shishi Rendan | 25 | 25 | Combo aereo de taijutsu copiado de Rock Lee |
 | Selo Amaldicoado (Nivel 1) | 20 | 0 | Perde 8 de vida. Por 3 turnos: +30% de dano, +10 de chakra por turno, 30% de chance de desviar (custa 2 de vida por turno). Marcas pretas tribais, sem Chidori roxo (esse fica para a transformacao total) |
 | Selo Amaldicoado (Nivel 2) | 40 | 0 | Transformacao: perde 15 de vida. Por 3 turnos: +60% de dano, +15 de chakra por turno, 40% de chance de desviar (custa 3 de vida por turno). Transformacao completa, sem as marcas do Nivel 1: pele azul-acinzentada, cabelo azul-grisalho e duas maos gigantes saindo das costas. Libera o Chidori Sombrio |
 | Chidori Sombrio (Nivel 2) | 35 | 44 | So aparece com o Nivel 2 ativo. Chidori negro e roxo. Fatality: igual ao do Chidori normal (perfura o peito e arranca o braco), mas com energia roxa e negra, buraco bem maior e muito mais sangue |
@@ -71,7 +71,7 @@ O Kawarimi é um jutsu **básico de defesa**, disponível para todos os personag
 
 - **Sem atordoamento em sequência:** depois de perder um turno por **Genjutsu Sharingan**, **Oiroke** ou **Harem no Jutsu**, o alvo fica imune a atordoamento até agir de novo (aparece "resistiu"). Antes dava para repetir o Genjutsu para sempre e o Naruto nunca jogava.
 - **Chakra de verdade:** o chakra do Sasuke volta **+15 por turno** (era +20, o que deixava quase todo golpe de graça) e o do Naruto também **+15**. O Naruto controlado pela IA agora **só usa o que consegue pagar** e, sem chakra, concentra (+25). Concentrar dá +25 e Defender +10.
-- **Gama Bunta:** só pode ser invocado **uma vez por luta**, fica com **40 de vida**, o Teppōdama causa **6** e os arremessos do Naruto em cima dele causam **3** (kunai) ou **2+2+2** (shuriken). A invocação continua causando 32.
+- **Gama Bunta:** só pode ser invocado **uma vez por luta**, fica com **28 de vida**, o Teppōdama causa **4** e os arremessos do Naruto em cima dele causam **2** (kunai) ou **2+1+1** (shuriken). A invocação custa 50 de chakra e causa 20.
 - **Custos ajustados:** Shuriken Kage no Jutsu 12→**16** e Sōshūken 15→**17** de chakra (eram os golpes mais eficientes de longe).
 - **IAs mais espertas:** o Sasuke da IA prefere golpes eficientes, usa o Genjutsu (quando o Naruto não está imune), se transforma com o Selo nível 2 e, com o sapo em campo ou o Naruto com pouca vida, vai no golpe mais forte para derrubá-lo logo.
 
@@ -96,13 +96,13 @@ Oiroke + Kage Bunshin: seis garotas (cobertas por fumaça) cercam o Sasuke. Com 
 ### Uzumaki Naruto Kamikaze (30 de chakra, 34 de dano)
 O Naruto gira como um tornado com três clones em volta e atravessa o Sasuke cinco vezes. **Fatality:** o tornado puxa o Sasuke para o alto, gira ele rasgando a roupa num redemoinho de sangue e o arremessa no chão; o Naruto diz "Ninguém me para, dattebayo!".
 
-### Kuchiyose no Jutsu (45 de chakra)
+### Kuchiyose no Jutsu (50 de chakra)
 O Naruto morde o polegar e bate a mão no chão com o chakra vermelho da Kurama; o selo aparece e o **Gama Bunta** surge numa nuvem de fumaça, com o Naruto em cima da cabeça. O sapo (**uma vez por luta**) **fica em campo com 40 de vida**: os golpes do Sasuke acertam ele em vez do Naruto, e a cada turno ele dispara sozinho a bala de água (*Suiton: Teppōdama*, 6 de dano). Quando a vida acaba, ele some na fumaça e o Naruto volta ao chão.
 
 ### Layout de combate
 O HUD agora tem placas de RPG com retrato, nome, **HP e chakra numéricos** (e a barra do sapo invocado, "SAPO") e os comandos ficam num painel com ícone, nome, descrição e custo de chakra. Com o Gama Bunta em campo ele vira o **alvo** dos golpes do Sasuke (o Naruto fica em pé na cabeça dele, sem apanhar), e os jutsus próprios do Naruto ficam bloqueados enquanto o sapo ataca sozinho.
 
-Em cima do Gama Bunta o Naruto **não ataca de perto**: ele só pode arremessar **Kunai** (3 de dano) ou **Shuriken** (2+2+2 de dano) ficando na cabeça do sapo, ou usar Defender/Concentrar. Depois do turno dele, o sapo dispara o Teppōdama sozinho.
+Em cima do Gama Bunta o Naruto **não ataca de perto**: ele só pode arremessar **Kunai** (2 de dano) ou **Shuriken** (2+1+1 de dano) ficando na cabeça do sapo, ou usar Defender/Concentrar. Depois do turno dele, o sapo dispara o Teppōdama sozinho.
 
 **Fatality do Gama Bunta:** se a bala de água zera a vida do Sasuke, o sapo salta e o esmaga com o corpo inteiro (câmera lenta no impacto), levanta, e o Sasuke fica achatado numa cratera de sangue; o Gama Bunta diz "Isso é o que dá mexer com o chefe do Monte Myōboku!".
 
@@ -135,3 +135,11 @@ O Naruto de quatro tem **vários quadros** (em `pixel/naruto-fours.js`): **agach
 
 ### Simulador com elementos, níveis e itens
 `tools/balance-sim.js` agora lê `js/00-data.js` (elementos, árvores, itens, locais). Modos novos: `node tools/balance-sim.js 3000 campanha` (cada local do mapa no nível recomendado), `niveis` (duelo por nível) e `itens` (equipamento e pílulas). Os modos antigos (`antes`, `atual`, `todos`) continuam iguais.
+
+### Ajuste de equilíbrio com elementos, níveis e itens
+Antes: a estratégia "sempre o golpe mais forte" do Sasuke vencia 99% em ~3 turnos (o Fogo vence o Vento, então Katon e Amaterasu davam +40%), a estratégia "Kuchiyose primeiro" do Naruto passava de 90% e as pílulas (30 de vida gastando o turno) quase não valiam a pena. Agora:
+- Dano dos golpes do Sasuke -30%: Chidori 24, Katon 18, Amaterasu 28, Shishi Rendan 25, Sōshūken 20, Shuriken Kage 21 (custos iguais).
+- Sapo: 28 de vida, invocação custa 50 e causa 20, Teppōdama 4, kunai 2 e shuriken 2+1+1; o Sasuke da IA derruba o sapo com o golpe mais barato que o mata.
+- Pílulas: Soldado 50 de vida, Chakra 40, Pergaminho Médico 100. Equipamentos com bônus menores (ex.: Colete +5 de vida e -4% de dano).
+- Inimigos dos locais: Treino 0,98x vida e 1,12x ataque, Floresta 1,04x/1,09x, Deserto 1,03x/1,03x, Passo Nevado 1,16x/1,10x, Vale do Fim 1,3x/1,15x.
+Resultado (vitória com a melhor estratégia): Sasuke "mais forte" 99% → 89%, Naruto "Kuchiyose primeiro" 98% → 63%; no mapa, o melhor jogador fica entre 75% e 98% em cada local no nível recomendado. Rode `node tools/balance-sim.js 4000 campanha` para ver.

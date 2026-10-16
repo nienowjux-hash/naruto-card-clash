@@ -124,23 +124,23 @@ function resetProg(){PROG=progDefault();saveProg();}
    use: efeito do consumivel (hp / ck). only: lista de personagens que podem equipar. */
 const SLOTS={arma:'Arma',corpo:'Corpo',acc:'Acessório'};
 const ITEMS={
- kunai_ferro:{name:'Kunai de Ferro',slot:'arma',rar:1,g:'刃',stats:{atk:.05},d:'Uma kunai comum, bem afiada.'},
- lamina_chakra:{name:'Lâmina de Chakra',slot:'arma',rar:2,g:'刃',stats:{atk:.08},d:'Lâmina que conduz o chakra do usuário.'},
- kunai_tri:{name:'Kunai Trifurcado',slot:'arma',rar:3,g:'刃',stats:{atk:.10,elem:'vento',pct:.10},d:'Kunai de três pontas, leve e rápida.',only:['naruto']},
- kusanagi:{name:'Kusanagi',slot:'arma',rar:3,g:'剣',stats:{atk:.12,elem:'raio',pct:.15},d:'A espada que conduz relâmpagos.',only:['sasuke']},
- colete:{name:'Colete Shinobi',slot:'corpo',rar:1,g:'衣',stats:{hp:8,def:.06},d:'Colete tático padrão de Konoha.'},
- roupa_peso:{name:'Roupa de Treino Pesada',slot:'corpo',rar:2,g:'衣',stats:{hp:15},d:'Pesos nas roupas fortalecem o corpo.'},
- manto_nuvem:{name:'Manto da Nuvem Vermelha',slot:'corpo',rar:3,g:'衣',stats:{hp:10,def:.12},d:'Manto negro com nuvens vermelhas.'},
- bandana:{name:'Bandana de Konoha',slot:'acc',rar:1,g:'護',stats:{hp:6,def:.02},d:'Símbolo da vila escondida na folha.'},
- talisma_fogo:{name:'Talismã de Fogo',slot:'acc',rar:2,g:'火',stats:{elem:'fogo',pct:.15},d:'Reforça golpes de Fogo.'},
- talisma_agua:{name:'Talismã de Água',slot:'acc',rar:2,g:'水',stats:{elem:'agua',pct:.15},d:'Reforça golpes de Água.'},
- talisma_terra:{name:'Talismã de Terra',slot:'acc',rar:2,g:'土',stats:{elem:'terra',pct:.15},d:'Reforça golpes de Terra.'},
- talisma_vento:{name:'Talismã de Vento',slot:'acc',rar:2,g:'風',stats:{elem:'vento',pct:.15},d:'Reforça golpes de Vento.'},
- talisma_raio:{name:'Talismã de Raio',slot:'acc',rar:2,g:'雷',stats:{elem:'raio',pct:.15},d:'Reforça golpes de Raio.'},
- amuleto_sorte:{name:'Amuleto da Sorte',slot:'acc',rar:3,g:'福',stats:{hp:20},d:'Dizem que protege quem o carrega.'},
- pilula_vida:{name:'Pílula de Soldado',slot:'cons',rar:1,g:'薬',use:{hp:30},d:'Recupera 30 de vida. Gasta o turno.'},
- pilula_ck:{name:'Pílula de Chakra',slot:'cons',rar:1,g:'気',use:{ck:30},d:'Recupera 30 de chakra. Gasta o turno.'},
- pergaminho_med:{name:'Pergaminho Médico',slot:'cons',rar:3,g:'巻',use:{hp:60},d:'Recupera 60 de vida. Gasta o turno.'}};
+ kunai_ferro:{name:'Kunai de Ferro',slot:'arma',rar:1,g:'刃',stats:{atk:.03},d:'Uma kunai comum, bem afiada.'},
+ lamina_chakra:{name:'Lâmina de Chakra',slot:'arma',rar:2,g:'刃',stats:{atk:.05},d:'Lâmina que conduz o chakra do usuário.'},
+ kunai_tri:{name:'Kunai Trifurcado',slot:'arma',rar:3,g:'刃',stats:{atk:.07,elem:'vento',pct:.08},d:'Kunai de três pontas, leve e rápida.',only:['naruto']},
+ kusanagi:{name:'Kusanagi',slot:'arma',rar:3,g:'剣',stats:{atk:.08,elem:'raio',pct:.12},d:'A espada que conduz relâmpagos.',only:['sasuke']},
+ colete:{name:'Colete Shinobi',slot:'corpo',rar:1,g:'衣',stats:{hp:5,def:.04},d:'Colete tático padrão de Konoha.'},
+ roupa_peso:{name:'Roupa de Treino Pesada',slot:'corpo',rar:2,g:'衣',stats:{hp:10},d:'Pesos nas roupas fortalecem o corpo.'},
+ manto_nuvem:{name:'Manto da Nuvem Vermelha',slot:'corpo',rar:3,g:'衣',stats:{hp:8,def:.08},d:'Manto negro com nuvens vermelhas.'},
+ bandana:{name:'Bandana de Konoha',slot:'acc',rar:1,g:'護',stats:{hp:4,def:.01},d:'Símbolo da vila escondida na folha.'},
+ talisma_fogo:{name:'Talismã de Fogo',slot:'acc',rar:2,g:'火',stats:{elem:'fogo',pct:.10},d:'Reforça golpes de Fogo.'},
+ talisma_agua:{name:'Talismã de Água',slot:'acc',rar:2,g:'水',stats:{elem:'agua',pct:.10},d:'Reforça golpes de Água.'},
+ talisma_terra:{name:'Talismã de Terra',slot:'acc',rar:2,g:'土',stats:{elem:'terra',pct:.10},d:'Reforça golpes de Terra.'},
+ talisma_vento:{name:'Talismã de Vento',slot:'acc',rar:2,g:'風',stats:{elem:'vento',pct:.10},d:'Reforça golpes de Vento.'},
+ talisma_raio:{name:'Talismã de Raio',slot:'acc',rar:2,g:'雷',stats:{elem:'raio',pct:.10},d:'Reforça golpes de Raio.'},
+ amuleto_sorte:{name:'Amuleto da Sorte',slot:'acc',rar:3,g:'福',stats:{hp:12},d:'Dizem que protege quem o carrega.'},
+ pilula_vida:{name:'Pílula de Soldado',slot:'cons',rar:1,g:'薬',use:{hp:50},d:'Recupera 50 de vida. Gasta o turno.'},
+ pilula_ck:{name:'Pílula de Chakra',slot:'cons',rar:1,g:'気',use:{ck:40},d:'Recupera 40 de chakra. Gasta o turno.'},
+ pergaminho_med:{name:'Pergaminho Médico',slot:'cons',rar:3,g:'巻',use:{hp:100},d:'Recupera 100 de vida. Gasta o turno.'}};
 const RARITY={1:{name:'Comum',col:'#aab0c8'},2:{name:'Incomum',col:'#5cc878'},3:{name:'Raro',col:'#b070ff'}};
 const INV_KEY='rpgInvV1';
 function invDefault(){return{ryo:0,bag:{kunai_ferro:1,colete:1,bandana:1,pilula_vida:3,pilula_ck:3},eq:{sasuke:{},naruto:{}}};}
@@ -165,10 +165,10 @@ function rollDrop(){const w={1:60,2:30,3:10},ids=Object.keys(ITEMS);let tot=0;co
 const MAP_W=1180,MAP_H=640;
 const NODES={
  konoha:{name:'Konoha',kind:'vila',x:130,y:330,scene:'vila',d:'Sua vila. Prepare a equipe (habilidades e equipamentos) antes de partir.'},
- treino:{name:'Campo de Treino',kind:'luta',x:340,y:310,scene:'treino',lvl:1,xp:60,ryo:60,enc:{name:'Genin Rival',hp:.7,atk:.8,afin:['terra']},d:'Um campo aberto ao amanhecer, onde genins testam suas técnicas.'},
- floresta:{name:'Floresta da Morte',kind:'luta',x:550,y:160,scene:'floresta',lvl:2,xp:80,ryo:90,enc:{name:'Ninja Perdido',hp:.9,atk:.95,afin:['agua']},d:'Mata densa e perigosa. Quem entra sem preparo raramente volta.'},
- deserto:{name:'Deserto do Vento',kind:'luta',x:540,y:480,scene:'deserto',lvl:3,xp:100,ryo:120,enc:{name:'Ninja da Areia',hp:1,atk:1,afin:['terra']},d:'Dunas sem fim e um calor que drena o chakra.'},
- neve:{name:'Passo Nevado',kind:'luta',x:810,y:500,scene:'neve',lvl:4,xp:130,ryo:160,enc:{name:'Guardião do Gelo',hp:1.1,atk:1.05,afin:['gelo']},d:'Um desfiladeiro congelado vigiado por um ninja de gelo.'},
+ treino:{name:'Campo de Treino',kind:'luta',x:340,y:310,scene:'treino',lvl:1,xp:60,ryo:60,enc:{name:'Genin Rival',hp:.98,atk:1.12,afin:['terra']},d:'Um campo aberto ao amanhecer, onde genins testam suas técnicas.'},
+ floresta:{name:'Floresta da Morte',kind:'luta',x:550,y:160,scene:'floresta',lvl:2,xp:80,ryo:90,enc:{name:'Ninja Perdido',hp:1.04,atk:1.09,afin:['agua']},d:'Mata densa e perigosa. Quem entra sem preparo raramente volta.'},
+ deserto:{name:'Deserto do Vento',kind:'luta',x:540,y:480,scene:'deserto',lvl:3,xp:100,ryo:120,enc:{name:'Ninja da Areia',hp:1.03,atk:1.03,afin:['terra']},d:'Dunas sem fim e um calor que drena o chakra.'},
+ neve:{name:'Passo Nevado',kind:'luta',x:810,y:500,scene:'neve',lvl:4,xp:130,ryo:160,enc:{name:'Guardião do Gelo',hp:1.16,atk:1.1,afin:['gelo']},d:'Um desfiladeiro congelado vigiado por um ninja de gelo.'},
  vale:{name:'Vale do Fim',kind:'chefe',x:985,y:285,scene:'vale',lvl:6,xp:200,ryo:300,enc:{name:'Rival Final',hp:1.3,atk:1.15,afin:null},d:'O local do confronto final, entre as estátuas e a cachoeira.'}};
 const EDGES=[['konoha','treino'],['treino','floresta'],['treino','deserto'],['floresta','vale'],['deserto','neve'],['neve','vale']];
 const CAMP_KEY='rpgCampV1';
