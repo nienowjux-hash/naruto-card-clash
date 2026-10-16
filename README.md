@@ -132,3 +132,6 @@ O Naruto de quatro tem **vários quadros** (em `pixel/naruto-fours.js`): **agach
 - `js/19-map.js` pinta o mapa por código (oceano, terras, regiões, caminhos) e abre ao carregar o jogo. Os locais, ligações e inimigos ficam em `NODES`/`EDGES` (`js/00-data.js`); o progresso fica em `CAMP` (`rpgCampV1`).
 - Um local abre quando algum vizinho foi vencido. Ao escolher o local e quem vai lutar, a ficha viaja pelo caminho e a batalha começa com o cenário do local (`setScene` em `js/04-scenery.js`, por enquanto o Vale do Fim recolorido) e o inimigo com a vida, o ataque e os elementos do local.
 - Vitória marca o local, dá XP e ryo do local e volta ao mapa. Derrota também volta ao mapa, sem marcar o local.
+
+### Simulador com elementos, níveis e itens
+`tools/balance-sim.js` agora lê `js/00-data.js` (elementos, árvores, itens, locais). Modos novos: `node tools/balance-sim.js 3000 campanha` (cada local do mapa no nível recomendado), `niveis` (duelo por nível) e `itens` (equipamento e pílulas). Os modos antigos (`antes`, `atual`, `todos`) continuam iguais.
