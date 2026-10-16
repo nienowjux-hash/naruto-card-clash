@@ -342,13 +342,13 @@ KAKASHI_JUTSUS.push({id:'doryuheki',name:'Doton: Doryūheki',cost:20,col:'#b8a88
    gritando (normal: 16 de dano, perde o proximo turno, 1 uso por batalha). Depois o Kakashi VOLTA ANDANDO para o lugar dele (sem teleporte).
    Fatality: o Naruto voa para longe, sangrando, e o Kakashi abre o livro do Jiraiya e continua a leitura. */
 let senK=false;
-const SEN_SL=1.45,SEN_BEHIND=326,SEN_CONTACT=304;
+const SEN_SL=1.45,SEN_BEHIND=334,SEN_CONTACT=318;
 /* camera lenta no toque: o golpe roda 1,45x mais devagar e, entre 2.05 e 2.6, 4x mais devagar (close no traseiro) */
 const SEN_SLOW=[2.05,2.6,4];
 function senRaw(t){const [a,b,k]=SEN_SLOW;if(t<=a)return t*SEN_SL;if(t<=b)return a*SEN_SL+(t-a)*k;return a*SEN_SL+(b-a)*k+(t-b)*SEN_SL;}
 const SEN_MAP=[[0,0],[senRaw(SEN_SLOW[0]),SEN_SLOW[0]],[senRaw(SEN_SLOW[1]),SEN_SLOW[1]],[senRaw(99),99]];
 const N_SEN=Object.assign({},N_HIT,{scream:1,expr:3});
-const SEN_PREP=mk({tilt:.06,crouch:7,lean:1,fbx:-9,ffx:7,hxF:12,hyF:-3,hxB:11,hyB:-2,expr:2,tw:.9});
+const SEN_PREP=SUI_SEAL;
 const SEN_POKE=mk({tilt:.3,crouch:8,lean:3,fbx:-12,ffx:7,hxF:16,hyF:6,hxB:12,hyB:7,expr:2,tw:.9});
 const SEN_BEND_AT=[.95,1.35],SEN_FREEZE=2.55,SEN_BA=.82; /* angulo da curvada: como quem amarra a sandalia, pernas esticadas e traseiro para tras */
 /* dobra do alvo: sobe entre 0.95 e 1.3, mantem ate o fim da pausa comica e solta ao ser lancado */
@@ -358,11 +358,11 @@ function senFlip(type,t,A){if(type!=='sennen'||!A)return false;return LG(type)?(
 function senSOpt(o,type,t,A){if(type!=='sennen'||!A)return;if(t>.86&&t<.98)o.alpha=0;
  /* o Kakashi se abaixa para mirar no meio das nadegas */const end=LG(type)?3.3:3.0,cr=scaleAt(0,1,1.6,2.0,t)*(1-scaleAt(0,1,end,end+.2,t));if(cr>0){o.flat=1-.08*cr;o.rot=(o.rot||0)+.36*cr;}}
 function senNOpt(o,type,t,A,fk,out){
- if(A&&type==='sennen'){const b=senBend(t);if(b>0){o.bend=SEN_BA*b;o.bendSq=1;}if(LG(type)&&t>3.75)o.alpha=0;}
+ if(A&&type==='sennen'){const b=senBend(t);if(t<SEN_FREEZE+.4)o.bleed=0;if(b>0){o.bend=SEN_BA*b;o.bendSq=1;}if(LG(type)&&t>3.75)o.alpha=0;}
  else if(!A&&fk==='sennen'&&out==='S')o.alpha=0;}
 function senStar(f,x,y,r,rot,col,al){f.save();f.translate(x,y);f.rotate(rot);f.fillStyle=col;f.globalAlpha=al;f.beginPath();for(let i=0;i<16;i++){const rr=i%2?r*.42:r,a=i*Math.PI/8;i?f.lineTo(Math.cos(a)*rr,Math.sin(a)*rr):f.moveTo(Math.cos(a)*rr,Math.sin(a)*rr);}f.closePath();f.fill();f.restore();}
 /* nuvem de fumaca com folhas do shunshin */
-function senPuff(f,x,t,t0,time){const a=t-t0;if(a<0||a>.7)return;const k=a/.7,r2=R(Math.round(t0*100));f.save();
+function senPuff(f,x,t,t0,time){const a=t-t0;if(a<0||a>.45)return;const k=a/.45,r2=R(Math.round(t0*100));f.save();
  for(let i=0;i<9;i++){const an=r2()*TAU,d=(4+r2()*14)*k,rr=(5+r2()*6)*(.6+k*.7);f.fillStyle=`rgba(${225+(r2()*25|0)},${225+(r2()*25|0)},${230},${.75*(1-k)})`;f.beginPath();f.arc(x+Math.cos(an)*d,GY-22+Math.sin(an)*d*.9,rr,0,TAU);f.fill();}
  for(let i=0;i<10;i++){const an=r2()*TAU,d=(8+r2()*26)*k,lx=x+Math.cos(an)*d,ly=GY-22+Math.sin(an)*d*.8-k*10;f.save();f.translate(lx,ly);f.rotate(an+time*4);f.fillStyle=`rgba(${70+(r2()*60|0)},${150+(r2()*60|0)},60,${1-k})`;f.fillRect(-2,-1,4,2);f.restore();}
  f.restore();}
@@ -377,25 +377,25 @@ function senFace(G,x,y,rot,time,k){G.save();G.translate(x,y);G.rotate(rot);const
  G.restore();}
 /* o braco do Kakashi, com as maos em selo do tigre (so os indicadores esticados), ate o ponto cego do alvo; o dedo some DENTRO da calca e o tecido afunda */
 function senPoke(G,sx0,nx0,t,t1){const reach=scaleAt(0,1,1.75,2.2,t),k=reach*(1-scaleAt(0,1,t1-.45,t1,t));if(k<=0)return;
- const bx=sx0-8,by=GY-33,tx=nx0+9,ty=GY-21,ex=bx+(tx-bx)*k,ey=by+(ty-by)*k;G.save();G.lineCap='round';
+ const bx=sx0-7,by=GY-33,tx=nx0+11,ty=GY-22,ex=bx+(tx-bx)*k,ey=by+(ty-by)*k,ang=Math.atan2(ty-by,tx-bx);G.save();G.lineCap='round';
  G.strokeStyle='#111a36';G.lineWidth=6.5;G.beginPath();G.moveTo(bx,by);G.lineTo(ex,ey);G.stroke();G.strokeStyle='#2d3b62';G.lineWidth=4.6;G.beginPath();G.moveTo(bx,by);G.lineTo(ex,ey);G.stroke();
- G.strokeStyle='#4a5d92';G.lineWidth=1;G.beginPath();G.moveTo(bx+1,by-1.4);G.lineTo(ex+1,ey-1.4);G.stroke();
- G.strokeStyle='#c8ccd8';G.lineWidth=2.4;G.beginPath();G.moveTo(ex-(ex-bx)*.12,ey-(ey-by)*.12);G.lineTo(ex,ey);G.stroke();
- const ang=Math.atan2(ty-by,tx-bx),pull=reach>=1?scaleAt(0,1,0,.15,t-2.2)*(1-scaleAt(0,1,.5,.9,t-2.2)):0;
- G.translate(ex,ey);G.rotate(ang);G.fillStyle='#e8c8a0';G.beginPath();G.arc(0,0,3,0,TAU);G.fill();
- G.strokeStyle='#e8c8a0';G.lineWidth=1.5;for(const d of [-1,1]){G.beginPath();G.moveTo(0,d*.9);G.lineTo(7-pull*5,d*.9);G.stroke();}
- G.restore();
- if(reach>=1&&t<t1-.2){const a=Math.min(1,(t-2.2)/.12);G.save();G.strokeStyle=`rgba(40,22,6,${.8*a})`;G.lineWidth=1;for(let q=0;q<5;q++){const an=Math.PI*(.7+q*.14);G.beginPath();G.moveTo(tx+Math.cos(an)*2,ty+Math.sin(an)*2);G.lineTo(tx+Math.cos(an)*(6+q%2*3),ty+Math.sin(an)*(6+q%2*3));G.stroke();}G.restore();}}
-/* traseiro empinado, redondo e exagerado (comico), com a dobra no meio onde entram os dedos */
-function senButt(G,nx0,b,t){if(b<=.25)return;const k=Math.min(1,(b-.25)/.5),x=nx0+5,y=GY-21,hit=t>=2.2&&t<SEN_FREEZE+.2,jig=hit?Math.sin(t*90)*1.6*(1-scaleAt(0,1,2.2,2.6,t)*.6):0;G.save();G.globalAlpha=k;
- G.fillStyle='#8a380a';G.beginPath();G.ellipse(x+jig,y,5.2,6.2,-.5,0,TAU);G.fill();G.fillStyle='#f58a18';G.beginPath();G.ellipse(x+jig-.4,y-.4,4.5,5.4,-.5,0,TAU);G.fill();
- G.fillStyle='#ffb347';G.beginPath();G.ellipse(x+jig+1.5,y-3,2.4,2,0,0,TAU);G.fill();G.fillStyle='#cf620e';G.beginPath();G.ellipse(x+jig+1,y+3.6,4,1.6,0,0,TAU);G.fill();
- G.strokeStyle='#5a2406';G.lineWidth=1;G.beginPath();G.moveTo(x+jig+5.2,y-5);G.quadraticCurveTo(x+jig+2.6,y,x+jig+5.2,y+5);G.stroke();
+ G.strokeStyle='#4a5d92';G.lineWidth=1;G.beginPath();G.moveTo(bx,by-1.6);G.lineTo(ex,ey-1.6);G.stroke();
+ G.translate(ex,ey);G.rotate(ang);
+ /* maos juntas no selo do tigre: luvas azul-marinho com placa de metal, indicadores esticados para a frente */
+ G.fillStyle='#111a36';G.fillRect(-6,-3.6,7,7.2);G.fillStyle='#2d3b62';G.fillRect(-5.4,-3,6,6);G.fillStyle='#c8ccd8';G.fillRect(-4.4,-2.6,3,2);
+ G.fillStyle='#e8c8a0';G.fillRect(.6,-2.4,2.2,4.8);G.fillStyle='#c79a72';G.fillRect(.6,.8,2.2,1);
+ G.fillStyle='#e8c8a0';G.fillRect(2.6,-1.5,6.6,1.4);G.fillRect(2.6,.2,6.6,1.4);G.fillStyle='#c79a72';G.fillRect(2.6,-.1,6.6,.5);
  G.restore();}
+/* traseiro empinado, redondo e exagerado (comico), com a dobra no meio onde entram os dedos */
+function senButt(G,nx0,b,t){if(b<=.25)return;const k=Math.min(1,(b-.25)/.5),x=nx0+6,y=GY-22,hit=t>=2.2&&t<SEN_FREEZE+.2,jig=hit?Math.sin(t*90)*1.4*(1-scaleAt(0,1,2.2,2.6,t)*.6):0;G.save();G.globalAlpha=k;G.translate(x+jig,y);G.rotate(-.55);
+ G.fillStyle='#cf620e';G.beginPath();G.ellipse(0,0,4.6,5.6,0,-Math.PI*.5,Math.PI*.5);G.fill();G.fillStyle='#f58a18';G.beginPath();G.ellipse(-.6,-.4,3.8,4.8,0,-Math.PI*.5,Math.PI*.5);G.fill();
+ G.fillStyle='#ffb347';G.fillRect(.6,-3.8,1.6,1.4);
+ G.strokeStyle='#5a2406';G.lineWidth=1;G.beginPath();G.ellipse(0,0,4.6,5.6,0,-Math.PI*.45,Math.PI*.45);G.stroke();
+ G.strokeStyle='#8a380a';G.lineWidth=.9;G.beginPath();G.moveTo(4.4,-1.2);G.lineTo(2.8,0);G.lineTo(4.4,1.2);G.stroke();G.restore();}
 function senImpact(f,nx0,t){const a=t-2.2;if(a<0||a>.45)return;const k=a/.45,x=nx0+10,y=GY-21;f.save();
- f.globalCompositeOperation='lighter';for(let q=0;q<3;q++){const kk=Math.max(0,Math.min(1,k*1.5-q*.2));ringFX(f,x,y,3+26*kk,1.6*(1-kk)+.2,`rgba(255,${230-q*40},150,${1-kk})`);}
- f.globalCompositeOperation='source-over';f.strokeStyle=`rgba(255,255,255,${1-k})`;f.lineWidth=1.2;for(let i=0;i<12;i++){const an=i*TAU/12,r0=8+k*10,r1=16+k*22;f.beginPath();f.moveTo(x+Math.cos(an)*r0,y+Math.sin(an)*r0);f.lineTo(x+Math.cos(an)*r1,y+Math.sin(an)*r1);f.stroke();}
- f.font='bold 9px sans-serif';f.textAlign='center';f.lineWidth=2.5;f.strokeStyle='#1a1024';f.fillStyle='#ffe45a';f.globalAlpha=1-k*.7;f.strokeText('PUF!',x+14,y-14-k*6);f.fillText('PUF!',x+14,y-14-k*6);f.restore();}
+ f.globalCompositeOperation='lighter';for(let q=0;q<2;q++){const kk=Math.max(0,Math.min(1,k*1.5-q*.25));ringFX(f,x+4,y-2,6+18*kk,1*(1-kk)+.2,`rgba(255,${230-q*40},150,${.7*(1-kk)})`);}
+ f.globalCompositeOperation='source-over';f.strokeStyle=`rgba(255,255,255,${.75*(1-k)})`;f.lineWidth=1;for(let i=0;i<10;i++){const an=i*TAU/10,r0=12+k*8,r1=17+k*14;f.beginPath();f.moveTo(x+Math.cos(an)*r0,y+Math.sin(an)*r0);f.lineTo(x+Math.cos(an)*r1,y+Math.sin(an)*r1);f.stroke();}
+ f.font='bold 9px sans-serif';f.textAlign='center';f.lineWidth=2.5;f.strokeStyle='#1a1024';f.fillStyle='#ffe45a';f.globalAlpha=1-k*.7;f.strokeText('PUF!',x+6,y-24-k*6);f.fillText('PUF!',x+6,y-24-k*6);f.restore();}
 function senQuestion(f,x,y,t,t0,t1,time){if(t<t0||t>t1)return;const k=Math.min(1,(t-t0)/.2)*(1-scaleAt(0,1,t1-.25,t1,t));f.save();f.globalAlpha=k;f.font='bold 14px sans-serif';f.textAlign='center';f.lineWidth=3;f.strokeStyle='#1a1024';f.fillStyle='#ffe45a';const yy=y-4*Math.abs(Math.sin(time*3));f.strokeText('?',x,yy);f.fillText('?',x,yy);f.fillStyle='#7fd0ff';f.beginPath();f.arc(x-12,y+6+((time*20)%6),1.4,0,TAU);f.fill();f.restore();}
 /* nuvem de poeira em explosao com estrela de espinhos (como no anime) */
 function senDust(c,t,t0,cx){const a=t-t0;if(a<0||a>1.3)return;cx+=14;const k=Math.min(1,a/.45),fade=1-scaleAt(0,1,.8,1.3,a),cy=GY-6,e=(1-(1-k)*(1-k))*.62; /* nuvem menor e atras dos pes do Kakashi: o toque continua visivel */
@@ -414,7 +414,7 @@ const SEN_N_Y=[[0,0],[SEN_FREEZE,0],[2.85,-82],[3.1,-86],[3.5,0],[99,0]],SEN_N_X
 function senNormalFlyPos(t){return[interp(SEN_N_X,t),GY-34+interp(SEN_N_Y,t)];}
 function senNormalFX(c){const {f,t,time,nx0,sx0}=c;
  senPuff(f,96,t,.86,time);senPuff(f,SEN_BEHIND,t,.98,time);
- withG(c,G=>{senButt(G,nx0,senBend(t),t);senPoke(G,sx0,nx0,t,2.9);});
+ withG(c,G=>{senPoke(G,sx0,nx0,t,2.9);senButt(G,nx0,senBend(t),t);});
  senQuestion(f,nx0-16,GY-66,t,1.35,2.1,time);
  senDust(c,t,2.2,nx0+14);senImpact(f,nx0,t);
  /* pausa comica no toque: cara de pateta e estrelinhas de impacto na cabeca dobrada */
@@ -448,7 +448,7 @@ function senReadFX(c,tt){const {f,time,sx0}=c,hx=(tt<99?sx0:96)+11,hy=GY-45;
  f.fillStyle='#7fd0ff';f.fillRect(Math.round(hx-14),Math.round(hy-18+Math.sin(time*2)*1),2,3);}
 function senFatalFX(c){const {f,t,time,nx0,sx0}=c,tt=c.A?t:99;
  senPuff(f,96,tt,.86,time);senPuff(f,SEN_BEHIND,tt,.98,time);
- withG(c,G=>{senButt(G,288,senBend(tt),tt);senPoke(G,sx0,288,tt,3.3);});
+ withG(c,G=>{senPoke(G,sx0,288,tt,3.3);senButt(G,288,senBend(tt),tt);});
  senQuestion(f,272,GY-66,tt,1.35,2.1,time);
  senDust(c,tt,2.2,SEN_CONTACT+4);senImpact(f,288,tt);
  if(tt>=2.2&&tt<SEN_FREEZE){const [hx,hy]=senHead(288,senBend(tt)*SEN_BA);withG(c,G=>senFace(G,hx,hy,-senBend(tt)*SEN_BA,time,1));f.save();f.globalCompositeOperation='lighter';senStar(f,hx,hy-12,8+4*Math.sin(time*30),time*3,'#fff6a0',.9);f.restore();}
@@ -459,7 +459,6 @@ function senFatalFX(c){const {f,t,time,nx0,sx0}=c,tt=c.A?t:99;
   for(let i=0;i<36;i++){const tg=tt-i*.03;if(tg<SEN_FREEZE)break;const [qx,qy]=senFlyPos(tg),age=i*.03,fy=qy+6+age*age*160;f.fillStyle=`rgba(${190-i},10,24,${1-i/36})`;f.fillRect(Math.round(qx+8+(i%3)*1.4),Math.round(fy),2,2+(i%2));}
   f.restore();}
  /* sangue no ponto do toque */
- if(tt>=2.2&&tt<2.9)bloodSpray(f,nx0+8,GY-19,tt-2.2,990,10,1);
  /* sumiu no horizonte: estrelinha de brilho */
  const p=tt-3.75;if(p>=0&&p<1.0){const k=p/1.0;f.save();f.globalCompositeOperation='lighter';senStar(f,22,34,6+16*Math.sin(Math.min(1,k*1.6)*Math.PI),k*3,'#fff6b0',1-k);f.restore();}
  /* depois: o Kakashi abre o livro e continua a leitura */
