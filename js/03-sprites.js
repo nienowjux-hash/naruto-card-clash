@@ -92,11 +92,13 @@ function blitSprite(x,y,flip,P,time,o,isN){
   const isSkin=i=>d[i]>200&&d[i+1]>130&&d[i+1]<215&&d[i+2]>80&&d[i+2]<190&&d[i]-d[i+2]>50;
   const cx=down?30:28,cy=down?38:37; /* centro do peito no sprite */
   /* bracos arrancados: segmentos ombro->cotovelo->mao da pose de referencia do sprite, cortados a ~35% do braco */
-  let ARMS=null;if(o.noArms&&key!=='down'){const rg=rigW(sprRefPose||P);ARMS=[[rg.shB,rg.hb],[rg.shF,rg.hf]].map(([s0,h0])=>{const sx=S.ax+s0[0],sy=S.ay+s0[1],ex=S.ax+h0.ex,ey=S.ay+h0.ey,hx=S.ax+h0.hx,hy=S.ay+h0.hy,qx=sx+(ex-sx)*.35,qy=sy+(ey-sy)*.35;return{c:[qx,qy],p:[[qx,qy],[ex,ey],[hx,hy]]};});}
+  let ARMS=null;if(o.noArms&&key!=='down'&&key!=='hit'){const rg=rigW(sprRefPose||P);ARMS=[[rg.shB,rg.hb],[rg.shF,rg.hf]].map(([s0,h0])=>{const sx=S.ax+s0[0],sy=S.ay+s0[1],ex=S.ax+h0.ex,ey=S.ay+h0.ey,hx=S.ax+h0.hx,hy=S.ay+h0.hy,qx=sx+(ex-sx)*.35,qy=sy+(ey-sy)*.35;return{c:[qx,qy],p:[[qx,qy],[ex,ey],[hx,hy]]};});}
   const dseg=(ax,ay,bx,by,px,py)=>{const vx=bx-ax,vy=by-ay,L=vx*vx+vy*vy||1,u=Math.max(0,Math.min(1,((px-ax)*vx+(py-ay)*vy)/L));return Math.hypot(px-(ax+vx*u),py-(ay+vy*u));};
   for(let yy=0;yy<H2;yy++)for(let xx=0;xx<W2;xx++){const i=(yy*W2+xx)*4;if(d[i+3]===0)continue;const h=hsh(xx,yy)%1000/1000;
    if(ARMS){let gone=false,stump=false;for(const a of ARMS){const dm=Math.min(dseg(a.p[0][0],a.p[0][1],a.p[1][0],a.p[1][1],xx+.5,yy+.5),dseg(a.p[1][0],a.p[1][1],a.p[2][0],a.p[2][1],xx+.5,yy+.5)),dc=Math.hypot(xx+.5-a.c[0],yy+.5-a.c[1]);if(dm<4.6)gone=true;else if(dm<6.2&&dc<8)stump=true;}
     if(gone){d[i+3]=0;continue;}if(stump){const fr=h<.45;d[i]=fr?210:130;d[i+1]=fr?24:10;d[i+2]=fr?34:20;}}
+   /* sprite 'hit' (de pe, bracos abertos): corta tudo que esta fora do tronco abaixo do ombro e deixa o coto sangrando */
+   if(o.noArms&&key==='hit'&&yy>=37&&yy<=57){if(xx<=17||xx>=45){d[i+3]=0;continue;}if((xx<=19||xx>=43)&&yy<=50&&h<.7){const fr=h<.35;d[i]=fr?210:130;d[i+1]=fr?24:10;d[i+2]=fr?34:20;}}
    /* deitado: os bracos ficam colados no corpo, entao as maos somem (viram manga) e os ombros ficam com o coto sangrando */
    if(o.noArms&&key==='down'){if(xx>=30&&yy>=32&&yy<=40&&isSkin(i)){d[i]=h<.5?245:207;d[i+1]=h<.5?138:98;d[i+2]=h<.5?24:14;}
     else if(((xx>=25&&xx<=31&&yy>=31&&yy<=36)||(xx>=45&&xx<=50&&yy>=32&&yy<=37))&&d[i+3]>0&&h<.8){const fr=h<.4;d[i]=fr?210:130;d[i+1]=fr?24:10;d[i+2]=fr?34:20;}}
