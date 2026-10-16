@@ -1806,14 +1806,14 @@ function seloFX(c,fatal){
  if(A&&aur>0)curseAura(f,sx0,aur,time,fr);
  if(A&&tt>.6&&tt<2.0){f.globalCompositeOperation='lighter';const k=scaleAt(0,1,.6,1.0,tt);for(let i=0;i<3;i++){f.strokeStyle=`rgba(170,90,255,${(1-i*.3)*k*.5})`;f.lineWidth=.5;f.beginPath();f.ellipse(sx0,GY-30,10+((time*20+i*13)%34),14+((time*20+i*13)%34)*.6,0,0,TAU);f.stroke();}f.globalCompositeOperation='source-over';}
  const pw=scaleAt(0,1,2.0,2.6,tt)*(1-scaleAt(0,1,3.2,3.45,tt));
- if(A&&pw>0)darkChidoriFX(f,hw[0],hw[1],pw*1.1,fr>>1,time);
+ if(A&&pw>0&&!(fatal&&tt>=3.22))darkChidoriFX(f,hw[0],hw[1],pw*1.1,fr>>1,time);
  if(A&&tt>=2.95&&tt<3.2){for(let i=3;i>=1;i--){const t2=tt-i*.03;if(t2<2.95)continue;const P2=evalPose(c.A.sP||ANIMS.selochidori.sP,t2),x2=interp(SELX,t2);blit(x2,GY,false,SASUKE,P2,time,{tint:[150,70,255],tk:.6,alpha:.3-i*.07,noRefl:true,curse:1});}
   f.lineCap='round';f.strokeStyle='rgba(170,90,255,.5)';f.lineWidth=.5;for(let i=0;i<14;i++){const y=GY-70+((i*29)%70),x=c.ccx-c.hw2+((i*53)%W)/c.z,l=22+((i*17)%50);f.beginPath();f.moveTo(x,y);f.lineTo(x-l,y);f.stroke();}}
  const a=tt-3.2;
  if(A&&a>=0&&a<1.2){const cx=nx0-6,cy=GY-40;f.globalCompositeOperation='lighter';
-  if(a<.7)orb(f,cx,cy,34*(1-a/.9),[[0,'rgba(4,0,10,.8)'],[1,'rgba(20,4,40,0)']]);f.globalCompositeOperation='lighter';if(a<.5)orb(f,cx,cy,50*(1-a/.7),[[0,'rgba(200,160,255,.5)'],[.35,'rgba(130,60,230,.4)'],[1,'rgba(60,10,140,0)']]);
+  if(a<.7)orb(f,cx,cy,34*(1-a/.9),[[0,'rgba(4,0,10,.8)'],[1,'rgba(20,4,40,0)']]);f.globalCompositeOperation='lighter';if(a<.5&&!fatal)orb(f,cx,cy,50*(1-a/.7),[[0,'rgba(200,160,255,.5)'],[.35,'rgba(130,60,230,.4)'],[1,'rgba(60,10,140,0)']]);
   const k=Math.min(1,a/.4);ringFX(f,cx,cy,6+70*k,2.4*(1-k)+.3,`rgba(190,120,255,${1-k})`);
-  const r2=R(88);let L=[];for(let i=0;i<14;i++)L.push(...boltLines(cx,cy,r2()*TAU,(14+r2()*34)*(1-a/1.2),(fr>>1)*29+i,true));darkBolts(f,L,1);
+  const r2=R(88);let L=[];for(let i=0;i<(fatal?4:14);i++)L.push(...boltLines(cx,cy,r2()*TAU,(14+r2()*34)*(1-a/1.2)*(fatal?.6:1),(fr>>1)*29+i,true));darkBolts(f,L,fatal?.5:1);
   f.globalCompositeOperation='source-over';bloodSpray(f,cx,cy,a,95,fatal?14:24,-1);}
  if(!fatal&&A&&a>=0&&a<1.3){scraps(f,nx0,GY-40,a,96,12,[[40,20,70],[245,143,28]],0);}
 }
@@ -1838,17 +1838,17 @@ function selFatalFX(c){
  const cx=nx0-1.5,cy=GY-40,r2=R(fr*7+3);f.lineCap='round';
  if(A&&tt>=3.25&&tt<4.35){ /* braco cravado: energia roxa e negra vaza pelo corpo, sangue jorra dos dois lados */
   f.globalCompositeOperation='lighter';const gl=.55+.25*Math.sin(time*40);
-  orb(f,cx,cy,34,[[0,`rgba(215,175,255,${gl})`],[.4,`rgba(120,50,230,${gl*.5})`],[1,'rgba(50,10,120,0)']]);
-  let L=[];for(let i=0;i<8;i++)L.push(...boltLines(cx,cy,r2()*TAU,10+r2()*20,fr*31+i,false));darkBolts(f,L,.85);
+  orb(f,cx,cy,20,[[0,`rgba(215,175,255,${gl*.4})`],[.4,`rgba(120,50,230,${gl*.2})`],[1,'rgba(50,10,120,0)']]);
+  let L=[];for(let i=0;i<4;i++)L.push(...boltLines(cx,cy,r2()*TAU,9+r2()*14,fr*31+i,false));darkBolts(f,L,.55);
   f.globalCompositeOperation='source-over';
   const a=tt-3.25;for(let k=0;k<5;k++){const ak=a-k*.26;if(ak>=0&&ak<.85){bloodSpray(f,nx0+7,cy,ak,11+k,k?14:28,1);bloodSpray(f,nx0-8,cy+1,ak,21+k,k?10:20,-1);}}}
  const rp=tt-SELSH;
  if(A&&rp>=0&&rp<1.5){ /* arranque: o buraco abre e o sangue explode */
   bloodSpray(f,cx-3,cy,rp*1.4,41,70,-1);bloodSpray(f,cx-3,cy+2,rp*1.1,42,52,-1);bloodSpray(f,cx+5,cy,rp*1.2,43,56,1);bloodSpray(f,cx,cy-3,rp*1.3,44,44,-1);bloodSpray(f,cx+2,cy+3,rp*1.0,45,40,1);
   if(rp<.4){f.globalCompositeOperation='lighter';const k=rp/.4;
-   orb(f,cx,cy,64*(1-k*.6),[[0,`rgba(235,215,255,${.85*(1-k)})`],[.35,`rgba(150,80,245,${.55*(1-k)})`],[1,'rgba(50,10,130,0)']]);
+   orb(f,cx,cy,40*(1-k*.6),[[0,`rgba(235,215,255,${.5*(1-k)})`],[.35,`rgba(150,80,245,${.3*(1-k)})`],[1,'rgba(50,10,130,0)']]);
    ringFX(f,cx,cy,8+78*(1-(1-k)*(1-k)),2.4*(1-k)+.2,`rgba(195,140,255,${1-k})`);
-   let L=[];for(let i=0;i<11;i++)L.push(...boltLines(cx,cy,r2()*TAU,(14+r2()*34)*(1-k*.7),fr*13+i,false));darkBolts(f,L,1);f.globalCompositeOperation='source-over';}
+   let L=[];for(let i=0;i<5;i++)L.push(...boltLines(cx,cy,r2()*TAU,(12+r2()*26)*(1-k*.7),fr*13+i,false));darkBolts(f,L,.7);f.globalCompositeOperation='source-over';}
   for(let i=0;i<60;i++){const r=R(300+i),vx=-(30+r()*150),vy=-(10+r()*110),x=cx-2+vx*rp,y=cy+vy*rp+150*rp*rp;if(y>GY+2||rp>1.3)continue;
    f.fillStyle=r()<.35?'rgba(70,6,12,.95)':'rgba(150,12,20,.95)';f.beginPath();f.ellipse(x,y,.6+r()*1.5,.5+r()*1.1,r()*3,0,TAU);f.fill();}}
  if(!A||tt>SELSH+.1){ /* buraco grande no peito: sangue escorrendo e poca crescendo */
