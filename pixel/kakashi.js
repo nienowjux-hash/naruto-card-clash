@@ -32,11 +32,14 @@ function kakashiHeadRows(mod){
  g.outline('K');
  return g.G;}
 
-function kakashiHead(g,ox,oy,mod){kakashiHeadRows(mod).forEach((r,y)=>g.put(ox,y+oy,r.join('')));}
+let KAK_LAST=null; /* ultima cabeca desenhada (para desfazer olhos de Sharingan que as poses do Sasuke pintam por cima) */
+function kakashiHead(g,ox,oy,mod){const rows=kakashiHeadRows(mod);KAK_LAST={ox,oy,rows};rows.forEach((r,y)=>g.put(ox,y+oy,r.join('')));}
 function kakashiHeadLying(g,ox,oy,groundY,mod){const rows=kakashiHeadRows(mod),Wd=rows[0].length;
  for(let y=0;y<rows.length;y++)for(let x=0;x<Wd;x++){const ch=rows[y][x];if(ch==='.')continue;const nx=ox+y,ny=oy+(Wd-1-x);if(ny<=groundY)g.set(nx,ny,ch);}}
 /* gera a pose do Sasuke e troca a pele do corpo por tecido (a cabeca usa chaves proprias, entao nao e afetada) */
-function kakashiFrom(fn,shar){return()=>{KAK_SHAR=!!shar;HEADHOOK={head:kakashiHead,lying:kakashiHeadLying};let g;try{g=fn();}finally{HEADHOOK=null;KAK_SHAR=false;}
+function kakashiFrom(fn,shar){return()=>{KAK_SHAR=!!shar;KAK_LAST=null;HEADHOOK={head:kakashiHead,lying:kakashiHeadLying};let g;try{g=fn();}finally{HEADHOOK=null;KAK_SHAR=false;}
+ /* so o olho esquerdo (coberto pela bandana) tem Sharingan: apaga os pixels vermelhos que algumas poses do Sasuke pintam nos olhos */
+ if(KAK_LAST){const {ox,oy,rows}=KAK_LAST;for(let y=0;y<rows.length;y++)for(let x=0;x<rows[y].length;x++){const gy=y+oy,gx=x+ox;if(gy<g.h&&gx<g.w&&g.G[gy][gx]==='R'&&rows[y][x]!=='R'&&rows[y][x]!=='.')g.G[gy][gx]=rows[y][x];}}
  const m={S:'f',s:'g',t:'h',o:'h',A:'i',a:'k',r:'l'};
  for(let y=0;y<g.h;y++)for(let x=0;x<g.w;x++){const c=m[g.G[y][x]];if(c)g.G[y][x]=c;}
  return g;};}
