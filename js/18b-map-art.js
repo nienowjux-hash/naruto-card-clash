@@ -128,5 +128,5 @@ function mapDraw(ts){
  c.fillStyle='rgba(10,6,0,.4)';c.fillRect(tx-20,ty+28,44,8);
  c.fillStyle='#140c06';c.fillRect(tx-28,ty-28,56,56);c.fillStyle='#ffd97a';c.fillRect(tx-24,ty-24,48,48);c.fillStyle='#140c06';c.fillRect(tx-20,ty-20,40,40);
  c.fillStyle='#ffd97a';c.fillRect(tx-8,ty+24,16,4);c.fillRect(tx-4,ty+28,8,4);
- const pt=document.getElementById(mapHero==='sasuke'?'ptS':'ptN');if(pt){c.imageSmoothingEnabled=false;c.drawImage(pt,tx-20,ty-20,40,40);}
+ const pt=document.getElementById(HERO_PT[mapHero]||'ptN');if(pt){c.imageSmoothingEnabled=false;c.drawImage(pt,tx-20,ty-20,40,40);}
  mapRAF=requestAnimationFrame(mapDraw);}

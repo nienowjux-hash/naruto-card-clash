@@ -32,7 +32,7 @@ function renderInv(){
    ${locked?'<p class="why lock">Luta em andamento: equipamentos travados.</p>':''}</section>
   <section class="iright"><h5>Mochila</h5><div class="grid">${cards}</div><div class="idet">${det}</div></section></div>
   <div class="tdev"><button id="invdrop">+ item aleatório (teste)</button><button id="invrs">Zerar mochila</button></div></div>`;
- const pc=document.getElementById('invpt'),src=document.getElementById(invChar==='sasuke'?'ptS':'ptN');if(pc&&src){const g=pc.getContext('2d');g.imageSmoothingEnabled=false;g.drawImage(src,0,0,96,96);}
+ const pc=document.getElementById('invpt'),src=document.getElementById(HERO_PT[invChar]||'ptN');if(pc&&src){const g=pc.getContext('2d');g.imageSmoothingEnabled=false;g.drawImage(src,0,0,96,96);}
  t.querySelectorAll('.tab').forEach(b=>b.onclick=()=>{invChar=b.dataset.c;renderInv();});
  t.querySelectorAll('.it').forEach(b=>b.onclick=()=>{invPick=b.dataset.id;renderInv();});
  t.querySelectorAll('.slot').forEach(b=>b.onclick=()=>{if(locked){toast('Troque de equipamento fora da luta');return;}if(unequipItem(invChar,b.dataset.slot)){syncHpMax(false);}renderInv();});

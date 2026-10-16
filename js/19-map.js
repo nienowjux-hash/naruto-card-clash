@@ -12,11 +12,14 @@ function edgePts(a,b){const A=NODES[a],B=NODES[b],mx=(A.x+B.x)/2,my=(A.y+B.y)/2,
 const bez=(e,t)=>[(1-t)*(1-t)*e.a[0]+2*(1-t)*t*e.c[0]+t*t*e.b[0],(1-t)*(1-t)*e.a[1]+2*(1-t)*t*e.c[1]+t*t*e.b[1]];
 
 /* ---- painel lateral ---- */
-function enemyCharOf(hero){return hero==='sasuke'?'naruto':'sasuke';}
+function enemyCharOf(hero){return hero==='naruto'?'sasuke':'naruto';}
+const HERO_PT={sasuke:'ptS0',sakura:'ptK',naruto:'ptN'};
+/* quem luta no lado esquerdo: troca sprites, retrato e nome (Sasuke ou Sakura); o Naruto usa o modo roleN */
+function applyHero(h){heroS=h==='sakura'?'sakura':'sasuke';ORIG_NAMES.s=heroS==='sakura'?'SAKURA HARUNO':'SASUKE UCHIHA';const b=document.querySelector('.pl b');if(b&&b.firstChild&&b.firstChild.nodeType===3&&!roleN)b.firstChild.nodeValue=ORIG_NAMES.s;portrait('ptS',SASUKE,mk({red:1,expr:1,hr:.05}));}
 function mapPanel(){
  if(!mapSel)return'<p class="hint">Clique em um local do mapa para ver os detalhes.</p>';
  const n=NODES[mapSel],st=nodeState(mapSel),stTxt={cleared:'Concluído',open:'Disponível',locked:'Bloqueado'}[st];
- const party=['sasuke','naruto'].map(h=>`<button class="hero${mapHero===h?' on':''}" data-h="${h}"><b>${CHARS[h].name.split(' ')[0]}</b><small>Nível ${PROG[h].level}</small></button>`).join('')+'<div class="hero empty"><b>Vazio</b><small>em breve</small></div><div class="hero empty"><b>Vazio</b><small>em breve</small></div>';
+ const party=['sasuke','sakura','naruto'].map(h=>`<button class="hero${mapHero===h?' on':''}" data-h="${h}"><b>${CHARS[h].name.split(' ')[0]}</b><small>Nível ${PROG[h].level}</small></button>`).join('')+'<div class="hero empty"><b>Vazio</b><small>em breve</small></div>';
  let body='';
  if(n.kind==='vila'){body=`<p class="desc">${n.d}</p><div class="act"><button class="learn" id="mp-tree">Árvore de habilidades</button><button class="learn alt" id="mp-inv">Equipamentos</button></div>`;}
  else{const af=n.enc.afin||CHARS[enemyCharOf(mapHero)].afin,vant=['fogo','agua','terra','vento','raio'].filter(b=>elemMatch(b,af)>0).map(b=>ELEMENTS[b].name);
@@ -29,7 +32,7 @@ function mapPanel(){
  return`<h3>${n.name}</h3><span class="tag ${st}">${stTxt}</span>${body}`;}
 function renderMap(){
  const t=mapEl();
- t.innerHTML=`<div class="mbox"><div class="thead"><h2>Mapa da campanha</h2><div class="ryo"><b>${INV.ryo}</b><small>ryo</small></div><div class="ptl">${['sasuke','naruto'].map(h=>`<span><b>${CHARS[h].name.split(' ')[0]}</b> Nv ${PROG[h].level}${PROG[h].pts?` · <i>${PROG[h].pts} pt</i>`:''}</span>`).join('')}</div><button class="x" id="mapx">Voltar à luta ✕</button></div>
+ t.innerHTML=`<div class="mbox"><div class="thead"><h2>Mapa da campanha</h2><div class="ryo"><b>${INV.ryo}</b><small>ryo</small></div><div class="ptl">${['sasuke','sakura','naruto'].map(h=>`<span><b>${CHARS[h].name.split(' ')[0]}</b> Nv ${PROG[h].level}${PROG[h].pts?` · <i>${PROG[h].pts} pt</i>`:''}</span>`).join('')}</div><button class="x" id="mapx">Voltar à luta ✕</button></div>
  <div class="mmain"><div class="mwrap"><canvas id="mapcv" width="${MAP_W}" height="${MAP_H}"></canvas></div><aside class="mside">${mapPanel()}</aside></div>
  <div class="tdev"><span class="lg"><i class="a"></i>Concluído <i class="b"></i>Disponível <i class="c"></i>Bloqueado</span><button id="mprs">Reiniciar campanha</button></div></div>`;
  const cv=document.getElementById('mapcv'),pos=e=>{const r=cv.getBoundingClientRect();return[(e.clientX-r.left)*MAP_W/r.width,(e.clientY-r.top)*MAP_H/r.height];};
@@ -53,18 +56,18 @@ function travelAndFight(id){
  let i=0;const step=()=>{if(i>=pts.length){mapTok=null;CAMP.at=id;saveCamp();mapMoving=false;startEncounter(id,mapHero);return;}mapTok={x:pts[i][0],y:pts[i][1]};i+=pts.length>30?1:1;setTimeout(step,16);};step();}
 function startEncounter(id,hero){
  const n=NODES[id];if(!n||!n.enc)return;
- CAMP.active={node:id,hero,afin:n.enc.afin,hp:1,atk:1,name:n.enc.name};saveCamp();
+ CAMP.active={node:id,hero,afin:n.enc.afin,hp:1,atk:1,name:n.enc.name};saveCamp();applyHero(hero);
  if((hero==='naruto')!==roleN){try{localStorage.setItem('playNaruto',hero==='naruto'?'1':'0');}catch(e){}location.reload();return;}
  applyEncounter();}
 function setEnemyName(nm){const side=roleN?'s':'n',b=document.querySelector(side==='n'?'.pl.r b':'.pl b');if(b&&b.firstChild&&b.firstChild.nodeType===3)b.firstChild.nodeValue=(nm||ORIG_NAMES[side]).toUpperCase();}
 function applyEncounter(){
- const a=CAMP.active;if(!a)return;setScene(NODES[a.node].scene);setEnemyName(a.name);
+ const a=CAMP.active;if(!a)return;applyHero(a.hero);setScene(NODES[a.node].scene);setEnemyName(a.name);
  mapEl().hidden=true;if(mapRAF){cancelAnimationFrame(mapRAF);mapRAF=null;}
  $('rst').onclick();toast(NODES[a.node].name+' — '+a.name);}
 /* fim de luta: marca o local, e volta ao mapa */
 function campaignResult(won){const a=CAMP.active;if(!a)return;
  if(won&&!CAMP.cleared.includes(a.node)){CAMP.cleared.push(a.node);}CAMP.at=a.node;saveCamp();
- setTimeout(()=>{CAMP.active=null;saveCamp();setEnemyName(null);setScene('vale');mapSel=a.node;openMap();},6200);}
+ setTimeout(()=>{CAMP.active=null;saveCamp();applyHero('sasuke');setEnemyName(null);setScene('vale');mapSel=a.node;openMap();},6200);}
 window.addEventListener('keydown',e=>{const t=document.getElementById('map');if(e.key==='Escape'&&t&&!t.hidden){closeMap();e.stopImmediatePropagation();}},true);
 (function(){const b=document.createElement('button');b.id='mapbtn';b.textContent='Mapa';b.onclick=openMap;const c=document.querySelector('.ctl');if(c)c.insertBefore(b,c.firstChild);})();
 /* ao carregar: continua a luta em andamento ou abre o mapa */

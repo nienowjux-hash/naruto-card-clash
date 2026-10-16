@@ -166,3 +166,13 @@ O `tools/balance-sim.js` ainda usa a IA antiga.
 
 ### Mapa em pixel art
 O mapa da campanha (`js/18b-map-art.js`) agora é pintado em baixa resolução (1 pixel = 4 unidades) com paleta fixa, tramado ordenado e iluminação, e ampliado sem suavizar: oceano em faixas de profundidade com espuma e falésias, biomas (grama, floresta, deserto, neve, rochas, vila), pinheiros, cactos, montanhas com neve, dunas, rio, casas de Konoha, cachoeira e estátuas do Vale do Fim, barquinhos e bússola. Os locais, estradas e a ficha da equipe são desenhados por cima em blocos de 4 pixels.
+
+## Sakura Haruno (Parte 1, jogável)
+
+No mapa da campanha a equipe agora tem **Sasuke, Sakura e Naruto**; escolha quem vai lutar. A Sakura joga no lado esquerdo no lugar do Sasuke (o inimigo continua sendo o Naruto do local). Os sprites ficam em `pixel/sakura.js` (mesmas poses do Sasuke, com cabeça nova — cabelo rosa em chanel, fita vermelha, olhos verdes — e paleta de qipao vermelho e shorts verdes); `heroS` em `js/03-sprites.js` diz quem está no lado esquerdo.
+
+Kit: Kunai, Shuriken, Soco, Chute, Kawarimi, Defender, Concentrar e Itens (iguais aos do Sasuke), mais:
+- **Cura Médica** (12 de chakra): recupera 30 de vida; **Cura Intensiva** (30 de chakra, aprende com 4 pontos): recupera 65.
+- **Shannarō! Soco de Chakra** (14 de chakra, 3 pontos, nível 6): 28 de dano, onda de choque e rachaduras no chão.
+Afinidade: Terra (Yin). Tem árvore, nível, XP e equipamentos próprios. `js/20-sakura.js` guarda os golpes e efeitos dela.
+

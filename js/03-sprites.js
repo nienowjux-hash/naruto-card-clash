@@ -25,6 +25,19 @@ if(USE_SPR&&typeof sasukeRunFrame==='function'){const mk4=(fn,pal,sh)=>[0,1,2,3]
 if(USE_SPR&&typeof sasukeThrowFrame==='function'){const mkT=i=>{const gr=sasukeThrowFrame(i),a=document.createElement('canvas'),b=document.createElement('canvas');gr.draw(a,SAS2_PAL,1);gr.draw(b,Object.assign({},SAS2_PAL,SHARI),1);return{c:a,csh:b,w:56,h:80,ax:27,ay:75};};
  SPR.tw=mkT(0);SPR.tt=mkT(1);SPR.te=mkT(2);
  if(typeof lv2From==='function'&&typeof LV2_PAL!=='undefined')['tw','tt','te'].forEach((k,i)=>{const gr=lv2From(()=>sasukeThrowFrame(i))(),c=document.createElement('canvas');gr.draw(c,LV2_PAL,1);SPRL2[k]={c,w:56,h:80,ax:27,ay:75};});}
+/* Sakura (Parte 1): mesmas poses do Sasuke com a cabeca/roupa dela; quem nao tem sprite proprio usa o do Sasuke. heroS diz quem joga no lado esquerdo */
+let heroS=(typeof CAMP!=='undefined'&&CAMP.active&&CAMP.active.hero==='sakura')?'sakura':'sasuke';
+const SPRK={};
+if(USE_SPR&&typeof sakuraFrom==='function'){const mkK=(fn,ax,ay)=>{const gr=sakuraFrom(fn)(),c=document.createElement('canvas');gr.draw(c,SAK_PAL,1);return{c,csh:c,w:gr.w,h:gr.h,ax,ay};};
+ const defs={idle:[sasukeIdle,27,75],guard:[sasukeGuard,27,75],punch:[sasukePunch,27,75],hit:[sasukeHit,25,75],down:[sasukeDown,40,45],kick:[sasukeKick,22,75],seal:[sasukeSeal,27,75],chidori:[sasukeChidori,27,75],katon:[sasukeKaton,27,75],block:[sasukeBlock,27,75]};
+ if(typeof sasukePunchWind==='function')defs.pw=[sasukePunchWind,27,75];if(typeof sasukeEyeHand==='function')defs.eh=[sasukeEyeHand,27,75];if(typeof sasukeKickWind==='function')defs.kw=[sasukeKickWind,27,75];
+ for(const k in defs)SPRK[k]=mkK(...defs[k]);
+ if(SPRK.idle&&typeof sasukeIdleB==='function')SPRK.idle.cb=SPRK.idle.cbsh=mkK(()=>sasukeIdleB(1),27,75).c;
+ if(SPRK.guard&&typeof sasukeGuardB==='function')SPRK.guard.cb=SPRK.guard.cbsh=mkK(sasukeGuardB,27,75).c;
+ if(typeof sasukeRunFrame==='function'){const fr=[0,1,2,3].map(i=>mkK(()=>sasukeRunFrame(i),27,75));SPRK.run={c:fr[0].c,csh:fr[0].c,fr,w:56,h:80,ax:27,ay:75};}
+ if(typeof sasukeThrowFrame==='function')['tw','tt','te'].forEach((k,i)=>{SPRK[k]=mkK(()=>sasukeThrowFrame(i),27,75);});
+ for(const k in SPR)if(!SPRK[k])SPRK[k]=SPR[k];}
+const SPRX=()=>heroS==='sakura'&&SPRK.guard?SPRK:SPR;
 /* Naruto de quatro (manto da Kyubi): quadros de agachar, galope e bote, escolhidos pela pose (fourKeyFor) */
 if(USE_SPR&&SPRN.four&&typeof naruFourCoil==='function'){const mkF=fn=>{const gr=fn(),a=document.createElement('canvas'),b=document.createElement('canvas');gr.draw(a,NAR_PAL,1);gr.draw(b,Object.assign({},NAR_PAL,KYU_EYES),1);return{c:a,csh:b,w:gr.w,h:gr.h,ax:48,ay:56};};
  SPRN.fourCoil=mkF(naruFourCoil);SPRN.fourRunA=mkF(naruFourRunA);SPRN.fourRunB=mkF(naruFourRunB);SPRN.fourLunge=mkF(naruFourLunge);}
@@ -64,7 +77,7 @@ function sprDraw(c,SB,S,P,R0,key,vf,sq){vf=vf||0;sq=sq||0;const dT=((P.tilt||0)-
 const sprTmp=document.createElement('canvas');sprTmp.width=96;sprTmp.height=96;const sprTx=sprTmp.getContext('2d',{willReadFrequently:true});
 const sprBig=document.createElement('canvas');sprBig.width=384;sprBig.height=384;const sprBx=sprBig.getContext('2d');
 function blitSprite(x,y,flip,P,time,o,isN){
- const key=(isN&&o.four&&SPRN.four)?((o.fourKey&&SPRN[o.fourKey])?o.fourKey:'four'):(isN&&o.sexy&&SPRN.sexy)?'sexy':sprPick(P,isN?sprRefsN():null),S=(isN?SPRN:(o.lv2px>0?(SPRL2[key]?SPRL2:(SPRL2.guard&&key==='idle'?{idle:SPRL2.guard}:SPR)):SPR))[key],al=o.alpha==null?1:o.alpha;
+ const key=(isN&&o.four&&SPRN.four)?((o.fourKey&&SPRN[o.fourKey])?o.fourKey:'four'):(isN&&o.sexy&&SPRN.sexy)?'sexy':sprPick(P,isN?sprRefsN():null),S=(isN?SPRN:(o.lv2px>0?(SPRL2[key]?SPRL2:(SPRL2.guard&&key==='idle'?{idle:SPRL2.guard}:SPR)):SPRX()))[key],al=o.alpha==null?1:o.alpha;
  sprTx.setTransform(1,0,0,1,0,0);sprTx.globalCompositeOperation='source-over';sprTx.clearRect(0,0,96,96);{const fr=(key==='run'&&S.fr)?S.fr[Math.floor(time*16+(isN?1:0))%4]:null,br=!fr&&(key==='idle'||key==='guard')&&S.cb&&Math.floor(time*1.15+(isN?.55:0))%2===1;sprTx.drawImage(fr?(o.sharingan&&fr.csh?fr.csh:fr.c):(o.sharingan&&S.csh?(br?S.cbsh:S.csh):(br?S.cb:S.c)),0,0);}
  sprTx.globalCompositeOperation='source-atop';
  if(o.light){const L=o.light;sprTx.globalAlpha=Math.min(.3,L.k*.25);sprTx.fillStyle=css(L.col,1,1);sprTx.fillRect(0,0,S.w,S.h);sprTx.globalAlpha=1;}

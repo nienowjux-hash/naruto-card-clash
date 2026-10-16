@@ -40,6 +40,10 @@ const MOVES={
  soushuken:{name:'Sōshūken no Jutsu',elem:'neutro',tipo:'arma',lvl:18,rar:2},
  kagesh:{name:'Shuriken Kage no Jutsu',elem:'neutro',tipo:'arma',lvl:22,rar:2},
  kawarimi:{name:'Kawarimi',elem:'neutro',tipo:'suporte',lvl:1,rar:1},
+ /* Sakura */
+ cura:{name:'Cura Médica',elem:'yin',tipo:'suporte',lvl:1,rar:1},
+ cura2:{name:'Cura Intensiva',elem:'yin',tipo:'suporte',lvl:12,rar:3},
+ shannaro:{name:'Shannarō! Soco de Chakra',elem:'terra',tipo:'taijutsu',lvl:6,rar:2},
  /* Naruto */
  rasengan:{name:'Rasengan',elem:'vento',tipo:'ninjutsu',lvl:14,rar:3},
  bunshin:{name:'Kage Bunshin',elem:'neutro',tipo:'ninjutsu',lvl:1,rar:1},
@@ -57,7 +61,8 @@ function moveByName(n){const id=MOVE_ALIAS[n];if(id)return MOVES[id];for(const k
 /* Fichas de personagem: atributos-base e elementos de afinidade. Nivel, XP e golpes aprendidos ficam em PROG (progresso salvo). */
 const CHARS={
  sasuke:{id:'sasuke',name:'Sasuke Uchiha',hp:100,ck:100,afin:['fogo','raio'],extras:['yin']},
- naruto:{id:'naruto',name:'Naruto Uzumaki',hp:100,ck:100,afin:['vento'],extras:['yang']}};
+ naruto:{id:'naruto',name:'Naruto Uzumaki',hp:100,ck:100,afin:['vento'],extras:['yang']},
+ sakura:{id:'sakura',name:'Sakura Haruno',hp:100,ck:100,afin:['terra'],extras:['yin']}};
 function elemChip(m){if(!m||!m.elem||m.elem==='neutro')return '';const e=ELEMENTS[m.elem];return `<em class="el" style="--ec:${e.col}">${e.name}</em>`;}
 
 /* ---------- Vantagem entre elementos ----------
@@ -70,7 +75,7 @@ function elemMatch(att,def){ /* >0 vantagem, <0 desvantagem, 0 neutro */
  const A=elemParts(att),D=Array.isArray(def)?def.flatMap(elemParts):elemParts(def);let w=false,l=false;
  for(const a of A)for(const d of D){if(ELEM_BEATS[a]===d)w=true;if(ELEM_BEATS[d]===a)l=true;}
  return w&&!l?1:l&&!w?-1:0;}
-function elemMult(att,defCharId){const c=CHARS[defCharId];if(!att||!c)return 1;const a=CAMP.active,af=(a&&a.afin&&defCharId===(a.hero==='sasuke'?'naruto':'sasuke'))?a.afin:c.afin,m=elemMatch(att,af);return m>0?ELEM_ADV:m<0?ELEM_DIS:1;}
+function elemMult(att,defCharId){const c=CHARS[defCharId];if(!att||!c)return 1;const a=CAMP.active,af=(a&&a.afin&&defCharId===(a.hero==='naruto'?'sasuke':'naruto'))?a.afin:c.afin,m=elemMatch(att,af);return m>0?ELEM_ADV:m<0?ELEM_DIS:1;}
 function elemMsg(mult){return mult>1?'Vantagem elemental! (+40%)':mult<1?'Elemento fraco contra o alvo (-25%)':'';}
 
 /* ---------- Arvore de habilidades ----------
@@ -106,7 +111,16 @@ const TREES={
   {id:'soco',x:3,y:1,req:[],pt:0,base:1,d:'Avança e acerta um soco no rosto.'},
   {id:'chute',x:3,y:2,req:[],pt:0,base:1,d:'Salta e acerta um chute.'},
   {id:'kunai',x:4,y:0,req:[],pt:0,base:1,d:'Arremessa um kunai direto no alvo.'},
-  {id:'shuriken',x:4,y:1,req:[],pt:0,base:1,d:'Lança três shurikens seguidas.'}]};
+  {id:'shuriken',x:4,y:1,req:[],pt:0,base:1,d:'Lança três shurikens seguidas.'}],
+ sakura:[
+  {id:'soco',x:0,y:0,req:[],pt:0,base:1,d:'Avança e acerta um soco no rosto.'},
+  {id:'chute',x:0,y:1,req:[],pt:0,base:1,d:'Salta e acerta um chute.'},
+  {id:'kunai',x:1,y:0,req:[],pt:0,base:1,d:'Arremessa um kunai direto no alvo.'},
+  {id:'shuriken',x:1,y:1,req:[],pt:0,base:1,d:'Lança estrelas ninja que giram até o alvo.'},
+  {id:'kawarimi',x:2,y:0,req:[],pt:0,base:1,d:'Jutsu de Substituição: troca de lugar com um tronco e evita por completo o próximo golpe (2 usos por luta).'},
+  {id:'cura',x:3,y:0,req:[],pt:0,start:1,d:'Ninjutsu médico: as palmas brilham em verde e fecham os ferimentos. Recupera 30 de vida.'},
+  {id:'cura2',x:3,y:1,req:['cura'],pt:4,d:'Cura Intensiva: muito mais chakra nas mãos. Recupera 65 de vida.'},
+  {id:'shannaro',x:4,y:0,req:[],pt:3,d:'Concentra todo o chakra no punho (controle perfeito) e acerta um soco devastador.'}]};
 /* golpes guardados para personagens/fases futuras (nao aparecem na arvore nem no menu): o no pronto para recolocar */
 const TREES_FUTURO={naruto:[
   {id:'odama',x:1,y:3,req:['rasengan'],pt:4,rar:3,lvl:20,elem:'vento',d:'Rasengan Gigante: uma esfera enorme, mais dano e mais chakra.'},
@@ -169,9 +183,9 @@ const ITEMS={
  elixir_sabio:{name:'Elixir do Sábio',slot:'cons',rar:4,g:'丹',use:{hp:100,ck:50},d:'Recupera 100 de vida e 50 de chakra. Gasta o turno.'}};
 const RARITY={1:{name:'Comum',col:'#aab0c8'},2:{name:'Incomum',col:'#5cc878'},3:{name:'Raro',col:'#4aa8ff'},4:{name:'Épico',col:'#b070ff'},5:{name:'Lendário',col:'#ffa43a'}};
 const INV_KEY='rpgInvV1';
-function invDefault(){return{ryo:0,bag:{kunai_ferro:1,colete:1,bandana:1,pilula_vida:3,pilula_ck:3},eq:{sasuke:{},naruto:{}}};}
+function invDefault(){return{ryo:0,bag:{kunai_ferro:1,colete:1,bandana:1,pilula_vida:3,pilula_ck:3},eq:{sasuke:{},naruto:{},sakura:{}}};}
 let INV=invDefault();
-try{const j=JSON.parse(localStorage.getItem(INV_KEY)||'null');if(j){INV.ryo=j.ryo||0;INV.bag=j.bag||INV.bag;INV.eq=Object.assign({sasuke:{},naruto:{}},j.eq||{});}}catch(e){}
+try{const j=JSON.parse(localStorage.getItem(INV_KEY)||'null');if(j){INV.ryo=j.ryo||0;INV.bag=j.bag||INV.bag;INV.eq=Object.assign({sasuke:{},naruto:{},sakura:{}},j.eq||{});}}catch(e){}
 function saveInv(){try{localStorage.setItem(INV_KEY,JSON.stringify(INV));}catch(e){}}
 function bagQty(id){return INV.bag[id]||0;}
 function addItem(id,n){INV.bag[id]=bagQty(id)+(n||1);saveInv();}
@@ -208,4 +222,4 @@ function resetCamp(){CAMP={cleared:['konoha'],at:'konoha',active:null};saveCamp(
 
 /* Kit do inimigo da campanha: so os golpes da arvore com nivel minimo ate o nivel do local (mais os basicos). Fora da campanha vale o kit completo. */
 function enemyKit(charId,lvl){return new Set(TREES[charId].filter(n=>n.base||n.start||MOVES[n.id].lvl<=lvl).map(n=>n.id));}
-function enemyKitOf(charId){const a=CAMP.active;if(!a)return null;if(charId!==(a.hero==='sasuke'?'naruto':'sasuke'))return null;return enemyKit(charId,NODES[a.node].lvl);}
+function enemyKitOf(charId){const a=CAMP.active;if(!a)return null;if(charId!==(a.hero==='naruto'?'sasuke':'naruto'))return null;return enemyKit(charId,NODES[a.node].lvl);}
