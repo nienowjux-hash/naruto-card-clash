@@ -132,8 +132,8 @@ const TREES={
   {id:'shuriken',x:1,y:1,req:[],pt:0,base:1,d:'Lança estrelas ninja que giram até o alvo.'},
   {id:'kawarimi',x:2,y:0,req:[],pt:0,base:1,d:'Jutsu de Substituição: troca de lugar com um tronco e evita por completo o próximo golpe (2 usos por luta).'},
   {id:'katon',x:3,y:0,req:[],pt:0,start:1,d:'Katon copiado com o Sharingan: bola de fogo que explode no alvo, causando queimadura.'},
-  {id:'raikiri',x:4,y:0,req:[],pt:4,d:'Raikiri: relâmpagos na mão, a técnica que corta o raio. Dano alto e fatality.'},
-  {id:'genjutsu',x:5,y:0,req:[],pt:2,d:'Prende o alvo numa ilusão do Sharingan: ele perde o próximo turno.'},
+  {id:'raikiri',x:4,y:0,req:[],pt:0,base:1,d:'Raikiri: relâmpagos na mão, a técnica que corta o raio. Dano alto e fatality.'},
+  {id:'genjutsu',x:5,y:0,req:[],pt:0,base:1,d:'Prende o alvo numa ilusão do Sharingan: ele perde o próximo turno.'},
   {id:'copy',x:5,y:1,req:['genjutsu'],pt:4,d:'Ninja Copiador: copia o jutsu do inimigo para usar uma vez (Rasengan e Kage Bunshin).'}]};
 /* golpes guardados para personagens/fases futuras (nao aparecem na arvore nem no menu): o no pronto para recolocar */
 const TREES_FUTURO={naruto:[
