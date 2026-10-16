@@ -17,7 +17,7 @@ function learnedAt(charId,level){const T=TREES[charId],set=new Set(T.filter(n=>n
  for(let L=2;L<=level;L++){pts++;for(const id of BUILD_ORDER[charId]){const n=T.find(x=>x.id===id);if(set.has(id)||MOVES[id].lvl>L||pts<n.pt||!n.req.every(r=>set.has(r)))continue;set.add(id);pts-=n.pt;}}return set;}
 const GEAR={sasuke:[[],['kunai_ferro','colete','bandana'],['kusanagi','manto_nuvem','amuleto_sorte']],naruto:[[],['kunai_ferro','colete','bandana'],['kunai_tri','manto_nuvem','talisma_vento']]};
 function gearStats(ids){const s={hp:0,atk:0,def:0,elem:{}};for(const id of ids){const st=ITEMS[id].stats||{};s.hp+=st.hp||0;s.atk+=st.atk||0;s.def+=st.def||0;if(st.elem)s.elem[st.elem]=(s.elem[st.elem]||0)+st.pct;}s.def=Math.min(.6,s.def);return s;}
-const tierFor=lvl=>lvl<=1?0:lvl<=3?1:2;
+const tierFor=lvl=>lvl<8?0:lvl<20?1:2;
 const rnd=()=>Math.random();
 /* regras em teste:
    imunidade: depois de perder um turno por stun, o alvo nao pode ser atordoado de novo no turno seguinte

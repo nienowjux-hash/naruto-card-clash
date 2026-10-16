@@ -44,13 +44,13 @@ function renderTree(){
  let lines='';for(const n of nodes)for(const r of n.req){const a=ctr(treeNode(treeChar,r)),b=ctr(n),on=P.learned.includes(r)&&P.learned.includes(n.id),open=P.learned.includes(r)&&!P.learned.includes(n.id);
   const my=(a.y+b.y)/2;lines+=`<path d="M${a.x},${a.y} C${a.x},${my} ${b.x},${my} ${b.x},${b.y}" class="${on?'on':open?'open':''}"/>`;}
  const heads=(TREE_BRANCH[treeChar]||[]).map((nm,i)=>`<div class="bh" style="left:${PAD_X+i*CELL_W}px;width:${CELL_W}px">${nm}</div>`).join('');
- const boxes=nodes.map(n=>{const c=ctr(n),m=MOVES[n.id],e=ELEMENTS[m.elem],got=P.learned.includes(n.id),can=!got&&!learnBlock(treeChar,n.id),st=got?'got':can?'can':'lock';
-  return `<button class="nd ${st}${treePick===n.id?' sel':''}" data-id="${n.id}" style="left:${c.x-CELL_W/2}px;top:${c.y-NODE/2}px;width:${CELL_W}px;--ec:${e.col}"><span class="orb"><span class="gl">${SKILL_GLYPH[n.id]||'?'}</span>${got?'':`<i class="lv">${m.lvl}</i>`}</span><b>${m.name.replace(/ \(.*\)/,'').replace(/^Katon: /,'')}</b></button>`;}).join('');
+ const boxes=nodes.map(n=>{const c=ctr(n),m=MOVES[n.id],e=ELEMENTS[m.elem],got=P.learned.includes(n.id),can=!got&&!learnBlock(treeChar,n.id),st=got?'got':can?'can':'lock',rr=RARITY[m.rar||1];
+  return `<button class="nd ${st}${treePick===n.id?' sel':''}" data-id="${n.id}" style="left:${c.x-CELL_W/2}px;top:${c.y-NODE/2}px;width:${CELL_W}px;--ec:${e.col};--rc:${rr.col}"><span class="orb"><span class="gl">${SKILL_GLYPH[n.id]||'?'}</span>${got?'':`<i class="lv">${m.lvl}</i>`}</span><b>${m.name.replace(/ \(Nível (\d)\)/,' $1').replace(/ \(.*\)/,'').replace(/^Katon: /,'')}</b><small class="rr">${rr.name}${n.pt?' · '+n.pt+' pt':''}</small></button>`;}).join('');
  let side='<p class="hint">Escolha um golpe na árvore.</p>';
  if(treePick){const n=treeNode(treeChar,treePick),m=MOVES[treePick],e=ELEMENTS[m.elem],got=P.learned.includes(treePick),why=learnBlock(treeChar,treePick),S=skillStats(treePick);
   const reqs=n.req.length?n.req.map(r=>`<li class="${P.learned.includes(r)?'y':'n'}">${MOVES[r].name}</li>`).join(''):'<li class="y">Nenhum</li>';
   side=`<div class="pv"><div id="pvbox"></div><span class="pvtag">PRÉVIA</span></div>
-   <h3>${m.name}</h3><div class="chips"><em class="el" style="--ec:${e.col}">${e.name}</em><em class="el" style="--ec:#aab0c8">${m.tipo}</em></div>
+   <h3>${m.name}</h3><div class="chips"><em class="el" style="--ec:${RARITY[m.rar||1].col}">${RARITY[m.rar||1].name}</em><em class="el" style="--ec:${e.col}">${e.name}</em><em class="el" style="--ec:#aab0c8">${m.tipo}</em></div>
    <p class="desc">${n.d}</p><p class="tipo">${TIPO_TXT[m.tipo]||''}</p>
    <div class="stats"><div><small>Dano base</small><b>${S.dmg||'—'}</b></div><div><small>Custo</small><b>${S.cost?S.cost+' CK':'Grátis'}</b></div><div><small>Nível mín.</small><b>${m.lvl}</b></div><div><small>Pontos</small><b>${n.pt}</b></div></div>
    <div class="elx">${S.forte.length?`<span class="g">▲ Forte contra: ${S.forte.join(', ')}</span>`:''}${S.fraco.length?`<span class="r">▼ Fraco contra: ${S.fraco.join(', ')}</span>`:''}${!S.forte.length&&!S.fraco.length?'<span>Sem vantagem ou desvantagem elemental</span>':''}</div>
@@ -71,6 +71,6 @@ function renderTree(){
 window.addEventListener('keydown',e=>{const t=document.getElementById('tree');if(e.key==='Escape'&&t&&!t.hidden){closeTree();e.stopImmediatePropagation();}},true);
 (function(){const b=document.createElement('button');b.id='treebtn';b.textContent='Árvore de habilidades';b.onclick=openTree;const c=document.querySelector('.ctl');if(c)c.insertBefore(b,c.firstChild);})();
 /* XP no fim da luta: quem o jogador controla ganha XP por vitoria (mais) ou derrota (menos) */
-function giveBattleXp(winner){const me=roleN?'naruto':'sasuke',won=(winner==='N')===roleN,nd=CAMP.active?NODES[CAMP.active.node]:null,xp=won?((nd&&nd.xp)||80):25,up=awardXp(me,xp);
+function giveBattleXp(winner){const me=roleN?'naruto':'sasuke',won=(winner==='N')===roleN,nd=CAMP.active?NODES[CAMP.active.node]:null,fx=nd?Math.min(1.3,Math.max(.1,1+(nd.lvl-PROG[me].level)*.08)):1,xp=Math.max(1,Math.round(((nd&&nd.xp)||8)*fx*(won?1:.15))),up=awardXp(me,xp);
  if(typeof giveBattleLoot==='function')giveBattleLoot(won);if(typeof campaignResult==='function')campaignResult(won);
  setTimeout(()=>toast(CHARS[me].name.split(' ')[0]+' ganhou '+xp+' XP'+(up?' · subiu para o nível '+PROG[me].level+'! (+'+up+' pt)':'')),2600);}

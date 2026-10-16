@@ -22,33 +22,33 @@ const ELEMENTS={
 
 /* Golpes: elemento, tipo (ninjutsu / genjutsu / taijutsu / arma / invocacao / suporte) e nivel minimo para liberar. */
 const MOVES={
- kunai:{name:'Kunai',elem:'neutro',tipo:'arma',lvl:1},
- shuriken:{name:'Shuriken',elem:'neutro',tipo:'arma',lvl:1},
- soco:{name:'Soco',elem:'neutro',tipo:'taijutsu',lvl:1},
- chute:{name:'Chute',elem:'neutro',tipo:'taijutsu',lvl:1},
- chidori:{name:'Chidori',elem:'raio',tipo:'ninjutsu',lvl:1},
- katon:{name:'Katon: Bola de Fogo',elem:'fogo',tipo:'ninjutsu',lvl:1},
- amaterasu:{name:'Amaterasu',elem:'fogo',tipo:'ninjutsu',lvl:4,futuro:true} /* guardado para o Sasuke adulto: fora do jogo por enquanto */,
- copy:{name:'Copiar Técnica (Sharingan)',elem:'neutro',tipo:'suporte',lvl:3},
- cop_rasengan:{name:'Cópia: Rasengan',elem:'vento',tipo:'ninjutsu',lvl:3},
- cop_bunshin:{name:'Cópia: Kage Bunshin',elem:'neutro',tipo:'ninjutsu',lvl:3},
- genjutsu:{name:'Genjutsu Sharingan',elem:'yin',tipo:'genjutsu',lvl:2},
- shishi:{name:'Shishi Rendan',elem:'neutro',tipo:'taijutsu',lvl:3},
- selo:{name:'Selo Amaldiçoado (Nível 1)',elem:'neutro',tipo:'suporte',lvl:5},
- selo2:{name:'Selo Amaldiçoado (Nível 2)',elem:'neutro',tipo:'suporte',lvl:8},
- selochidori:{name:'Chidori Sombrio (Nível 2)',elem:'raio',tipo:'ninjutsu',lvl:8},
- soushuken:{name:'Sōshūken no Jutsu',elem:'neutro',tipo:'arma',lvl:4},
- kagesh:{name:'Shuriken Kage no Jutsu',elem:'neutro',tipo:'arma',lvl:4},
- kawarimi:{name:'Kawarimi',elem:'neutro',tipo:'suporte',lvl:1},
+ kunai:{name:'Kunai',elem:'neutro',tipo:'arma',lvl:1,rar:1},
+ shuriken:{name:'Shuriken',elem:'neutro',tipo:'arma',lvl:1,rar:1},
+ soco:{name:'Soco',elem:'neutro',tipo:'taijutsu',lvl:1,rar:1},
+ chute:{name:'Chute',elem:'neutro',tipo:'taijutsu',lvl:1,rar:1},
+ chidori:{name:'Chidori',elem:'raio',tipo:'ninjutsu',lvl:1,rar:1},
+ katon:{name:'Katon: Bola de Fogo',elem:'fogo',tipo:'ninjutsu',lvl:1,rar:1},
+ amaterasu:{name:'Amaterasu',elem:'fogo',tipo:'ninjutsu',lvl:35,rar:5,futuro:true} /* guardado para o Sasuke adulto: fora do jogo por enquanto */,
+ copy:{name:'Copiar Técnica (Sharingan)',elem:'neutro',tipo:'suporte',lvl:24,rar:3},
+ cop_rasengan:{name:'Cópia: Rasengan',elem:'vento',tipo:'ninjutsu',lvl:24,rar:3},
+ cop_bunshin:{name:'Cópia: Kage Bunshin',elem:'neutro',tipo:'ninjutsu',lvl:24,rar:3},
+ genjutsu:{name:'Genjutsu Sharingan',elem:'yin',tipo:'genjutsu',lvl:8,rar:2},
+ shishi:{name:'Shishi Rendan',elem:'neutro',tipo:'taijutsu',lvl:12,rar:2},
+ selo:{name:'Selo Amaldiçoado (Nível 1)',elem:'neutro',tipo:'suporte',lvl:28,rar:4},
+ selo2:{name:'Selo Amaldiçoado (Nível 2)',elem:'neutro',tipo:'suporte',lvl:40,rar:5},
+ selochidori:{name:'Chidori Sombrio (Nível 2)',elem:'raio',tipo:'ninjutsu',lvl:45,rar:5},
+ soushuken:{name:'Sōshūken no Jutsu',elem:'neutro',tipo:'arma',lvl:16,rar:3},
+ kagesh:{name:'Shuriken Kage no Jutsu',elem:'neutro',tipo:'arma',lvl:20,rar:3},
+ kawarimi:{name:'Kawarimi',elem:'neutro',tipo:'suporte',lvl:1,rar:1},
  /* Naruto */
- rasengan:{name:'Rasengan',elem:'vento',tipo:'ninjutsu',lvl:1},
- bunshin:{name:'Kage Bunshin',elem:'neutro',tipo:'ninjutsu',lvl:1},
- uzumaki:{name:'Uzumaki Rendan',elem:'neutro',tipo:'taijutsu',lvl:2},
- oiroke:{name:'Oiroke no Jutsu',elem:'neutro',tipo:'genjutsu',lvl:1},
- harem:{name:'Harem no Jutsu',elem:'neutro',tipo:'genjutsu',lvl:2},
- kamikaze:{name:'Kamikaze',elem:'vento',tipo:'ninjutsu',lvl:3},
- kuchiyose:{name:'Kuchiyose: Gama Bunta',elem:'neutro',tipo:'invocacao',lvl:4},
- kyuubi:{name:'Chakra da Kyūbi',elem:'yang',tipo:'suporte',lvl:6}};
+ rasengan:{name:'Rasengan',elem:'vento',tipo:'ninjutsu',lvl:1,rar:1},
+ bunshin:{name:'Kage Bunshin',elem:'neutro',tipo:'ninjutsu',lvl:1,rar:1},
+ uzumaki:{name:'Uzumaki Rendan',elem:'neutro',tipo:'taijutsu',lvl:8,rar:2},
+ oiroke:{name:'Oiroke no Jutsu',elem:'neutro',tipo:'genjutsu',lvl:1,rar:1},
+ harem:{name:'Harem no Jutsu',elem:'neutro',tipo:'genjutsu',lvl:10,rar:2},
+ kamikaze:{name:'Kamikaze',elem:'vento',tipo:'ninjutsu',lvl:16,rar:3},
+ kuchiyose:{name:'Kuchiyose: Gama Bunta',elem:'neutro',tipo:'invocacao',lvl:28,rar:4},
+ kyuubi:{name:'Chakra da Kyūbi',elem:'yang',tipo:'suporte',lvl:40,rar:5}};
 /* alias para nomes que aparecem no menu com texto diferente do cadastro */
 const MOVE_ALIAS={'Rasengan da Kyūbi':'rasengan','Kawarimi no Jutsu':'kawarimi'};
 function moveIdByName(n){if(MOVE_ALIAS[n])return MOVE_ALIAS[n];for(const k in MOVES)if(MOVES[k].name===n)return k;return null;}
@@ -80,33 +80,33 @@ const TREES={
  sasuke:[
   {id:'soco',x:0,y:0,req:[],pt:0,base:1,d:'Avança e acerta um soco no rosto.'},
   {id:'chute',x:0,y:1,req:[],pt:0,base:1,d:'Salta e acerta um chute giratório.'},
-  {id:'shishi',x:0,y:2,req:['soco','chute'],pt:1,d:'Barragem de Leões: combo aéreo de taijutsu copiado de Rock Lee.'},
+  {id:'shishi',x:0,y:2,req:['soco','chute'],pt:2,d:'Barragem de Leões: combo aéreo de taijutsu copiado de Rock Lee.'},
   {id:'shuriken',x:1,y:0,req:[],pt:0,base:1,d:'Lança estrelas ninja que giram até o alvo.'},
-  {id:'soushuken',x:1,y:1,req:['shuriken'],pt:1,d:'Shuriken e kunai guiados por fios invisíveis atacam de ângulos surpresa.'},
-  {id:'kagesh',x:1,y:2,req:['soushuken'],pt:1,d:'Uma shuriken escondida na sombra de outra surpreende o alvo.'},
+  {id:'soushuken',x:1,y:1,req:['shuriken'],pt:4,d:'Shuriken e kunai guiados por fios invisíveis atacam de ângulos surpresa.'},
+  {id:'kagesh',x:1,y:2,req:['soushuken'],pt:4,d:'Uma shuriken escondida na sombra de outra surpreende o alvo.'},
   {id:'katon',x:2,y:0,req:[],pt:0,start:1,d:'Uma enorme bola de fogo sai da boca e explode no alvo, causando queimadura.'},
   {id:'chidori',x:3,y:0,req:[],pt:0,start:1,d:'Relâmpagos concentrados na mão: perfura o inimigo em alta velocidade.'},
-  {id:'genjutsu',x:4,y:0,req:[],pt:1,d:'Prende o alvo numa ilusão: ele perde o próximo turno.'},
-  {id:'copy',x:4,y:1,req:['genjutsu'],pt:1,d:'Sharingan: copia o jutsu do inimigo para usar uma vez (Rasengan e Kage Bunshin).'},
-  {id:'selo',x:5,y:0,req:[],pt:1,d:'Selo Amaldiçoado nível 1: mais dano, chakra e esquiva por 3 turnos.'},
-  {id:'selo2',x:5,y:1,req:['selo'],pt:2,d:'Transformação nível 2: poder maior e libera o Chidori Sombrio.'},
-  {id:'selochidori',x:4,y:2,req:['chidori','selo2'],pt:2,d:'O Chidori negro e roxo da transformação. Dano alto e fatality.'},
+  {id:'genjutsu',x:4,y:0,req:[],pt:2,d:'Prende o alvo numa ilusão: ele perde o próximo turno.'},
+  {id:'copy',x:4,y:1,req:['genjutsu'],pt:4,d:'Sharingan: copia o jutsu do inimigo para usar uma vez (Rasengan e Kage Bunshin).'},
+  {id:'selo',x:5,y:0,req:[],pt:7,d:'Selo Amaldiçoado nível 1: mais dano, chakra e esquiva por 3 turnos.'},
+  {id:'selo2',x:5,y:1,req:['selo'],pt:12,d:'Transformação nível 2: poder maior e libera o Chidori Sombrio.'},
+  {id:'selochidori',x:4,y:2,req:['chidori','selo2'],pt:12,d:'O Chidori negro e roxo da transformação. Dano alto e fatality.'},
   {id:'kunai',x:6,y:0,req:[],pt:0,base:1,d:'Arremessa um kunai direto no alvo.'},
   {id:'kawarimi',x:6,y:1,req:[],pt:0,base:1,d:'Jutsu de Substituição: troca de lugar com um tronco e evita por completo o próximo golpe, sem o inimigo perceber (2 usos por luta).'}],
  naruto:[
   {id:'bunshin',x:0,y:0,req:[],pt:0,start:1,d:'Clones das sombras atacam em sequência.'},
-  {id:'uzumaki',x:0,y:1,req:['bunshin'],pt:1,d:'Clones chutam o inimigo para o alto e o Naruto desce com o calcanhar.'},
-  {id:'kuchiyose',x:0,y:2,req:['bunshin'],pt:2,d:'Invoca o sapo chefe Gama Bunta (uma vez por luta).'},
+  {id:'uzumaki',x:0,y:1,req:['bunshin'],pt:2,d:'Clones chutam o inimigo para o alto e o Naruto desce com o calcanhar.'},
+  {id:'kuchiyose',x:0,y:2,req:['bunshin'],pt:7,d:'Invoca o sapo chefe Gama Bunta (uma vez por luta).'},
   {id:'rasengan',x:1,y:0,req:[],pt:0,start:1,d:'Esfera giratória de chakra de Vento no inimigo.'},
-  {id:'kamikaze',x:1,y:1,req:['rasengan'],pt:1,d:'Gira como um tornado com clones e atravessa o inimigo.'},
-  {id:'kyuubi',x:1,y:2,req:['rasengan'],pt:2,d:'Chakra da Kyūbi: manto de raposa, cura e +35% de dano.'},
+  {id:'kamikaze',x:1,y:1,req:['rasengan'],pt:4,d:'Gira como um tornado com clones e atravessa o inimigo.'},
+  {id:'kyuubi',x:1,y:2,req:['rasengan'],pt:12,d:'Chakra da Kyūbi: manto de raposa, cura e +35% de dano.'},
   {id:'oiroke',x:2,y:0,req:[],pt:0,start:1,d:'Vira uma garota para distrair o inimigo: ele pode perder o turno.'},
-  {id:'harem',x:2,y:1,req:['oiroke'],pt:1,d:'Várias garotas com clones: quase sempre o inimigo perde o turno.'},
+  {id:'harem',x:2,y:1,req:['oiroke'],pt:2,d:'Várias garotas com clones: quase sempre o inimigo perde o turno.'},
   {id:'kawarimi',x:3,y:0,req:[],pt:0,base:1,d:'Jutsu de Substituição: troca de lugar com um tronco e evita por completo o próximo golpe, sem o inimigo perceber (2 usos por luta).'}]};
 /* golpes guardados para personagens/fases futuras (nao aparecem na arvore nem no menu): o no pronto para recolocar */
-const TREES_FUTURO={sasuke:[{id:'amaterasu',x:2,y:1,req:['katon'],pt:1,d:'Chamas negras que não se apagam. O olho sangra e o alvo queima.'}]};
-const MAX_LEVEL=10,PROG_KEY='rpgProgV1';
-const xpNeed=lv=>50*lv; /* XP para sair do nivel lv */
+const TREES_FUTURO={sasuke:[{id:'amaterasu',x:2,y:1,req:['katon'],pt:12,d:'Chamas negras que não se apagam. O olho sangra e o alvo queima.'}]};
+const MAX_LEVEL=50,PROG_KEY='rpgProgV1';
+const xpNeed=lv=>Math.round(30*lv*(1+lv/12)); /* XP para sair do nivel lv */
 function progDefault(){const p={};for(const c in TREES)p[c]={level:1,xp:0,pts:0,learned:TREES[c].filter(n=>n.base||n.start).map(n=>n.id)};return p;}
 let PROG=progDefault();
 try{const j=JSON.parse(localStorage.getItem(PROG_KEY)||'null');if(j)for(const c in PROG)if(j[c])Object.assign(PROG[c],j[c]);}catch(e){}
@@ -148,7 +148,7 @@ const ITEMS={
  pilula_vida:{name:'Pílula de Soldado',slot:'cons',rar:1,g:'薬',use:{hp:50},d:'Recupera 50 de vida. Gasta o turno.'},
  pilula_ck:{name:'Pílula de Chakra',slot:'cons',rar:1,g:'気',use:{ck:40},d:'Recupera 40 de chakra. Gasta o turno.'},
  pergaminho_med:{name:'Pergaminho Médico',slot:'cons',rar:3,g:'巻',use:{hp:100},d:'Recupera 100 de vida. Gasta o turno.'}};
-const RARITY={1:{name:'Comum',col:'#aab0c8'},2:{name:'Incomum',col:'#5cc878'},3:{name:'Raro',col:'#b070ff'}};
+const RARITY={1:{name:'Comum',col:'#aab0c8'},2:{name:'Incomum',col:'#5cc878'},3:{name:'Raro',col:'#4aa8ff'},4:{name:'Épico',col:'#b070ff'},5:{name:'Lendário',col:'#ffa43a'}};
 const INV_KEY='rpgInvV1';
 function invDefault(){return{ryo:0,bag:{kunai_ferro:1,colete:1,bandana:1,pilula_vida:3,pilula_ck:3},eq:{sasuke:{},naruto:{}}};}
 let INV=invDefault();
@@ -172,11 +172,11 @@ function rollDrop(){const w={1:60,2:30,3:10},ids=Object.keys(ITEMS);let tot=0;co
 const MAP_W=1180,MAP_H=640;
 const NODES={
  konoha:{name:'Konoha',kind:'vila',x:130,y:330,scene:'vila',d:'Sua vila. Prepare a equipe (habilidades e equipamentos) antes de partir.'},
- treino:{name:'Campo de Treino',kind:'luta',x:340,y:310,scene:'treino',lvl:1,xp:60,ryo:60,enc:{name:'Genin Rival',hp:.98,atk:1.12,afin:['terra']},d:'Um campo aberto ao amanhecer, onde genins testam suas técnicas.'},
- floresta:{name:'Floresta da Morte',kind:'luta',x:550,y:160,scene:'floresta',lvl:2,xp:80,ryo:90,enc:{name:'Ninja Perdido',hp:1.11,atk:1.17,afin:['agua']},d:'Mata densa e perigosa. Quem entra sem preparo raramente volta.'},
- deserto:{name:'Deserto do Vento',kind:'luta',x:540,y:480,scene:'deserto',lvl:3,xp:100,ryo:120,enc:{name:'Ninja da Areia',hp:1.19,atk:1.19,afin:['terra']},d:'Dunas sem fim e um calor que drena o chakra.'},
- neve:{name:'Passo Nevado',kind:'luta',x:810,y:500,scene:'neve',lvl:4,xp:130,ryo:160,enc:{name:'Guardião do Gelo',hp:1.28,atk:1.21,afin:['gelo']},d:'Um desfiladeiro congelado vigiado por um ninja de gelo.'},
- vale:{name:'Vale do Fim',kind:'chefe',x:985,y:285,scene:'vale',lvl:6,xp:200,ryo:300,enc:{name:'Rival Final',hp:1.34,atk:1.18,afin:null},d:'O local do confronto final, entre as estátuas e a cachoeira.'}};
+ treino:{name:'Campo de Treino',kind:'luta',x:340,y:310,scene:'treino',lvl:1,xp:8,ryo:60,enc:{name:'Genin Rival',hp:.98,atk:1.12,afin:['terra']},d:'Um campo aberto ao amanhecer, onde genins testam suas técnicas.'},
+ floresta:{name:'Floresta da Morte',kind:'luta',x:550,y:160,scene:'floresta',lvl:10,xp:55,ryo:90,enc:{name:'Ninja Perdido',hp:1.11,atk:1.17,afin:['agua']},d:'Mata densa e perigosa. Quem entra sem preparo raramente volta.'},
+ deserto:{name:'Deserto do Vento',kind:'luta',x:540,y:480,scene:'deserto',lvl:15,xp:100,ryo:120,enc:{name:'Ninja da Areia',hp:1.19,atk:1.19,afin:['terra']},d:'Dunas sem fim e um calor que drena o chakra.'},
+ neve:{name:'Passo Nevado',kind:'luta',x:810,y:500,scene:'neve',lvl:20,xp:160,ryo:160,enc:{name:'Guardião do Gelo',hp:1.28,atk:1.21,afin:['gelo']},d:'Um desfiladeiro congelado vigiado por um ninja de gelo.'},
+ vale:{name:'Vale do Fim',kind:'chefe',x:985,y:285,scene:'vale',lvl:30,xp:315,ryo:300,enc:{name:'Rival Final',hp:1.34,atk:1.18,afin:null},d:'O local do confronto final, entre as estátuas e a cachoeira.'}};
 const EDGES=[['konoha','treino'],['treino','floresta'],['treino','deserto'],['floresta','vale'],['deserto','neve'],['neve','vale']];
 const CAMP_KEY='rpgCampV1';
 let CAMP={cleared:['konoha'],at:'konoha',active:null};

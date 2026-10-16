@@ -119,7 +119,8 @@ O Naruto de quatro tem **vários quadros** (em `pixel/naruto-fours.js`): **agach
 
 ## Progressão (nível, XP e árvore de habilidades)
 - `js/00-data.js` guarda elementos, golpes, fichas e as árvores (`TREES`); o progresso (nível, XP, pontos, golpes aprendidos) fica em `PROG`, salvo no navegador (`rpgProgV1`).
-- Vitória dá 80 XP e derrota 25 XP ao personagem que você controla; cada nível dá 1 ponto de habilidade (nível máximo 10).
+- Nível máximo **50**; subir é lento (30 x nível x (1 + nível/12) de XP: 33 no nível 1, 550 no 10, 3150 no 30). A XP por batalha é pequena (cerca de 1/10 do necessário no nível do local) e cai bastante se você luta abaixo do seu nível (mínimo 10%); a derrota rende só 15%. Cada nível dá 1 ponto de habilidade.
+- Cada golpe tem **raridade** (Comum, Incomum, Raro, Épico, Lendário): quanto mais rara, mais pontos custa (0, 2, 4, 7, 12) e mais nível exige (ex.: Genjutsu nv 8, Shishi nv 12, Sōshūken nv 16, Selo nv 28, Selo 2 nv 40).
 - O botão "Árvore de habilidades" abre a tela (`js/17-skilltree.js`): cada golpe exige nível mínimo, golpes anteriores e pontos. O menu de comandos só mostra o que foi aprendido.
 
 ## Itens, equipamentos e mochila
