@@ -119,7 +119,7 @@ function travelAndFight(id){
  let i=0;const step=()=>{if(i>=pts.length){mapTok=null;CAMP.at=id;saveCamp();mapMoving=false;startEncounter(id,mapHero);return;}mapTok={x:pts[i][0],y:pts[i][1]};i+=pts.length>30?1:1;setTimeout(step,16);};step();}
 function startEncounter(id,hero){
  const n=NODES[id];if(!n||!n.enc)return;
- CAMP.active={node:id,hero,afin:n.enc.afin,hp:n.enc.hp,atk:n.enc.atk,name:n.enc.name};saveCamp();
+ const vs=n.enc.vs&&n.enc.vs[hero];CAMP.active={node:id,hero,afin:n.enc.afin,hp:vs?vs[0]:n.enc.hp,atk:vs?vs[1]:n.enc.atk,name:n.enc.name};saveCamp();
  if((hero==='naruto')!==roleN){try{localStorage.setItem('playNaruto',hero==='naruto'?'1':'0');}catch(e){}location.reload();return;}
  applyEncounter();}
 function setEnemyName(nm){const side=roleN?'s':'n',b=document.querySelector(side==='n'?'.pl.r b':'.pl b');if(b&&b.firstChild&&b.firstChild.nodeType===3)b.firstChild.nodeValue=(nm||ORIG_NAMES[side]).toUpperCase();}

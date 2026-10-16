@@ -26,27 +26,27 @@ const MOVES={
  shuriken:{name:'Shuriken',elem:'neutro',tipo:'arma',lvl:1,rar:1},
  soco:{name:'Soco',elem:'neutro',tipo:'taijutsu',lvl:1,rar:1},
  chute:{name:'Chute',elem:'neutro',tipo:'taijutsu',lvl:1,rar:1},
- chidori:{name:'Chidori',elem:'raio',tipo:'ninjutsu',lvl:1,rar:1},
+ chidori:{name:'Chidori',elem:'raio',tipo:'ninjutsu',lvl:14,rar:3},
  katon:{name:'Katon: Bola de Fogo',elem:'fogo',tipo:'ninjutsu',lvl:1,rar:1},
  amaterasu:{name:'Amaterasu',elem:'fogo',tipo:'ninjutsu',lvl:35,rar:5,futuro:true} /* guardado para o Sasuke adulto: fora do jogo por enquanto */,
- copy:{name:'Copiar Técnica (Sharingan)',elem:'neutro',tipo:'suporte',lvl:24,rar:3},
- cop_rasengan:{name:'Cópia: Rasengan',elem:'vento',tipo:'ninjutsu',lvl:24,rar:3},
- cop_bunshin:{name:'Cópia: Kage Bunshin',elem:'neutro',tipo:'ninjutsu',lvl:24,rar:3},
- genjutsu:{name:'Genjutsu Sharingan',elem:'yin',tipo:'genjutsu',lvl:8,rar:2},
- shishi:{name:'Shishi Rendan',elem:'neutro',tipo:'taijutsu',lvl:12,rar:2},
- selo:{name:'Selo Amaldiçoado (Nível 1)',elem:'neutro',tipo:'suporte',lvl:28,rar:4},
+ copy:{name:'Copiar Técnica (Sharingan)',elem:'neutro',tipo:'suporte',lvl:26,rar:3},
+ cop_rasengan:{name:'Cópia: Rasengan',elem:'vento',tipo:'ninjutsu',lvl:26,rar:3},
+ cop_bunshin:{name:'Cópia: Kage Bunshin',elem:'neutro',tipo:'ninjutsu',lvl:26,rar:3},
+ genjutsu:{name:'Genjutsu Sharingan',elem:'yin',tipo:'genjutsu',lvl:6,rar:2},
+ shishi:{name:'Shishi Rendan',elem:'neutro',tipo:'taijutsu',lvl:10,rar:2},
+ selo:{name:'Selo Amaldiçoado (Nível 1)',elem:'neutro',tipo:'suporte',lvl:30,rar:4},
  selo2:{name:'Selo Amaldiçoado (Nível 2)',elem:'neutro',tipo:'suporte',lvl:40,rar:5},
  selochidori:{name:'Chidori Sombrio (Nível 2)',elem:'raio',tipo:'ninjutsu',lvl:45,rar:5},
- soushuken:{name:'Sōshūken no Jutsu',elem:'neutro',tipo:'arma',lvl:16,rar:3},
- kagesh:{name:'Shuriken Kage no Jutsu',elem:'neutro',tipo:'arma',lvl:20,rar:3},
+ soushuken:{name:'Sōshūken no Jutsu',elem:'neutro',tipo:'arma',lvl:18,rar:3},
+ kagesh:{name:'Shuriken Kage no Jutsu',elem:'neutro',tipo:'arma',lvl:22,rar:3},
  kawarimi:{name:'Kawarimi',elem:'neutro',tipo:'suporte',lvl:1,rar:1},
  /* Naruto */
- rasengan:{name:'Rasengan',elem:'vento',tipo:'ninjutsu',lvl:1,rar:1},
+ rasengan:{name:'Rasengan',elem:'vento',tipo:'ninjutsu',lvl:14,rar:3},
  bunshin:{name:'Kage Bunshin',elem:'neutro',tipo:'ninjutsu',lvl:1,rar:1},
  uzumaki:{name:'Uzumaki Rendan',elem:'neutro',tipo:'taijutsu',lvl:8,rar:2},
- oiroke:{name:'Oiroke no Jutsu',elem:'neutro',tipo:'genjutsu',lvl:1,rar:1},
+ oiroke:{name:'Oiroke no Jutsu',elem:'neutro',tipo:'genjutsu',lvl:3,rar:1},
  harem:{name:'Harem no Jutsu',elem:'neutro',tipo:'genjutsu',lvl:10,rar:2},
- kamikaze:{name:'Kamikaze',elem:'vento',tipo:'ninjutsu',lvl:16,rar:3},
+ kamikaze:{name:'Kamikaze',elem:'vento',tipo:'ninjutsu',lvl:20,rar:3},
  kuchiyose:{name:'Kuchiyose: Gama Bunta',elem:'neutro',tipo:'invocacao',lvl:28,rar:4},
  kyuubi:{name:'Chakra da Kyūbi',elem:'yang',tipo:'suporte',lvl:40,rar:5}};
 /* alias para nomes que aparecem no menu com texto diferente do cadastro */
@@ -85,7 +85,7 @@ const TREES={
   {id:'soushuken',x:1,y:1,req:['shuriken'],pt:4,d:'Shuriken e kunai guiados por fios invisíveis atacam de ângulos surpresa.'},
   {id:'kagesh',x:1,y:2,req:['soushuken'],pt:4,d:'Uma shuriken escondida na sombra de outra surpreende o alvo.'},
   {id:'katon',x:2,y:0,req:[],pt:0,start:1,d:'Uma enorme bola de fogo sai da boca e explode no alvo, causando queimadura.'},
-  {id:'chidori',x:3,y:0,req:[],pt:0,start:1,d:'Relâmpagos concentrados na mão: perfura o inimigo em alta velocidade.'},
+  {id:'chidori',x:3,y:0,req:[],pt:4,d:'Relâmpagos concentrados na mão: perfura o inimigo em alta velocidade.'},
   {id:'genjutsu',x:4,y:0,req:[],pt:2,d:'Prende o alvo numa ilusão: ele perde o próximo turno.'},
   {id:'copy',x:4,y:1,req:['genjutsu'],pt:4,d:'Sharingan: copia o jutsu do inimigo para usar uma vez (Rasengan e Kage Bunshin).'},
   {id:'selo',x:5,y:0,req:[],pt:7,d:'Selo Amaldiçoado nível 1: mais dano, chakra e esquiva por 3 turnos.'},
@@ -97,17 +97,19 @@ const TREES={
   {id:'bunshin',x:0,y:0,req:[],pt:0,start:1,d:'Clones das sombras atacam em sequência.'},
   {id:'uzumaki',x:0,y:1,req:['bunshin'],pt:2,d:'Clones chutam o inimigo para o alto e o Naruto desce com o calcanhar.'},
   {id:'kuchiyose',x:0,y:2,req:['bunshin'],pt:7,d:'Invoca o sapo chefe Gama Bunta (uma vez por luta).'},
-  {id:'rasengan',x:1,y:0,req:[],pt:0,start:1,d:'Esfera giratória de chakra de Vento no inimigo.'},
+  {id:'rasengan',x:1,y:0,req:[],pt:4,d:'Esfera giratória de chakra de Vento no inimigo.'},
   {id:'kamikaze',x:1,y:1,req:['rasengan'],pt:4,d:'Gira como um tornado com clones e atravessa o inimigo.'},
   {id:'kyuubi',x:1,y:2,req:['rasengan'],pt:12,d:'Chakra da Kyūbi: manto de raposa, cura e +35% de dano.'},
-  {id:'oiroke',x:2,y:0,req:[],pt:0,start:1,d:'Vira uma garota para distrair o inimigo: ele pode perder o turno.'},
+  {id:'oiroke',x:2,y:0,req:[],pt:1,d:'Vira uma garota para distrair o inimigo: ele pode perder o turno.'},
   {id:'harem',x:2,y:1,req:['oiroke'],pt:2,d:'Várias garotas com clones: quase sempre o inimigo perde o turno.'},
-  {id:'kawarimi',x:3,y:0,req:[],pt:0,base:1,d:'Jutsu de Substituição: troca de lugar com um tronco e evita por completo o próximo golpe, sem o inimigo perceber (2 usos por luta).'}]};
+  {id:'kawarimi',x:3,y:0,req:[],pt:0,base:1,d:'Jutsu de Substituição: troca de lugar com um tronco e evita por completo o próximo golpe, sem o inimigo perceber (2 usos por luta).'},
+  {id:'soco',x:3,y:1,req:[],pt:0,base:1,d:'Avança e acerta um soco no rosto.'},
+  {id:'chute',x:3,y:2,req:[],pt:0,base:1,d:'Salta e acerta um chute.'}]};
 /* golpes guardados para personagens/fases futuras (nao aparecem na arvore nem no menu): o no pronto para recolocar */
 const TREES_FUTURO={naruto:[
   {id:'odama',x:1,y:3,req:['rasengan'],pt:4,rar:3,lvl:20,elem:'vento',d:'Rasengan Gigante: uma esfera enorme, mais dano e mais chakra.'},
   {id:'rasenshuriken',x:1,y:4,req:['odama'],pt:12,rar:5,lvl:45,elem:'vento',d:'Rasenshuriken: o Rasengan com lâminas de vento. Lendário.'}],sasuke:[{id:'amaterasu',x:2,y:1,req:['katon'],pt:12,d:'Chamas negras que não se apagam. O olho sangra e o alvo queima.'}]};
-const MAX_LEVEL=50,PROG_KEY='rpgProgV1';
+const MAX_LEVEL=50,PROG_KEY='rpgProgV2';
 const xpNeed=lv=>Math.round(30*lv*(1+lv/12)); /* XP para sair do nivel lv */
 function progDefault(){const p={};for(const c in TREES)p[c]={level:1,xp:0,pts:0,learned:TREES[c].filter(n=>n.base||n.start).map(n=>n.id)};return p;}
 let PROG=progDefault();
@@ -188,11 +190,11 @@ function rollDrop(nodeLvl){const w={1:55,2:28,3:12,4:4,5:1},lim=(nodeLvl||99)+8,
 const MAP_W=1180,MAP_H=640;
 const NODES={
  konoha:{name:'Konoha',kind:'vila',x:130,y:330,scene:'vila',d:'Sua vila. Prepare a equipe (habilidades e equipamentos) antes de partir.'},
- treino:{name:'Campo de Treino',kind:'luta',x:340,y:310,scene:'treino',lvl:1,xp:8,ryo:60,enc:{name:'Genin Rival',hp:1.1,atk:1.2,afin:['terra']},d:'Um campo aberto ao amanhecer, onde genins testam suas técnicas.'},
- floresta:{name:'Floresta da Morte',kind:'luta',x:550,y:160,scene:'floresta',lvl:10,xp:55,ryo:90,enc:{name:'Ninja Perdido',hp:1.11,atk:1.17,afin:['agua']},d:'Mata densa e perigosa. Quem entra sem preparo raramente volta.'},
- deserto:{name:'Deserto do Vento',kind:'luta',x:540,y:480,scene:'deserto',lvl:15,xp:100,ryo:120,enc:{name:'Ninja da Areia',hp:1.19,atk:1.19,afin:['terra']},d:'Dunas sem fim e um calor que drena o chakra.'},
- neve:{name:'Passo Nevado',kind:'luta',x:810,y:500,scene:'neve',lvl:20,xp:160,ryo:160,enc:{name:'Guardião do Gelo',hp:1.31,atk:1.24,afin:['gelo']},d:'Um desfiladeiro congelado vigiado por um ninja de gelo.'},
- vale:{name:'Vale do Fim',kind:'chefe',x:985,y:285,scene:'vale',lvl:30,xp:315,ryo:300,enc:{name:'Rival Final',hp:1.34,atk:1.18,afin:null},d:'O local do confronto final, entre as estátuas e a cachoeira.'}};
+ treino:{name:'Campo de Treino',kind:'luta',x:340,y:310,scene:'treino',lvl:1,xp:8,ryo:60,enc:{name:'Genin Rival',vs:{sasuke:[0.97,1.06],naruto:[1.32,1.44]},hp:0.97,atk:1.06,afin:['terra']},d:'Um campo aberto ao amanhecer, onde genins testam suas técnicas.'},
+ floresta:{name:'Floresta da Morte',kind:'luta',x:550,y:160,scene:'floresta',lvl:10,xp:55,ryo:90,enc:{name:'Ninja Perdido',vs:{sasuke:[1.05,1.11],naruto:[1.11,1.17]},hp:1.05,atk:1.11,afin:['agua']},d:'Mata densa e perigosa. Quem entra sem preparo raramente volta.'},
+ deserto:{name:'Deserto do Vento',kind:'luta',x:540,y:480,scene:'deserto',lvl:15,xp:100,ryo:120,enc:{name:'Ninja da Areia',vs:{sasuke:[1.09,1.09],naruto:[1.13,1.13]},hp:1.09,atk:1.09,afin:['terra']},d:'Dunas sem fim e um calor que drena o chakra.'},
+ neve:{name:'Passo Nevado',kind:'luta',x:810,y:500,scene:'neve',lvl:20,xp:160,ryo:160,enc:{name:'Guardião do Gelo',vs:{sasuke:[1.31,1.24],naruto:[1.36,1.29]},hp:1.31,atk:1.24,afin:['gelo']},d:'Um desfiladeiro congelado vigiado por um ninja de gelo.'},
+ vale:{name:'Vale do Fim',kind:'chefe',x:985,y:285,scene:'vale',lvl:30,xp:315,ryo:300,enc:{name:'Rival Final',vs:{sasuke:[1.37,1.2],naruto:[1.41,1.24]},hp:1.37,atk:1.2,afin:null},d:'O local do confronto final, entre as estátuas e a cachoeira.'}};
 const EDGES=[['konoha','treino'],['treino','floresta'],['treino','deserto'],['floresta','vale'],['deserto','neve'],['neve','vale']];
 const CAMP_KEY='rpgCampV1';
 let CAMP={cleared:['konoha'],at:'konoha',active:null};
@@ -201,3 +203,7 @@ function saveCamp(){try{localStorage.setItem(CAMP_KEY,JSON.stringify(CAMP));}cat
 function nodeNeighbors(id){return EDGES.filter(e=>e.includes(id)).map(e=>e[0]===id?e[1]:e[0]);}
 function nodeState(id){if(CAMP.cleared.includes(id))return'cleared';return nodeNeighbors(id).some(n=>CAMP.cleared.includes(n))?'open':'locked';}
 function resetCamp(){CAMP={cleared:['konoha'],at:'konoha',active:null};saveCamp();}
+
+/* Kit do inimigo da campanha: so os golpes da arvore com nivel minimo ate o nivel do local (mais os basicos). Fora da campanha vale o kit completo. */
+function enemyKit(charId,lvl){return new Set(TREES[charId].filter(n=>n.base||n.start||MOVES[n.id].lvl<=lvl).map(n=>n.id));}
+function enemyKitOf(charId){const a=CAMP.active;if(!a)return null;if(charId!==(a.hero==='sasuke'?'naruto':'sasuke'))return null;return enemyKit(charId,NODES[a.node].lvl);}

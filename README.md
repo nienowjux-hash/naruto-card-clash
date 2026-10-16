@@ -147,3 +147,9 @@ Resultado: o Naruto jogando bem fica entre 60% e 80% nos locais; o Sasuke jogand
 
 ### Raridade dos itens
 Os itens também têm raridade (Comum, Incomum, Raro, Épico, Lendário) e exigem nível para vestir: 1, 8, 16, 28 e 40. Há armas, corpo e acessórios de cada faixa (ex.: Katana da Anbu raro, Kusanagi épico, Kubikiribōchō lendário, Traje do Sábio lendário). Os drops dependem do local: o item só cai se o nível dele for até 8 acima do nível recomendado do local, e os raros são bem menos comuns. Golpes novos do Naruto (Rasengan Gigante e Rasenshuriken) estão guardados em `TREES_FUTURO` até terem animação.
+
+### Kits iniciais e inimigos por nível
+- No nível 1 o **Sasuke** só tem os ataques básicos (Kunai, Shuriken, Soco, Chute), o Kawarimi e a Bola de Fogo (Katon); o **Naruto** tem Soco, Chute, Kawarimi e o Kage Bunshin. Todo o resto é conquistado subindo de nível e gastando pontos: Genjutsu nv 6, Shishi nv 10, **Chidori nv 14 (Raro)**, Sōshūken nv 18, Shuriken Kage nv 22, Copiar nv 26, Selo nv 30...; Naruto: Oiroke nv 3, Uzumaki nv 8, Harem nv 10, **Rasengan nv 14 (Raro)**, Kamikaze nv 20, Kuchiyose nv 28, Kyūbi nv 40.
+- O Naruto ganhou **Soco e Chute** (as animações dos golpes do Sasuke, espelhadas), no menu de comandos e na árvore.
+- Na campanha o inimigo só usa os golpes que o nível do local liberaria (`enemyKit` em `js/00-data.js`): o Genin Rival do Campo de Treino só tem o básico e o Clone das Sombras. A vida e o ataque do inimigo têm um valor por herói (`enc.vs`).
+- O progresso salvo foi reiniciado (`rpgProgV2`) por causa da nova ordem.

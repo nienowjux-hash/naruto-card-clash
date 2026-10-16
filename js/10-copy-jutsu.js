@@ -369,3 +369,15 @@ ANIMS.kyuubi={enemy:true,dur:3.4,hold:KY_ON,hitT:KY_ON,hits:[],cost:0,noLift:tru
   cam:[[0,{z:1.04,cx:192,cy:116}],[.35,{z:2.0,cx:282,cy:130}],[1.25,{z:2.4,cx:284,cy:128}],[KY_ON+.1,{z:1.5,cx:268,cy:124}],[2.6,{z:1.4,cx:262,cy:124}],[3.1,{z:1.04,cx:192,cy:116}],[3.4,{z:1.04,cx:192,cy:116}]]};
 let kyuT=0,kyuUsed=false;
 /* manto em pixel: bolhas de chakra vermelho subindo em volta do corpo, contorno escuro tremendo e a cauda de chakra atras */
+
+/* ---- ataques basicos do Naruto (Soco e Chute): o golpe do Sasuke espelhado, com o Naruto atacando e o Sasuke apanhando ---- */
+function mirrorBasic(baseId,fxKind){const B=ANIMS[baseId],mir=arr=>arr.map(([t,x])=>[t,384-x]);
+ const vic=p=>p===N_HIT||p===N_HITB?S_HIT:p===N_STAG?S_STAG:READY;
+ return{enemy:true,dur:B.dur,hold:B.hold,hitT:B.hitT,hits:[{t:B.hitT,dmg:B.dmg}],cost:0,noLift:true,tpN:B.tp,
+  nP:B.sP,nX:mir(B.sX),sP:B.nP.map(([t,p])=>[t,vic(p)]),sX:mir(B.nX),
+  cam:B.cam.map(([t,c])=>[t,Object.assign({},c,{cx:384-c.cx})]),env:B.env,
+  fx:c=>{const {f,t}=c,A=ANIMS['n'+baseId],sx0=interp(A.sX,t);
+   const k=baseId==='soco'?[.5,.85]:[.55,.95];dashLines(f,c,k[0],k[1],5);
+   const h=t-A.hitT;impactFX(f,sx0+6,GY-(baseId==='soco'?53:40),h,5,false);}};}
+ANIMS.nsoco=mirrorBasic('soco');
+ANIMS.nchute=mirrorBasic('chute');
