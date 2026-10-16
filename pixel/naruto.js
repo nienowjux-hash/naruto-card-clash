@@ -34,14 +34,16 @@ function naruHeadRows(mod){
  set(15,16,'oo');set(15,27,'oo');set(16,17,'o');set(16,27,'o');set(17,17,'o');set(17,26,'o');
  /* sorriso largo com dentes, ou boca aberta */
  if(!(mod&&mod.mouth)){set(17,20,'KWWK');set(18,21,'KK');}else{set(17,20,'KKK');set(18,20,'KoK');}
+ /* cabelo CURTO e espetado como no anime: corta a massa e as mechas compridas que a cabeca do Sasuke deixa cair pelas costas e pelo lado */
+ for(let y=14;y<rows.length;y++)for(let x=0;x<16;x++)rows[y][x]='.';                         /* costas: termina na altura da orelha */
+ for(let y=7;y<=9;y++)for(let x=0;x<(y===7?4:y===8?3:2);x++)rows[y][x]='.';                  /* ponta de tras menos comprida */
+ for(let y=12;y<=15;y++)for(let x=29;x<rows[y].length;x++)rows[y][x]='.';                    /* mecha da frente termina na bochecha */
  return rows;}
 function r0len(rows,y){return rows[y].length;}
 function naruHead(g,ox,oy,mod){
  naruHeadRows(mod).forEach((r,y)=>g.put(ox,y+oy,r.join('')));
  const dx=ox-4,dy=oy-1,L=(a,b,c,d,k)=>g.line(a+dx,b+dy,c+dx,d+dy,k,['Y']);
  L(33,7,24,6,'y');L(28,5,17,7,'y');L(21,6,11,9,'y');L(16,9,8,11,'y');
- /* mechas soltas atras da faixa (no lugar das pontas azuis) */
- g.put(14+dx,10+dy,'y');g.put(12+dx,11+dy,'yYy');g.put(11+dx,12+dy,'yYY');g.put(10+dx,13+dy,'yY');g.put(10+dx,14+dy,'x');g.put(14+dx,13+dy,'Yy');g.put(15+dx,14+dy,'y');
 }/* cabeca deitada (rosto para cima) */
 function naruHeadLying(g,ox,oy,groundY,mod){
  const tmp=PixGrid(44,34);naruHead(tmp,0,6,mod);const rows=tmp.G,Wd=44;
