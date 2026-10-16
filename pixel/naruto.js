@@ -34,11 +34,9 @@ function naruHeadRows(mod){
  set(15,16,'oo');set(15,27,'oo');set(16,17,'o');set(16,27,'o');set(17,17,'o');set(17,26,'o');
  /* sorriso largo com dentes, ou boca aberta */
  if(!(mod&&mod.mouth)){set(17,20,'KWWK');set(18,21,'KK');}else{set(17,20,'KKK');set(18,20,'KoK');}
- /* cabelo CURTO e espetado como no anime: so os espetos de cima, colado a cabeca nas laterais (sem massa nas costas, sem mechas, sem volume dos lados) */
- for(let y=14;y<rows.length;y++)for(let x=0;x<16;x++)rows[y][x]='.';                         /* nada pendurado abaixo da orelha */
- for(let y=10;y<=13;y++)for(let x=0;x<13;x++)rows[y][x]='.';                              /* costas coladas na cabeca: sobra so uma faixa fina atras da orelha */
- for(let y=7;y<=9;y++)for(let x=0;x<6;x++)rows[y][x]='.';                                 /* nuca curta atras da faixa */
- for(let y=10;y<=15;y++)for(let x=(y<12?31:29);x<rows[y].length;x++)rows[y][x]='.';        /* lado de longe sem volume */
+ /* cabelo CURTO e espetado como no anime: so os espetos de cima, DENTRO da largura da faixa (cols 11 a 29). Nada passa dos lados, nada nas costas, sem mechas */
+ for(let y=0;y<rows.length;y++)for(let x=0;x<rows[y].length;x++){if(y>=14&&x<16)rows[y][x]='.';else if(x<11&&y<=13)rows[y][x]='.';else if(x>29&&y<=15)rows[y][x]='.';}
+ for(let y=10;y<=13;y++)for(let x=11;x<13;x++)rows[y][x]='.';  /* abaixo da faixa: so uma faixa fina de cabelo atras da orelha */
  return rows;}
 function r0len(rows,y){return rows[y].length;}
 function naruHead(g,ox,oy,mod){
