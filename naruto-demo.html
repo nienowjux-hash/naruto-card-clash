@@ -615,9 +615,9 @@ const SPR_W={hxF:1,hyF:1,hxB:.6,hyB:.6,ffx:.9,ffy:1.4,fbx:.6,fby:1,crouch:1.2,le
 let sprRefPose=null;
 function sprPick(P,refs){let best='guard',bd=1e9;for(const [k,R0] of (refs||sprRefs())){let d=0;for(const q in SPR_W){const v=(P[q]||0)-(R0[q]||0);d+=SPR_W[q]*v*v;}if(d<bd){bd=d;best=k;sprRefPose=R0;}}return best;}
 /* a diferenca entre a pose real e a pose do sprite escolhido vira um deslocamento em degraus de 1 pixel: tronco inclina (cisalhamento) e o corpo agacha/estica, assim o movimento fica continuo entre um sprite e outro */
-function sprDraw(c,SB,S,P,R0,key,vf){vf=vf||0;const dT=((P.tilt||0)-(R0&&R0.tilt||0)),dC=((P.crouch||0)-(R0&&R0.crouch||0)),dL=((P.lean||0)-(R0&&R0.lean||0));
- const av=Math.min(1,Math.abs(vf)/900),sh=key==='down'?0:Math.max(-.4,Math.min(.4,dT*.7+dL*.03+vf/900*.28)),sy=key==='down'?1:Math.max(.9,Math.min(1.08,1-dC*.014-av*.05)),sx=1+av*.14;
- if(Math.abs(sh)<.012&&Math.abs(sy-1)<.008&&av<.02){c.drawImage(SB,0,0,S.w*4,S.h*4,-S.ax,-S.ay,S.w,S.h);return;}
+function sprDraw(c,SB,S,P,R0,key,vf,sq){vf=vf||0;sq=sq||0;const dT=((P.tilt||0)-(R0&&R0.tilt||0)),dC=((P.crouch||0)-(R0&&R0.crouch||0)),dL=((P.lean||0)-(R0&&R0.lean||0));
+ const av=Math.min(1,Math.abs(vf)/900),sh=key==='down'?0:Math.max(-.4,Math.min(.4,dT*.7+dL*.03+vf/900*.28-sq*.22)),sy=key==='down'?1:Math.max(.9,Math.min(1.08,1-dC*.014-av*.05-sq*.12)),sx=1+av*.14+sq*.1;
+ if(Math.abs(sh)<.012&&Math.abs(sy-1)<.008&&av<.02&&sq<.02){c.drawImage(SB,0,0,S.w*4,S.h*4,-S.ax,-S.ay,S.w,S.h);return;}
  const hip=S.h*.6;for(let r=0;r<S.h;r++){const up=Math.max(0,hip-r),dx=Math.round(sh*up*(r<hip?1:0)*10)/10;c.drawImage(SB,0,r*4,S.w*4,4,(-S.ax)*sx+Math.round(sh*up),(r-S.ay)*sy,S.w*sx,sy+.03);}}
 
 const sprTmp=document.createElement('canvas');sprTmp.width=96;sprTmp.height=96;const sprTx=sprTmp.getContext('2d',{willReadFrequently:true});
@@ -655,7 +655,7 @@ function blitSprite(x,y,flip,P,time,o,isN){
  if(!o.noRefl&&!o.rot){g.save();g.translate(x,GY);g.scale(flip?-1:1,-.5);g.globalAlpha=.16*al;g.drawImage(SB,0,0,S.w*4,S.h*4,-S.ax,-S.ay,S.w,S.h);g.restore();}
  if(o.vel&&!o.rot&&Math.abs(o.vel)>160){const dir=Math.sign(o.vel),va=Math.min(Math.abs(o.vel),900),ka=Math.min(1,(Math.abs(o.vel)-160)/220);for(let i=3;i>=1;i--){g.save();g.translate(x-dir*va*.011*i,y);g.scale(flip?-1:1,1);g.globalAlpha=al*(.34-.09*i)*ka;g.drawImage(SB,0,0,S.w*4,S.h*4,-S.ax,-S.ay+ys,S.w,S.h);g.restore();}}
  g.translate(x,y);if(o.rot){g.translate(0,-30);g.rotate(o.rot*(flip?-1:1));g.translate(0,30);}g.scale(flip?-1:1,1);g.globalAlpha=al;
- sprDraw(g,SB,S,P,sprRefPose,key,(o.vel||0)*(flip?-1:1));
+ sprDraw(g,SB,S,P,sprRefPose,key,(o.vel||0)*(flip?-1:1),o.sq);
  g.restore();
  return rigW(P);}
 function blit(x,y,flip,d,P,time,o){o=o||{};if(USE_SPR&&(d===SASUKE||(d===NARUTO&&SPRN.guard))&&!(o.lv2>0))return blitSprite(x,y,flip,P,time,o,d===NARUTO);if(o.lv2>0&&d.style==='s')d=lvDef(o.lv2);
@@ -2532,6 +2532,7 @@ function render(ts){
  else if(burning&&type!=='amaterasu')nOpt={tint:[22,4,18],tk:.3+.06*Math.sin(time*6)};
  else if(!A&&outcome==='S')nOpt=burnt?{tint:[18,12,14],tk:.86}:{tint:[28,22,26],tk:.38};
  if(A)nOpt.rot=nRotF(type,t);
+ if(A&&A.hitT!=null&&!LG(type)){const hh=t-A.hitT;if(hh>=0&&hh<.22)nOpt.sq=Math.pow(1-hh/.22,2)*(Math.min(1,(A.dmg||10)/25)*.6+.4);}
  if(chestHole)nOpt.hole=(A&&LC(type))?clamp((t-3.58)/.1,0,1):((A&&type==='selochidori'&&LG(type))?clamp((t-4.2)/.1,0,1)*1.8:(fatalKind==='selochidori'?1.8:1));
  if(type==='selochidori'&&LG(type)&&t>=3.2){const kk=scaleAt(0,1,3.25,3.5,t)*(1-scaleAt(0,1,4.1,4.4,t));nOpt=Object.assign({},nOpt,{tint:[50,20,90],tk:.35*kk});}
  if(fatalKind&&!A&&outcome==='S'&&ANIMS[fatalKind].L.nRot)nOpt.rot=ANIMS[fatalKind].L.nRot(99);
