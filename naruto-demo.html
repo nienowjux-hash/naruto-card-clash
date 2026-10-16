@@ -1049,15 +1049,18 @@ let fatalKind=null;
 /* gira um ponto do mundo em volta do pivo do corpo, igual ao que blit() faz quando o Naruto cai (rot em radianos) */
 const rotAround=(x,y,px,py,ang)=>{const c=Math.cos(ang),s=Math.sin(ang),dx=x-px,dy=y-py;return[px+dx*c-dy*s,py+dx*s+dy*c];};
 /* efeitos de "lente" reutilizaveis: vinheta vermelha pulsante, raio de luz e respingos de sangue na camera */
+const LPW=213,LPH=120,lensPix=document.createElement('canvas');lensPix.width=LPW;lensPix.height=LPH;const lensPx=lensPix.getContext('2d'); /* respingos de sangue na lente em pixels grandes */
 function lensGen(g,c,cfg){
  const raw=c.raw,syp=y=>(y-c.ccy)*K*c.z+PH/2;
  if(cfg.streak){const a=raw-cfg.streak[0];if(a>=0&&a<.4){const y=syp(cfg.streak[1]),al=1-a/.4;g.save();g.globalCompositeOperation='lighter';const gr=g.createLinearGradient(0,y-7,0,y+7);gr.addColorStop(0,'rgba(255,255,255,0)');gr.addColorStop(.5,`rgba(255,255,255,${al})`);gr.addColorStop(1,'rgba(255,255,255,0)');g.fillStyle=gr;g.fillRect(0,y-7,PW,14);g.restore();}}
  const hv=scaleAt(0,1,cfg.vig[0],cfg.vig[1],raw)*(1-scaleAt(0,1,cfg.vig[2],cfg.vig[3],raw));
  if(hv>0){const pulse=.5+.5*Math.pow(Math.max(0,Math.sin(raw*5.2)),4),vg=g.createRadialGradient(PW/2,PH/2,PH*.3,PW/2,PH/2,PW*.65);vg.addColorStop(0,'rgba(90,0,8,0)');vg.addColorStop(1,`rgba(110,0,10,${.55*hv*pulse+.1*hv})`);g.fillStyle=vg;g.fillRect(0,0,PW,PH);}
  const fade=1-scaleAt(0,1,cfg.fade[0],cfg.fade[1],raw);if(fade<=0||!cfg.spl)return;
+ const gg=g;g=lensPx;lensPx.setTransform(1,0,0,1,0,0);lensPx.clearRect(0,0,LPW,LPH);lensPx.setTransform(LPW/PW,0,0,LPH/PH,0,0);
  for(const s of cfg.spl){const age=raw-s[0];if(age<0)continue;const x=s[1]*PW,y=s[2]*PH+age*s[3]*.4*Math.min(1,age),sz=s[3]*(.55+Math.min(1,age*5)*.45);
   const len=Math.min(age*s[3]*.9,s[3]*2.2);g.save();g.lineCap='round';g.strokeStyle=`rgba(104,4,12,${fade*.8})`;g.lineWidth=sz*.2;g.beginPath();g.moveTo(x,y);g.lineTo(x,y+len);g.stroke();
   g.globalAlpha=fade*.88;g.translate(x,y);g.fillStyle='rgb(112,5,13)';blobPath(g,sz,s[4],.3);g.fill();g.fillStyle='rgba(165,15,24,.55)';g.translate(-sz*.12,-sz*.14);blobPath(g,sz*.45,s[4]+1,.3);g.fill();g.restore();}
+ g=gg;g.save();g.imageSmoothingEnabled=false;g.drawImage(lensPix,0,0,PW,PH);g.restore();
 }
 const ATKS=[
  {id:'kunai',name:'Kunai',cost:0,col:'#b8c4d8',desc:'Arremessa um kunai direto no alvo.',live:true},
