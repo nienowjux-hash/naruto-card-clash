@@ -69,3 +69,10 @@ function toggleFull(){const d=document;if(!d.fullscreenElement)(d.documentElemen
 $('fsbtn').onclick=toggleFull;
 window.addEventListener('keydown',e=>{if((e.key==='f'||e.key==='F')&&!e.ctrlKey&&!e.altKey&&!e.metaKey&&!/INPUT|TEXTAREA/.test((e.target||{}).tagName||''))toggleFull();});
 document.addEventListener('fullscreenchange',()=>{$('fsbtn').textContent=document.fullscreenElement?'Sair da tela cheia (F)':'Tela cheia (F)';});
+/* telas grandes (arvore, equipamentos): o conteudo foi desenhado para ~1300x800, entao ampliamos (zoom) para ocupar a janela toda,
+   e a arvore ainda e esticada para preencher a area de rolagem */
+const FIT_MODALS=[['#tree .tbox',1320,840],['#inv .ibox',1180,760]];
+function fitModals(){const vw=innerWidth-24,vh=innerHeight-24;for(const [sel,dw,dh] of FIT_MODALS){const e=document.querySelector(sel);if(!e)continue;const z=Math.max(1,Math.min(vw/dw,vh/dh,2.2));e.style.zoom=z;e.style.width=(vw/z)+'px';e.style.height=(vh/z)+'px';}
+ const sc=document.querySelector('#tree .tscroll'),cv=document.querySelector('#tree .tcanvas');if(sc&&cv){cv.style.zoom='';const w=parseFloat(cv.style.width)||cv.offsetWidth,h=parseFloat(cv.style.height)||cv.offsetHeight,z=Math.max(1,Math.min((sc.clientWidth-12)/w,(sc.clientHeight-12)/h,1.8));cv.style.zoom=z;}}
+window.addEventListener('resize',fitModals);
+new MutationObserver(()=>{requestAnimationFrame(fitModals);}).observe(document.body,{childList:true,subtree:true,attributes:true,attributeFilter:['hidden']});
