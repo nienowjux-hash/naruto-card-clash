@@ -241,3 +241,28 @@ canvas#c{width:100%;height:auto}
 #map .mside,#tree .tside{width:420px}
 .crar{font-style:normal;font-size:10px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;color:var(--rc);border:1px solid var(--rc);border-radius:4px;padding:0 5px;margin-left:4px;vertical-align:middle;background:rgba(0,0,0,.3)}
 #map .hero .crar{display:inline-block;margin:3px 0 0}
+
+/* invocacao (gacha) */
+#gacha{position:fixed;inset:0;z-index:62;background:radial-gradient(#0a0a1acc,#020208f2);display:flex;align-items:center;justify-content:center;padding:12px}
+#gacha[hidden]{display:none}
+#gacha .gbox{width:min(1100px,98vw);height:min(680px,96vh);display:flex;flex-direction:column;background:#0b0a18;border:3px solid #b8924a;border-radius:14px;box-shadow:0 0 0 2px #2a1d08,0 0 0 5px #6e5424,0 0 50px #000;overflow:hidden}
+#gacha .thead{display:flex;align-items:center;gap:20px;padding:10px 16px;background:linear-gradient(#2a2140,#14102a);border-bottom:2px solid #6e5424}
+#gacha .thead h2{margin:0;font:700 18px Georgia,serif;color:#ffe9b0;letter-spacing:2px;flex:1}
+#gacha .gscr{text-align:center;color:#ffe9b0}#gacha .gscr b{font:700 22px Georgia,serif;display:block}#gacha .gscr small{color:#a89868}
+#gacha .x{background:#2a1d08;color:#ffe9b0;border:1px solid #6e5424;border-radius:8px;padding:6px 12px;cursor:pointer}
+#gacha .gmain{flex:1;display:flex;gap:14px;padding:14px;min-height:0;flex-wrap:wrap;overflow:auto}
+#gacha .gleft{flex:2 1 420px;display:flex;flex-direction:column;gap:12px;min-width:0}
+#gacha .gres{flex:1;display:flex;flex-wrap:wrap;gap:10px;align-content:flex-start;justify-content:center;padding:10px;background:#100e20;border:1px solid #3a2f14;border-radius:10px;min-height:200px}
+#gacha .gc{width:104px;display:flex;flex-direction:column;align-items:center;gap:2px;padding:8px 4px;background:#171430;border:2px solid var(--rc);border-radius:10px;box-shadow:0 0 14px var(--rc);animation:gcin .45s both;animation-delay:var(--d)}
+#gacha .gc.new{background:#241c10}#gacha .gc b{color:#fff;font-size:13px}#gacha .gc em{font-style:normal;font-size:11px}#gacha .gc small{color:#c8c0a0;font-size:10px}
+@keyframes gcin{from{opacity:0;transform:scale(.4) rotate(-8deg)}to{opacity:1;transform:none}}
+#gacha .gpt{width:64px;height:64px;image-rendering:pixelated;background:#0a0818;border-radius:8px}
+#gacha .gact{display:flex;gap:10px}#gacha .gact button{flex:1}#gacha .gact small{display:block;opacity:.7;font-size:11px}
+#gacha .gact button:disabled{opacity:.4;cursor:not-allowed}
+#gacha .gside{flex:1 1 280px;min-width:0;color:#d8d0b8}#gacha .gside h4{margin:4px 0 6px;color:#ffe9b0;font-family:Georgia,serif}
+#gacha .pity{margin-bottom:8px}#gacha .pity small{color:#a89868}#gacha .pity b{display:block;color:#fff}
+#gacha .bar{height:8px;background:#201a30;border-radius:5px;overflow:hidden;margin-top:3px}#gacha .bar i{display:block;height:100%;background:#4aa8ff}#gacha .bar.leg i{background:#ffa43a}
+#gacha .hint{color:#a89f84;font-size:12px;line-height:1.4}
+#gacha .glist{display:flex;flex-wrap:wrap;gap:8px}
+#gacha .gr{width:96px;display:flex;flex-direction:column;align-items:center;padding:6px 3px;background:#14112a;border:1px solid var(--rc);border-radius:8px;font-size:11px;text-align:center}
+#gacha .gr.lk{opacity:.5;filter:grayscale(.7)}#gacha .gr b{color:#fff}#gacha .gr em{font-style:normal}#gacha .gr small{color:#c8c0a0}

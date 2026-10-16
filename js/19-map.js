@@ -20,9 +20,9 @@ function applyHero(h){heroS=(h==='sakura'||h==='kakashi')?h:'sasuke';ORIG_NAMES.
 function mapPanel(){
  if(!mapSel)return'<p class="hint">Clique em um local do mapa para ver os detalhes.</p>';
  const n=NODES[mapSel],st=nodeState(mapSel),stTxt={cleared:'Concluído',open:'Disponível',locked:'Bloqueado'}[st];
- const party=['sasuke','sakura','kakashi','naruto','gozu','meizu'].map(h=>`<button class="hero${mapHero===h?' on':''}" data-h="${h}"><b>${CHARS[h].name.split(' ')[0]}</b><small>Nível ${PROG[h].level}</small>${charRar(h)}</button>`).join('')+'<div class="hero empty"><b>Vazio</b><small>em breve</small></div>';
+ const party=ownedChars(['sasuke','sakura','kakashi','naruto','gozu','meizu']).map(h=>`<button class="hero${mapHero===h?' on':''}" data-h="${h}"><b>${CHARS[h].name.split(' ')[0]}</b><small>Nível ${PROG[h].level}</small>${charRar(h)}</button>`).join('')+'<div class="hero empty"><b>Vazio</b><small>em breve</small></div>';
  let body='';
- if(n.kind==='vila'){body=`<p class="desc">${n.d}</p><div class="act"><button class="learn" id="mp-tree">Árvore de habilidades</button><button class="learn alt" id="mp-inv">Equipamentos</button></div>`;}
+ if(n.kind==='vila'){body=`<p class="desc">${n.d}</p><div class="act"><button class="learn" id="mp-tree">Árvore de habilidades</button><button class="learn alt" id="mp-inv">Equipamentos</button><button class="learn alt" id="mp-gacha">Invocação</button></div>`;}
  else{const af=n.enc.afin||CHARS[enemyCharOf(mapHero)].afin,vant=['fogo','agua','terra','vento','raio'].filter(b=>elemMatch(b,af)>0).map(b=>ELEMENTS[b].name);
   body=`<p class="desc">${n.d}</p><div class="enc"><small>Inimigo</small><h4>${n.enc.name} <span class="lvl">Nv ${n.lvl}</span></h4>
   <div class="chips">${af.map(e=>`<em class="el" style="--ec:${ELEMENTS[e].col}">${ELEMENTS[e].name}</em>`).join('')}</div>
@@ -33,7 +33,7 @@ function mapPanel(){
  return`<h3>${n.name}</h3><span class="tag ${st}">${stTxt}</span>${body}`;}
 function renderMap(){
  const t=mapEl();
- t.innerHTML=`<div class="mbox"><div class="thead"><h2>Mapa da campanha</h2><div class="ryo"><b>${INV.ryo}</b><small>ryo</small></div><div class="ptl">${['sasuke','sakura','kakashi','naruto','gozu','meizu'].map(h=>`<span><b>${CHARS[h].name.split(' ')[0]}</b> Nv ${PROG[h].level}${PROG[h].pts?` · <i>${PROG[h].pts} pt</i>`:''}</span>`).join('')}</div><button class="x" id="mapx">Voltar à luta ✕</button></div>
+ t.innerHTML=`<div class="mbox"><div class="thead"><h2>Mapa da campanha</h2><div class="ryo"><b>${INV.ryo}</b><small>ryo</small></div><div class="ptl">${ownedChars(['sasuke','sakura','kakashi','naruto','gozu','meizu']).map(h=>`<span><b>${CHARS[h].name.split(' ')[0]}</b> Nv ${PROG[h].level}${PROG[h].pts?` · <i>${PROG[h].pts} pt</i>`:''}</span>`).join('')}</div><button class="x" id="mapx">Voltar à luta ✕</button></div>
  <div class="mmain"><div class="mwrap"><canvas id="mapcv" width="${MAP_W}" height="${MAP_H}"></canvas></div><aside class="mside">${mapPanel()}</aside></div>
  <div class="tdev"><span class="lg"><i class="a"></i>Concluído <i class="b"></i>Disponível <i class="c"></i>Bloqueado</span><button id="mprs">Reiniciar campanha</button></div></div>`;
  const cv=document.getElementById('mapcv'),pos=e=>{const r=cv.getBoundingClientRect();return[(e.clientX-r.left)*MAP_W/r.width,(e.clientY-r.top)*MAP_H/r.height];};
@@ -43,6 +43,7 @@ function renderMap(){
  t.querySelectorAll('.hero[data-h]').forEach(b=>b.onclick=()=>{mapHero=b.dataset.h;renderMap();});
  const go=document.getElementById('mp-go');if(go)go.onclick=()=>travelAndFight(mapSel);
  const tr=document.getElementById('mp-tree');if(tr)tr.onclick=()=>{closeMap(true);openTree();};
+ const gh=document.getElementById('mp-gacha');if(gh)gh.onclick=()=>{closeMap(true);openGacha();};
  const iv=document.getElementById('mp-inv');if(iv)iv.onclick=()=>{closeMap(true);openInv();};
  document.getElementById('mapx').onclick=()=>closeMap();
  document.getElementById('mprs').onclick=()=>{if(confirm('Reiniciar a campanha? (o nível, os itens e as habilidades continuam)')){resetCamp();mapSel=null;mapTok=null;renderMap();}};
