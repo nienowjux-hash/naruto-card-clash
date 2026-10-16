@@ -65,4 +65,4 @@ Quatro clones aparecem na fumaça, correm até o Sasuke e chutam ele para o alto
 O Naruto se transforma numa garota (coberta por nuvens de fumaça) e solta coraçõezinhos. Com 60% de chance o Sasuke fica sem reação (sangra pelo nariz) e perde o próximo turno; senão ele responde "Patético.".
 
 ### Harem no Jutsu (20 de chakra, sem dano)
-Oiroke + Kage Bunshin: seis garotas (cobertas por fumaça) cercam o Sasuke. Com 90% de chance ele voa longe com sangue no nariz e perde o próximo turno.
+Oiroke + Kage Bunshin: seis garotas (cobertas por fumaça) cercam o Sasuke. Com 90% de chance ele é lançado para fora da tela com sangue no nariz e fica **2 turnos** sem se mexer.
