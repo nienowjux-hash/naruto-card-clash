@@ -283,23 +283,32 @@ function tsStatic(c){const {time,nx0}=c,now=performance.now()/1000;
    Muro de pedra na frente do Kakashi. Absorve 88% do dano dos ataques do inimigo por 2 turnos DELE, racha a cada pancada e desmorona no fim.
    Fica de pe no cenario enquanto durar (stoneShow); so 1 uso por batalha. */
 let stoneT=0,stoneShow=false,stoneK=false,stoneBreakT=-9,stoneHit=0,stoneHitT=-9;
-const STONE_COLS=['#7d7568','#908777','#6a6358','#a39a88'];
-function stoneBlocks(x0){const B=[],r2=R(414);for(let r=0;r<10;r++){const off=r%2?3.5:0,n=r%2?4:3;for(let c=0;c<n;c++){const w=7,bx=x0-11+(r%2?(c?c*7-3.5:0):c*7),bw=(r%2&&(c===0||c===n-1))?3.5:w;B.push({x:bx,y:GY-(r+1)*7,w:bw,h:7,col:STONE_COLS[Math.floor(r2()*4)],r,c});}}return B;}
-function stoneWallDraw(G,x0,k,hits,time){if(k<=0)return;const B=stoneBlocks(x0);G.save();G.beginPath();G.rect(x0-30,0,60,GY+1);G.clip();
- for(const b of B){const rise=Math.min(1,Math.max(0,k*10-(9-b.r)*.55*(1/1)));const up=Math.max(0,Math.min(1,(k*1.25-(1-b.r/9)*.35)));const yy=b.y+(1-up)*(10-b.r)*7+0;
-  if(up<=0)continue;
-  const gone=(hits>=1&&b.r>=7&&b.c===2)||(hits>=2&&b.r>=5&&b.c===0);if(gone)continue;
-  G.fillStyle='#2a2620';G.fillRect(b.x,yy,b.w,b.h);G.fillStyle=b.col;G.fillRect(b.x+.6,yy+.6,b.w-1.2,b.h-1.2);
-  G.fillStyle='rgba(255,255,255,.18)';G.fillRect(b.x+.6,yy+.6,b.w-1.2,1);G.fillStyle='rgba(0,0,0,.25)';G.fillRect(b.x+.6,yy+b.h-1.6,b.w-1.2,1);
-  if(hits>=1&&(b.r*3+b.c)%4===0){G.strokeStyle='rgba(20,16,10,.8)';G.lineWidth=.7;G.beginPath();G.moveTo(b.x+1,yy+1);G.lineTo(b.x+b.w*.5,yy+b.h*.55);G.lineTo(b.x+b.w-1,yy+b.h-1);G.stroke();}}
+const STONE_COLS=['#7a5632','#8c6540','#6a4828','#9a7248'];
+/* pedacos de terra para a animacao de desmoronar (grade de 3 x 9 torroes) */
+function stoneBlocks(x0){const B=[],r2=R(414);for(let r=0;r<9;r++)for(let c=0;c<3;c++)B.push({x:x0-13+c*8.6+(r2()-.5)*3,y:GY-(r+1)*8.2,w:8+r2()*3,h:8+r2()*3,col:STONE_COLS[Math.floor(r2()*4)],r,c});return B;}
+/* muro de terra/lama: massa unica de topo irregular, camadas, torroes, pedras e brilho de umidade (nada de tijolo) */
+function stoneWallDraw(G,x0,k,hits,time){if(k<=0)return;const W=26,H=74*Math.min(1,k*1.08),xl=x0-W/2,r2=R(414);G.save();G.beginPath();G.rect(x0-40,0,80,GY+1);G.clip();
+ const cols=13,top=[];for(let i=0;i<=cols;i++){let h=H+(r2()-.5)*7-(i===0||i===cols?7:0);if(hits>=1&&i>=8&&i<=10)h-=15;if(hits>=2&&i>=1&&i<=4)h-=13;top.push(Math.max(3,h));}
+ const mass=()=>{G.beginPath();G.moveTo(xl-1.5,GY+1);for(let i=0;i<=cols;i++)G.lineTo(xl+i*W/cols+(i%2?.9:-.6),GY-top[i]);G.lineTo(xl+W+1.5,GY+1);G.closePath();};
+ mass();const gr=G.createLinearGradient(0,GY-H,0,GY);gr.addColorStop(0,'#a07a50');gr.addColorStop(.35,'#7e5834');gr.addColorStop(1,'#432714');G.fillStyle=gr;G.fill();
+ G.save();mass();G.clip();
+ for(let q=0;q<9;q++){const y=GY-H*(q+1)/10+(r2()-.5)*3;G.strokeStyle='rgba(30,16,6,.32)';G.lineWidth=.9;G.beginPath();for(let x=0;x<=W;x+=2){const yy=y+Math.sin(x*.7+q*2)*1.6;x?G.lineTo(xl+x,yy):G.moveTo(xl,yy);}G.stroke();}
+ for(let q=0;q<26;q++){const x=xl+r2()*W,y=GY-r2()*H,rx=1.4+r2()*3.2,ry=1+r2()*2;G.fillStyle=r2()<.5?'rgba(205,165,115,.2)':'rgba(25,12,4,.22)';G.beginPath();G.ellipse(x,y,rx,ry,r2()*2,0,TAU);G.fill();}
+ for(let q=0;q<9;q++){const x=xl+1+r2()*(W-2),y=GY-4-r2()*(H-8),rx=.9+r2()*1.3;G.fillStyle='#2c1c10';G.beginPath();G.ellipse(x+.4,y+.5,rx+.4,rx*.8+.4,0,0,TAU);G.fill();G.fillStyle=r2()<.5?'#6e6455':'#5a5044';G.beginPath();G.ellipse(x,y,rx,rx*.8,0,0,TAU);G.fill();G.fillStyle='rgba(255,255,255,.25)';G.fillRect(Math.round(x-rx*.4),Math.round(y-rx*.5),1,1);}
+ G.fillStyle='rgba(255,226,180,.13)';G.fillRect(xl,GY-H,5,H);G.fillStyle='rgba(20,8,0,.22)';G.fillRect(xl+W-5,GY-H,5,H);
+ for(let q=0;q<7;q++){const x=xl+2+r2()*(W-4),y0=GY-H*(.2+r2()*.7),l=6+r2()*16;G.strokeStyle='rgba(255,235,200,.22)';G.lineWidth=.8;G.beginPath();G.moveTo(x,y0);G.lineTo(x+(r2()-.5)*1.5,y0+l);G.stroke();}
+ if(hits>=1){G.strokeStyle='rgba(14,6,0,.85)';G.lineWidth=1;G.beginPath();let cx=xl+W*.62,cy=GY-H*.82;G.moveTo(cx,cy);for(let q=0;q<7;q++){cx+=(r2()-.5)*6;cy+=7+r2()*3;G.lineTo(cx,cy);}G.stroke();}
+ if(hits>=2){G.strokeStyle='rgba(14,6,0,.85)';G.lineWidth=1;G.beginPath();let cx=xl+W*.25,cy=GY-H*.7;G.moveTo(cx,cy);for(let q=0;q<6;q++){cx+=(r2()-.5)*6;cy+=6+r2()*3;G.lineTo(cx,cy);}G.stroke();}
+ G.restore();mass();G.lineWidth=1.2;G.strokeStyle='#241406';G.stroke();
+ G.fillStyle='#3a2512';G.beginPath();G.ellipse(x0,GY+1.5,W*.62,2.6,0,0,TAU);G.fill();
  G.restore();}
 function stoneImpact(){stoneHit++;stoneHitT=performance.now()/1000;}
 function stoneTick(){if(stoneT<=0)return;stoneT--;if(stoneT<=0){stoneShow=false;stoneBreakT=performance.now()/1000;toast('A parede de pedra desmoronou');}}
 function stoneStatic(c){const now=performance.now()/1000,x0=c.sx0+22;
  if(stoneShow){withG(c,G=>stoneWallDraw(G,x0,1,stoneHit,c.time));
   const a=now-stoneHitT;if(a>=0&&a<.5){const r2=R(77);for(let i=0;i<16;i++){const an=-Math.PI*(.1+r2()*.8),sp=14+r2()*30,x=x0+9+Math.cos(an)*sp*a*(r2()<.5?-1:1),y=GY-40+Math.sin(an)*sp*a+a*a*60;c.f.fillStyle=`rgba(190,178,150,${1-a*2})`;c.f.fillRect(Math.round(x),Math.round(y),2,2);}}}
- else{const a=now-stoneBreakT;if(a>=0&&a<1.1){const B=stoneBlocks(x0),r2=R(515);withG(c,G=>{for(const b of B){const vx=(r2()-.4)*30,vy=-r2()*30,y=b.y+vy*a+120*a*a,x=b.x+vx*a;if(y>GY-b.h+1)continue;G.globalAlpha=1-a/1.1;G.fillStyle=b.col;G.save();G.translate(x+b.w/2,y+b.h/2);G.rotate(a*(r2()-.5)*8);G.fillRect(-b.w/2,-b.h/2,b.w,b.h);G.restore();}});
-  c.f.fillStyle=`rgba(180,168,140,${.5*(1-a/1.1)})`;for(let i=0;i<24;i++){const r3=R(600+i),x=x0-12+r3()*24,y=GY-4-r3()*50*a;c.f.fillRect(Math.round(x),Math.round(y),3,3);}}}}
+ else{const a=now-stoneBreakT;if(a>=0&&a<1.1){const B=stoneBlocks(x0),r2=R(515);withG(c,G=>{for(const b of B){const vx=(r2()-.4)*30,vy=-r2()*30,y=b.y+vy*a+120*a*a,x=b.x+vx*a;if(y>GY-b.h+1)continue;G.globalAlpha=1-a/1.1;G.fillStyle=b.col;G.save();G.translate(x+b.w/2,y+b.h/2);G.rotate(a*(r2()-.5)*8);G.beginPath();G.ellipse(0,0,b.w/2.1,b.h/2.1,0,0,TAU);G.fill();G.strokeStyle='#2a180a';G.lineWidth=.8;G.stroke();G.restore();}});
+  c.f.fillStyle=`rgba(140,104,66,${.5*(1-a/1.1)})`;for(let i=0;i<24;i++){const r3=R(600+i),x=x0-12+r3()*24,y=GY-4-r3()*50*a;c.f.fillRect(Math.round(x),Math.round(y),3,3);}}}}
 function doryuhekiFX(c){const {f,t,time,sx0}=c,x0=sx0+22,k=scaleAt(0,1,1.3,2.0,t);
  if(t>1.0&&t<2.4){const q=scaleAt(0,1,1.0,1.4,t),r2=R(91);f.save();f.strokeStyle='#1c1208';f.lineWidth=1.2;f.beginPath();f.moveTo(x0-18*q,GY+1);f.lineTo(x0+18*q,GY+1);f.stroke();
   for(let i=0;i<22;i++){const ph=(time*2.5+r2())%1;f.fillStyle=`rgba(150,132,104,${(1-ph)*.8})`;f.fillRect(Math.round(x0-14+r2()*28),Math.round(GY-ph*(10+k*30)),2,2);}f.restore();}
