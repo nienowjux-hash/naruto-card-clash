@@ -60,11 +60,11 @@ Cada uma tem um fatality diferente: Tsukuyomi (Genjutsu), calcanhar que crava a 
 
 O Kawarimi é um jutsu **básico de defesa**, disponível para todos os personagens (Sasuke e Naruto; os próximos também devem ter). Ele **não causa dano** nem contra-ataca:
 
-- Custa **10 de chakra** e gasta o turno: o personagem faz o selo e deixa o jutsu **pronto** (aparece a marca "変わり身" na placa dele).
-- O **próximo golpe que causaria dano** nele é **evitado por completo**: ele some numa nuvem de fumaça, um tronco leva o golpe (e se parte) e ele volta ileso para o lugar de origem, com a mensagem "ESQUIVOU!". Golpes que atordoam (Genjutsu) também falham quando são esquivados.
-- Fica pronto até esse golpe chegar (não acumula: dá para ter um só). Se o adversário usar golpes sem dano (Oiroke, Harem, transformação do selo), o Kawarimi continua pronto.
-- Sasuke: comando **Kawarimi** (tecla 5 do menu principal). Naruto: **Kawarimi no Jutsu** no fim da lista. As IAs também usam: o Naruto da IA prepara de vez em quando quando está machucado, e o mesmo vale para o Sasuke quando você joga de Naruto.
-- Na simulação (`tools/balance-sim.js`) quem usa o Kawarimi toda vez que está ferido ganha bem menos do que quem só ataca com eficiência, então ele não é uma estratégia dominante.
+- Custa **10 de chakra** e gasta o turno. Só pode ser usado **2 vezes por luta** por personagem (o menu mostra quantos restam).
+- **Em segredo:** preparar não tem animação, banner nem marca na placa do adversário (é como Defender e Concentrar), para o inimigo não prever e não gastar um jutsu à toa. Só **você** vê a sua marca "変わり身" e a mensagem de quantos usos restam. Quando a IA prepara, aparece só "Naruto se prepara..." (ou "Sasuke se prepara..."), sem dizer o quê.
+- O **próximo golpe que causaria dano** no personagem é **evitado por completo**: ele some numa nuvem de fumaça, um tronco leva o golpe e se parte, e ele volta ileso ao lugar de origem, com a mensagem "ESQUIVOU!" (aí o inimigo vê). Golpes que atordoam (Genjutsu) também falham quando são esquivados.
+- Fica pronto até esse golpe chegar (só um por vez). Se o adversário usar golpes sem dano (Oiroke, Harem, transformação do selo), o Kawarimi continua pronto.
+- Sasuke: comando **Kawarimi** (tecla 5 do menu principal). Naruto: **Kawarimi no Jutsu** no fim da lista. As IAs também usam, dentro do mesmo limite.
 - O Kawarimi antigo (golpe com contra-ataque por trás e fatality de decapitação) foi **removido** do código; ele continua no histórico do Git (commit `ebb86cb` e anteriores).
 
 ## Regras de equilíbrio do RPG

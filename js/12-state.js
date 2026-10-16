@@ -1,6 +1,6 @@
 /* ---------- state ---------- */
 let outcome=null,anim=null,frozen=null,hp={s:100,n:100},ck={s:100,n:100},sound=true,pending=[];
-function setBars(){{let ks=false,kn=false;try{ks=kawS;kn=kawN;}catch(e){}const eS=$('kawS'),eN=$('kawN');if(eS)eS.classList.toggle('on',!!ks);if(eN)eN.classList.toggle('on',!!kn);}
+function setBars(){{let ks=false,kn=false,rn=false;try{ks=kawS;kn=kawN;rn=roleN;}catch(e){}const eS=$('kawS'),eN=$('kawN');if(eS)eS.classList.toggle('on',!!ks&&!rn);if(eN)eN.classList.toggle('on',!!kn&&rn);}
  $('hpS').style.width=hp.s+'%';$('hpSg').style.width=hp.s+'%';$('hpN').style.width=hp.n+'%';$('hpNg').style.width=hp.n+'%';$('ckS').style.width=ck.s+'%';$('ckN').style.width=ck.n+'%';
  $('hpSn').textContent=Math.round(hp.s)+' / 100';$('hpNn').textContent=Math.round(hp.n)+' / 100';$('ckSn').textContent=Math.round(ck.s);$('ckNn').textContent=Math.round(ck.n);
  let sb=null;try{sb=bunta;}catch(e){}$('sumRow').classList.toggle('on',!!sb);if(sb){$('smV').style.width=(100*sb.hp/sb.max)+'%';$('smN').textContent=Math.round(sb.hp)+' / '+sb.max;}}
