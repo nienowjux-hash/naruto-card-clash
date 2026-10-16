@@ -2,7 +2,7 @@
    Mapa pintado por codigo (oceano, terras, regioes, caminhos). Escolha um local, a equipe e parta para a batalha.
    O cenario da luta vem do local (setScene) e o inimigo recebe a escala e os elementos do local. */
 let mapSel=null,mapHero='sasuke',mapRAF=null,mapBG=null,mapTok=null,mapMoving=false,mapHover=null;
-const NODE_GLYPH={konoha:'葉',treino:'修',floresta:'森',deserto:'砂',neve:'雪',vale:'終'};
+const NODE_GLYPH={ondas:'波',konoha:'葉',treino:'修',floresta:'森',deserto:'砂',neve:'雪',vale:'終'};
 const ORIG_NAMES={s:'SASUKE UCHIHA',n:'NARUTO UZUMAKI'};
 function mapEl(){let t=document.getElementById('map');if(t)return t;t=document.createElement('div');t.id='map';t.hidden=true;document.body.appendChild(t);return t;}
 

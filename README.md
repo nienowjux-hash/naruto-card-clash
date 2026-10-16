@@ -191,3 +191,7 @@ Kit: Kunai, Shuriken, Soco, Chute, Kawarimi e, na aba Jutsu, **Katon** (copiado)
 - **Sennen Gorōshi (cena):** o alvo fica distraído e dobrado para a frente (traseiro empinado para trás, com um "?" na cabeça), o Kakashi surge atrás, se aproxima e enfia os indicadores no ponto cego (o tecido afunda), pausa cômica com cara de pateta, e só então o alvo é lançado. O Kakashi **volta andando** ao lugar dele (sem teleporte). Depois de qualquer golpe com fala, a câmera vai para quem falou e mostra o balão (`window.SPEECHCAM`).
 - **Naruto curvado (`pixel/naruto-bent.js`):** sprite novo de lado, olhando para a frente, com as mãos nos joelhos e o traseiro empinado para trás; usado no Sennen Gorōshi (`o.bentSpr`).
 
+
+## País das Ondas (primeira missão do Time 7)
+
+Novo local no mapa, ao sul de Konoha (ligado a ela): uma ilha com neblina, casas de pescadores e a Grande Ponte (`NODES.ondas` em `js/00-data.js`, ilha e ponte em `js/18b-map-art.js`, glifo 波). Luta contra **Zabuza Momochi** (nível 6, 45 de XP, 110 ryo, afinidade Água; dica: Terra causa +40%). O cenário (`scene:'ondas'`) tem filtro frio, bancos de neblina passando e pilares e cabos da ponte ao fundo (`js/04-scenery.js`). O inimigo ainda usa o sprite do Naruto (ou do Sasuke, se você joga de Naruto) só com o nome do Zabuza: sprite próprio dele e do Haku ficam para depois.

@@ -242,8 +242,9 @@ const NODES={
  floresta:{name:'Floresta da Morte',kind:'luta',x:550,y:160,scene:'floresta',lvl:10,xp:55,ryo:90,enc:{name:'Ninja Perdido',afin:['agua']},d:'Mata densa e perigosa. Quem entra sem preparo raramente volta.'},
  deserto:{name:'Deserto do Vento',kind:'luta',x:540,y:480,scene:'deserto',lvl:15,xp:100,ryo:120,enc:{name:'Ninja da Areia',afin:['terra']},d:'Dunas sem fim e um calor que drena o chakra.'},
  neve:{name:'Passo Nevado',kind:'luta',x:810,y:500,scene:'neve',lvl:20,xp:160,ryo:160,enc:{name:'Guardião do Gelo',afin:['gelo']},d:'Um desfiladeiro congelado vigiado por um ninja de gelo.'},
+ ondas:{name:'País das Ondas',kind:'luta',x:205,y:572,scene:'ondas',lvl:6,xp:45,ryo:110,enc:{name:'Zabuza Momochi',afin:['agua']},d:'A primeira missão do Time 7: proteger o construtor de pontes Tazuna na neblina da Grande Ponte. O Demônio da Névoa de Kirigakure bloqueia o caminho.'},
  vale:{name:'Vale do Fim',kind:'chefe',x:985,y:285,scene:'vale',lvl:30,xp:315,ryo:300,enc:{name:'Rival Final',afin:null},d:'O local do confronto final, entre as estátuas e a cachoeira.'}};
-const EDGES=[['konoha','treino'],['treino','floresta'],['treino','deserto'],['floresta','vale'],['deserto','neve'],['neve','vale']];
+const EDGES=[['konoha','treino'],['konoha','ondas'],['treino','floresta'],['treino','deserto'],['floresta','vale'],['deserto','neve'],['neve','vale']];
 const CAMP_KEY='rpgCampV1';
 let CAMP={cleared:['konoha'],at:'konoha',active:null};
 try{const j=JSON.parse(localStorage.getItem(CAMP_KEY)||'null');if(j){CAMP.cleared=j.cleared||CAMP.cleared;CAMP.at=j.at||CAMP.at;CAMP.active=j.active||null;}}catch(e){}

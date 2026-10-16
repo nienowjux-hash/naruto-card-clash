@@ -101,7 +101,7 @@ function buildBG(){
 }
 buildBG();
 /* variacoes de cenario: o Vale do Fim e recolorido por filtro (placeholder ate termos um cenario desenhado para cada local) */
-const SCENE_FILTER={vale:'none',vila:'hue-rotate(110deg) saturate(1.25) brightness(1.2)',treino:'hue-rotate(140deg) saturate(1.3) brightness(1.35)',floresta:'hue-rotate(-115deg) saturate(1.25) brightness(1.2)',deserto:'sepia(.9) hue-rotate(-20deg) saturate(1.8) brightness(1.35)',neve:'hue-rotate(-15deg) saturate(.4) brightness(1.6)'};
+const SCENE_FILTER={ondas:'hue-rotate(165deg) saturate(.55) brightness(1.25)',vale:'none',vila:'hue-rotate(110deg) saturate(1.25) brightness(1.2)',treino:'hue-rotate(140deg) saturate(1.3) brightness(1.35)',floresta:'hue-rotate(-115deg) saturate(1.25) brightness(1.2)',deserto:'sepia(.9) hue-rotate(-20deg) saturate(1.8) brightness(1.35)',neve:'hue-rotate(-15deg) saturate(.4) brightness(1.6)'};
 const bgBase=(()=>{const mk=c=>{const k=document.createElement('canvas');k.width=c.width;k.height=c.height;k.getContext('2d').drawImage(c,0,0);return k;};return{sky:mk(bgSky),front:mk(bgFront)};})();
 let curScene='vale';
 function setScene(t){if(!SCENE_FILTER[t])t='vale';curScene=t;
@@ -142,6 +142,10 @@ function drawEnv(c,time,tint){
  c.strokeStyle='#07041a';c.lineWidth=.9;c.lineCap='round';
  for(let i=0;i<24;i++){const side=i<12?0:1,j=side?i-12:i,bx=side?W-3-j*4:3+j*4.2,h=13+((i*37)%19),dir=side?-1:1,sw=Math.sin(time*1.3+i*.8)*2.2;c.beginPath();c.moveTo(bx,H);c.quadraticCurveTo(bx+sw*.4+dir*3,H-h*.6,bx+sw+dir*5,H-h);c.stroke();}
  {const vg=c.createRadialGradient(W/2,H*.55,H*.42,W/2,H*.55,W*.62);vg.addColorStop(0,'rgba(0,0,0,0)');vg.addColorStop(1,'rgba(4,2,16,.42)');c.fillStyle=vg;c.fillRect(0,0,W,H);}
+ if(curScene==='ondas'){ /* neblina da Grande Ponte: bancos de nevoa passando, pilares e cabos da ponte ao fundo */
+  c.save();c.fillStyle='rgba(40,56,78,.55)';for(let i=0;i<7;i++){const x=22+i*58;c.fillRect(x,60,3,92);c.fillRect(x-1,58,5,2);}c.strokeStyle='rgba(40,56,78,.5)';c.lineWidth=.7;for(let i=0;i<6;i++){c.beginPath();c.moveTo(22+i*58,62);c.quadraticCurveTo(51+i*58,96,80+i*58,62);c.stroke();}c.restore();
+  for(let i=0;i<9;i++){const x=((i*53+time*(3+i%3*1.6))%(W+200))-100,y=70+(i*19)%80+Math.sin(time*.4+i)*3;c.save();c.translate(x,y);c.scale(4.2,.55);orb(c,0,0,34,[[0,'rgba(232,240,246,.32)'],[1,'rgba(232,240,246,0)']]);c.restore();}
+  c.fillStyle='rgba(214,226,236,.22)';c.fillRect(0,0,W,H);}
  if(tint){c.fillStyle=tint;c.fillRect(-20,-20,W+40,H+40);}
 }
 function shadowRipple(c,x,time,glow){

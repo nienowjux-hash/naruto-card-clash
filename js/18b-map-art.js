@@ -7,6 +7,7 @@ const MAP_BAYER=[0,8,2,10,12,4,14,6,3,11,1,9,15,7,13,5];
 const MAP_PAL={
  grass:['#86b85a','#6fa04d','#588542'],train:['#b2d276','#9bbd63','#82a653'],forest:['#437f3d','#33693a','#265430'],
  desert:['#ecca82','#d8ae63','#c19654'],snow:['#f6fafd','#dbe8f2','#bdd2e4'],rock:['#a2a4bc','#8789a4','#6e708a'],village:['#94bd62','#7ca754','#659044'],
+ waves:['#8fb482','#76a070','#5f875e'],
  beach:'#f2e6b4',beachD:'#dccf95',cliff1:'#6c543a',cliff2:'#473621',
  foam:'#eaf7ff',sh:'#86d6dc',w1:'#52aac8',w2:'#3380ae',w3:'#235a92',w4:'#193f74',wave:'#3b84b8'};
 function mapHash(x,y){let h=(x*374761393+y*668265263)|0;h=(h^(h>>>13))*1274126177|0;return((h^(h>>>16))>>>0)/4294967296;}
@@ -19,14 +20,14 @@ function paintMap(){
  /* ---- mascara da terra ---- */
  const mk=document.createElement('canvas');mk.width=SW;mk.height=SH;const m=mk.getContext('2d');m.fillStyle='#000';
  const blob=(cx,cy,rx,ry,ph)=>{m.beginPath();for(let i=0;i<=72;i++){const a=i/72*Math.PI*2,k=1+.16*Math.sin(3*a+ph)+.1*Math.sin(5*a+ph*2)+.06*Math.sin(9*a+ph*3)+.035*Math.sin(15*a+ph*5);const x=cx+Math.cos(a)*rx*k,y=cy+Math.sin(a)*ry*k;i?m.lineTo(x/S,y/S):m.moveTo(x/S,y/S);}m.closePath();m.fill();};
- for(const[a,b,rx,ry,p]of [[210,335,250,190,1],[590,300,330,250,2],[900,330,270,230,3],[140,330,150,130,4]])blob(a,b,rx,ry,p);
+ for(const[a,b,rx,ry,p]of [[210,335,250,190,1],[590,300,330,250,2],[900,330,270,230,3],[140,330,150,130,4],[205,575,150,44,5],[425,590,48,26,6]])blob(a,b,rx,ry,p);
  const md=m.getImageData(0,0,SW,SH).data,land=new Uint8Array(SW*SH);for(let i=0;i<SW*SH;i++)land[i]=md[i*4+3]>110?1:0;
  const L=(x,y)=>x>=0&&y>=0&&x<SW&&y<SH&&land[y*SW+x];
  /* ---- distancia a costa (positiva em terra, negativa na agua) ---- */
  const R=14,dist=new Int8Array(SW*SH);
  for(let y=0;y<SH;y++)for(let x=0;x<SW;x++){const me=land[y*SW+x];let best=R;for(let dy=-R;dy<=R&&best>1;dy++)for(let dx=-R;dx<=R;dx++){const d=Math.max(Math.abs(dx),Math.abs(dy));if(d>=best)continue;const xx=x+dx,yy=y+dy;if(xx<0||yy<0||xx>=SW||yy>=SH)continue;if(land[yy*SW+xx]!==me)best=d;}dist[y*SW+x]=me?best:-best;}
  /* ---- biomas (centros em unidades do mapa) ---- */
- const BIO=[['forest',550,165,190,160],['desert',540,485,185,150],['snow',805,490,150,120],['rock',985,290,170,150],['village',135,330,120,100],['train',340,310,120,100]];
+ const BIO=[['forest',550,165,190,160],['desert',540,485,185,150],['snow',805,490,150,120],['rock',985,290,170,150],['village',135,330,120,100],['waves',205,578,160,52],['waves',425,590,52,30],['train',340,310,120,100]];
  const biomeAt=(x,y)=>{const wx=x*S,wy=y*S;let best='grass',bs=.3,n=mapFbm(x,y);for(const[k,cx,cy,rx,ry]of BIO){const d=Math.hypot((wx-cx)/(rx*1.12),(wy-cy)/(ry*1.12)),w=1-d+(n-.5)*.45;if(w>bs){bs=w;best=k;}}return best;};
  const hex=h=>[parseInt(h.slice(1,3),16),parseInt(h.slice(3,5),16),parseInt(h.slice(5,7),16)];
  const img=c.createImageData(SW,SH),D=img.data,put=(x,y,col)=>{const i=(y*SW+x)*4,v=hex(col);D[i]=v[0];D[i+1]=v[1];D[i+2]=v[2];D[i+3]=255;};
@@ -80,6 +81,14 @@ function paintMap(){
  /* casas de Konoha */
  for(const[x,y]of [[82,360],[112,378],[150,372],[178,350],[94,306],[160,300],[120,340]]){const sx=Math.round(x/S),sy=Math.round(y/S);rect(sx-3,sy+3,8,1,'#00000035');rect(sx-3,sy-1,7,4,'#d9b87a');rect(sx-3,sy+2,7,1,'#b99860');rect(sx,sy+1,2,2,'#5a3a1c');
   for(let i=0;i<4;i++)rect(sx-4+i,sy-2-i,9-i*2,1,i%2?'#c8502e':'#d9603a');rect(sx-4,sy-1,9,1,'#8e2e1a');}
+ /* Pais das Ondas: a Grande Ponte ligando a ilha ao ilhote, pilares na agua, casas de pescadores e neblina */
+ {const bx0=Math.round(335/S),bx1=Math.round(392/S),by=Math.round(590/S);
+  rect(bx0,by-2,bx1-bx0,1,'#d6b878');rect(bx0,by-1,bx1-bx0,2,'#9a7440');rect(bx0,by+1,bx1-bx0,1,'#5a4024');
+  for(let x=bx0+2;x<bx1;x+=4){rect(x,by+1,1,5,'#473621');rect(x,by-4,1,3,'#7a5a30');rect(x,by+6,3,1,'#eaf7ff90');}
+  rect(bx0,by-4,bx1-bx0,1,'#a4824c');
+  for(const[hx,hy]of [[170,560],[198,566],[226,558],[254,568]]){const sx=Math.round(hx/S),sy=Math.round(hy/S);rect(sx-3,sy+3,7,1,'#00000035');rect(sx-3,sy-1,6,4,'#c9ad78');rect(sx-3,sy+2,6,1,'#a68a58');rect(sx,sy+1,2,2,'#4a3018');
+   for(let i=0;i<3;i++)rect(sx-4+i,sy-2-i,8-i*2,1,i%2?'#6a7c8e':'#7f93a6');}
+  for(let i=0;i<14;i++){const x=Math.round((120+mapHash(i,61)*330)/S),y=Math.round((540+mapHash(i,62)*70)/S),w=6+Math.floor(mapHash(i,63)*8);c.fillStyle='rgba(235,244,250,.22)';c.fillRect(x,y,w,2);c.fillRect(x+2,y-1,w-4,1);}}
  /* Vale do Fim: cachoeira e as duas estatuas */
  const vx=Math.round(985/S),vy=Math.round(285/S);rect(vx-1,vy-7,3,8,'#bfe4ff');for(let i=0;i<6;i++)rect(vx-1+(i%3),vy-7+i,1,1,'#ffffff');rect(vx-3,vy+1,7,1,'#eaf7ff');
  for(const sx of [vx-8,vx+7]){rect(sx-2,vy-5,5,8,'#5a5e7c');rect(sx-2,vy-5,2,8,'#7a7e9c');rect(sx-1,vy-8,3,3,'#8a8eac');rect(sx-1,vy-7,1,1,'#2a2c40');rect(sx-3,vy+3,7,1,'#00000040');}
