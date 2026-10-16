@@ -1,7 +1,7 @@
 # Naruto RPG Clash (demo de combate)
 
 RPG de turno de fã inspirado em Naruto. Esta demo mostra o foco do projeto: o **visual do combate**.
-Sasuke e Naruto lutam no Vale do Fim e, conforme a carta escolhida, o golpe é animado.
+Sasuke e Naruto lutam no Vale do Fim e, conforme o comando escolhido, o golpe é animado.
 
 Tudo é desenhado por código (HTML5 Canvas), sem imagens externas.
 
@@ -25,7 +25,7 @@ Opção 2: com Node instalado, rode `node serve.js` e abra http://localhost:8123
 
 - Dano persistente: cada golpe deixa marcas no corpo (sangue, cortes, hematomas, queimaduras, roupa rasgada e chamuscada), e o rosto fica machucado. O Amaterasu continua queimando até resetar, tirando vida aos poucos.
 
-- Turnos: depois da sua carta, o Naruto contra-ataca sozinho (Rasengan ou Kage Bunshin). As cartas gastam chakra e o chakra volta um pouco a cada turno. Se a vida do Sasuke zerar, aparece o K.O. do Naruto.
+- Turnos: depois do seu golpe, o Naruto contra-ataca sozinho (Rasengan ou Kage Bunshin). Os jutsus gastam chakra e o chakra volta um pouco a cada turno. Se a vida do Sasuke zerar, aparece o K.O. do Naruto.
 
 ## Estrutura do projeto
 
