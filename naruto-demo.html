@@ -2116,10 +2116,12 @@ ANIMS.oiroke={enemy:true,dur:4.2,hold:OIR_ON,hitT:OIR_ON,hits:[],cost:10,noLift:
   cam:[[0,{z:1.04,cx:192,cy:116}],[.4,{z:1.04,cx:192,cy:116}],[.7,{z:1.6,cx:268,cy:128}],[1.3,{z:2.4,cx:284,cy:126}],[2.45,{z:2.5,cx:284,cy:124}],[2.7,{z:2.4,cx:100,cy:124}],[3.4,{z:2.3,cx:102,cy:124}],[3.9,{z:1.04,cx:192,cy:116}],[4.2,{z:1.04,cx:192,cy:116}]]};
 /* ---- Harem no Jutsu: Oiroke + Kage Bunshin. Varias garotas (cobertas por fumaca) cercam o Sasuke; quase sempre ele cai na distracao ---- */
 const HAR_X=[150,178,206,234,262,288];
-ANIMS.harem={enemy:true,dur:4.6,hold:OIR_ON,hitT:OIR_ON,hits:[],cost:20,noLift:true,
+ANIMS.harem={enemy:true,dur:5.4,hold:OIR_ON,hitT:OIR_ON,hits:[],cost:20,noLift:true,
   sP:[[0,READY],[2.9,READY],[3.05,S_STAG],[3.6,S_STAG],[4.0,READY],[4.6,READY]],sX:[[0,96],[2.9,96],[3.15,84],[99,84]],
   nP:[[0,N_READY],[.45,N_READY],[.55,N_SEAL],[1.15,N_SEAL],[1.25,N_READY],[4.6,N_READY]],nX:[[0,288],[99,288]],
-  cam:[[0,{z:1.04,cx:192,cy:116}],[.4,{z:1.04,cx:192,cy:116}],[.7,{z:1.4,cx:250,cy:126}],[1.4,{z:1.15,cx:210,cy:120}],[2.6,{z:1.2,cx:200,cy:120}],[2.95,{z:2.2,cx:96,cy:124}],[3.8,{z:2.2,cx:96,cy:124}],[4.3,{z:1.04,cx:192,cy:116}],[4.6,{z:1.04,cx:192,cy:116}]]};
+  cam:[[0,{z:1.04,cx:192,cy:116}],[.4,{z:1.04,cx:192,cy:116}],[.7,{z:1.4,cx:250,cy:126}],[1.4,{z:1.15,cx:210,cy:120}],[2.6,{z:1.2,cx:200,cy:120}],[2.95,{z:1.6,cx:110,cy:122}],[3.3,{z:1.25,cx:120,cy:110}],[4.3,{z:1.15,cx:150,cy:116}],[4.9,{z:1.04,cx:192,cy:116}],[5.4,{z:1.04,cx:192,cy:116}]]};
+/* com a distracao, o Sasuke e lancado para fora da tela num jato de sangue do nariz, girando, e volta depois numa nuvem de fumaca */
+const HAR_FLY=t=>{const a=t-3.0;if(a<0)return null;if(a<.9){const k=a/.9;return {x:96-k*230,y:-Math.sin(Math.min(1,k*1.4)*Math.PI*.5)*120+k*k*30,rot:-k*TAU*2.5,out:false};}if(t<4.5)return {x:-400,y:0,rot:0,out:true};return {x:96,y:0,rot:0,out:false};};
 function haremClones(t,time){if(t<OIR_ON||t>OIR_OFF+.3)return;HAR_X.slice(0,5).forEach((x0,i)=>{const x=x0-6*Math.min(1,(t-OIR_ON)/1.2)*(1+i*.1),P=Object.assign({},N_READY,{crouch:2+Math.sin(time*4+i)*1.2});blit(x,GY,true,NARUTO,P,time,{sexy:true,alpha:.97});});}
 /* coracoezinhos em pixel saindo dela e, se o Sasuke cair na distracao, sangue do nariz */
 function oirokeFX(f,t,time,nx0,sx0){
@@ -2682,7 +2684,7 @@ function render(ts){
   const bs=Math.sin(time*2.3),bn=Math.sin(time*3.1+1);
   sP.crouch+=bs*.45+Math.sin(time*.85+1.3)*.25;sP.lean+=bs*.15;sP.hyF-=bs*.25;sP.hyB-=bs*.25;
   nP.crouch+=bn*.6+Math.sin(time*1.25+.4)*.3;nP.lean+=bn*.2;nP.hyF-=bn*.3;nP.hyB-=bn*.3;}
- let ny0=0,sRot=0;if(A){ny0=nY(type,t);sRot=sRotF(type,t);}if(LR(type)){sRot=0;sy0=0;}if(LU(type)&&t>=UZ_SLAM-.06){sRot=0;sy0=2*clamp((t-UZ_SLAM)/.1,0,1);}
+ let ny0=0,sRot=0;if(A){ny0=nY(type,t);sRot=sRotF(type,t);}if(type==='harem'&&anim&&anim.oirHit){const hf=HAR_FLY(t);if(hf){sx0=hf.x;sy0=hf.y;sRot=hf.rot;sP=Object.assign({},S_HIT);}}if(LR(type)){sRot=0;sy0=0;}if(LU(type)&&t>=UZ_SLAM-.06){sRot=0;sy0=2*clamp((t-UZ_SLAM)/.1,0,1);}
  else if(fatalKind&&outcome==='S'&&ANIMS[fatalKind].L.nY)ny0=ANIMS[fatalKind].L.nY(99); /* corpo deitado depois do fatality: mesma altura do fim da animacao, senao fica no ar */
  if(LC(type)&&t>2.62&&t<3.7)ny0=-3*scaleAt(0,1,2.62,2.8,t)*(1-scaleAt(0,1,3.56,3.7,t)); /* o braco do Sasuke levanta o Naruto do chao */
  if(LC(type)&&t>=3.58)chestHole=1;
@@ -2781,7 +2783,7 @@ function render(ts){
  if(A&&A.tpN&&!lethal){const k=A.tpN[0];puff(f,interp(A.nX,k-.02),GY-24,t-k,7);puff(f,288,GY-24,t-k-.04,8);}
  if(A&&A.tp&&!LG(type)&&!lethal){const k=A.tp[0],xo=sasX(type,k-.02);puff(f,xo,GY-24,t-k,5);puff(f,96,GY-24,t-k-.04,6);}
  if(A&&A.enemy){if(type==='bunshin')drawClones(t,time);if(type==='uzumaki')uzClones(t,time);if(type==='harem')haremClones(t,time);drawN();if(LU(type)){uzFatalFX(f,t,sx0);uzDust(g,t,sx0);}if(type==='oiroke'){puff(g,nx0,GY-30,t-(OIR_ON-.1),41);puff(g,nx0,GY-30,t-(OIR_OFF-.1),42);oirokeFX(f,t,time,nx0,sx0);}
- if(type==='harem'){HAR_X.forEach((x,i)=>{puff(g,x,GY-30,t-(OIR_ON-.1+i*.04),51+i);puff(g,x-6,GY-30,t-(OIR_OFF-.1),61+i);});HAR_X.forEach((x,i)=>oirokeFX(f,t-i*.09,time,x,sx0));if(anim&&anim.oirHit&&t>3.0&&t<3.9){const k=scaleAt(0,1,3.0,3.1,t);f.fillStyle=`rgba(190,14,28,${k})`;for(let i=0;i<14;i++){const r=R(i+700),a2=t-3.0,px=sx0+6+r()*10*a2*10,py=GY-55-r()*14*a2*6+60*a2*a2;f.fillRect(Math.round(px),Math.round(py),1,1);}}}if(type==='bunshin')puffs(g,t);} /* fumaca no canvas principal (sem bloom): cinza como nuvem, sem brilhar */
+ if(type==='harem'){if(anim&&anim.oirHit)puff(g,96,GY-30,t-4.45,77);HAR_X.forEach((x,i)=>{puff(g,x,GY-30,t-(OIR_ON-.1+i*.04),51+i);puff(g,x-6,GY-30,t-(OIR_OFF-.1),61+i);});HAR_X.forEach((x,i)=>oirokeFX(f,t-i*.09,time,x,sx0));if(anim&&anim.oirHit&&t>3.0&&t<3.95){for(let i=0;i<40;i++){const tb=3.0+i*.022,a2=t-tb;if(a2<0||a2>.55)continue;const hf=HAR_FLY(tb);if(!hf||hf.out)continue;const r=R(i+700);f.fillStyle=r()<.5?'#d4202e':'#9a0f1c';f.fillRect(Math.round(hf.x+6+(r()-.2)*30*a2),Math.round(GY+hf.y-46+(r()-.5)*20*a2+80*a2*a2),2,2);}}}if(type==='bunshin')puffs(g,t);} /* fumaca no canvas principal (sem bloom): cinza como nuvem, sem brilhar */
 
  /* ---- FX ---- */
  if(type==='chidori'){
