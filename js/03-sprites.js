@@ -79,7 +79,7 @@ function sprDraw(c,SB,S,P,R0,key,vf,sq){vf=vf||0;sq=sq||0;const dT=((P.tilt||0)-
 const sprTmp=document.createElement('canvas');sprTmp.width=96;sprTmp.height=96;const sprTx=sprTmp.getContext('2d',{willReadFrequently:true});
 const sprBig=document.createElement('canvas');sprBig.width=384;sprBig.height=384;const sprBx=sprBig.getContext('2d');
 function blitSprite(x,y,flip,P,time,o,isN){
- const key=(isN&&o.four&&SPRN.four)?((o.fourKey&&SPRN[o.fourKey])?o.fourKey:'four'):(isN&&o.sexy&&SPRN.sexy)?'sexy':sprPick(P,isN?sprRefsN():null),S=(isN?SPRN:(o.lv2px>0?(SPRL2[key]?SPRL2:(SPRL2.guard&&key==='idle'?{idle:SPRL2.guard}:SPR)):SPRX()))[key],al=o.alpha==null?1:o.alpha;
+ const key=(isN&&o.bend&&SPRN.guard)?'guard':(isN&&o.four&&SPRN.four)?((o.fourKey&&SPRN[o.fourKey])?o.fourKey:'four'):(isN&&o.sexy&&SPRN.sexy)?'sexy':sprPick(P,isN?sprRefsN():null),S=(isN?SPRN:(o.lv2px>0?(SPRL2[key]?SPRL2:(SPRL2.guard&&key==='idle'?{idle:SPRL2.guard}:SPR)):SPRX()))[key],al=o.alpha==null?1:o.alpha;
  sprTx.setTransform(1,0,0,1,0,0);sprTx.globalCompositeOperation='source-over';sprTx.clearRect(0,0,96,96);{const fr=(key==='run'&&S.fr)?S.fr[Math.floor(time*16+(isN?1:0))%4]:null,br=!fr&&(key==='idle'||key==='guard')&&S.cb&&Math.floor(time*1.15+(isN?.55:0))%2===1;sprTx.drawImage(fr?(o.sharingan&&fr.csh?fr.csh:fr.c):(o.sharingan&&S.csh?(br?S.cbsh:S.csh):(br?S.cb:S.c)),0,0);}
  sprTx.globalCompositeOperation='source-atop';
  if(o.light){const L=o.light;sprTx.globalAlpha=Math.min(.3,L.k*.25);sprTx.fillStyle=css(L.col,1,1);sprTx.fillRect(0,0,S.w,S.h);sprTx.globalAlpha=1;}
@@ -131,7 +131,11 @@ function blitSprite(x,y,flip,P,time,o,isN){
  if(!o.noRefl&&!o.rot){g.save();g.translate(x,GY);g.scale(flip?-1:1,-.5);g.globalAlpha=.16*al;g.drawImage(SB,0,0,S.w*4,S.h*4,-S.ax,-S.ay,S.w,S.h);g.restore();}
  if(o.vel&&!o.rot&&Math.abs(o.vel)>160){const dir=Math.sign(o.vel),va=Math.min(Math.abs(o.vel),900),ka=Math.min(1,(Math.abs(o.vel)-160)/220);for(let i=3;i>=1;i--){g.save();g.translate(x-dir*va*.011*i,y);g.scale(flip?-1:1,1);g.globalAlpha=al*(.34-.09*i)*ka;g.drawImage(SB,0,0,S.w*4,S.h*4,-S.ax,-S.ay+ys,S.w,S.h);g.restore();}}
  g.translate(x,y);if(o.rot){g.translate(0,-30);g.rotate(o.rot*(flip?-1:1));g.translate(0,30);}if(o.sc)g.scale(o.sc,o.sc);if(o.flat)g.scale(1+(1-o.flat)*.35,o.flat);g.scale(flip?-1:1,1);g.globalAlpha=al;
- sprDraw(g,SB,S,P,sprRefPose,key,(o.vel||0)*(flip?-1:1),o.sq);
+ if(o.bend&&isN&&key==='guard'){ /* dobrado para a frente: pernas agachadas e tronco girando em torno do quadril (traseiro empinado para tras) */
+  const g0=sprRefsN().find(r=>r[0]==='guard');if(g0)sprRefPose=g0[1];
+  const hipY=57,sq=.86;g.save();g.beginPath();g.rect(-S.ax-6,-S.ay+hipY,S.w+12,S.h-hipY);g.clip();g.scale(1,sq);g.drawImage(SB,0,0,S.w*4,S.h*4,-S.ax,-S.ay,S.w,S.h);g.restore();
+  g.save();g.translate(0,-(S.ay-hipY)*sq);g.rotate(o.bend);g.beginPath();g.rect(-S.ax-8,-hipY-8,S.w+16,hipY+8);g.clip();g.drawImage(SB,0,0,S.w*4,S.h*4,-S.ax,-hipY,S.w,S.h);g.restore();
+ }else sprDraw(g,SB,S,P,sprRefPose,key,(o.vel||0)*(flip?-1:1),o.sq);
  g.restore();
  return rigW(P);}
 const wingc=document.createElement('canvas');wingc.width=SW;wingc.height=SH;const wgx=wingc.getContext('2d',{willReadFrequently:true});

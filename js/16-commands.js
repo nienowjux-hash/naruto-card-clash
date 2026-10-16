@@ -33,14 +33,15 @@ function showMenu(m){if(roleN){showNarutoMenu();return;}menuOpen=m;const h=$('ha
  setCommands(!anim&&!outcome&&!turnLock);}
 function buildMenu(){showMenu('main');}
 function setCommands(on){[...$('hand').children].forEach(b=>{b.disabled=!on||(b._cost!=null&&(roleN?ck.n:ck.s)<b._cost)||(b._ok&&!b._ok());});}
-function speak(line,pos,who){const s=$('speech');s.textContent=line;let L=pos?pos[0]:'31%',T=pos?pos[1]:'18%';
+function speak(line,pos,who,nocam){const s=$('speech');s.textContent=line;let L=pos?pos[0]:'31%',T=pos?pos[1]:'18%';
  const cl=(v,a,b)=>Math.max(a,Math.min(b,v));
  if(who&&window.CAMNOW){ /* sobre a cabeca de quem fala, acompanhando a camera (zoom e deslocamento) */
   const C=CAMNOW,wx=who==='s'?C.sx:C.nx;let sxp=((wx-C.cx)*C.z+192)/384*100;if(roleN)sxp=100-sxp;const syp=((GY-76-C.cy)*C.z+108)/216*100;
   L=cl(sxp,24,76)+'%';T=cl(syp-17,12,52)+'%';}
  else{L=cl(parseFloat(L),24,76)+'%';T=cl(parseFloat(T),12,52)+'%';}
  s.style.left=L;s.style.top=T;s.classList.remove('on');void s.offsetWidth;s.classList.add('on');
- clearTimeout(speak.h);speak.h=setTimeout(()=>s.classList.remove('on'),Math.min(4600,1900+line.length*70));}
+ const dur=Math.min(4600,1900+line.length*70);clearTimeout(speak.h);speak.h=setTimeout(()=>s.classList.remove('on'),dur);
+ window.SPEECHCAM=(who&&!nocam)?{who,t0:performance.now(),t1:performance.now()+dur}:null;}
 function sayN(line,pos){speak(line,pos,roleN?'s':'n');}
 function sayH(line,pos){speak(line,pos,roleN?'n':'s');}
 function idleAct(t){if(anim||frozen||outcome||turnLock)return;battleOn=true;ensureAudio();turnLock=true;

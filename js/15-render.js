@@ -58,6 +58,8 @@ function render(ts){
  // camera
  let cam=A?interp(LE(type)?A.LR.cam:(LC(type)||LK(type)||LA(type)||LG(type))?A.L.cam:A.cam,t):{z:1.04,cx:192,cy:116};
  if(window.__CAM)cam=window.__CAM;let z=cam.z,ccx=cam.cx,ccy=cam.cy;
+ {const SC=window.SPEECHCAM,nowS=performance.now();if(SC&&nowS<SC.t1&&window.CAMNOW){ /* depois de um golpe com fala, a camera vai para quem falou */
+  const k=Math.min(1,(nowS-SC.t0)/350)*Math.min(1,(SC.t1-nowS)/350),e=k*k*(3-2*k),C=window.CAMNOW,wx=SC.who==='s'?C.sx:C.nx;z=z+(Math.max(z,1.7)-z)*e;ccx=ccx+(wx-ccx)*e;ccy=ccy+(GY-48-ccy)*e;}}
  {const q=Math.round(clamp(z*1.3,1.6,3.4)*5)/5;SR=K*q;spW=Math.round(SW*SR);spH=Math.round(SH*SR);}
  if(type==='chidori'&&t>2.15&&t<2.56){const k=scaleAt(0,1,2.15,2.3,t);ccx=ccx*(1-k)+(sasX(type,t)+34)*k*(t<2.5?1:0)+ccx*k*(t<2.5?0:1);}
  const hw2=W/(2*z),hh2=H/(2*z);ccx=clamp(ccx,hw2,W-hw2);ccy=clamp(ccy,hh2,H-hh2);
