@@ -4,7 +4,7 @@ function setBars(){{let ks=false,kn=false,rn=false;try{ks=kawS;kn=kawN;rn=roleN;
  $('hpS').style.width=hp.s+'%';$('hpSg').style.width=hp.s+'%';$('hpN').style.width=hp.n+'%';$('hpNg').style.width=hp.n+'%';$('ckS').style.width=ck.s+'%';$('ckN').style.width=ck.n+'%';
  $('hpSn').textContent=Math.round(hp.s)+' / 100';$('hpNn').textContent=Math.round(hp.n)+' / 100';$('ckSn').textContent=Math.round(ck.s);$('ckNn').textContent=Math.round(ck.n);
  let sb=null;try{sb=bunta;}catch(e){}$('sumRow').classList.toggle('on',!!sb);if(sb){$('smV').style.width=(100*sb.hp/sb.max)+'%';$('smN').textContent=Math.round(sb.hp)+' / '+sb.max;}}
-function setHead(t){if(kyuT>0)t+=' · 🔥 KYŪBI '+kyuT;$('cmdhead').innerHTML='<b>▶ '+t+'</b><span>Vez do '+(roleN?'Naruto':'Sasuke')+' · tecle o número do comando</span>';}
+function setHead(t){if(kyuT>0)t+=' · 🔥 KYŪBI '+kyuT;$('cmdhead').innerHTML=(menuOpen!=='main'?'<button class="back" id="cmdback">← Voltar <small>Esc</small></button>':'')+'<b>'+t+'</b><span>Vez do '+(roleN?'Naruto':'Sasuke')+' · tecle o número</span>';const bk=$('cmdback');if(bk)bk.onclick=()=>showMenu('main');}
 function later(ms,fn){pending.push(setTimeout(fn,ms))}
 function banner(jp,nm,sb,col){const b=$('banner');b.style.setProperty('--bc',col);b.querySelector('.jp').textContent=jp;b.querySelector('.nm').textContent=nm;b.querySelector('.sb').textContent=sb;b.classList.remove('on');void b.offsetWidth;b.classList.add('on');}
 function dmgPop(n,side){const d=$('dmg');d.style.left=((side==='S')!==roleN)?'16%':'70%';d.textContent='-'+n;d.classList.remove('on');void d.offsetWidth;d.classList.add('on');}

@@ -1,9 +1,9 @@
 *{box-sizing:border-box}
 body{margin:0;background:#07060f;color:#e9e6ff;font-family:'Trebuchet MS','Segoe UI',sans-serif;min-height:100vh}
 #app{max-width:1180px;margin:0 auto;padding:14px 16px 28px}
-h1{margin:4px 0 10px;font:900 italic 22px 'Arial Black',Impact,sans-serif;letter-spacing:2px;color:#ff9a2e;text-shadow:0 2px 0 #5a2200}
-h1 small{font:600 12px 'Trebuchet MS',sans-serif;color:#8f8ab8;letter-spacing:1px;margin-left:10px;font-style:normal}
-#stage{position:relative;width:100%;display:flex;flex-direction:column;background:#000;border:3px solid #2a2350;border-radius:6px;overflow:hidden;box-shadow:0 0 40px #3a1d7a55}
+h1{margin:4px 0 10px;font:800 16px 'Trebuchet MS',Arial,sans-serif;letter-spacing:4px;color:#eef}
+h1 small{font:600 11px 'Trebuchet MS',sans-serif;color:#6d6f96;letter-spacing:1px;margin-left:12px}
+#stage{position:relative;width:100%;display:flex;flex-direction:column;background:#000;border:1px solid #2a2a48;border-radius:10px;overflow:hidden}
 canvas#c{display:block;width:100%;height:auto}
 /* ---------- HUD de RPG: placas com retrato, nome, HP e chakra numericos ---------- */
 .roleN .hud{flex-direction:row-reverse}
@@ -52,18 +52,21 @@ canvas#c{display:block;width:100%;height:auto}
 #speech:after{content:'';position:absolute;left:34px;bottom:-15px;border:9px solid transparent;border-top:12px solid #000;border-bottom:0}
 #speech.on{opacity:1;transform:translate(-50%,0) scale(1)}
 /* ---------- painel de comandos de RPG ---------- */
-#panel{margin-top:14px;background:linear-gradient(#141030,#0a0818);border:2px solid #3f3680;border-radius:14px;box-shadow:0 6px 24px #000a,inset 0 0 40px #0009;overflow:hidden}
-#cmdhead{display:flex;justify-content:space-between;align-items:center;padding:8px 16px;background:linear-gradient(90deg,#2a2060,#15103a);border-bottom:2px solid #3f3680;font:900 italic 13px 'Arial Black',sans-serif;letter-spacing:2px;color:#ffd23a;text-shadow:0 2px 0 #000}
-#cmdhead span{font:700 11px 'Trebuchet MS',sans-serif;letter-spacing:1px;color:#9d97d0;font-style:normal;text-shadow:none}
-#hand{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:10px;padding:14px}
-#hand .cmd{position:relative;display:grid;grid-template-columns:34px 1fr auto;align-items:center;gap:10px;min-width:0;background:linear-gradient(90deg,#221b4e,#15102f);border:2px solid #40377f;border-left:6px solid var(--cc,#7fd4ff);border-radius:9px;padding:9px 12px;cursor:pointer;transition:transform .12s,box-shadow .12s,filter .2s;user-select:none;color:#eae6ff;text-align:left}
-#hand .cmd:hover:not(:disabled){transform:translateX(5px);box-shadow:0 4px 16px #000a,0 0 18px var(--cc,#7fd4ff);border-color:var(--cc,#7fd4ff);background:linear-gradient(90deg,#2d2468,#1a1340)}
-#hand .cmd:disabled{filter:grayscale(.75) brightness(.5);cursor:default}
-#hand .cmd .ic{width:30px;height:30px;border-radius:7px;background:#07061a;border:2px solid var(--cc,#7fd4ff);color:var(--cc,#7fd4ff);display:grid;place-items:center;font:900 14px 'Arial Black',sans-serif;box-shadow:inset 0 0 8px #000}
+#panel{margin-top:12px;background:#0c0c18;border:1px solid #2a2a48;border-radius:10px;overflow:hidden}
+#cmdhead{display:flex;align-items:center;gap:10px;padding:8px 14px;border-bottom:1px solid #2a2a48;font:800 12px 'Trebuchet MS',Arial,sans-serif;letter-spacing:2px;color:#eef;text-transform:uppercase}
+#cmdhead span{margin-left:auto;font:600 11px 'Trebuchet MS',sans-serif;letter-spacing:.5px;color:#7d80a8;text-transform:none}
+#cmdhead .back{pointer-events:auto;cursor:pointer;background:#232346;color:#fff;border:1px solid #5a5a9a;border-radius:6px;padding:5px 12px;font:800 12px 'Trebuchet MS',Arial,sans-serif;letter-spacing:.5px}
+#cmdhead .back:hover{background:#34346a}
+#cmdhead .back small{opacity:.6;font-weight:600;margin-left:4px}
+#hand{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:8px;padding:10px}
+#hand .cmd{display:grid;grid-template-columns:28px 1fr auto;align-items:center;gap:10px;min-width:0;background:#15152a;border:1px solid #2a2a48;border-left:4px solid var(--cc,#7fd4ff);border-radius:7px;padding:8px 10px;cursor:pointer;transition:background .12s,border-color .12s;user-select:none;color:#eae6ff;text-align:left}
+#hand .cmd:hover:not(:disabled){background:#1f1f3c;border-color:var(--cc,#7fd4ff)}
+#hand .cmd:disabled{opacity:.38;cursor:default}
+#hand .cmd .ic{width:24px;height:24px;border-radius:5px;background:#0a0a16;color:var(--cc,#7fd4ff);display:grid;place-items:center;font:800 12px 'Trebuchet MS',Arial,sans-serif}
 #hand .cmd .tx{min-width:0}
-#hand .cmd .tx b{display:block;font:900 italic 14px 'Arial Black',sans-serif;letter-spacing:.5px;color:#fff;text-shadow:0 2px 0 #000;line-height:1.15}
-#hand .cmd .tx small{display:block;margin-top:2px;font:400 11px/1.3 system-ui,sans-serif;color:#a9a4d4;letter-spacing:0}
-#hand .cmd .cost{position:static;width:auto;height:auto;border-radius:6px;padding:3px 8px;background:linear-gradient(#143a7a,#0c2250);border:1px solid #5fa8ff;font:900 13px 'Arial Black',sans-serif;color:#cfe8ff;text-shadow:0 1px 0 #000;display:block;text-align:center;line-height:1.1}
+#hand .cmd .tx b{display:block;font:800 13px 'Trebuchet MS',Arial,sans-serif;color:#fff;line-height:1.2}
+#hand .cmd .tx small{display:block;margin-top:2px;font:400 11px/1.3 system-ui,sans-serif;color:#8f93bd}
+#hand .cmd .cost{border-radius:5px;padding:2px 7px;background:#12284e;font:800 12px 'Trebuchet MS',Arial,sans-serif;color:#cfe8ff;text-align:center;line-height:1.1}
 #hand .cmd .cost em{display:block;font:700 8px 'Trebuchet MS',sans-serif;letter-spacing:1px;color:#7fb4ff;font-style:normal}
 .ctl{display:flex;justify-content:center;gap:10px;margin-top:16px;font-size:13px}
 .ctl button{background:#1a1536;color:#cfc9ff;border:1px solid #5a4fa0;border-radius:6px;padding:6px 14px;cursor:pointer;font:inherit}
