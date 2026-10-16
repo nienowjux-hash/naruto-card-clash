@@ -163,3 +163,6 @@ A esperteza da IA cresce com o nível do local (`aiSmart` em `js/11-kyubi.js`: 0
 - **Kawarimi:** guarda para quando o jogador tem chakra para um golpe forte e usa mais cedo nos locais avançados (ainda no limite de 2 por luta).
 - **Defender:** com pouca vida e sem Kawarimi pronto, se defende (o próximo dano cai pela metade). O Defender do Naruto agora vale também quando ele é o inimigo.
 O `tools/balance-sim.js` ainda usa a IA antiga.
+
+### Mapa em pixel art
+O mapa da campanha (`js/18b-map-art.js`) agora é pintado em baixa resolução (1 pixel = 4 unidades) com paleta fixa, tramado ordenado e iluminação, e ampliado sem suavizar: oceano em faixas de profundidade com espuma e falésias, biomas (grama, floresta, deserto, neve, rochas, vila), pinheiros, cactos, montanhas com neve, dunas, rio, casas de Konoha, cachoeira e estátuas do Vale do Fim, barquinhos e bússola. Os locais, estradas e a ficha da equipe são desenhados por cima em blocos de 4 pixels.
