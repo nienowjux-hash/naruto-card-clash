@@ -27,9 +27,14 @@ Opção 2: com Node instalado, rode `node serve.js` e abra http://localhost:8123
 
 - Turnos: depois da sua carta, o Naruto contra-ataca sozinho (Rasengan ou Kage Bunshin). As cartas gastam chakra e o chakra volta um pouco a cada turno. Se a vida do Sasuke zerar, aparece o K.O. do Naruto.
 
-## Versões antigas
+## Estrutura do projeto
 
-A pasta `versions/` guarda os estágios anteriores do visual (pixel art, HD, chibi, etc.) para comparação.
+- `naruto-demo.html`: so a pagina (HTML); `style.css`: o visual da pagina.
+- `js/`: o codigo do jogo, em arquivos numerados que **carregam nessa ordem** (cada um depende dos anteriores): `01-core` (base e helpers), `02-characters`, `03-sprites`, `04-scenery`, `05-poses`, `06-attacks-basic`, `07-soushuken`, `08-mechanics`, `09-curse-seal`, `10-copy-jutsu`, `11-kyubi`, `12-state`, `13-audio`, `14-fx`, `15-render`, `16-cards`.
+- `pixel/`: os sprites em pixel art desenhados por codigo (galeria em `pixel/view.html`).
+- `tools/check-order.js`: confere se algum arquivo de `js/` usa, ao carregar, algo definido em um arquivo posterior. Rode depois de mover codigo entre arquivos: `npm i --no-save acorn` e `node tools/check-order.js`.
+- Atencao: como os arquivos sao scripts separados, uma funcao so pode ser chamada **ao carregar** se ja estiver definida em um arquivo anterior. Chamadas feitas dentro de outras funcoes (executadas depois) funcionam de qualquer arquivo.
+- As versoes antigas do visual (pixel art inicial, HD, chibi...) ficam no historico do Git; a pasta `versions/` foi removida.
 
 ## Aviso
 
@@ -53,7 +58,7 @@ Projeto de fã, sem fins comerciais. Naruto e seus personagens pertencem aos seu
 Cada uma tem um fatality diferente: Tsukuyomi (Genjutsu), calcanhar que crava a cabeca na agua (Shishi Rendan), a espiral que tritura em fatias (Rasengan copiado) e seis clones que lancam kunais (Kage Bunshin copiado).
 ## Pixel art (em andamento)
 
-A pasta `pixel/` guarda os novos sprites em pixel art desenhados por codigo (`pixgrid.js` e o Sasuke em `sasuke.js` e `sasuke-guard.js`). Para ver: `node serve.js` e abra http://localhost:8123/pixel/view.html (ou `?s=idle` para o Sasuke parado). O jogo ainda usa os bonecos antigos.
+A pasta `pixel/` guarda os novos sprites em pixel art desenhados por codigo (`pixgrid.js` e os sprites do Sasuke e do Naruto). Para ver: `node serve.js` e abra http://localhost:8123/pixel/view.html (ou `?s=idle` para o Sasuke parado). 
 
 ## Jogar como Naruto
 O botão **Jogar como: Sasuke / Naruto** (abaixo do jogo) troca de lado: a tela é espelhada (Naruto à esquerda), você escolhe **Rasengan**, **Kage Bunshin**, **Oiroke no Jutsu**, **Harem no Jutsu**, **Kamikaze**, **Kuchiyose: Gama Bunta**, **Uzumaki Rendan**, **Defender** ou **Concentrar**, e o Sasuke é jogado pela IA (escolhe um golpe que consegue pagar e vai no mais forte quando sua vida está baixa). A escolha fica salva no navegador.
