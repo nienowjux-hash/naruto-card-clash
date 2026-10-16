@@ -620,7 +620,7 @@ if(USE_SPR){const mkS=(fn,pal,ax,ay)=>{const gr=fn(),c=document.createElement('c
  SPR.seal=mkS(sasukeSeal,SAS2_PAL,27,75);SPR.chidori=mkS(sasukeChidori,SAS2_PAL,27,75);SPR.katon=mkS(sasukeKaton,SAS2_PAL,27,75);SPR.block=mkS(sasukeBlock,SAS2_PAL,27,75);SPR.log=mkS(sasukeLog,SAS2_PAL,28,70);}
 const SPRL2={};if(USE_SPR&&typeof LV2_POSES!=='undefined'){for(const k in LV2_POSES){const gr=lv2From(LV2_POSES[k])(),c=document.createElement('canvas');gr.draw(c,LV2_PAL,1);const S0=SPR[k];SPRL2[k]={c,w:gr.w,h:gr.h,ax:S0?S0.ax:27,ay:S0?S0.ay:75};}}
 const KYU_EYES={e:'#d81818',j:'#ff7a2a',E:'#2a0408'}; /* chakra da Kyuubi: olho vermelho e pupila em fenda */
-const SPRN={};if(USE_SPR&&typeof naruGuard==='function'){const mkN=(fn,ax,ay)=>{const gr=fn(),c=document.createElement('canvas'),c2=document.createElement('canvas');gr.draw(c,NAR_PAL,1);gr.draw(c2,Object.assign({},NAR_PAL,KYU_EYES),1);return{c,csh:c2,w:gr.w,h:gr.h,ax,ay};};SPRN.guard=mkN(naruGuard,27,75);SPRN.punch=mkN(naruPunch,27,75);SPRN.hit=mkN(naruHit,25,75);SPRN.down=mkN(naruDown,40,45);SPRN.kick=mkN(naruKick,22,75);SPRN.seal=mkN(naruSeal,27,75);SPRN.block=mkN(naruBlock,27,75);if(typeof naruCharge==='function')SPRN.charge=mkN(naruCharge,27,75);if(typeof naruPunchWind!=='undefined'&&naruPunchWind)SPRN.pw=mkN(naruPunchWind,27,75);if(typeof naruSexy==='function')SPRN.sexy=mkN(naruSexy,27,75);if(typeof naruFours==='function')SPRN.four=mkN(naruFours,40,75);}
+const SPRN={};if(USE_SPR&&typeof naruGuard==='function'){const mkN=(fn,ax,ay)=>{const gr=fn(),c=document.createElement('canvas'),c2=document.createElement('canvas');gr.draw(c,NAR_PAL,1);gr.draw(c2,Object.assign({},NAR_PAL,KYU_EYES),1);return{c,csh:c2,w:gr.w,h:gr.h,ax,ay};};SPRN.guard=mkN(naruGuard,27,75);SPRN.punch=mkN(naruPunch,27,75);SPRN.hit=mkN(naruHit,25,75);SPRN.down=mkN(naruDown,40,45);SPRN.kick=mkN(naruKick,22,75);SPRN.seal=mkN(naruSeal,27,75);SPRN.block=mkN(naruBlock,27,75);if(typeof naruCharge==='function')SPRN.charge=mkN(naruCharge,27,75);if(typeof naruPunchWind!=='undefined'&&naruPunchWind)SPRN.pw=mkN(naruPunchWind,27,75);if(typeof naruSexy==='function')SPRN.sexy=mkN(naruSexy,27,75);if(typeof naruFours==='function')SPRN.four=mkN(naruFours,40,56);}
 /* poses de referencia: cada pose do jogo cai no sprite cuja referencia estiver mais perto */
 let SPR_REF=null;
 function sprRefs(){if(SPR_REF)return SPR_REF;const L=[];const add=(k,...ps)=>ps.forEach(p=>{if(p)L.push([k,p]);});
@@ -2280,31 +2280,58 @@ ANIMS.kyuubi={enemy:true,dur:3.4,hold:KY_ON,hitT:KY_ON,hits:[],cost:0,noLift:tru
   cam:[[0,{z:1.04,cx:192,cy:116}],[.35,{z:2.0,cx:282,cy:130}],[1.25,{z:2.4,cx:284,cy:128}],[KY_ON+.1,{z:1.5,cx:268,cy:124}],[2.6,{z:1.4,cx:262,cy:124}],[3.1,{z:1.04,cx:192,cy:116}],[3.4,{z:1.04,cx:192,cy:116}]]};
 let kyuT=0,kyuUsed=false;
 /* manto em pixel: bolhas de chakra vermelho subindo em volta do corpo, contorno escuro tremendo e a cauda de chakra atras */
-/* manto da Kyubi em pixel art, pela referencia: cauda grossa de chakra saindo do quadril e curvando para cima,
-   contorno de chakra tremulo em volta da silhueta (nao uma mancha), orelhas e bolhas subindo. */
-const kyuC=document.createElement('canvas');kyuC.width=192;kyuC.height=160;const kyuX=kyuC.getContext('2d',{willReadFrequently:true});
-function kyuAura(g,x,y,time,k,front,dir,four){if(k<=0)return;g.save();g.globalAlpha=Math.min(1,k);
- const S=four?SPRN.four:null;
- if(!front){
-  /* cauda: espinha em arco (quadril -> cima -> ponta para tras), grossa na base e fina na ponta, com volume em 3 tons */
-  const bx=x+dir*(four?22:8),by=four?y-30:y-30,L=four?1.15:.8;
-  const spine=u=>{const ang=Math.PI*.02+u*Math.PI*.78,rad=28*L,sw=Math.sin(time*2.4)*.1*u;return [bx+dir*(Math.cos(ang+sw)*rad*.7+rad*.35)+Math.sin(time*3.4+u*5)*1.2*u,by-Math.sin(ang+sw)*rad*1.7-u*3];};
-  for(let pass=0;pass<3;pass++){for(let i=0;i<=40;i++){const u=i/40,[px,py]=spine(u),r=(8.5-u*6.5)*L*(1+.08*Math.sin(time*10+i))-pass*2;if(r<=0)continue;g.fillStyle=pass===0?'#7a1a0a':pass===1?'#e04a1c':'#ff9a4a';pxDisc(g,px-pass*1.2,py-pass*1.6,r);}}
-  for(let i=0;i<8;i++){const r2=R(i+2300),u=r2(),[px,py]=spine(u),a=r2()*TAU,d=(10-u*6)*L+4+r2()*6;g.fillStyle=r2()<.5?'#ff9a4a':'#e04a1c';pxDisc(g,px+Math.cos(a)*d,py+Math.sin(a)*d*.6,1.5+r2()*1.5);}
-  /* contorno de chakra em volta da silhueta do sprite (de quatro) ou do corpo (de pe) */
-  if(S){const sc=.42;kyuX.clearRect(0,0,192,160);kyuX.imageSmoothingEnabled=false;kyuX.save();kyuX.translate(96,150);kyuX.scale(dir>0?-1:1,1);kyuX.scale(1,1);kyuX.drawImage(S.c,-S.ax,-S.ay);kyuX.restore();
-   const id=kyuX.getImageData(0,0,192,160),d=id.data,on=(xx,yy)=>xx>=0&&yy>=0&&xx<192&&yy<160&&d[(yy*192+xx)*4+3]>0;
-   for(let yy=0;yy<160;yy++)for(let xx=0;xx<192;xx++){if(on(xx,yy))continue;let dist=9;for(let dy=-8;dy<=8&&dist>1;dy++)for(let dx=-8;dx<=8;dx++){if(on(xx+dx,yy+dy)){const dd=Math.max(Math.abs(dx),Math.abs(dy));if(dd<dist)dist=dd;}}
-    if(dist>=9)continue;const wob=2+Math.round(2*Math.sin(time*9+xx*.7+yy*.5));if(dist>3+wob)continue;g.fillStyle=dist<=1?'#ffb070':dist<=3?'#ff9a4a':'#e04a1c';g.globalAlpha=Math.min(1,k)*(dist<=1?.95:dist<=3?.7:.45);g.fillRect(x+(xx-96)+(dir>0?0:0),y+(yy-150),1,1);}
-   g.globalAlpha=Math.min(1,k);}
-  else{for(let i=0;i<40;i++){const a=i/40*TAU,wob=1+.06*Math.sin(time*9+i*1.7),px=x+Math.cos(a)*16*wob,py=y-32+Math.sin(a)*36*wob;g.fillStyle='#7a1a0a';pxDisc(g,px,py,4);g.fillStyle='#e04a1c';pxDisc(g,px,py,2.6);}}
-  /* orelhas */
-  for(const sg of [-1,1]){const ex=x+(four?dir*6:0)+sg*7,ey=four?y-66:y-74;g.fillStyle='#7a1a0a';g.beginPath();g.moveTo(ex-4,ey+10);g.lineTo(ex+sg*3,ey-9);g.lineTo(ex+5,ey+10);g.closePath();g.fill();g.fillStyle='#e04a1c';g.beginPath();g.moveTo(ex-2.4,ey+9);g.lineTo(ex+sg*2.2,ey-5);g.lineTo(ex+3.4,ey+9);g.closePath();g.fill();g.fillStyle='#ff9a4a';g.beginPath();g.moveTo(ex-1,ey+8);g.lineTo(ex+sg*1.4,ey-1);g.lineTo(ex+2,ey+8);g.closePath();g.fill();}
-  /* ondas na agua */
-  g.strokeStyle='rgba(230,240,255,.55)';g.lineWidth=1;for(let i=0;i<3;i++){const rr=18+i*14+((time*8)%14);g.globalAlpha=Math.min(1,k)*.6*(1-rr/60);g.beginPath();g.ellipse(x,y+1,rr,rr*.22,0,0,TAU);g.stroke();}}
- else{ /* bolhas de chakra subindo na frente */
-  for(let i=0;i<24;i++){const r=R(i+2100),ph=(time*(.6+r()*.6)+r())%1,px=x+(r()-.5)*(four?60:36)+Math.sin(time*3+i)*2,py=y-2-ph*(four?60:80);g.globalAlpha=Math.min(1,k)*(1-ph)*.9;g.fillStyle=ph<.4?'#ffb070':ph<.7?'#ff9a4a':'#e04a1c';g.fillRect(Math.round(px),Math.round(py),r()<.5?2:3,r()<.5?2:3);}}
- g.restore();}
+/* ===== Manto da Kyubi em pixel art (como no anime) =====
+   O Naruto continua visivel por dentro, avermelhado. Por cima vai uma casca de chakra translucida que acompanha a silhueta
+   do proprio sprite, com borda borbulhante (escura por fora, clara por dentro), duas orelhas de raposa e uma cauda grossa
+   que sai do quadril e curva para cima. E gerado do alfa do sprite e guardado em cache: 4 quadros que se alternam. */
+const KYU_HINT={four:{ears:[[52,9],[63,8]],tail:[14,20]},def:{ears:[[22,7],[34,6]],tail:[14,46],tailPts:[[0,0],[-10,-8],[-14,-24],[-8,-40],[4,-46]]}};
+const kyuCache={};
+function buildCloak(S,hint,fr){const P=34,W=S.w+P*2,H=S.h+P*2,cx=S.c.getContext('2d').getImageData(0,0,S.w,S.h).data;
+ const body=new Uint8Array(W*H);for(let y=0;y<S.h;y++)for(let x=0;x<S.w;x++)if(cx[(y*S.w+x)*4+3]>0)body[(y+P)*W+x+P]=1;
+ const cloak=new Uint8Array(W*H),tail=new Uint8Array(W*H);
+ /* casca: tudo a ate ~3px do corpo, com o raio ondulando (bolhas que mudam a cada quadro) */
+ for(let y=1;y<H-1;y++)for(let x=1;x<W-1;x++){const rr=3.2+1.4*Math.sin(x*.55+fr*1.57)*Math.sin(y*.47-fr*1.1)+.8*Math.sin((x+y)*.31+fr*2.1);let hit=0;
+  for(let dy=-5;dy<=5&&!hit;dy++)for(let dx=-5;dx<=5;dx++){if(dx*dx+dy*dy>rr*rr)continue;if(body[(y+dy)*W+x+dx]){hit=1;break;}}if(hit)cloak[y*W+x]=1;}
+ const stamp=(arr,px,py,r)=>{for(let y=Math.floor(py-r);y<=py+r;y++)for(let x=Math.floor(px-r);x<=px+r;x++){if(x<0||y<0||x>=W||y>=H)continue;const dx=x+.5-px,dy=y+.5-py;if(dx*dx+dy*dy<=r*r)arr[y*W+x]=1;}};
+ /* orelhas de raposa: triangulos inclinados para tras saindo do topo da cabeca */
+ for(const [ex,ey] of hint.ears){const bx=ex+P,by=ey+P;for(let t=0;t<=12;t++){const u=t/12,r=3.4*(1-u)+.6;stamp(cloak,bx-u*3.5,by-u*11,r);}}
+ /* cauda: espinha que sai do quadril, sobe e faz a curva para a frente, grossa na base e fina na ponta, balancando */
+ /* pontos de controle (coordenadas do sprite olhando para a direita): sai do quadril, sobe para tras e curva por cima das costas */
+ const ctl=(hint.tailPts||[[0,0],[-12,-14],[-10,-32],[4,-40],[16,-34]]).map(([dx,dy],i)=>[hint.tail[0]+P+dx+(i>1?Math.sin(fr*1.57+i)*1.6:0),hint.tail[1]+P+dy+(i>1?Math.cos(fr*1.57+i)*1.2:0)]);
+ const cr=(a,b,c,d,u)=>{const u2=u*u,u3=u2*u;return .5*((2*b)+(-a+c)*u+(2*a-5*b+4*c-d)*u2+(-a+3*b-3*c+d)*u3);},sp=[];
+ const pts=[ctl[0]].concat(ctl,[ctl[ctl.length-1]]);for(let s2=0;s2<pts.length-3;s2++)for(let i=0;i<12;i++){const u=i/12,px=cr(pts[s2][0],pts[s2+1][0],pts[s2+2][0],pts[s2+3][0],u),py=cr(pts[s2][1],pts[s2+1][1],pts[s2+2][1],pts[s2+3][1],u);sp.push([px,py]);}
+ sp.forEach((q,i)=>q.push(7.5-6*(i/(sp.length-1))));
+ for(const [px,py,r] of sp)stamp(tail,px,py,r);
+ /* pinta: fill (translucido, por cima do corpo) e linhas (opacas) */
+ const mk=()=>{const c=document.createElement('canvas');c.width=W;c.height=H;return c;};const fill=mk(),line=mk(),fx=fill.getContext('2d'),lx=line.getContext('2d'),fd=fx.createImageData(W,H),ld=lx.createImageData(W,H);
+ const put=(d,x,y,c,a)=>{const i=(y*W+x)*4;d.data[i]=c[0];d.data[i+1]=c[1];d.data[i+2]=c[2];d.data[i+3]=a;};
+ const C_OUT=[110,10,4],C_RIM=[255,150,70],C_FILL=[240,70,24],C_T1=[150,22,8],C_T2=[226,58,20],C_T3=[255,120,50],C_T4=[255,196,140];
+ const any=(arr,x,y)=>x>=0&&y>=0&&x<W&&y<H&&arr[y*W+x];
+ for(let y=0;y<H;y++)for(let x=0;x<W;x++){const i=y*W+x;
+  if(tail[i]){ /* cauda opaca com volume: contorno, sombra embaixo, luz em cima */
+   const edge=!any(tail,x-1,y)||!any(tail,x+1,y)||!any(tail,x,y-1)||!any(tail,x,y+1);
+   if(edge){put(ld,x,y,C_OUT,255);continue;}
+   const up=!any(tail,x,y-2)||!any(tail,x-1,y-2),dn=!any(tail,x,y+2)||!any(tail,x+1,y+2),up3=!any(tail,x-1,y-3);
+   put(ld,x,y,up?C_T4:up3?C_T3:dn?C_T1:C_T2,255);continue;}
+  if(!cloak[i])continue;
+  const edge=!any(cloak,x-1,y)||!any(cloak,x+1,y)||!any(cloak,x,y-1)||!any(cloak,x,y+1);
+  if(edge){put(ld,x,y,C_OUT,255);continue;}
+  const rim=!any(cloak,x-2,y)||!any(cloak,x+2,y)||!any(cloak,x,y-2)||!any(cloak,x,y+2);
+  if(rim&&!body[i]){put(ld,x,y,C_RIM,235);continue;}
+  put(fd,x,y,C_FILL,255);
+  /* bolhas: pontinhos claros perto da borda */
+  if(!body[i]&&((x*7+y*13+fr*5)%23===0))put(ld,x,y,[255,200,150],220);}
+ fx.putImageData(fd,0,0);lx.putImageData(ld,0,0);return {fill,line,P,W,H};}
+function getCloak(key,fr){const k=key+':'+fr;if(kyuCache[k])return kyuCache[k];const S=SPRN[key];if(!S)return null;return kyuCache[k]=buildCloak(S,KYU_HINT[key]||KYU_HINT.def,fr);}
+/* desenha o manto do sprite que o Naruto esta usando agora */
+function kyuAura(g,x,y,time,k,front,dir,four,key){if(k<=0||!key)return;const fr=Math.floor(time*7)%4,C=getCloak(key,fr),S=SPRN[key];if(!C)return;
+ g.save();g.imageSmoothingEnabled=false;g.translate(x,y);g.scale(dir>0?-1:1,1);
+ if(front){g.globalAlpha=.42*Math.min(1,k);g.drawImage(C.fill,-S.ax-C.P,-S.ay-C.P);g.globalAlpha=Math.min(1,k);g.drawImage(C.line,-S.ax-C.P,-S.ay-C.P);}
+ else{ /* aura escura atras e ondas na agua */
+  g.globalAlpha=.25*Math.min(1,k);g.drawImage(C.fill,-S.ax-C.P,-S.ay-C.P);}
+ g.restore();
+ if(!front){g.save();g.strokeStyle='rgba(255,170,120,.6)';g.lineWidth=1;for(let i=0;i<3;i++){const rr=20+i*14+((time*8)%14);g.globalAlpha=Math.min(1,k)*.6*(1-rr/64);g.beginPath();g.ellipse(x,y+1,rr*1.4,rr*.25,0,0,TAU);g.stroke();}g.restore();}
+ else{g.save();for(let i=0;i<16;i++){const r=R(i+2100),ph=(time*(.5+r()*.5)+r())%1,px=x+(r()-.5)*(four?64:34),py=y-6-ph*(four?56:76);g.globalAlpha=Math.min(1,k)*(1-ph)*.85;g.fillStyle=ph<.5?'#ffb070':'#ff6a2a';g.fillRect(Math.round(px),Math.round(py),2,2);}g.restore();}}
 /* coracoezinhos em pixel saindo dela e, se o Sasuke cair na distracao, sangue do nariz */
 function oirokeFX(f,t,time,nx0,sx0){
  for(let i=0;i<7;i++){const st=OIR_ON+.15+i*.17,a=t-st;if(a<0||a>1.1)continue;const x=Math.round(nx0-14+((i*7)%12)-a*8),y=Math.round(GY-50-a*26),al=1-a/1.1;
@@ -2988,8 +3015,8 @@ function render(ts){
  const ctx={hw,f,g,A,type,t,raw,time,fr,nx0,ny0,sx0,sy0,nP,sP,rS,nOpt,ccx,ccy,z,hw2,outcome};
  const LGk=LG(type)?A.L:(fatalKind&&!A&&outcome==='S'?ANIMS[fatalKind].L:null);
  nOpt.vel=vN;const drawN=()=>{if(ashed&&!A&&outcome==='S')return;if(onToad&&A&&!A.enemy){blit(KU_NX,GY+KU_NY,true,NARUTO,nP,time,nOpt);return;}if(LGk&&LGk.drawN){LGk.drawN(ctx);return;}const kA=(type==='kyuubi'?clamp((t-.6)/(KY_ON-.6),0,1):0)||(kyuT>0&&!onToad?1:0),fl=nOpt.flipN!=null?nOpt.flipN:true;
- const four=kA>.5&&((type==='kyuubi'&&t>KY_ON)||(kyuT>0&&(!A||!A.enemy)))&&!!SPRN.four;
- kyuAura(g,nx0,GY+ny0,time,kA,false,fl?1:-1,four);blit(nx0,GY+ny0,fl,NARUTO,nP,time,kA>.5?Object.assign({},nOpt,{sharingan:true,four}):nOpt);kyuAura(g,nx0,GY+ny0,time,kA,true,fl?1:-1,four);};
+ const four=kA>.5&&((type==='kyuubi'&&t>KY_ON)||(kyuT>0&&(!A||!A.enemy)))&&!!SPRN.four,dirK=fl?1:-1,nO=kA>.5?Object.assign({},nOpt,{sharingan:true,four,tint:[200,40,16],tk:.3*Math.min(1,kA)}):nOpt,kKey=four?'four':(kA>0?sprPick(nP,sprRefsN()):null);
+ kyuAura(g,nx0,GY+ny0,time,kA,false,dirK,four,kKey);blit(nx0,GY+ny0,fl,NARUTO,nP,time,nO);kyuAura(g,nx0,GY+ny0,time,kA,true,dirK,four,kKey);};
  const pierce=(LC(type)&&t>=2.56&&t<3.75)||(type==='selochidori'&&LG(type)&&t>=3.3&&t<4.38);
  if(!(A&&A.enemy)&&!pierce)drawN();
  const sOpt={};if(LTP(type)&&t>=TPF_LAND-.04&&t<TPF_BACK+.12)sOpt.alpha=0;if((LTP(type)&&t>=TPF_BACK+.12)||(!A&&outcome==='N'&&tpKill)){sOpt.flat=.42;sP.torn=1;}if(LKM(type)&&t>=KMF_UP+.3){sP.torn=1;}else if(!A&&outcome==='N'&&kmKill)sP.torn=1;if(LR(type)&&t>=ANIMS.rasengan.LR.burst)sOpt.hole=clamp((t-ANIMS.rasengan.LR.burst)/.06,0,1)*2.5;else if(!A&&outcome==='N'&&rasKill)sOpt.hole=2.5;
