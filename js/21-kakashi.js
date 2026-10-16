@@ -17,7 +17,9 @@ let wallS=false; /* Parede de Agua ativa: o proximo dano cai 80% */
 const SUI_SEAL=mk({tilt:.05,crouch:6,lean:1,fbx:-9,ffx:7,hxF:2,hyF:-13,hxB:3,hyB:9,hr:.12,hdy:2,expr:2,tw:.9,hF:3});
 const WATER_COL=['#1c5fb8','#2f86e6','#6cc0ff','#d8f0ff'];
 /* Parede de Agua: cortina de agua na frente dele. Fica de pe (wallShow) ate o inimigo acertar; ai estoura em gotas (wallBreakT) */
-let wallShow=false,wallBreakT=-9,wallBreakX=0;
+/* as defesas ficam FIXAS no cenario (nao seguem o Kakashi quando ele avanca para atacar) */
+const WALL_X=112,STONE_X=118;
+let wallShow=false,wallBreakT=-9,wallBreakX=WALL_X;
 function wallDraw(f,x0,k,time){const h=64*k;if(h<=0)return;f.save();
  const gr=f.createLinearGradient(0,GY-h,0,GY);gr.addColorStop(0,'rgba(170,222,255,.6)');gr.addColorStop(.5,'rgba(60,140,235,.66)');gr.addColorStop(1,'rgba(20,80,180,.8)');
  f.fillStyle=gr;f.beginPath();f.moveTo(x0-10,GY);for(let i=0;i<=18;i++){const u=i/18;f.lineTo(x0-10+u*20,GY-h+Math.sin(time*7+u*9)*2.2*k);}f.lineTo(x0+10,GY);f.closePath();f.fill();
@@ -25,8 +27,8 @@ function wallDraw(f,x0,k,time){const h=64*k;if(h<=0)return;f.save();
  f.strokeStyle=`rgba(255,255,255,${.9*k})`;f.lineWidth=1;f.beginPath();for(let i=0;i<=18;i++){const u=i/18,x=x0-10+u*20,y=GY-h+Math.sin(time*7+u*9)*2.2*k;i?f.lineTo(x,y):f.moveTo(x,y);}f.stroke();
  f.globalCompositeOperation='lighter';const r2=R(55);for(let i=0;i<20;i++){const ph=(time*.8+r2())%1;f.fillStyle=`rgba(200,235,255,${(1-ph)*k})`;f.fillRect(Math.round(x0+(r2()-.5)*22),Math.round(GY-ph*h),1,1);}
  ringFX(f,x0,GY-2,14,1.2,`rgba(150,210,255,${.6*k})`);f.restore();}
-function suijinhekiFX(c){const {f,t,time,sx0}=c;wallDraw(f,sx0+16,scaleAt(0,1,1.0,1.7,t),time);
- if(t>1.0&&t<1.6){const k=(t-1)/.6;f.save();f.globalCompositeOperation='lighter';ringFX(f,sx0+16,GY-2,8+40*k,2*(1-k)+.2,`rgba(160,215,255,${1-k})`);f.restore();}}
+function suijinhekiFX(c){const {f,t,time}=c;wallDraw(f,WALL_X,scaleAt(0,1,1.0,1.7,t),time);
+ if(t>1.0&&t<1.6){const k=(t-1)/.6;f.save();f.globalCompositeOperation='lighter';ringFX(f,WALL_X,GY-2,8+40*k,2*(1-k)+.2,`rgba(160,215,255,${1-k})`);f.restore();}}
 /* parede parada no cenario enquanto o inimigo nao ataca, e o estouro quando ela e atingida */
 function wallStatic(c){const {f,time}=c,now=performance.now()/1000;
  if(wallShow)wallDraw(f,wallBreakX,1,time);
@@ -116,7 +118,7 @@ ANIMS.suiryudan={dur:4.2,hold:2.3,hitT:2.3,dmg:36,cost:30,noLift:true,
  fx:c=>suiryudanFX(c)};
 
 KAKASHI_JUTSUS.push(
- {id:'suijinheki',name:'Suiton: Suijinheki',cost:18,col:'#6cc0ff',desc:'Parede de Água: fica de pé até o inimigo atacar e absorve 80% do dano desse golpe.',live:true,ok:()=>!wallS,onUse:()=>{wallS=true;wallShow=true;wallBreakX=96+16;later(1700,()=>toast('Parede de água erguida: fica de pé até o inimigo atacar'));}},
+ {id:'suijinheki',name:'Suiton: Suijinheki',cost:18,col:'#6cc0ff',desc:'Parede de Água: fica de pé até o inimigo atacar e absorve 80% do dano desse golpe.',live:true,ok:()=>!wallS,onUse:()=>{wallS=true;wallShow=true;wallBreakX=WALL_X;later(1700,()=>toast('Parede de água erguida: fica de pé até o inimigo atacar'));}},
  {id:'suiryudan',name:'Suiton: Suiryūdan no Jutsu',cost:30,col:'#2f86e6',desc:'Molda a água em um dragão que devora o inimigo (36 de dano).',live:true,shout:'Suiton: Suiryūdan no Jutsu!'});
 
 /* ---------- Fatality do Suiryudan: o dragao morde o Naruto e o ergue, uma bolha de agua o prende e o esmaga, e explode ---------- */
@@ -304,12 +306,12 @@ function stoneWallDraw(G,x0,k,hits,time){if(k<=0)return;const W=26,H=74*Math.min
  G.restore();}
 function stoneImpact(){stoneHit++;stoneHitT=performance.now()/1000;}
 function stoneTick(){if(stoneT<=0)return;stoneT--;if(stoneT<=0){stoneShow=false;stoneBreakT=performance.now()/1000;toast('A parede de pedra desmoronou');}}
-function stoneStatic(c){const now=performance.now()/1000,x0=c.sx0+22;
+function stoneStatic(c){const now=performance.now()/1000,x0=STONE_X;
  if(stoneShow){withG(c,G=>stoneWallDraw(G,x0,1,stoneHit,c.time));
   const a=now-stoneHitT;if(a>=0&&a<.5){const r2=R(77);for(let i=0;i<16;i++){const an=-Math.PI*(.1+r2()*.8),sp=14+r2()*30,x=x0+9+Math.cos(an)*sp*a*(r2()<.5?-1:1),y=GY-40+Math.sin(an)*sp*a+a*a*60;c.f.fillStyle=`rgba(190,178,150,${1-a*2})`;c.f.fillRect(Math.round(x),Math.round(y),2,2);}}}
  else{const a=now-stoneBreakT;if(a>=0&&a<1.1){const B=stoneBlocks(x0),r2=R(515);withG(c,G=>{for(const b of B){const vx=(r2()-.4)*30,vy=-r2()*30,y=b.y+vy*a+120*a*a,x=b.x+vx*a;if(y>GY-b.h+1)continue;G.globalAlpha=1-a/1.1;G.fillStyle=b.col;G.save();G.translate(x+b.w/2,y+b.h/2);G.rotate(a*(r2()-.5)*8);G.beginPath();G.ellipse(0,0,b.w/2.1,b.h/2.1,0,0,TAU);G.fill();G.strokeStyle='#2a180a';G.lineWidth=.8;G.stroke();G.restore();}});
   c.f.fillStyle=`rgba(140,104,66,${.5*(1-a/1.1)})`;for(let i=0;i<24;i++){const r3=R(600+i),x=x0-12+r3()*24,y=GY-4-r3()*50*a;c.f.fillRect(Math.round(x),Math.round(y),3,3);}}}}
-function doryuhekiFX(c){const {f,t,time,sx0}=c,x0=sx0+22,k=scaleAt(0,1,1.3,2.0,t);
+function doryuhekiFX(c){const {f,t,time}=c,x0=STONE_X,k=scaleAt(0,1,1.3,2.0,t);
  if(t>1.0&&t<2.4){const q=scaleAt(0,1,1.0,1.4,t),r2=R(91);f.save();f.strokeStyle='#1c1208';f.lineWidth=1.2;f.beginPath();f.moveTo(x0-18*q,GY+1);f.lineTo(x0+18*q,GY+1);f.stroke();
   for(let i=0;i<22;i++){const ph=(time*2.5+r2())%1;f.fillStyle=`rgba(150,132,104,${(1-ph)*.8})`;f.fillRect(Math.round(x0-14+r2()*28),Math.round(GY-ph*(10+k*30)),2,2);}f.restore();}
  withG(c,G=>stoneWallDraw(G,x0,k,0,time));
