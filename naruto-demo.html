@@ -623,7 +623,7 @@ function sprRefs(){if(SPR_REF)return SPR_REF;const L=[];const add=(k,...ps)=>ps.
  add('down',S_DOWN);
  return SPR_REF=L;}
 let SPRN_REF=null;function sprRefsN(){if(SPRN_REF)return SPRN_REF;const L=[],add=(k,...ps)=>ps.forEach(p=>{if(p)L.push([k,p]);}),d=n=>typeof window[n]!=='undefined'?window[n]:null;
- add('guard',N_READY,N_GUARD,N_SURP,N_VICT,(typeof N_JUMP!=='undefined'?N_JUMP:null));add('block',(typeof N_GUARD!=='undefined'?N_GUARD:null));if(SPRN.pw)add('pw',N_COIL);else add('guard',N_COIL);add('seal',(typeof N_SEAL!=='undefined'?N_SEAL:null));add('charge',(typeof N_RAS_WIND!=='undefined'?N_RAS_WIND:null));add('punch',N_DASHP,N_PUNCH,N_UPPER,(typeof N_RAS_DASH!=='undefined'?N_RAS_DASH:null),(typeof N_RAS_HIT!=='undefined'?N_RAS_HIT:null));add('hit',N_HIT,N_STAG,N_HITB,N_BURN1,N_BURN2,(typeof N_AIR!=='undefined'?N_AIR:null),(typeof N_AIR2!=='undefined'?N_AIR2:null));add('down',N_DOWN);return SPRN_REF=L;}
+ add('guard',N_READY,N_GUARD,N_SURP,N_VICT,(typeof N_JUMP!=='undefined'?N_JUMP:null));add('block',(typeof N_GUARD!=='undefined'?N_GUARD:null));if(SPRN.pw)add('pw',N_COIL);else add('guard',N_COIL);add('seal',(typeof N_SEAL!=='undefined'?N_SEAL:null));add('charge',(typeof N_RAS_WIND!=='undefined'?N_RAS_WIND:null));add('punch',N_DASHP,N_PUNCH,N_UPPER,(typeof N_RAS_DASH!=='undefined'?N_RAS_DASH:null),(typeof N_RAS_HIT!=='undefined'?N_RAS_HIT:null));add('kick',N_UPKICK);add('hit',N_HIT,N_STAG,N_HITB,N_BURN1,N_BURN2,(typeof N_AIR!=='undefined'?N_AIR:null),(typeof N_AIR2!=='undefined'?N_AIR2:null));add('down',N_DOWN);return SPRN_REF=L;}
 const SPR_W={hxF:1,hyF:1,hxB:.6,hyB:.6,ffx:.9,ffy:1.4,fbx:.6,fby:1,crouch:1.2,lean:.8,tilt:30,hr:6};
 let sprRefPose=null;
 function sprPick(P,refs){let best='guard',bd=1e9;for(const [k,R0] of (refs||sprRefs())){let d=0;for(const q in SPR_W){const v=(P[q]||0)-(R0[q]||0);d+=SPR_W[q]*v*v;}if(d<bd){bd=d;best=k;sprRefPose=R0;}}return best;}
@@ -2071,6 +2071,23 @@ ANIMS.rasengan={enemy:true,dur:4.6,hold:2.2,hitT:2.2,hits:[{t:2.2,dmg:30}],cost:
   sX:[[0,96],[2.15,96],[2.2,96],[2.55,48],[3.4,40],[4.2,96]],sArc:[2.2,2.7,16],sSpin:[2.22,2.7,-1],
   tpN:[3.3],nX:[[0,288],[1.6,288],[1.75,270],[2.1,130],[2.9,130],[3.29,130],[3.31,288],[4.6,288]],
   cam:[[0,{z:1.04,cx:192,cy:116}],[.5,{z:1.04,cx:192,cy:116}],[.8,{z:1.6,cx:268,cy:130}],[1.5,{z:1.7,cx:272,cy:130}],[1.7,{z:1.4,cx:210,cy:130}],[2.05,{z:1.5,cx:122,cy:130}],[2.2,{z:1.75,cx:112,cy:130}],[3.0,{z:1.4,cx:90,cy:130}],[3.9,{z:1.04,cx:192,cy:116}],[4.6,{z:1.04,cx:192,cy:116}]]};
+/* ---- Naruto Uzumaki Rendan: quatro clones chutam o Sasuke para o alto ("U! ZU! MA! KI!") e o Naruto de verdade desce com o calcanhar ---- */
+const N_UPKICK=mk({tilt:-.14,crouch:2,lean:-1,fbx:-7,ffx:17,ffy:-17,hxF:-5,hyF:5,hxB:10,hyB:-3,hr:.12,expr:2,tw:.9,wind:.6});
+const UZK=[1.6,1.85,2.1,2.35],UZ_SLAM=2.95;
+const uzSY=t=>interp([[0,0],[1.6,0],[1.72,-17],[1.85,-20],[1.97,-36],[2.1,-39],[2.22,-55],[2.35,-58],[2.6,-72],[2.78,-74],[UZ_SLAM,0],[99,0]],t);
+ANIMS.uzumaki={enemy:true,dur:4.6,hold:UZ_SLAM,hitT:UZ_SLAM,hits:UZK.map(t=>({t,dmg:6})).concat([{t:UZ_SLAM,dmg:16}]),cost:35,noLift:true,
+  sP:[[0,READY],[1.5,READY],[1.6,S_HIT],[1.85,S_FLINCH],[2.1,S_HIT],[2.35,S_FLINCH],[2.9,S_HIT],[UZ_SLAM,S_HIT],[3.5,S_STAG],[4.2,READY],[4.6,READY]],
+  sX:[[0,96],[99,96]],sYf:uzSY,sSpin:[1.62,2.75,-2],
+  nP:[[0,N_READY],[.5,N_READY],[.6,N_SEAL],[1.0,N_SEAL],[1.1,N_READY],[2.3,N_READY],[2.38,N_COIL],[2.5,N_UPKICK],[2.85,N_UPKICK],[UZ_SLAM,N_PUNCH],[3.6,N_PUNCH],[3.68,N_READY],[4.6,N_READY]],
+  tpN:[3.7],nX:[[0,288],[2.36,288],[2.6,114],[UZ_SLAM,118],[3.69,120],[3.71,288],[4.6,288]],
+  nYf:t=>interp([[0,0],[2.36,0],[2.6,-98],[2.82,-94],[UZ_SLAM,-4],[3.0,0],[99,0]],t),
+  cam:[[0,{z:1.04,cx:192,cy:116}],[.45,{z:1.04,cx:192,cy:116}],[.7,{z:1.5,cx:262,cy:128}],[1.1,{z:1.3,cx:180,cy:126}],[1.5,{z:1.6,cx:116,cy:124}],[1.9,{z:1.4,cx:110,cy:108}],[2.3,{z:1.25,cx:112,cy:94}],[2.75,{z:1.25,cx:112,cy:92}],[UZ_SLAM,{z:1.7,cx:108,cy:130}],[3.6,{z:1.5,cx:120,cy:126}],[4.2,{z:1.04,cx:192,cy:116}],[4.6,{z:1.04,cx:192,cy:116}]]};
+/* os clones: surgem em fumaca, correm ate o Sasuke e cada um salta e chuta para cima na altura em que ele esta; depois somem */
+function uzClones(t,time){if(t<1.0||t>2.7)return;UZK.forEach((kt,i)=>{const x0=146+i*24,v0=t-1.0;if(t>kt+.22)return;
+ const hb=uzSY(kt-.01),x=interp([[0,x0],[1.15,x0],[kt-.18,112],[kt+.3,110]],t),y=interp([[0,0],[kt-.16,0],[kt-.02,hb+6],[kt+.22,hb-8]],t);
+ const P=evalPose([[0,N_READY],[1.15,N_READY],[1.2,N_DASHP],[kt-.16,N_DASHP],[kt-.06,N_UPKICK],[kt+.3,N_UPKICK]],t);
+ blit(x,GY+y,true,NARUTO,P,time,{alpha:.97,vel:(interp([[0,x0],[1.15,x0],[kt-.18,112]],t+.02)-interp([[0,x0],[1.15,x0],[kt-.18,112]],t-.02))/.04});});
+ UZK.forEach((kt,i)=>{puff(g,146+i*24,GY-24,t-1.0,i+21);puff(g,110,GY+uzSY(kt-.01)-18,t-(kt+.2),i+31);});}
 /* ---- fatality do Rasengan: a camera vai para as costas do Sasuke e a esfera estoura as costas dele, abrindo um rombo ---- */
 ANIMS.rasengan.LR={dur:10.6,koAt:10.0,bannerAt:9.0,speakAt:7.3,line:'Eu sou Naruto Uzumaki, tô certo!',mirror:null,burst:2.9,
  map:[[0,0],[2.2,2.2],[2.4,2.28],[5.4,3.6],[6.2,4.2],[99,97]],
@@ -2121,8 +2138,9 @@ function showNarutoMenu(){menuOpen='main';const h=$('hand');h.innerHTML='';
  const add=(name,desc,col,k,cost,fn)=>{const b=document.createElement('button');b.className='cmd';b.style.setProperty('--cc',col);b.innerHTML=(cost!=null?`<span class="cost">${cost}</span>`:'')+`<span class="k">${k}</span>${name}<small>${desc}</small>`;b.onclick=fn;b._cost=cost;h.appendChild(b);};
  add('Rasengan','Esfera giratória no Sasuke (30 de dano).','#6fb8ff',1,ANIMS.rasengan.cost,()=>enemyTurn('rasengan'));
  add('Kage Bunshin','Clones das sombras atacam em sequência.','#ffa43a',2,ANIMS.bunshin.cost,()=>enemyTurn('bunshin'));
- add('Defender','Corta o próximo dano pela metade e recupera chakra.','#8fb4ff',3,null,()=>idleActN('defend'));
- add('Concentrar','Recupera chakra.','#7fd4ff',4,null,()=>idleActN('charge'));
+ add('Uzumaki Rendan','Clones chutam o Sasuke para o alto e o Naruto desce com o calcanhar.','#ff7a2a',3,ANIMS.uzumaki.cost,()=>enemyTurn('uzumaki'));
+ add('Defender','Corta o próximo dano pela metade e recupera chakra.','#8fb4ff',4,null,()=>idleActN('defend'));
+ add('Concentrar','Recupera chakra.','#7fd4ff',5,null,()=>idleActN('charge'));
  setCards(!anim&&!outcome&&!turnLock);}
 function idleActN(t){if(anim||outcome||turnLock)return;ensureAudio();turnLock=true;
  if(t==='defend'){gdN=true;ck.n=Math.min(100,ck.n+10);toast('Naruto se defende: próximo dano cai pela metade');}else{ck.n=Math.min(100,ck.n+25);toast('Naruto concentra chakra');}
@@ -2135,12 +2153,13 @@ function aiSasuke(){if(outcome||anim)return;turnLock=false;
  play(cd);}
 /* fim do turno do jogador (Naruto): no modo normal volta o menu, no modo Naruto passa a vez para o Sasuke */
 function endEnemyTurn(){if(roleN){if(outcome){setCards(false);return;}turnLock=true;setCards(false);setTimeout(()=>{if(!outcome&&!anim)aiSasuke();},900);}else{turnLock=false;showMenu('main');setCards(!outcome);}}
-function enemyTurn(force){if(typeof force!=='string')force=null;if(outcome||anim)return;if(stunN&&!roleN){stunN=false;skipEnemy('Naruto está preso na ilusão e perde o turno');return;}if((sealT>0&&Math.random()<.3)||(seal2T>0&&Math.random()<.4)){skipEnemy('Sasuke desvia com a velocidade do selo!');return;} const type=force||(Math.random()<.5?'rasengan':'bunshin'),A=ANIMS[type];if(roleN){if(turnLock||ck.n<A.cost){if(!turnLock)toast('Chakra insuficiente para '+(type==='rasengan'?'o Rasengan':'o Kage Bunshin'));return;}turnLock=true;}lastEnemy=type;ensureAudio();
+function enemyTurn(force){if(typeof force!=='string')force=null;if(outcome||anim)return;if(stunN&&!roleN){stunN=false;skipEnemy('Naruto está preso na ilusão e perde o turno');return;}if((sealT>0&&Math.random()<.3)||(seal2T>0&&Math.random()<.4)){skipEnemy('Sasuke desvia com a velocidade do selo!');return;} const type=force||(()=>{const r=Math.random();return r<.4?'rasengan':r<.75?'bunshin':'uzumaki';})(),A=ANIMS[type];if(roleN){if(turnLock||ck.n<A.cost){if(!turnLock)toast('Chakra insuficiente para '+(type==='rasengan'?'o Rasengan':'o Kage Bunshin'));return;}turnLock=true;}if(type!=='uzumaki')lastEnemy=type;ensureAudio();
  const gm=guard?.5:1;guard=false;const dm=h=>Math.max(1,Math.round(h.dmg*gm));
  const total=A.hits.reduce((a,h)=>a+dm(h),0),lethal=hp.s-total<=0;
  const isLR=lethal&&type==='rasengan'&&A.LR;if(isLR)rasKill=true;
  anim={type,t0:performance.now(),dur:isLR?A.LR.dur:A.dur+HS,lethal,enemy:true};if(isLR){later(A.LR.speakAt*1000,()=>speak(A.LR.line,['44%','14%']));later(A.LR.bannerAt*1000,()=>banner('螺旋丸','FATALITY','Rasengan','#7fd4ff'));sfxFatal();}setCards(false);ck.n=Math.max(0,ck.n-A.cost);setBars();sfx(type);
- if(type==='rasengan')later(1500,()=>banner('螺旋丸','RASENGAN','Esfera Giratória','#7fd4ff'));else later(1100,()=>banner('影分身の術','KAGE BUNSHIN','Clones das Sombras','#ffa43a'));
+ if(type==='uzumaki'){later(700,()=>banner('うずまきナルト連弾','UZUMAKI NARUTO RENDAN','Rajada Naruto Uzumaki','#ff7a2a'));['U!','ZU!','MA!','KI!'].forEach((w,i)=>later(UZK[i]*1000,()=>speak(w,[(roleN?62-i*3:30+i*3)+'%','44%'])));later((UZ_SLAM-.15)*1000,()=>speak('NARUTO UZUMAKI RENDAN!',[roleN?'52%':'22%','12%']));}
+ else if(type==='rasengan')later(1500,()=>banner('螺旋丸','RASENGAN','Esfera Giratória','#7fd4ff'));else later(1100,()=>banner('影分身の術','KAGE BUNSHIN','Clones das Sombras','#ffa43a'));
  A.hits.forEach((h,i)=>later(h.t*1000,()=>{hp.s=Math.max(0,hp.s-dm(h));setBars();dmgPop(dm(h),'S');applyDamageS(type,i);}));
  if(lethal)later((isLR?A.LR.koAt:A.hits[A.hits.length-1].t+1.3)*1000,()=>{outcome='N';outcomeT=performance.now()/1000;showKO('N');setCards(false);});}
 const HS=.09;
@@ -2405,6 +2424,7 @@ function sfx(type){if(type==='cop_rasengan')type='rasengan';if(type==='cop_bunsh
  if(type==='soco'){nz(.3,'bandpass',500,2400,.2,.45);nz(.1,'highpass',3000,7000,.2,.85);tone('sine',110,40,.4,.7,.95);nz(.22,'lowpass',2500,300,.6,.95);return;}
  if(type==='chute'){nz(.4,'bandpass',600,2800,.22,.5);nz(.15,'highpass',3000,8000,.25,1.0);tone('sine',100,34,.5,.8,1.35);nz(.3,'lowpass',2600,200,.65,1.35);return;}
  if(type==='rasengan'){tone('sawtooth',180,900,.8,.06,.75,24);nz(.8,'bandpass',500,3000,.12,.75);nz(.45,'bandpass',600,2600,.22,1.65);tone('sine',140,45,.5,.6,2.2);nz(.5,'lowpass',2800,200,.6,2.2);nz(.5,'highpass',2500,7000,.2,2.2);return;}
+ if(type==='uzumaki'){[.65,.85].forEach(a=>nz(.1,'bandpass',2000,1000,.1,a));nz(.4,'bandpass',500,2400,.22,1.0);UZK.forEach(a=>{tone('sine',150,60,.22,.45,a);nz(.18,'lowpass',2600,300,.4,a);});nz(.3,'bandpass',800,3000,.18,2.45);tone('sine',90,30,.6,.7,UZ_SLAM);nz(.6,'lowpass',2000,150,.7,UZ_SLAM);return;}
  if(type==='bunshin'){[.65,.85].forEach(a=>nz(.1,'bandpass',2000,1000,.1,a));nz(.4,'bandpass',500,2400,.22,1.15);[1.9,2.45,3.0].forEach(a=>{tone('sine',120,50,.25,.45,a);nz(.2,'lowpass',2400,300,.4,a);});nz(.4,'bandpass',500,3000,.2,3.3);tone('sine',140,40,.5,.65,3.6);nz(.5,'lowpass',2600,200,.6,3.6);return;}
  if(type==='kawarimi'){[.5,.75,1.0].forEach(a=>nz(.1,'bandpass',2000,1000,.1,a));nz(.45,'bandpass',600,2600,.2,1.15);tone('sine',150,50,.3,.5,1.62);nz(.4,'highpass',1500,4000,.25,1.62);nz(.3,'bandpass',800,200,.3,1.9);tone('sine',130,40,.4,.55,2.68);nz(.3,'lowpass',2500,200,.5,2.68);return;}
  if(type==='amaterasu'){tone('sine',60,50,1.2,.25,1.0);nz(.5,'bandpass',400,2400,.25,1.2);tone('sawtooth',300,900,.4,.08,1.25);nz(1.9,'highpass',3000,6000,.05,2.0);nz(1.6,'lowpass',500,150,.4,2.0);tone('sine',90,40,.5,.5,2.0);return;}
@@ -2559,7 +2579,7 @@ function render(ts){
   if(a>=0&&a<.02)flashA=.7;else if(a>=.02&&a<.1)flashA=.3;else if(a>=.1&&a<.2)flashA=.12;
   dim=.5*scaleAt(0,1,.4,.85,t)*(1-scaleAt(0,1,3.1,3.7,t));bars=14*scaleAt(0,1,.4,.8,t)*(1-scaleAt(0,1,3.2,3.7,t));
   const ti=scaleAt(0,1,.8,1.4,t)*(1-scaleAt(0,1,2.9,3.6,t));if(ti>0)tint=`rgba(20,40,160,${.2*ti})`;}
- else if(type==='rasengan'||type==='bunshin'){const a=t-A.hitT;if(a>0&&a<.9)shk=6*(1-a/.9);if(a>=0&&a<.03)flashA=.45;else if(a>=.03&&a<.1)flashA=.18;for(const h of A.hits)if(t>h.t&&t<h.t+.22)shk=Math.max(shk,2.5);dim=.35*scaleAt(0,1,.4,.8,t)*(1-scaleAt(0,1,A.dur-1.4,A.dur-.8,t));bars=14*scaleAt(0,1,.4,.8,t)*(1-scaleAt(0,1,A.dur-1.0,A.dur-.5,t));}
+ else if(type==='rasengan'||type==='bunshin'||type==='uzumaki'){const a=t-A.hitT;if(a>0&&a<.9)shk=6*(1-a/.9);if(a>=0&&a<.03)flashA=.45;else if(a>=.03&&a<.1)flashA=.18;for(const h of A.hits)if(t>h.t&&t<h.t+.22)shk=Math.max(shk,2.5);dim=.35*scaleAt(0,1,.4,.8,t)*(1-scaleAt(0,1,A.dur-1.4,A.dur-.8,t));bars=14*scaleAt(0,1,.4,.8,t)*(1-scaleAt(0,1,A.dur-1.0,A.dur-.5,t));}
  else if(type==='amaterasu'&&LA(type)){const a=raw-2.0;
   if(a>0&&a<1.4)shk=5*Math.pow(1-a/1.4,1.4);
   if(a>=0&&a<.05)flashA=.6;
@@ -2706,7 +2726,7 @@ function render(ts){
  if(A&&A.clonesFn&&!LG(type))A.clonesFn(ctx);
  if(A&&A.tpN&&!lethal){const k=A.tpN[0];puff(f,interp(A.nX,k-.02),GY-24,t-k,7);puff(f,288,GY-24,t-k-.04,8);}
  if(A&&A.tp&&!LG(type)&&!lethal){const k=A.tp[0],xo=sasX(type,k-.02);puff(f,xo,GY-24,t-k,5);puff(f,96,GY-24,t-k-.04,6);}
- if(A&&A.enemy){if(type==='bunshin')drawClones(t,time);drawN();if(type==='bunshin')puffs(g,t);} /* fumaca no canvas principal (sem bloom): cinza como nuvem, sem brilhar */
+ if(A&&A.enemy){if(type==='bunshin')drawClones(t,time);if(type==='uzumaki')uzClones(t,time);drawN();if(type==='bunshin')puffs(g,t);} /* fumaca no canvas principal (sem bloom): cinza como nuvem, sem brilhar */
 
  /* ---- FX ---- */
  if(type==='chidori'){
