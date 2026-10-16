@@ -342,7 +342,7 @@ KAKASHI_JUTSUS.push({id:'doryuheki',name:'Doton: Doryūheki',cost:20,col:'#b8a88
    gritando (normal: 16 de dano, perde o proximo turno, 1 uso por batalha). Depois o Kakashi VOLTA ANDANDO para o lugar dele (sem teleporte).
    Fatality: o Naruto voa para longe, sangrando, e o Kakashi abre o livro do Jiraiya e continua a leitura. */
 let senK=false;
-const SEN_SL=1.45,SEN_BEHIND=334,SEN_CONTACT=318;
+const SEN_SL=1.45,SEN_BEHIND=346,SEN_CONTACT=330,SEN_BUTT=[20,-26]; /* traseiro no sprite curvado: 20 px atras do Naruto, 26 acima do chao */
 /* camera lenta no toque: o golpe roda 1,45x mais devagar e, entre 2.05 e 2.6, 4x mais devagar (close no traseiro) */
 const SEN_SLOW=[2.05,2.6,4];
 function senRaw(t){const [a,b,k]=SEN_SLOW;if(t<=a)return t*SEN_SL;if(t<=b)return a*SEN_SL+(t-a)*k;return a*SEN_SL+(b-a)*k+(t-b)*SEN_SL;}
@@ -353,12 +353,13 @@ const SEN_POKE=mk({tilt:.3,crouch:8,lean:3,fbx:-12,ffx:7,hxF:16,hyF:6,hxB:12,hyB
 const SEN_BEND_AT=[.95,1.35],SEN_FREEZE=2.55,SEN_BA=.82; /* angulo da curvada: como quem amarra a sandalia, pernas esticadas e traseiro para tras */
 /* dobra do alvo: sobe entre 0.95 e 1.3, mantem ate o fim da pausa comica e solta ao ser lancado */
 function senBend(t){return scaleAt(0,1,SEN_BEND_AT[0],SEN_BEND_AT[1],t)*(1-scaleAt(0,1,SEN_FREEZE,SEN_FREEZE+.32,t));}
-function senHead(nx0,b){/* cabeca do Naruto dobrado: o tronco gira em torno do quadril (sprite: cabeca em (+2,-39) do quadril) */const a=b,x=2*Math.cos(a)+39*Math.sin(a),y=2*Math.sin(a)-39*Math.cos(a);return[nx0-x,GY-18+y];}
+function senHead(nx0,b){if(b>.5)return[nx0-13,GY-56]; /* cabeca do sprite curvado */
+ /* cabeca do Naruto dobrado: o tronco gira em torno do quadril (sprite: cabeca em (+2,-39) do quadril) */const a=b,x=2*Math.cos(a)+39*Math.sin(a),y=2*Math.sin(a)-39*Math.cos(a);return[nx0-x,GY-18+y];}
 function senFlip(type,t,A){if(type!=='sennen'||!A)return false;return LG(type)?(t>1.0&&t<4.4):(t>1.0&&t<4.2);}
 function senSOpt(o,type,t,A){if(type!=='sennen'||!A)return;if(t>.86&&t<.98)o.alpha=0;
  /* o Kakashi se abaixa para mirar no meio das nadegas */const end=LG(type)?3.3:3.0,cr=scaleAt(0,1,1.6,2.0,t)*(1-scaleAt(0,1,end,end+.2,t));if(cr>0){o.flat=1-.08*cr;o.rot=(o.rot||0)+.36*cr;}}
 function senNOpt(o,type,t,A,fk,out){
- if(A&&type==='sennen'){const b=senBend(t);if(t<SEN_FREEZE+.4)o.bleed=0;if(b>0){o.bend=SEN_BA*b;o.bendSq=1;}if(LG(type)&&t>3.75)o.alpha=0;}
+ if(A&&type==='sennen'){const b=senBend(t);if(t<SEN_FREEZE+.4)o.bleed=0;if(b>.5)o.bentSpr=1;if(LG(type)&&t>3.75)o.alpha=0;}
  else if(!A&&fk==='sennen'&&out==='S')o.alpha=0;}
 function senStar(f,x,y,r,rot,col,al){f.save();f.translate(x,y);f.rotate(rot);f.fillStyle=col;f.globalAlpha=al;f.beginPath();for(let i=0;i<16;i++){const rr=i%2?r*.42:r,a=i*Math.PI/8;i?f.lineTo(Math.cos(a)*rr,Math.sin(a)*rr):f.moveTo(Math.cos(a)*rr,Math.sin(a)*rr);}f.closePath();f.fill();f.restore();}
 /* nuvem de fumaca com folhas do shunshin */
@@ -377,7 +378,7 @@ function senFace(G,x,y,rot,time,k){G.save();G.translate(x,y);G.rotate(rot);const
  G.restore();}
 /* o braco do Kakashi, com as maos em selo do tigre (so os indicadores esticados), ate o ponto cego do alvo; o dedo some DENTRO da calca e o tecido afunda */
 function senPoke(G,sx0,nx0,t,t1){const reach=scaleAt(0,1,1.75,2.2,t),k=reach*(1-scaleAt(0,1,t1-.45,t1,t));if(k<=0)return;
- const bx=sx0-7,by=GY-33,tx=nx0+11,ty=GY-22,ex=bx+(tx-bx)*k,ey=by+(ty-by)*k,ang=Math.atan2(ty-by,tx-bx);G.save();G.lineCap='round';
+ const bx=sx0-7,by=GY-33,tx=nx0+SEN_BUTT[0]+1,ty=GY+SEN_BUTT[1],ex=bx+(tx-bx)*k,ey=by+(ty-by)*k,ang=Math.atan2(ty-by,tx-bx);G.save();G.lineCap='round';
  G.strokeStyle='#111a36';G.lineWidth=6.5;G.beginPath();G.moveTo(bx,by);G.lineTo(ex,ey);G.stroke();G.strokeStyle='#2d3b62';G.lineWidth=4.6;G.beginPath();G.moveTo(bx,by);G.lineTo(ex,ey);G.stroke();
  G.strokeStyle='#4a5d92';G.lineWidth=1;G.beginPath();G.moveTo(bx,by-1.6);G.lineTo(ex,ey-1.6);G.stroke();
  G.translate(ex,ey);G.rotate(ang);
@@ -387,12 +388,9 @@ function senPoke(G,sx0,nx0,t,t1){const reach=scaleAt(0,1,1.75,2.2,t),k=reach*(1-
  G.fillStyle='#e8c8a0';G.fillRect(2.6,-1.5,6.6,1.4);G.fillRect(2.6,.2,6.6,1.4);G.fillStyle='#c79a72';G.fillRect(2.6,-.1,6.6,.5);
  G.restore();}
 /* traseiro empinado, redondo e exagerado (comico), com a dobra no meio onde entram os dedos */
-function senButt(G,nx0,b,t){if(b<=.25)return;const k=Math.min(1,(b-.25)/.5),x=nx0+6,y=GY-22,hit=t>=2.2&&t<SEN_FREEZE+.2,jig=hit?Math.sin(t*90)*1.4*(1-scaleAt(0,1,2.2,2.6,t)*.6):0;G.save();G.globalAlpha=k;G.translate(x+jig,y);G.rotate(-.55);
- G.fillStyle='#cf620e';G.beginPath();G.ellipse(0,0,4.6,5.6,0,-Math.PI*.5,Math.PI*.5);G.fill();G.fillStyle='#f58a18';G.beginPath();G.ellipse(-.6,-.4,3.8,4.8,0,-Math.PI*.5,Math.PI*.5);G.fill();
- G.fillStyle='#ffb347';G.fillRect(.6,-3.8,1.6,1.4);
- G.strokeStyle='#5a2406';G.lineWidth=1;G.beginPath();G.ellipse(0,0,4.6,5.6,0,-Math.PI*.45,Math.PI*.45);G.stroke();
- G.strokeStyle='#8a380a';G.lineWidth=.9;G.beginPath();G.moveTo(4.4,-1.2);G.lineTo(2.8,0);G.lineTo(4.4,1.2);G.stroke();G.restore();}
-function senImpact(f,nx0,t){const a=t-2.2;if(a<0||a>.45)return;const k=a/.45,x=nx0+10,y=GY-21;f.save();
+/* o sprite curvado ja tem o traseiro; aqui so cobre a ponta dos dedos (parecem ter entrado) e marca o vinco */
+function senButt(G,nx0,b,t){if(b<=.5||t<2.12)return;const x=nx0+SEN_BUTT[0]-1,y=GY+SEN_BUTT[1],jig=t>=2.2&&t<SEN_FREEZE?Math.sin(t*90)*.8:0;G.save();G.fillStyle='#f58a18';G.fillRect(Math.round(x-2+jig),Math.round(y-2),3,4);G.fillStyle='#cf620e';G.fillRect(Math.round(x-2+jig),Math.round(y+1),3,1);G.strokeStyle='#5a2406';G.lineWidth=.8;G.beginPath();G.moveTo(x+1.2+jig,y-3);G.lineTo(x+1.2+jig,y+3);G.stroke();G.restore();}
+function senImpact(f,nx0,t){const a=t-2.2;if(a<0||a>.45)return;const k=a/.45,x=nx0+SEN_BUTT[0],y=GY+SEN_BUTT[1];f.save();
  f.globalCompositeOperation='lighter';for(let q=0;q<2;q++){const kk=Math.max(0,Math.min(1,k*1.5-q*.25));ringFX(f,x+4,y-2,6+18*kk,1*(1-kk)+.2,`rgba(255,${230-q*40},150,${.7*(1-kk)})`);}
  f.globalCompositeOperation='source-over';f.strokeStyle=`rgba(255,255,255,${.75*(1-k)})`;f.lineWidth=1;for(let i=0;i<10;i++){const an=i*TAU/10,r0=12+k*8,r1=17+k*14;f.beginPath();f.moveTo(x+Math.cos(an)*r0,y+Math.sin(an)*r0);f.lineTo(x+Math.cos(an)*r1,y+Math.sin(an)*r1);f.stroke();}
  f.font='bold 9px sans-serif';f.textAlign='center';f.lineWidth=2.5;f.strokeStyle='#1a1024';f.fillStyle='#ffe45a';f.globalAlpha=1-k*.7;f.strokeText('PUF!',x+6,y-24-k*6);f.fillText('PUF!',x+6,y-24-k*6);f.restore();}
@@ -433,7 +431,7 @@ ANIMS.sennen={map:SEN_MAP,hitRaw:senRaw(2.2),durRaw:senRaw(5.0),dur:5.0,hold:2.2
  nX:SEN_N_X,
  nYf:t=>interp(SEN_N_Y,t),
  nRotf:t=>-.55*scaleAt(0,1,SEN_FREEZE+.02,SEN_FREEZE+.28,t)*(1-scaleAt(0,1,2.95,3.2,t)),
- cam:[[0,{z:1.04,cx:192,cy:116}],[.5,{z:1.04,cx:192,cy:116}],[.9,{z:1.3,cx:160,cy:122}],[1.3,{z:1.6,cx:300,cy:128}],[1.9,{z:2.0,cx:300,cy:134}],[2.05,{z:3.0,cx:300,cy:152}],[2.3,{z:3.4,cx:298,cy:156}],[2.55,{z:3.0,cx:294,cy:146}],[2.75,{z:1.45,cx:268,cy:104}],[3.05,{z:1.3,cx:252,cy:100}],[3.5,{z:1.45,cx:246,cy:126}],[4.2,{z:1.3,cx:180,cy:124}],[5.0,{z:1.04,cx:192,cy:116}]],
+ cam:[[0,{z:1.04,cx:192,cy:116}],[.5,{z:1.04,cx:192,cy:116}],[.9,{z:1.3,cx:160,cy:122}],[1.3,{z:1.6,cx:300,cy:128}],[1.9,{z:2.0,cx:300,cy:134}],[2.05,{z:3.0,cx:304,cy:150}],[2.3,{z:3.3,cx:304,cy:152}],[2.55,{z:3.0,cx:300,cy:146}],[2.75,{z:1.45,cx:268,cy:104}],[3.05,{z:1.3,cx:252,cy:100}],[3.5,{z:1.45,cx:246,cy:126}],[4.2,{z:1.3,cx:180,cy:124}],[5.0,{z:1.04,cx:192,cy:116}]],
  env:(raw,t)=>{const E={},a=t-2.2,l=t-3.5;if(a>0&&a<.3)E.shk=5*(1-a/.3);if(l>0&&l<.5)E.shk=Math.max(E.shk||0,7*(1-l/.5));if(a>=0&&a<.04)E.flash=.5;return E;},
  fx:c=>senNormalFX(c)};
 /* ---- fatality ---- */
@@ -471,7 +469,7 @@ ANIMS.sennen.L={g:true,dur:senRaw(10.4),koAt:senRaw(9.7),bannerAt:senRaw(2.75),b
  nX:SEN_FLY_X,
  nY:t=>interp(SEN_FLY_Y,t),
  nRot:t=>senFlyRot(t),
- cam:[[0,{z:1.04,cx:192,cy:116}],[.5,{z:1.04,cx:192,cy:116}],[.9,{z:1.3,cx:160,cy:122}],[1.3,{z:1.6,cx:300,cy:128}],[1.9,{z:2.0,cx:300,cy:134}],[2.05,{z:3.0,cx:300,cy:152}],[2.3,{z:3.4,cx:298,cy:156}],[2.55,{z:3.0,cx:294,cy:146}],[2.9,{z:1.4,cx:230,cy:96}],[3.3,{z:1.2,cx:120,cy:72}],[3.8,{z:1.15,cx:76,cy:62}],[4.4,{z:1.5,cx:100,cy:100}],[5.0,{z:2.0,cx:112,cy:118}],[8.8,{z:2.0,cx:112,cy:118}],[10.4,{z:1.3,cx:150,cy:120}]],
+ cam:[[0,{z:1.04,cx:192,cy:116}],[.5,{z:1.04,cx:192,cy:116}],[.9,{z:1.3,cx:160,cy:122}],[1.3,{z:1.6,cx:300,cy:128}],[1.9,{z:2.0,cx:300,cy:134}],[2.05,{z:3.0,cx:304,cy:150}],[2.3,{z:3.3,cx:304,cy:152}],[2.55,{z:3.0,cx:300,cy:146}],[2.9,{z:1.4,cx:230,cy:96}],[3.3,{z:1.2,cx:120,cy:72}],[3.8,{z:1.15,cx:76,cy:62}],[4.4,{z:1.5,cx:100,cy:100}],[5.0,{z:2.0,cx:112,cy:118}],[8.8,{z:2.0,cx:112,cy:118}],[10.4,{z:1.3,cx:150,cy:120}]],
  stat:{nx0:288,nP:N_READY,sx0:96,sP:SUI_SEAL},
  env:(raw,t)=>{const E={},a=raw-2.2;if(a>0&&a<.3)E.shk=6*(1-a/.3);if(a>=0&&a<.04)E.flash=.5;E.bars=12*scaleAt(0,1,2.2,2.8,raw)*(1-scaleAt(0,1,9.4,10.2,raw));return E;},
  fx:c=>senFatalFX(c),fxStatic:c=>senFatalFX(c)};
