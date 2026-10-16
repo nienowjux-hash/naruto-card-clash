@@ -34,10 +34,11 @@ function naruHeadRows(mod){
  set(15,16,'oo');set(15,27,'oo');set(16,17,'o');set(16,27,'o');set(17,17,'o');set(17,26,'o');
  /* sorriso largo com dentes, ou boca aberta */
  if(!(mod&&mod.mouth)){set(17,20,'KWWK');set(18,21,'KK');}else{set(17,20,'KKK');set(18,20,'KoK');}
- /* cabelo CURTO e espetado como no anime: corta a massa e as mechas compridas que a cabeca do Sasuke deixa cair pelas costas e pelo lado */
- for(let y=14;y<rows.length;y++)for(let x=0;x<16;x++)rows[y][x]='.';                         /* costas: termina na altura da orelha */
- for(let y=7;y<=9;y++)for(let x=0;x<(y===7?4:y===8?3:2);x++)rows[y][x]='.';                  /* ponta de tras menos comprida */
- for(let y=12;y<=15;y++)for(let x=29;x<rows[y].length;x++)rows[y][x]='.';                    /* mecha da frente termina na bochecha */
+ /* cabelo CURTO e espetado como no anime: so os espetos de cima, colado a cabeca nas laterais (sem massa nas costas, sem mechas, sem volume dos lados) */
+ for(let y=14;y<rows.length;y++)for(let x=0;x<16;x++)rows[y][x]='.';                         /* nada pendurado abaixo da orelha */
+ for(let y=10;y<=13;y++)for(let x=0;x<13;x++)rows[y][x]='.';                              /* costas coladas na cabeca: sobra so uma faixa fina atras da orelha */
+ for(let y=7;y<=9;y++)for(let x=0;x<6;x++)rows[y][x]='.';                                 /* nuca curta atras da faixa */
+ for(let y=10;y<=15;y++)for(let x=(y<12?31:29);x<rows[y].length;x++)rows[y][x]='.';        /* lado de longe sem volume */
  return rows;}
 function r0len(rows,y){return rows[y].length;}
 function naruHead(g,ox,oy,mod){
