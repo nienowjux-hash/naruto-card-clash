@@ -12,7 +12,7 @@ const SID={copRas:'cop_rasengan',copBun:'cop_bunshin'};const sid=k=>SID[k]||k;
 const EL_TUNE={adv:ELEM_ADV,dis:ELEM_DIS};const eMult=(elem,afin)=>{const m=elemMatch(elem,afin);return m>0?EL_TUNE.adv:m<0?EL_TUNE.dis:1;};
 /* cenario atual: nivel/arvore/equipamento de cada lado e inimigo da campanha. gated=false mantem o comportamento antigo (tudo liberado, sem bonus) */
 let SC={gated:false,S:{level:10,tier:0,build:'padrao'},N:{level:10,tier:0,build:'padrao'},enc:null,pills:0};
-const BUILD_ORDER={sasuke:['genjutsu','shishi','soushuken','amaterasu','copy','kagesh','selo','selo2','selochidori'],naruto:['uzumaki','harem','kamikaze','kuchiyose','kyuubi']};
+const BUILD_ORDER={sasuke:['genjutsu','shishi','soushuken','copy','kagesh','selo','selo2','selochidori'],naruto:['uzumaki','harem','kamikaze','kuchiyose','kyuubi']};
 function learnedAt(charId,level){const T=TREES[charId],set=new Set(T.filter(n=>n.base||n.start).map(n=>n.id));let pts=0;
  for(let L=2;L<=level;L++){pts++;for(const id of BUILD_ORDER[charId]){const n=T.find(x=>x.id===id);if(set.has(id)||MOVES[id].lvl>L||pts<n.pt||!n.req.every(r=>set.has(r)))continue;set.add(id);pts-=n.pt;}}return set;}
 const GEAR={sasuke:[[],['kunai_ferro','colete','bandana'],['kusanagi','manto_nuvem','amuleto_sorte']],naruto:[[],['kunai_ferro','colete','bandana'],['kunai_tri','manto_nuvem','talisma_vento']]};
@@ -26,8 +26,8 @@ const rnd=()=>Math.random();
 let CFG={imunidade:false,iaChakra:false,iaEsperta:false};
 const TOAD={hp:28,shot:4,throwKunai:2,throwShuriken:4,cd:0,once:1};const CFG_TUNE={cs0:100,cn0:100,regS:15,regN:15};
 const SM={ /* Sasuke: custo c, dano base d */
- chidori:{c:30,d:24},katon:{c:20,d:18},amaterasu:{c:50,d:28,burn:true},
- genjutsu:{c:12,d:14,stun:true},shishi:{c:25,d:25},soushuken:{c:17,d:20},kagesh:{c:16,d:21},
+ chidori:{c:30,d:31},katon:{c:20,d:23},amaterasu:{c:50,d:28,burn:true},
+ genjutsu:{c:12,d:14,stun:true},shishi:{c:25,d:32},soushuken:{c:17,d:25},kagesh:{c:16,d:27},
  kunai:{c:0,d:8},shuriken:{c:0,d:12},soco:{c:0,d:10},chute:{c:0,d:12},
  selo:{c:20,d:0,buff:1},selo2:{c:40,d:0,buff:2},selochidori:{c:35,d:44,needs2:true,noSeal:true},
  copRas:{c:18,d:22,once:true,needsCopy:'rasengan'},copBun:{c:15,d:24,once:true,needsCopy:'bunshin'},copy:{c:8,d:0,copy:true}};
@@ -49,7 +49,7 @@ function newState(){const ps=SC.pSide||'S',es=ps==='S'?'N':'S',own=ps==='S'?'sas
 /* ---------- Sasuke ---------- */
 const unl=(st,k)=>{const id=(k==='copRas'||k==='copBun')?'copy':sid(k);return !st.learned||!TREES.sasuke.find(n=>n.id===id)||st.learned.has(id);};
 const nOK=(st,k)=>!(st.pSide==='N'&&st.learned)||!TREES.naruto.find(n=>n.id===k)||st.learned.has(k);
-function can(st,k){const m=SM[k];if(st.pSide==='S'&&!unl(st,k))return false;if(st.cs<m.c)return false;if(m.needs2&&st.seal2T<=0)return false;if(m.needsCopy&&(st.copied!==m.needsCopy||st.usedCopy[k]))return false;
+function can(st,k){const m=SM[k];if((MOVES[sid(k)]||{}).futuro)return false;if(st.pSide==='S'&&!unl(st,k))return false;if(st.cs<m.c)return false;if(m.needs2&&st.seal2T<=0)return false;if(m.needsCopy&&(st.copied!==m.needsCopy||st.usedCopy[k]))return false;
  if(m.buff===1&&(st.sealT>0||st.seal2T>0))return false;if(m.buff===2&&st.seal2T>0)return false;if(m.copy&&!(st.lastN==='rasengan'||st.lastN==='bunshin'))return false;return true;}
 function effD(st,m){if(!m.d)return 0;const mult=m.noSeal?1:st.seal2T>0?1.6:st.sealT>0?1.3:1;return Math.round(m.d*mult);}
 function sasukeAct(st,k){const m=SM[k];st.cs=Math.max(0,st.cs-m.c);

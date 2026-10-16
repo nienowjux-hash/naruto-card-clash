@@ -47,7 +47,7 @@ Projeto de fã, sem fins comerciais. Naruto e seus personagens pertencem aos seu
 | Tecnica | Chakra | Dano | Observacao |
 |---|---|---|---|
 | Genjutsu Sharingan | 12 | 14 | O inimigo perde o proximo turno (nao funciona em turnos seguidos) |
-| Shishi Rendan | 25 | 25 | Combo aereo de taijutsu copiado de Rock Lee |
+| Shishi Rendan | 25 | 32 | Combo aereo de taijutsu copiado de Rock Lee |
 | Selo Amaldicoado (Nivel 1) | 20 | 0 | Perde 8 de vida. Por 3 turnos: +30% de dano, +10 de chakra por turno, 30% de chance de desviar (custa 2 de vida por turno). Marcas pretas tribais, sem Chidori roxo (esse fica para a transformacao total) |
 | Selo Amaldicoado (Nivel 2) | 40 | 0 | Transformacao: perde 15 de vida. Por 3 turnos: +60% de dano, +15 de chakra por turno, 40% de chance de desviar (custa 3 de vida por turno). Transformacao completa, sem as marcas do Nivel 1: pele azul-acinzentada, cabelo azul-grisalho e duas maos gigantes saindo das costas. Libera o Chidori Sombrio |
 | Chidori Sombrio (Nivel 2) | 35 | 44 | So aparece com o Nivel 2 ativo. Chidori negro e roxo. Fatality: igual ao do Chidori normal (perfura o peito e arranca o braco), mas com energia roxa e negra, buraco bem maior e muito mais sangue |
@@ -138,8 +138,8 @@ O Naruto de quatro tem **vários quadros** (em `pixel/naruto-fours.js`): **agach
 
 ### Ajuste de equilíbrio com elementos, níveis e itens
 Antes: a estratégia "sempre o golpe mais forte" do Sasuke vencia 99% em ~3 turnos (o Fogo vence o Vento, então Katon e Amaterasu davam +40%), a estratégia "Kuchiyose primeiro" do Naruto passava de 90% e as pílulas (30 de vida gastando o turno) quase não valiam a pena. Agora:
-- Dano dos golpes do Sasuke -30%: Chidori 24, Katon 18, Amaterasu 28, Shishi Rendan 25, Sōshūken 20, Shuriken Kage 21 (custos iguais).
+- Dano dos golpes do Sasuke -10%: Chidori 31, Katon 23, Shishi Rendan 32, Sōshūken 25, Shuriken Kage 27 (custos iguais). O **Amaterasu saiu do Sasuke criança**: continua guardado em `js/00-data.js` (`MOVES.amaterasu.futuro` e `TREES_FUTURO`), com a animação e o fatality no código, para o Sasuke adulto.
 - Sapo: 28 de vida, invocação custa 50 e causa 20, Teppōdama 4, kunai 2 e shuriken 2+1+1; o Sasuke da IA derruba o sapo com o golpe mais barato que o mata.
 - Pílulas: Soldado 50 de vida, Chakra 40, Pergaminho Médico 100. Equipamentos com bônus menores (ex.: Colete +5 de vida e -4% de dano).
-- Inimigos dos locais: Treino 0,98x vida e 1,12x ataque, Floresta 1,04x/1,09x, Deserto 1,03x/1,03x, Passo Nevado 1,16x/1,10x, Vale do Fim 1,3x/1,15x.
-Resultado (vitória com a melhor estratégia): Sasuke "mais forte" 99% → 89%, Naruto "Kuchiyose primeiro" 98% → 63%; no mapa, o melhor jogador fica entre 75% e 98% em cada local no nível recomendado. Rode `node tools/balance-sim.js 4000 campanha` para ver.
+- Inimigos dos locais (vida x ataque): Treino 0,98x/1,12x, Floresta 1,11x/1,17x, Deserto 1,19x/1,19x, Passo Nevado 1,28x/1,21x, Vale do Fim 1,34x/1,18x.
+Resultado: o Naruto jogando bem fica entre 60% e 80% nos locais; o Sasuke jogando com Chidori/Shishi continua fácil no Deserto e no Passo Nevado (93-97%), por isso a dificuldade por personagem fica para quando houver inimigos próprios. Rode `node tools/balance-sim.js 4000 campanha` para ver.

@@ -138,7 +138,7 @@ function idleActN(t){if(anim||outcome||turnLock)return;battleOn=true;ensureAudio
  setBars();setCommands(false);setTimeout(()=>{if(outcome||anim)return;if(bunta)enemyTurn('teppodama');else aiSasuke();},900);}
 /* o Sasuke (IA): escolhe um golpe que consegue pagar; com a vida do Naruto baixa, vai no mais forte */
 function aiSasuke(){if(outcome||anim)return;turnLock=false;
- const pool=ATKS.concat(SASUKE_JUTSUS).filter(cd=>cd.live&&ANIMS[cd.id]&&(!cd.show||cd.show())&&(!cd.ok||cd.ok())&&ck.s>=ANIMS[cd.id].cost);
+ const pool=ATKS.concat(SASUKE_JUTSUS).filter(cd=>!(MOVES[cd.id]&&MOVES[cd.id].futuro)&&cd.live&&ANIMS[cd.id]&&(!cd.show||cd.show())&&(!cd.ok||cd.ok())&&ck.s>=ANIMS[cd.id].cost);
  if(!kawS&&kawUseS<KAWARIMI_MAX&&ck.s>=KAWARIMI_COST&&hp.s<70&&Math.random()<(hp.s<45?.3:.12)){ck.s=Math.max(0,ck.s-KAWARIMI_COST);kawS=true;kawUseS++;setBars();toast('Sasuke se prepara...');turnLock=true;setTimeout(()=>{turnLock=false;showMenu('main');setCommands(true);},1100);return;}
  const eff=cd=>effDmg(cd,ANIMS[cd.id]),dmg=pool.filter(cd=>eff(cd)>0);
  if(!dmg.length||ck.s<12||Math.random()<.08){ck.s=Math.min(100,ck.s+25);setBars();toast('Sasuke concentra chakra');turnLock=true;setTimeout(()=>{turnLock=false;showMenu('main');setCommands(true);},1100);return;}

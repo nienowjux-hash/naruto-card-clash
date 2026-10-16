@@ -28,7 +28,7 @@ const MOVES={
  chute:{name:'Chute',elem:'neutro',tipo:'taijutsu',lvl:1},
  chidori:{name:'Chidori',elem:'raio',tipo:'ninjutsu',lvl:1},
  katon:{name:'Katon: Bola de Fogo',elem:'fogo',tipo:'ninjutsu',lvl:1},
- amaterasu:{name:'Amaterasu',elem:'fogo',tipo:'ninjutsu',lvl:4},
+ amaterasu:{name:'Amaterasu',elem:'fogo',tipo:'ninjutsu',lvl:4,futuro:true} /* guardado para o Sasuke adulto: fora do jogo por enquanto */,
  copy:{name:'Copiar Técnica (Sharingan)',elem:'neutro',tipo:'suporte',lvl:3},
  cop_rasengan:{name:'Cópia: Rasengan',elem:'vento',tipo:'ninjutsu',lvl:3},
  cop_bunshin:{name:'Cópia: Kage Bunshin',elem:'neutro',tipo:'ninjutsu',lvl:3},
@@ -84,7 +84,6 @@ const TREES={
   {id:'soushuken',x:1,y:1,req:['shuriken'],pt:1,d:'Shuriken e kunai guiados por fios invisíveis atacam de ângulos surpresa.'},
   {id:'kagesh',x:1,y:2,req:['soushuken'],pt:1,d:'Uma shuriken escondida na sombra de outra surpreende o alvo.'},
   {id:'katon',x:2,y:0,req:[],pt:0,start:1,d:'Uma enorme bola de fogo sai da boca e explode no alvo, causando queimadura.'},
-  {id:'amaterasu',x:2,y:1,req:['katon'],pt:1,d:'Chamas negras que não se apagam. O olho sangra e o alvo queima.'},
   {id:'chidori',x:3,y:0,req:[],pt:0,start:1,d:'Relâmpagos concentrados na mão: perfura o inimigo em alta velocidade.'},
   {id:'genjutsu',x:4,y:0,req:[],pt:1,d:'Prende o alvo numa ilusão: ele perde o próximo turno.'},
   {id:'copy',x:4,y:1,req:['genjutsu'],pt:1,d:'Sharingan: copia o jutsu do inimigo para usar uma vez (Rasengan e Kage Bunshin).'},
@@ -100,6 +99,8 @@ const TREES={
   {id:'kyuubi',x:1,y:2,req:['rasengan'],pt:2,d:'Chakra da Kyūbi: manto de raposa, cura e +35% de dano.'},
   {id:'oiroke',x:2,y:0,req:[],pt:0,start:1,d:'Vira uma garota para distrair o inimigo: ele pode perder o turno.'},
   {id:'harem',x:2,y:1,req:['oiroke'],pt:1,d:'Várias garotas com clones: quase sempre o inimigo perde o turno.'}]};
+/* golpes guardados para personagens/fases futuras (nao aparecem na arvore nem no menu): o no pronto para recolocar */
+const TREES_FUTURO={sasuke:[{id:'amaterasu',x:2,y:1,req:['katon'],pt:1,d:'Chamas negras que não se apagam. O olho sangra e o alvo queima.'}]};
 const MAX_LEVEL=10,PROG_KEY='rpgProgV1';
 const xpNeed=lv=>50*lv; /* XP para sair do nivel lv */
 function progDefault(){const p={};for(const c in TREES)p[c]={level:1,xp:0,pts:0,learned:TREES[c].filter(n=>n.base||n.start).map(n=>n.id)};return p;}
@@ -108,7 +109,7 @@ try{const j=JSON.parse(localStorage.getItem(PROG_KEY)||'null');if(j)for(const c 
 function saveProg(){try{localStorage.setItem(PROG_KEY,JSON.stringify(PROG));}catch(e){}}
 function treeNode(charId,id){return (TREES[charId]||[]).find(n=>n.id===id);}
 /* golpe liberado? Copias valem se 'copy' foi aprendido; golpes fora da arvore sao sempre livres */
-function moveUnlocked(charId,id){const P=PROG[charId];if(!P)return true;if(id==='cop_rasengan'||id==='cop_bunshin')id='copy';return !treeNode(charId,id)||P.learned.includes(id);}
+function moveUnlocked(charId,id){if(MOVES[id]&&MOVES[id].futuro)return false;const P=PROG[charId];if(!P)return true;if(id==='cop_rasengan'||id==='cop_bunshin')id='copy';return !treeNode(charId,id)||P.learned.includes(id);}
 /* motivo pelo qual um no ainda nao pode ser aprendido ('' = pode) */
 function learnBlock(charId,id){const P=PROG[charId],n=treeNode(charId,id),m=MOVES[id];if(!n||!P)return 'Golpe inexistente';if(P.learned.includes(id))return 'Já aprendido';
  if(m.lvl>P.level)return 'Precisa do nível '+m.lvl;const miss=n.req.filter(r=>!P.learned.includes(r));if(miss.length)return 'Antes aprenda: '+miss.map(r=>MOVES[r].name).join(', ');
@@ -166,10 +167,10 @@ const MAP_W=1180,MAP_H=640;
 const NODES={
  konoha:{name:'Konoha',kind:'vila',x:130,y:330,scene:'vila',d:'Sua vila. Prepare a equipe (habilidades e equipamentos) antes de partir.'},
  treino:{name:'Campo de Treino',kind:'luta',x:340,y:310,scene:'treino',lvl:1,xp:60,ryo:60,enc:{name:'Genin Rival',hp:.98,atk:1.12,afin:['terra']},d:'Um campo aberto ao amanhecer, onde genins testam suas técnicas.'},
- floresta:{name:'Floresta da Morte',kind:'luta',x:550,y:160,scene:'floresta',lvl:2,xp:80,ryo:90,enc:{name:'Ninja Perdido',hp:1.04,atk:1.09,afin:['agua']},d:'Mata densa e perigosa. Quem entra sem preparo raramente volta.'},
- deserto:{name:'Deserto do Vento',kind:'luta',x:540,y:480,scene:'deserto',lvl:3,xp:100,ryo:120,enc:{name:'Ninja da Areia',hp:1.03,atk:1.03,afin:['terra']},d:'Dunas sem fim e um calor que drena o chakra.'},
- neve:{name:'Passo Nevado',kind:'luta',x:810,y:500,scene:'neve',lvl:4,xp:130,ryo:160,enc:{name:'Guardião do Gelo',hp:1.16,atk:1.1,afin:['gelo']},d:'Um desfiladeiro congelado vigiado por um ninja de gelo.'},
- vale:{name:'Vale do Fim',kind:'chefe',x:985,y:285,scene:'vale',lvl:6,xp:200,ryo:300,enc:{name:'Rival Final',hp:1.3,atk:1.15,afin:null},d:'O local do confronto final, entre as estátuas e a cachoeira.'}};
+ floresta:{name:'Floresta da Morte',kind:'luta',x:550,y:160,scene:'floresta',lvl:2,xp:80,ryo:90,enc:{name:'Ninja Perdido',hp:1.11,atk:1.17,afin:['agua']},d:'Mata densa e perigosa. Quem entra sem preparo raramente volta.'},
+ deserto:{name:'Deserto do Vento',kind:'luta',x:540,y:480,scene:'deserto',lvl:3,xp:100,ryo:120,enc:{name:'Ninja da Areia',hp:1.19,atk:1.19,afin:['terra']},d:'Dunas sem fim e um calor que drena o chakra.'},
+ neve:{name:'Passo Nevado',kind:'luta',x:810,y:500,scene:'neve',lvl:4,xp:130,ryo:160,enc:{name:'Guardião do Gelo',hp:1.28,atk:1.21,afin:['gelo']},d:'Um desfiladeiro congelado vigiado por um ninja de gelo.'},
+ vale:{name:'Vale do Fim',kind:'chefe',x:985,y:285,scene:'vale',lvl:6,xp:200,ryo:300,enc:{name:'Rival Final',hp:1.34,atk:1.18,afin:null},d:'O local do confronto final, entre as estátuas e a cachoeira.'}};
 const EDGES=[['konoha','treino'],['treino','floresta'],['treino','deserto'],['floresta','vale'],['deserto','neve'],['neve','vale']];
 const CAMP_KEY='rpgCampV1';
 let CAMP={cleared:['konoha'],at:'konoha',active:null};

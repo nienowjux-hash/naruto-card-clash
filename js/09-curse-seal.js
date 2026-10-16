@@ -116,7 +116,7 @@ function shishiSlamFX(c,landT){
   f.strokeStyle=`rgba(210,232,255,${Math.max(0,1-a/1.3)})`;f.lineWidth=.9;for(let k=0;k<3;k++){const r=(a*55+k*14);f.beginPath();f.ellipse(nx0,GY+1,r,r*.24,0,0,TAU);f.stroke();}
   f.globalCompositeOperation='lighter';if(a<.4)orb(f,nx0,GY-3,38*(1-a/.5),[[0,'rgba(255,255,255,.8)'],[1,'rgba(255,220,180,0)']]);f.globalCompositeOperation='source-over';}
  const pr=Math.min(20,a*7);f.fillStyle='rgba(8,4,16,.6)';f.beginPath();f.ellipse(nx0,GY+1.5,pr*.8,pr*.2,0,0,TAU);f.fill();f.fillStyle='rgba(112,6,14,.6)';f.beginPath();f.ellipse(nx0+2,GY+2,pr,pr*.24,0,0,TAU);f.fill();}
-ANIMS.shishi={dur:4.2,hold:1.0,hitT:.85,dmg:25,cost:25,noLift:true,
+ANIMS.shishi={dur:4.2,hold:1.0,hitT:.85,dmg:32,cost:25,noLift:true,
  nYf:t=>interp([[0,0],[.85,0],[1.2,-62],[1.9,-66],[2.05,-62],[2.2,0],[99,0]],t),
  sYf:sasYShishi,
  sP:[[0,READY],[.4,READY],[.5,SH_W],[.7,PN_D],[.82,SH_UP],[1.0,SH_A],[1.2,SH_A],[1.27,SH_B],[1.42,SH_A],[1.57,SH_B],[1.72,SH_A],[1.85,SH_TOP],[2.0,SH_HEEL],[2.3,READY],[3.0,READY],[4.2,READY]],
