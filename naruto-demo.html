@@ -632,8 +632,9 @@ function blitSprite(x,y,flip,P,time,o,isN){
  if(o.tint){sprTx.fillStyle=css(o.tint,1,o.tk);sprTx.fillRect(0,0,S.w,S.h);}
  sprTx.globalCompositeOperation='source-over';
  /* efeitos especiais em pixel art, aplicados direto nos pixels do sprite */
- if(o.cracks>0||o.curse>0||o.hole||o.dissolve>0||P.torn||P.nohead){
+ if(o.cracks>0||o.curse>0||o.hole||o.dissolve>0||P.torn||P.nohead||o.bleed>.04){
   const id=sprTx.getImageData(0,0,S.w,S.h),d=id.data,W2=S.w,H2=S.h,down=key==='down',hsh=(a,b)=>((a*73856093)^(b*19349663))>>>0;
+  const bl=o.bleed||0,bleedAt=(x,y)=>y>=24&&(hsh(x*7+3,y*5+1)%1000)/1000<bl*.14;
   const isSkin=i=>d[i]>200&&d[i+1]>130&&d[i+1]<215&&d[i+2]>80&&d[i+2]<190&&d[i]-d[i+2]>50;
   const cx=down?30:28,cy=down?38:37; /* centro do peito no sprite */
   for(let yy=0;yy<H2;yy++)for(let xx=0;xx<W2;xx++){const i=(yy*W2+xx)*4;if(d[i+3]===0)continue;const h=hsh(xx,yy)%1000/1000;
@@ -647,6 +648,13 @@ function blitSprite(x,y,flip,P,time,o,isN){
    if(P.torn){const dx=xx-cx,dy=yy-cy;if(dx*dx/30+dy*dy/22<1){d[i]=h<.25?150:236;d[i+1]=h<.25?16:178;d[i+2]=h<.25?24:140;}}
    /* buraco do Chidori: furo irregular com borda vermelha */
    if(o.hole){const dx=xx-cx,dy=yy-cy,rr=(dx*dx+dy*dy)/(2.6*o.hole*2.6*o.hole)*(.8+h*.4);if(rr<1){d[i+3]=0;continue;}if(rr<1.9){d[i]=rr<1.4?60:150;d[i+1]=rr<1.4?4:14;d[i+2]=rr<1.4?10:22;}}
+   /* ferimentos acumulados: manchas e escorridos de sangue em pixel, roupa rasgada nas bordas */
+   if(bl>.04){const dark=d[i]<45&&d[i+1]<45&&d[i+2]<70;
+    if(!dark){const sk=isSkin(i);
+     if(bleedAt(xx,yy)){const fr=hsh(xx,yy+9)%100<35;d[i]=fr?205:128;d[i+1]=fr?26:12;d[i+2]=fr?36:22;}
+     else if(bleedAt(xx,yy-1)&&h<.6){d[i]=108;d[i+1]=8;d[i+2]=18;}
+     else if(yy>1&&bleedAt(xx,yy-2)&&h<.28){d[i]=96;d[i+1]=6;d[i+2]=16;}
+     else if(bl>.3&&!sk&&yy>30&&h<(bl-.25)*.45){const l=d[i-4+3],r=d[i+4+3];if((xx>0&&l===0)||(xx<W2-1&&r===0)){d[i]=232;d[i+1]=172;d[i+2]=136;if(h<.5*(bl-.25))d[i+3]=0;}}}}
    /* virando cinzas: some de cima para baixo em pixels */
    if(o.dissolve>0&&h<o.dissolve*1.55-(yy/H2)*.55){d[i+3]=0;continue;}
   }
@@ -2534,6 +2542,7 @@ function render(ts){
  else if(burning&&type!=='amaterasu')nOpt={tint:[22,4,18],tk:.3+.06*Math.sin(time*6)};
  else if(!A&&outcome==='S')nOpt=burnt?{tint:[18,12,14],tk:.86}:{tint:[28,22,26],tk:.38};
  if(A)nOpt.rot=nRotF(type,t);
+ nOpt.bleed=Math.max(0,(100-hp.n)/100);
  if(A&&A.hitT!=null&&!LG(type)){const hh=t-A.hitT;if(hh>=0&&hh<.22)nOpt.sq=Math.pow(1-hh/.22,2)*(Math.min(1,(A.dmg||10)/25)*.6+.4);}
  if(chestHole)nOpt.hole=(A&&LC(type))?clamp((t-3.58)/.1,0,1):((A&&type==='selochidori'&&LG(type))?clamp((t-4.2)/.1,0,1)*1.8:(fatalKind==='selochidori'?1.8:1));
  if(type==='selochidori'&&LG(type)&&t>=3.2){const kk=scaleAt(0,1,3.25,3.5,t)*(1-scaleAt(0,1,4.1,4.4,t));nOpt=Object.assign({},nOpt,{tint:[50,20,90],tk:.35*kk});}
@@ -2567,6 +2576,7 @@ function render(ts){
  const sFlip=(type==='kawarimi'&&t>1.9&&(LW(type)||t<3.2))||(LC(type)&&t>6.7)||(decap&&!A&&outcome==='S');
  {const l2=(type==='selo2')?scaleAt(0,1,1.0,2.4,t):(type==='selochidori'?1:(seal2T>0?1:0));const cs=(l2>0)?0:(type==='selo'?scaleAt(0,1,.8,2.0,t):(sealT>0?1:0));if(l2>0){sOpt.lv2=l2;sOpt.lv2h=(type==='selo2')?scaleAt(0,1,2.35,2.95,t):1;if(type==='selochidori'){sOpt.tint=[50,20,90];sOpt.tk=.2;}}else if(cs>0)sOpt.curse=cs;}
  if(A&&A.tp&&!LG(type)&&!lethal)sOpt.alpha=clamp(Math.abs(t-A.tp[0])/.07,0,1); /* teleporte: some no lugar do golpe e aparece na posicao inicial */
+ sOpt.bleed=Math.max(0,(100-hp.s)/100);
  sOpt.rot=sRot;sOpt.vel=vS;blit(sx0,GY+sy0,sFlip,SASUKE,sP,time,sOpt);
  if(pierce){drawN(); /* o braco entra no peito do Naruto: ele e desenhado por cima do Sasuke e so a parte de fora da frente do corpo reaparece */
   const o2=Object.assign({},sOpt,{noRefl:true});
