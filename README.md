@@ -176,3 +176,8 @@ Kit: Kunai, Shuriken, Soco, Chute, Kawarimi, Defender, Concentrar e Itens (iguai
 - **Shannarō! Soco de Chakra** (14 de chakra, 3 pontos, nível 6): 28 de dano, onda de choque e rachaduras no chão.
 Afinidade: Terra (Yin). Tem árvore, nível, XP e equipamentos próprios. `js/20-sakura.js` guarda os golpes e efeitos dela.
 - **Passiva, Dissipação de Genjutsu (Kai):** a Sakura cancela na hora ilusões inimigas (Oiroke e Harem do Naruto nunca a deixam sem turno).
+
+## Kakashi Hatake (Parte 1, jogável, raridade Raro)
+
+Quarto personagem da equipe do mapa; joga no lado esquerdo como o Sasuke e a Sakura. Sprites em `pixel/kakashi.js` (poses do Sasuke com colete jounin verde, mangas/calça azul-marinho, cabelo prateado, bandana sobre o olho esquerdo e máscara); código em `js/21-kakashi.js`. Afinidade Raio/Terra.
+Kit: Kunai, Shuriken, Soco, Chute, Kawarimi e, na aba Jutsu, **Katon** (copiado), **Raikiri** (a animação e o fatality do Chidori, com texto próprio), **Genjutsu (Sharingan)** e **Ninja Copiador** (copia Rasengan/Kage Bunshin do inimigo).

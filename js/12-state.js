@@ -12,8 +12,8 @@ function toast(m){const t=$('toast');t.textContent=m;t.classList.add('on');clear
 function missPop(side){const d=$('dmg');d.style.left=((side==='S')!==roleN)?'16%':'70%';d.style.color='';d.textContent='ESQUIVOU!';d.classList.remove('on');void d.offsetWidth;d.classList.add('on');}
 
 /* ---- equipamento na batalha: so o personagem que o jogador controla recebe os bonus ---- */
-function sideChar(side){return side==='s'?(heroS==='sakura'?'sakura':'sasuke'):'naruto';}
-function HN(){return heroS==='sakura'?'Sakura':'Sasuke';}
+function sideChar(side){return side==='s'?heroS:'naruto';}
+function HN(){return{sakura:'Sakura',kakashi:'Kakashi'}[heroS]||'Sasuke';}
 function fightStats(side){const mine=roleN?'n':'s';if(side===mine)return statsOf(sideChar(side));const a=CAMP.active;return a?{hp:Math.round(100*(a.hp-1)),atk:a.atk-1,def:0,elem:{}}:{hp:0,atk:0,def:0,elem:{}};}
 function dmgMod(att,def,elem){const a=fightStats(att),d=fightStats(def);return(1+a.atk)*(1+((a.elem||{})[elem]||0))*(1-d.def);}
 /* recalcula a vida maxima; full = enche a vida, senao mantem a proporcao */

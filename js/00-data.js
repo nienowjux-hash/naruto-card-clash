@@ -41,6 +41,7 @@ const MOVES={
  kagesh:{name:'Shuriken Kage no Jutsu',elem:'neutro',tipo:'arma',lvl:22,rar:2},
  kawarimi:{name:'Kawarimi',elem:'neutro',tipo:'suporte',lvl:1,rar:1},
  /* Sakura */
+ raikiri:{name:'Raikiri',elem:'raio',tipo:'ninjutsu',lvl:10,rar:3},
  cura:{name:'Cura Médica',elem:'yin',tipo:'suporte',lvl:1,rar:1},
  cura2:{name:'Cura Intensiva',elem:'yin',tipo:'suporte',lvl:12,rar:3},
  shannaro:{name:'Shannarō! Soco de Chakra',elem:'terra',tipo:'taijutsu',lvl:6,rar:2},
@@ -62,7 +63,8 @@ function moveByName(n){const id=MOVE_ALIAS[n];if(id)return MOVES[id];for(const k
 const CHARS={
  sasuke:{id:'sasuke',name:'Sasuke Uchiha',rar:2,hp:100,ck:100,afin:['fogo','raio'],extras:['yin']},
  naruto:{id:'naruto',name:'Naruto Uzumaki',rar:2,hp:100,ck:100,afin:['vento'],extras:['yang']},
- sakura:{id:'sakura',name:'Sakura Haruno',rar:1,hp:100,ck:100,afin:['terra'],extras:['yin']}};
+ sakura:{id:'sakura',name:'Sakura Haruno',rar:1,hp:100,ck:100,afin:['terra'],extras:['yin']},
+ kakashi:{id:'kakashi',name:'Kakashi Hatake',rar:3,hp:100,ck:100,afin:['raio','terra'],extras:['yang']}};
 /* raridade do personagem: comum a lendario */
 function charRar(id){const r=RARITY[(CHARS[id]||{}).rar||1];return `<em class="crar" style="--rc:${r.col}">${r.name}</em>`;}
 function elemChip(m){if(!m||!m.elem||m.elem==='neutro')return '';const e=ELEMENTS[m.elem];return `<em class="el" style="--ec:${e.col}">${e.name}</em>`;}
@@ -122,7 +124,17 @@ const TREES={
   {id:'kawarimi',x:2,y:0,req:[],pt:0,base:1,d:'Jutsu de Substituição: troca de lugar com um tronco e evita por completo o próximo golpe (2 usos por luta).'},
   {id:'cura',x:3,y:0,req:[],pt:0,start:1,d:'Ninjutsu médico: as palmas brilham em verde e fecham os ferimentos. Recupera 30 de vida.'},
   {id:'cura2',x:3,y:1,req:['cura'],pt:4,d:'Cura Intensiva: muito mais chakra nas mãos. Recupera 65 de vida.'},
-  {id:'shannaro',x:4,y:0,req:[],pt:3,d:'Concentra todo o chakra no punho (controle perfeito) e acerta um soco devastador.'}]};
+  {id:'shannaro',x:4,y:0,req:[],pt:3,d:'Concentra todo o chakra no punho (controle perfeito) e acerta um soco devastador.'}],
+ kakashi:[
+  {id:'soco',x:0,y:0,req:[],pt:0,base:1,d:'Avança e acerta um soco no rosto.'},
+  {id:'chute',x:0,y:1,req:[],pt:0,base:1,d:'Salta e acerta um chute.'},
+  {id:'kunai',x:1,y:0,req:[],pt:0,base:1,d:'Arremessa um kunai direto no alvo.'},
+  {id:'shuriken',x:1,y:1,req:[],pt:0,base:1,d:'Lança estrelas ninja que giram até o alvo.'},
+  {id:'kawarimi',x:2,y:0,req:[],pt:0,base:1,d:'Jutsu de Substituição: troca de lugar com um tronco e evita por completo o próximo golpe (2 usos por luta).'},
+  {id:'katon',x:3,y:0,req:[],pt:0,start:1,d:'Katon copiado com o Sharingan: bola de fogo que explode no alvo, causando queimadura.'},
+  {id:'raikiri',x:4,y:0,req:[],pt:4,d:'Raikiri: relâmpagos na mão, a técnica que corta o raio. Dano alto e fatality.'},
+  {id:'genjutsu',x:5,y:0,req:[],pt:2,d:'Prende o alvo numa ilusão do Sharingan: ele perde o próximo turno.'},
+  {id:'copy',x:5,y:1,req:['genjutsu'],pt:4,d:'Ninja Copiador: copia o jutsu do inimigo para usar uma vez (Rasengan e Kage Bunshin).'}]};
 /* golpes guardados para personagens/fases futuras (nao aparecem na arvore nem no menu): o no pronto para recolocar */
 const TREES_FUTURO={naruto:[
   {id:'odama',x:1,y:3,req:['rasengan'],pt:4,rar:3,lvl:20,elem:'vento',d:'Rasengan Gigante: uma esfera enorme, mais dano e mais chakra.'},
@@ -185,9 +197,9 @@ const ITEMS={
  elixir_sabio:{name:'Elixir do Sábio',slot:'cons',rar:4,g:'丹',use:{hp:100,ck:50},d:'Recupera 100 de vida e 50 de chakra. Gasta o turno.'}};
 const RARITY={1:{name:'Comum',col:'#aab0c8'},2:{name:'Incomum',col:'#5cc878'},3:{name:'Raro',col:'#4aa8ff'},4:{name:'Épico',col:'#b070ff'},5:{name:'Lendário',col:'#ffa43a'}};
 const INV_KEY='rpgInvV1';
-function invDefault(){return{ryo:0,bag:{kunai_ferro:1,colete:1,bandana:1,pilula_vida:3,pilula_ck:3},eq:{sasuke:{},naruto:{},sakura:{}}};}
+function invDefault(){return{ryo:0,bag:{kunai_ferro:1,colete:1,bandana:1,pilula_vida:3,pilula_ck:3},eq:{sasuke:{},naruto:{},sakura:{},kakashi:{}}};}
 let INV=invDefault();
-try{const j=JSON.parse(localStorage.getItem(INV_KEY)||'null');if(j){INV.ryo=j.ryo||0;INV.bag=j.bag||INV.bag;INV.eq=Object.assign({sasuke:{},naruto:{},sakura:{}},j.eq||{});}}catch(e){}
+try{const j=JSON.parse(localStorage.getItem(INV_KEY)||'null');if(j){INV.ryo=j.ryo||0;INV.bag=j.bag||INV.bag;INV.eq=Object.assign({sasuke:{},naruto:{},sakura:{},kakashi:{}},j.eq||{});}}catch(e){}
 function saveInv(){try{localStorage.setItem(INV_KEY,JSON.stringify(INV));}catch(e){}}
 function bagQty(id){return INV.bag[id]||0;}
 function addItem(id,n){INV.bag[id]=bagQty(id)+(n||1);saveInv();}

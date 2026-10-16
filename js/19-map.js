@@ -13,13 +13,14 @@ const bez=(e,t)=>[(1-t)*(1-t)*e.a[0]+2*(1-t)*t*e.c[0]+t*t*e.b[0],(1-t)*(1-t)*e.a
 
 /* ---- painel lateral ---- */
 function enemyCharOf(hero){return hero==='naruto'?'sasuke':'naruto';}
-const HERO_PT={sasuke:'ptS0',sakura:'ptK',naruto:'ptN'};
+const HERO_PT={sasuke:'ptS0',sakura:'ptK',kakashi:'ptKa',naruto:'ptN'};
+const HERO_NAME={sasuke:'SASUKE UCHIHA',sakura:'SAKURA HARUNO',kakashi:'KAKASHI HATAKE'};
 /* quem luta no lado esquerdo: troca sprites, retrato e nome (Sasuke ou Sakura); o Naruto usa o modo roleN */
-function applyHero(h){heroS=h==='sakura'?'sakura':'sasuke';ORIG_NAMES.s=heroS==='sakura'?'SAKURA HARUNO':'SASUKE UCHIHA';const b=document.querySelector('.pl b');if(b&&b.firstChild&&b.firstChild.nodeType===3&&!roleN)b.firstChild.nodeValue=ORIG_NAMES.s;portrait('ptS',SASUKE,mk({red:1,expr:1,hr:.05}));}
+function applyHero(h){heroS=(h==='sakura'||h==='kakashi')?h:'sasuke';ORIG_NAMES.s=HERO_NAME[heroS];const b=document.querySelector('.pl b');if(b&&b.firstChild&&b.firstChild.nodeType===3&&!roleN)b.firstChild.nodeValue=ORIG_NAMES.s;portrait('ptS',SASUKE,mk({red:1,expr:1,hr:.05}));}
 function mapPanel(){
  if(!mapSel)return'<p class="hint">Clique em um local do mapa para ver os detalhes.</p>';
  const n=NODES[mapSel],st=nodeState(mapSel),stTxt={cleared:'Concluído',open:'Disponível',locked:'Bloqueado'}[st];
- const party=['sasuke','sakura','naruto'].map(h=>`<button class="hero${mapHero===h?' on':''}" data-h="${h}"><b>${CHARS[h].name.split(' ')[0]}</b><small>Nível ${PROG[h].level}</small>${charRar(h)}</button>`).join('')+'<div class="hero empty"><b>Vazio</b><small>em breve</small></div>';
+ const party=['sasuke','sakura','kakashi','naruto'].map(h=>`<button class="hero${mapHero===h?' on':''}" data-h="${h}"><b>${CHARS[h].name.split(' ')[0]}</b><small>Nível ${PROG[h].level}</small>${charRar(h)}</button>`).join('')+'<div class="hero empty"><b>Vazio</b><small>em breve</small></div>';
  let body='';
  if(n.kind==='vila'){body=`<p class="desc">${n.d}</p><div class="act"><button class="learn" id="mp-tree">Árvore de habilidades</button><button class="learn alt" id="mp-inv">Equipamentos</button></div>`;}
  else{const af=n.enc.afin||CHARS[enemyCharOf(mapHero)].afin,vant=['fogo','agua','terra','vento','raio'].filter(b=>elemMatch(b,af)>0).map(b=>ELEMENTS[b].name);
@@ -32,7 +33,7 @@ function mapPanel(){
  return`<h3>${n.name}</h3><span class="tag ${st}">${stTxt}</span>${body}`;}
 function renderMap(){
  const t=mapEl();
- t.innerHTML=`<div class="mbox"><div class="thead"><h2>Mapa da campanha</h2><div class="ryo"><b>${INV.ryo}</b><small>ryo</small></div><div class="ptl">${['sasuke','sakura','naruto'].map(h=>`<span><b>${CHARS[h].name.split(' ')[0]}</b> Nv ${PROG[h].level}${PROG[h].pts?` · <i>${PROG[h].pts} pt</i>`:''}</span>`).join('')}</div><button class="x" id="mapx">Voltar à luta ✕</button></div>
+ t.innerHTML=`<div class="mbox"><div class="thead"><h2>Mapa da campanha</h2><div class="ryo"><b>${INV.ryo}</b><small>ryo</small></div><div class="ptl">${['sasuke','sakura','kakashi','naruto'].map(h=>`<span><b>${CHARS[h].name.split(' ')[0]}</b> Nv ${PROG[h].level}${PROG[h].pts?` · <i>${PROG[h].pts} pt</i>`:''}</span>`).join('')}</div><button class="x" id="mapx">Voltar à luta ✕</button></div>
  <div class="mmain"><div class="mwrap"><canvas id="mapcv" width="${MAP_W}" height="${MAP_H}"></canvas></div><aside class="mside">${mapPanel()}</aside></div>
  <div class="tdev"><span class="lg"><i class="a"></i>Concluído <i class="b"></i>Disponível <i class="c"></i>Bloqueado</span><button id="mprs">Reiniciar campanha</button></div></div>`;
  const cv=document.getElementById('mapcv'),pos=e=>{const r=cv.getBoundingClientRect();return[(e.clientX-r.left)*MAP_W/r.width,(e.clientY-r.top)*MAP_H/r.height];};

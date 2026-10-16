@@ -374,18 +374,18 @@ function drawHead(c,d,P,r,time){
 }
 /* Retratos do HUD: a propria cabeca em pixel art dos sprites (mesmo desenho do jogo), recortada e ampliada sem suavizar */
 const PORTRAIT_CACHE={};
-function portraitKind(id,d){return id==='ptN'?'nar':id==='ptK'?'sak':id==='ptS0'?'sas':(d===SASUKE?(heroS==='sakura'?'sak':'sas'):'lv2');}
+function portraitKind(id,d){return id==='ptN'?'nar':id==='ptK'?'sak':id==='ptKa'?'kak':id==='ptS0'?'sas':(d===SASUKE?({sakura:'sak',kakashi:'kak'}[heroS]||'sas'):'lv2');}
 function portrait(id,d,P){
  const cvp=$(id),c=cvp.getContext('2d'),kind=portraitKind(id,d);
  if(!PORTRAIT_CACHE[kind]){
   const g=PixGrid(60,48),ox=10,oy=14;
   if(kind==='nar'){naruHead(g,ox,oy,{});g.poly([[ox+8,oy+19],[ox+34,oy+19],[ox+40,oy+30],[ox+2,oy+30]],'O');g.poly([[ox+13,oy+18],[ox+29,oy+18],[ox+25,oy+24],[ox+17,oy+24]],'S');g.poly([[ox+8,oy+19],[ox+34,oy+19],[ox+34,oy+22],[ox+8,oy+22]],'N');}
-  else{(kind==='lv2'?lv2Head:kind==='sak'?sakuraHead:putHead)(g,ox,oy,{});g.poly([[ox+8,oy+19],[ox+34,oy+19],[ox+40,oy+30],[ox+2,oy+30]],'C');g.poly([[ox+13,oy+18],[ox+29,oy+18],[ox+25,oy+24],[ox+17,oy+24]],'S');g.poly([[ox+8,oy+19],[ox+34,oy+19],[ox+34,oy+22],[ox+8,oy+22]],'c');}
+  else{(kind==='lv2'?lv2Head:kind==='sak'?sakuraHead:kind==='kak'?kakashiHead:putHead)(g,ox,oy,{});g.poly([[ox+8,oy+19],[ox+34,oy+19],[ox+40,oy+30],[ox+2,oy+30]],'C');g.poly([[ox+13,oy+18],[ox+29,oy+18],[ox+25,oy+24],[ox+17,oy+24]],'S');g.poly([[ox+8,oy+19],[ox+34,oy+19],[ox+34,oy+22],[ox+8,oy+22]],'c');}
   let x0=99,x1=0,y0=99,y1=0;for(let y=0;y<g.h;y++)for(let x=0;x<g.w;x++)if(g.G[y][x]!=='.'){if(x<x0)x0=x;if(x>x1)x1=x;if(y<y0)y0=y;if(y>y1)y1=y;}
-  const src=document.createElement('canvas');g.draw(src,kind==='nar'?NAR_PAL:kind==='lv2'?LV2_PAL:kind==='sak'?SAK_PAL:Object.assign({},SAS2_PAL,SHARI),1);
+  const src=document.createElement('canvas');g.draw(src,kind==='nar'?NAR_PAL:kind==='lv2'?LV2_PAL:kind==='sak'?SAK_PAL:kind==='kak'?KAK_PAL:Object.assign({},SAS2_PAL,SHARI),1);
   PORTRAIT_CACHE[kind]={src,x0,y0,w:x1-x0+1,h:y1-y0+1};}
  const p=PORTRAIT_CACHE[kind];c.clearRect(0,0,96,96);c.imageSmoothingEnabled=false;
- c.fillStyle=kind==='nar'?'#3a2a14':kind==='sak'?'#3a1a2e':'#1b1a3a';c.fillRect(0,0,96,96);
+ c.fillStyle=kind==='nar'?'#3a2a14':kind==='sak'?'#3a1a2e':kind==='kak'?'#1c2a38':'#1b1a3a';c.fillRect(0,0,96,96);
  const s=Math.min(96/p.w,96/p.h),dw=p.w*s,dh=p.h*s;c.drawImage(p.src,p.x0,p.y0,p.w,p.h,(96-dw)/2,96-dh,dw,dh);}
 
 function lerpP(pts,u){const L=[];let tot=0;for(let i=0;i<pts.length-1;i++){const l=Math.hypot(pts[i+1][0]-pts[i][0],pts[i+1][1]-pts[i][1]);L.push(l);tot+=l;}
