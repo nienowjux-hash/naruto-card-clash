@@ -59,3 +59,16 @@ const CHARS={
  naruto:{id:'naruto',name:'Naruto Uzumaki',level:10,hp:100,ck:100,afin:['vento'],extras:['yang']}};
 function moveUnlocked(charId,moveId){const m=MOVES[moveId],c=CHARS[charId];return !m||!c||m.lvl<=c.level;}
 function elemChip(m){if(!m||!m.elem||m.elem==='neutro')return '';const e=ELEMENTS[m.elem];return `<em class="el" style="--ec:${e.col}">${e.name}</em>`;}
+
+/* ---------- Vantagem entre elementos ----------
+   Ciclo dos 5 basicos (igual ao anime): Fogo > Vento > Raio > Terra > Agua > Fogo. Quem ataca com vantagem causa mais dano.
+   Elementos combinados e Poeira valem pelos seus componentes: vantagem so se algum componente vence e nenhum perde; o contrario da desvantagem; misto = neutro. Yin/Yang/Neutro nao entram no ciclo. */
+const ELEM_BEATS={fogo:'vento',vento:'raio',raio:'terra',terra:'agua',agua:'fogo'};
+const ELEM_ADV=1.4,ELEM_DIS=.75;
+function elemParts(e){const x=ELEMENTS[e];return x&&x.de?x.de:(ELEM_BEATS[e]?[e]:[]);}
+function elemMatch(att,def){ /* >0 vantagem, <0 desvantagem, 0 neutro */
+ const A=elemParts(att),D=Array.isArray(def)?def.flatMap(elemParts):elemParts(def);let w=false,l=false;
+ for(const a of A)for(const d of D){if(ELEM_BEATS[a]===d)w=true;if(ELEM_BEATS[d]===a)l=true;}
+ return w&&!l?1:l&&!w?-1:0;}
+function elemMult(att,defCharId){const c=CHARS[defCharId];if(!att||!c)return 1;const m=elemMatch(att,c.afin);return m>0?ELEM_ADV:m<0?ELEM_DIS:1;}
+function elemMsg(mult){return mult>1?'Vantagem elemental! (+40%)':mult<1?'Elemento fraco contra o alvo (-25%)':'';}
