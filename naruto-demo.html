@@ -86,7 +86,7 @@ canvas#c{display:block;width:100%;height:auto}
   <div id="toast"></div>
 </div>
 <div id="hand"></div>
-<div class="ctl"><button id="rst">Resetar luta</button><button id="mute">Som: ligado</button><button id="sprbtn">Sasuke: pixel art</button></div>
+<div class="ctl"><button id="rst">Resetar luta</button><button id="mute">Som: ligado</button><button id="sprbtn">Sasuke: pixel art</button><button id="nmbtn">Naruto: automático</button></div>
 <div class="note">RPG de turno: escolha um comando (ou tecle 1 a 4; Esc volta). Jutsu gasta chakra, Defender corta o próximo dano pela metade e Concentrar recupera chakra. Depois o Naruto contra-ataca. Quem zerar a vida do outro vence.</div>
 </div>
 <script src="pixel/pixgrid.js"></script><script src="pixel/sasuke.js"></script><script src="pixel/sasuke-guard.js"></script><script src="pixel/sasuke-poses.js"></script><script src="pixel/sasuke-between.js"></script><script src="pixel/naruto.js"></script><script src="pixel/sasuke-lv2.js"></script>
@@ -2102,7 +2102,16 @@ function afterAnim(was){if(!was)return;
  else if(outcome){setCards(false);}
  else{setCards(false);setTimeout(()=>{if(!outcome&&!anim)enemyTurn();},1000);}}
 function skipEnemy(msg){toast(msg);if(seal2T>0){seal2T--;hp.s=Math.max(1,hp.s-3);ck.s=Math.min(100,ck.s+15);if(!seal2T)toast('A transformação se desfaz');}else if(sealT>0){sealT--;hp.s=Math.max(1,hp.s-2);ck.s=Math.min(100,ck.s+10);if(!sealT)toast('O selo amaldiçoado se acalma');}ck.n=Math.min(100,ck.n+15);ck.s=Math.min(100,ck.s+10);setBars();turnLock=false;showMenu('main');setCards(true);}
-function enemyTurn(){if(outcome||anim)return;if(stunN){stunN=false;skipEnemy('Naruto está preso na ilusão e perde o turno');return;}if((sealT>0&&Math.random()<.3)||(seal2T>0&&Math.random()<.4)){skipEnemy('Sasuke desvia com a velocidade do selo!');return;}const type=Math.random()<.5?'rasengan':'bunshin',A=ANIMS[type];lastEnemy=type;ensureAudio();
+let narutoManual=false;try{narutoManual=localStorage.getItem('narutoManual')==='1';}catch(e){}
+/* modo de teste: o jogador escolhe o jutsu do Naruto no turno dele */
+function showNarutoMenu(){menuOpen='naruto';const h=$('hand');h.innerHTML='';
+ const add=(name,desc,col,k,fn)=>{const b=document.createElement('button');b.className='cmd';b.style.setProperty('--cc',col);b.innerHTML=`<span class="k">${k}</span>${name}<small>${desc}</small>`;b.onclick=fn;h.appendChild(b);};
+ add('Rasengan','Esfera giratória no Sasuke (30 de dano).','#6fb8ff',1,()=>enemyTurn('rasengan'));
+ add('Kage Bunshin','Clones das sombras atacam em sequência.','#ffa43a',2,()=>enemyTurn('bunshin'));
+ add('Passar','Naruto não ataca neste turno.','#888',3,()=>{ck.n=Math.min(100,ck.n+15);setBars();turnLock=false;showMenu('main');setCards(true);});
+ toast('Turno do Naruto: escolha o jutsu');setCards(true);}
+function enemyTurn(force){if(typeof force!=='string')force=null;if(outcome||anim)return;if(stunN){stunN=false;skipEnemy('Naruto está preso na ilusão e perde o turno');return;}if((sealT>0&&Math.random()<.3)||(seal2T>0&&Math.random()<.4)){skipEnemy('Sasuke desvia com a velocidade do selo!');return;}if(narutoManual&&!force){showNarutoMenu();return;}
+ const type=force||(Math.random()<.5?'rasengan':'bunshin'),A=ANIMS[type];lastEnemy=type;ensureAudio();
  const gm=guard?.5:1;guard=false;const dm=h=>Math.max(1,Math.round(h.dmg*gm));
  const total=A.hits.reduce((a,h)=>a+dm(h),0),lethal=hp.s-total<=0;
  anim={type,t0:performance.now(),dur:A.dur+HS,lethal,enemy:true};setCards(false);ck.n=Math.max(0,ck.n-A.cost);setBars();sfx(type);
@@ -2825,6 +2834,7 @@ window.addEventListener('keydown',e=>{if(e.key==='Escape'&&menuOpen!=='main'){sh
 $('rst').onclick=()=>{pending.forEach(clearTimeout);pending=[];chestHole=0;burnt=0;decap=0;ashed=0;fatalKind=null;copied=null;lastEnemy=null;sealT=0;seal2T=0;stunN=false;$('speech').classList.remove('on');anim=null;outcome=null;burning=false;turnLock=false;guard=false;showMenu('main');WOUNDS.s.length=0;WOUNDS.n.length=0;$('ko').querySelector('span').textContent='SASUKE VENCEU';$('ko').classList.remove('on');hp={s:100,n:100};ck={s:100,n:100};setBars();setCards(true);$('banner').classList.remove('on');$('dmg').classList.remove('on');};
 $('mute').onclick=()=>{sound=!sound;$('mute').textContent='Som: '+(sound?'ligado':'desligado');ensureAudio();};
 buildCards();setBars();
+$('nmbtn').textContent='Naruto: '+(narutoManual?'manual':'automático');$('nmbtn').onclick=()=>{narutoManual=!narutoManual;try{localStorage.setItem('narutoManual',narutoManual?'1':'0');}catch(e){}$('nmbtn').textContent='Naruto: '+(narutoManual?'manual':'automático');toast(narutoManual?'Você escolhe os jutsus do Naruto':'Naruto volta a escolher sozinho');};
 $('sprbtn').textContent='Sasuke: '+(USE_SPR?'pixel art':'desenho antigo');$('sprbtn').onclick=()=>{try{localStorage.setItem('sasukeSprites',USE_SPR?'0':'1');}catch(e){}location.reload();};
 portrait('ptS',SASUKE,mk({red:1,expr:1,hr:.05}));portrait('ptN',NARUTO,mk({expr:5}));
 

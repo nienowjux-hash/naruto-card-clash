@@ -54,3 +54,6 @@ Cada uma tem um fatality diferente: Tsukuyomi (Genjutsu), calcanhar que crava a 
 ## Pixel art (em andamento)
 
 A pasta `pixel/` guarda os novos sprites em pixel art desenhados por codigo (`pixgrid.js` e o Sasuke em `sasuke.js` e `sasuke-guard.js`). Para ver: `node serve.js` e abra http://localhost:8123/pixel/view.html (ou `?s=idle` para o Sasuke parado). O jogo ainda usa os bonecos antigos.
+
+## Modo de teste: controlar o Naruto
+O botão **Naruto: automático / manual** (abaixo do jogo) liga o modo manual: no turno do Naruto aparece um menu para escolher **Rasengan**, **Kage Bunshin** ou **Passar**. A escolha fica salva no navegador.
