@@ -619,7 +619,7 @@ function sprRefs(){if(SPR_REF)return SPR_REF;const L=[];const add=(k,...ps)=>ps.
  add('down',S_DOWN);
  return SPR_REF=L;}
 let SPRN_REF=null;function sprRefsN(){if(SPRN_REF)return SPRN_REF;const L=[],add=(k,...ps)=>ps.forEach(p=>{if(p)L.push([k,p]);}),d=n=>typeof window[n]!=='undefined'?window[n]:null;
- add('guard',N_READY,N_GUARD,N_SURP,N_VICT,d('N_JUMP'),d('N_AIR'),d('N_AIR2'));add('block',d('N_GUARD'));if(SPRN.pw)add('pw',N_COIL);else add('guard',N_COIL);add('seal',d('N_SEAL'));add('charge',d('N_RAS_WIND'));add('punch',N_DASHP,N_PUNCH,N_UPPER,d('N_RAS_WIND'),d('N_RAS_DASH'),d('N_RAS_HIT'));add('hit',N_HIT,N_STAG,N_HITB,N_BURN1,N_BURN2);add('down',N_DOWN);return SPRN_REF=L;}
+ add('guard',N_READY,N_GUARD,N_SURP,N_VICT,(typeof N_JUMP!=='undefined'?N_JUMP:null),(typeof N_AIR!=='undefined'?N_AIR:null),(typeof N_AIR2!=='undefined'?N_AIR2:null));add('block',(typeof N_GUARD!=='undefined'?N_GUARD:null));if(SPRN.pw)add('pw',N_COIL);else add('guard',N_COIL);add('seal',(typeof N_SEAL!=='undefined'?N_SEAL:null));add('charge',(typeof N_RAS_WIND!=='undefined'?N_RAS_WIND:null));add('punch',N_DASHP,N_PUNCH,N_UPPER,(typeof N_RAS_DASH!=='undefined'?N_RAS_DASH:null),(typeof N_RAS_HIT!=='undefined'?N_RAS_HIT:null));add('hit',N_HIT,N_STAG,N_HITB,N_BURN1,N_BURN2);add('down',N_DOWN);return SPRN_REF=L;}
 const SPR_W={hxF:1,hyF:1,hxB:.6,hyB:.6,ffx:.9,ffy:1.4,fbx:.6,fby:1,crouch:1.2,lean:.8,tilt:30,hr:6};
 let sprRefPose=null;
 function sprPick(P,refs){let best='guard',bd=1e9;for(const [k,R0] of (refs||sprRefs())){let d=0;for(const q in SPR_W){const v=(P[q]||0)-(R0[q]||0);d+=SPR_W[q]*v*v;}if(d<bd){bd=d;best=k;sprRefPose=R0;}}return best;}
@@ -2587,7 +2587,9 @@ function render(ts){
  if(LK(type)&&t>2.6)nOpt.cracks=scaleAt(0,1,2.7,5.4,t);else if(burnt&&(!A||type==='katon'))nOpt.cracks=1;
  const rS=rigW(sP);
  const hw=[sx0+rS.hf.hx,GY+sy0+rS.hf.hy];
- let ras=null;if(type==='rasengan'){const rNn=rigW(nP),rr=t<.75?0:t<1.55?clamp((t-.75)/.7,0,1)*9:t<2.2?9.5:0;if(rr>0)ras={x:nx0-rNn.hf.hx-5,y:GY+ny0+rNn.hf.hy-1,r:rr};}
+ let ras=null;if(type==='rasengan'){const rNn=rigW(nP),rr=t<.75?0:t<1.55?clamp((t-.75)/.7,0,1)*9:t<2.2?9.5:0;if(rr>0){ras={x:nx0-rNn.hf.hx-5,y:GY+ny0+rNn.hf.hy-1,r:rr};
+  /* com sprites, a esfera fica na mao desenhada do sprite (mao baixa ao carregar, punho esticado ao avancar) */
+  if(USE_SPR&&SPRN.guard){const k=sprPick(nP,sprRefsN()),HO={charge:[20,33],punch:[31,45]}[k];if(HO){ras.x=nx0-HO[0]-rr*.6;ras.y=GY+ny0-HO[1];}}}}
  fxLights=[];
  if(ras)fxLights.push({x:ras.x,y:ras.y,col:[140,200,255],r:130,k:.9});
  if(type==='rasengan'){const a0=t-2.2;if(a0>=0&&a0<.7)fxLights.push({x:104,y:GY-38,col:[170,220,255],r:150,k:.9*(1-a0/.7)});}
