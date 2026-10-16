@@ -646,7 +646,7 @@ function blitSprite(x,y,flip,P,time,o,isN){
    /* sem cabeca (decapitado): apaga tudo acima do pescoco */
    if(P.nohead&&(down?xx<17:yy<25)){d[i+3]=0;continue;}
    /* carbonizado: rachaduras incandescentes por cima da tinta escura */
-   if(o.cracks>0&&h<.09*o.cracks&&((xx+yy)%3===0)){d[i]=255;d[i+1]=110+(h*900|0)%80;d[i+2]=30;}
+   if(o.cracks>0&&h<.17*o.cracks&&((xx+yy)%3===0)){d[i]=255;d[i+1]=110+(h*900|0)%80;d[i+2]=30;}
    /* marcas do selo amaldicoado: riscos pretos so na pele */
    if(o.curse>0&&isSkin(i)&&((hsh(xx>>1,yy)%7)<2)&&h<o.curse){d[i]=10;d[i+1]=6;d[i+2]=14;}
    /* roupa rasgada no peito: pele com sangue */
@@ -2539,13 +2539,13 @@ function render(ts){
  if(dashing||(type==='chidori'&&t>=2.56&&t<2.7)){for(let i=3;i>=1;i--){const tt=t-i*.035;if(tt<2.15)continue;const P2=evalPose(A.sP,tt),x2=sasX(type,tt);blit(x2,GY+sasY(type,tt),false,SASUKE,P2,time,{tint:[70,190,255],tk:.7,alpha:.3-i*.07,noRefl:true});}}
  let nOpt={};
  if(type==='chidori'&&t>2.58&&t<(LC(type)?3.5:3.0)&&((Math.floor((LC(type)?time*1.4:t)*30)%3)===0))nOpt={tint:[255,255,255],tk:.85};
- if(LK(type)&&t>2.4){const ch=scaleAt(0,1,2.7,5.4,t),c1=mix([255,120,30],[18,12,14],Math.min(1,ch*1.15));nOpt={tint:c1,tk:(.2+.07*Math.sin(time*40))*(1-ch)+.86*ch};}
+ if(LK(type)&&t>2.4){const ch=scaleAt(0,1,2.7,5.4,t),c1=mix([255,120,30],[62,48,46],Math.min(1,ch*1.15));nOpt={tint:c1,tk:(.2+.07*Math.sin(time*40))*(1-ch)+.86*ch};}
  else if(type==='katon'&&t>2.4&&t<3.15)nOpt={tint:[255,120,30],tk:.3+.2*Math.sin(t*50)};
  else if(type==='katon'&&t>=3.15)nOpt={tint:[28,22,26],tk:lethal?.4:.4*(1-clamp((t-3.15)/1.4,0,1))};
  else if(LA(type)&&t>=2.0)nOpt={tint:[22,4,18],tk:.5};
  else if(type==='amaterasu'&&t>=2.0)nOpt={tint:t<3.9?[22,4,18]:[28,22,26],tk:t<3.9?.5:(lethal?.4:.4*(1-clamp((t-3.9)/1.2,0,1)))};
  else if(burning&&type!=='amaterasu')nOpt={tint:[22,4,18],tk:.3+.06*Math.sin(time*6)};
- else if(!A&&outcome==='S')nOpt=burnt?{tint:[18,12,14],tk:.86}:{tint:[28,22,26],tk:.38};
+ else if(!A&&outcome==='S')nOpt=burnt?{tint:[62,48,46],tk:.8}:{tint:[28,22,26],tk:.38};
  if(A)nOpt.rot=nRotF(type,t);
  nOpt.bleed=Math.max(0,(100-hp.n)/100);
  if(A&&A.hitT!=null&&!LG(type)){const hh=t-A.hitT;if(hh>=0&&hh<.22)nOpt.sq=Math.pow(1-hh/.22,2)*(Math.min(1,(A.dmg||10)/25)*.6+.4);}
