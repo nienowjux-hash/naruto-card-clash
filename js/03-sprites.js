@@ -25,6 +25,14 @@ if(USE_SPR&&typeof sasukeRunFrame==='function'){const mk4=(fn,pal,sh)=>[0,1,2,3]
 if(USE_SPR&&typeof sasukeThrowFrame==='function'){const mkT=i=>{const gr=sasukeThrowFrame(i),a=document.createElement('canvas'),b=document.createElement('canvas');gr.draw(a,SAS2_PAL,1);gr.draw(b,Object.assign({},SAS2_PAL,SHARI),1);return{c:a,csh:b,w:56,h:80,ax:27,ay:75};};
  SPR.tw=mkT(0);SPR.tt=mkT(1);SPR.te=mkT(2);
  if(typeof lv2From==='function'&&typeof LV2_PAL!=='undefined')['tw','tt','te'].forEach((k,i)=>{const gr=lv2From(()=>sasukeThrowFrame(i))(),c=document.createElement('canvas');gr.draw(c,LV2_PAL,1);SPRL2[k]={c,w:56,h:80,ax:27,ay:75};});}
+/* Naruto de quatro (manto da Kyubi): quadros de agachar, galope e bote, escolhidos pela pose (fourKeyFor) */
+if(USE_SPR&&SPRN.four&&typeof naruFourCoil==='function'){const mkF=fn=>{const gr=fn(),a=document.createElement('canvas'),b=document.createElement('canvas');gr.draw(a,NAR_PAL,1);gr.draw(b,Object.assign({},NAR_PAL,KYU_EYES),1);return{c:a,csh:b,w:gr.w,h:gr.h,ax:48,ay:56};};
+ SPRN.fourCoil=mkF(naruFourCoil);SPRN.fourRunA=mkF(naruFourRunA);SPRN.fourRunB=mkF(naruFourRunB);SPRN.fourLunge=mkF(naruFourLunge);}
+let FOUR_REF=null;
+/* qual quadro de quatro usar: o Rasengan carrega agachado, corre em galope (2 quadros alternando) e golpeia em bote */
+function fourKeyFor(P,time){if(!SPRN.fourCoil)return'four';
+ if(!FOUR_REF){const L=[],add=(k,p)=>{if(p)L.push([k,p]);};add('four',N_READY);add('four',N_GUARD);add('four',N_SURP);add('four',N_HIT);add('four',N_STAG);add('four',N_HITB);add('fourCoil',N_COIL);add('fourCoil',N_RAS_WIND);add('fourRun',N_DASHP);add('fourRun',N_RAS_DASH);add('fourLunge',N_PUNCH);add('fourLunge',N_RAS_HIT);add('fourLunge',typeof N_UPPER!=='undefined'?N_UPPER:null);FOUR_REF=L;}
+ const k=sprPick(P,FOUR_REF);return k==='fourRun'?(Math.floor(time*13)%2?'fourRunB':'fourRunA'):k;}
 /* poses de referencia: cada pose do jogo cai no sprite cuja referencia estiver mais perto */
 let SPR_REF=null;
 function sprRefs(){if(SPR_REF)return SPR_REF;const L=[];const add=(k,...ps)=>ps.forEach(p=>{if(p)L.push([k,p]);});
@@ -56,7 +64,7 @@ function sprDraw(c,SB,S,P,R0,key,vf,sq){vf=vf||0;sq=sq||0;const dT=((P.tilt||0)-
 const sprTmp=document.createElement('canvas');sprTmp.width=96;sprTmp.height=96;const sprTx=sprTmp.getContext('2d',{willReadFrequently:true});
 const sprBig=document.createElement('canvas');sprBig.width=384;sprBig.height=384;const sprBx=sprBig.getContext('2d');
 function blitSprite(x,y,flip,P,time,o,isN){
- const key=(isN&&o.four&&SPRN.four)?'four':(isN&&o.sexy&&SPRN.sexy)?'sexy':sprPick(P,isN?sprRefsN():null),S=(isN?SPRN:(o.lv2px>0?(SPRL2[key]?SPRL2:(SPRL2.guard&&key==='idle'?{idle:SPRL2.guard}:SPR)):SPR))[key],al=o.alpha==null?1:o.alpha;
+ const key=(isN&&o.four&&SPRN.four)?((o.fourKey&&SPRN[o.fourKey])?o.fourKey:'four'):(isN&&o.sexy&&SPRN.sexy)?'sexy':sprPick(P,isN?sprRefsN():null),S=(isN?SPRN:(o.lv2px>0?(SPRL2[key]?SPRL2:(SPRL2.guard&&key==='idle'?{idle:SPRL2.guard}:SPR)):SPR))[key],al=o.alpha==null?1:o.alpha;
  sprTx.setTransform(1,0,0,1,0,0);sprTx.globalCompositeOperation='source-over';sprTx.clearRect(0,0,96,96);{const fr=(key==='run'&&S.fr)?S.fr[Math.floor(time*16+(isN?1:0))%4]:null,br=!fr&&(key==='idle'||key==='guard')&&S.cb&&Math.floor(time*1.15+(isN?.55:0))%2===1;sprTx.drawImage(fr?(o.sharingan&&fr.csh?fr.csh:fr.c):(o.sharingan&&S.csh?(br?S.cbsh:S.csh):(br?S.cb:S.c)),0,0);}
  sprTx.globalCompositeOperation='source-atop';
  if(o.light){const L=o.light;sprTx.globalAlpha=Math.min(.3,L.k*.25);sprTx.fillStyle=css(L.col,1,1);sprTx.fillRect(0,0,S.w,S.h);sprTx.globalAlpha=1;}

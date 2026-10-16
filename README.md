@@ -113,4 +113,6 @@ Disponível uma vez por luta, com a vida do Naruto em **50 ou menos** (a IA usa 
 
 No manto da Kyūbi o Naruto fica **de quatro**, como uma raposa, e o **Rasengan fica vermelho** (Rasengan da Kyūbi), infundido com o chakra dela.
 
+O Naruto de quatro tem **vários quadros** (em `pixel/naruto-fours.js`): **agacha** com o corpo baixo e a cauda enrolada enquanto a esfera cresce, **corre em galope** (dois quadros alternando, com um salto no arranque e a cauda esticada para trás) e **golpeia em bote**, com o corpo esticado e a pata à frente, vibrando enquanto mói a esfera no Sasuke. O quadro é escolhido pela pose da animação (`fourKeyFor` em `js/03-sprites.js`) e o manto (orelhas e cauda) acompanha cada um.
+
 **Fatality do Rasengan da Kyūbi:** se o Rasengan vermelho mata o Sasuke, a esfera cresce moendo o corpo inteiro, explode em vermelho e deixa um rombo maior, o corpo carbonizado com rachaduras em brasa e uma espiral queimada no chão; o Naruto volta de quatro e ruge.

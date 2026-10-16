@@ -2,7 +2,12 @@
    O Naruto continua visivel por dentro, avermelhado. Por cima vai uma casca de chakra translucida que acompanha a silhueta
    do proprio sprite, com borda borbulhante (escura por fora, clara por dentro), duas orelhas de raposa e uma cauda grossa
    que sai do quadril e curva para cima. E gerado do alfa do sprite e guardado em cache: 4 quadros que se alternam. */
-const KYU_HINT={four:{ears:[[52,9],[63,8]],tail:[14,20]},def:{ears:[[22,7],[34,6]],tail:[14,46],tailPts:[[0,0],[-10,-8],[-14,-24],[-8,-40],[4,-46]]}};
+const KYU_HINT={four:{ears:[[52,9],[63,8]],tail:[14,20]},
+ fourCoil:{ears:[[58,14],[69,13]],tail:[22,18]},
+ fourRunA:{ears:[[60,7],[71,6]],tail:[22,19],tailPts:[[0,0],[-9,-4],[-20,-7],[-32,-8],[-44,-5]]},
+ fourRunB:{ears:[[58,11],[69,10]],tail:[18,21],tailPts:[[0,0],[-9,-5],[-20,-9],[-32,-10],[-44,-7]]},
+ fourLunge:{ears:[[60,7],[71,6]],tail:[18,22],tailPts:[[0,0],[-9,-5],[-20,-9],[-32,-11],[-44,-9]]},
+def:{ears:[[22,7],[34,6]],tail:[14,46],tailPts:[[0,0],[-10,-8],[-14,-24],[-8,-40],[4,-46]]}};
 const kyuCache={};
 function buildCloak(S,hint,fr){const P=34,W=S.w+P*2,H=S.h+P*2,cx=S.c.getContext('2d').getImageData(0,0,S.w,S.h).data;
  const body=new Uint8Array(W*H);for(let y=0;y<S.h;y++)for(let x=0;x<S.w;x++)if(cx[(y*S.w+x)*4+3]>0)body[(y+P)*W+x+P]=1;
