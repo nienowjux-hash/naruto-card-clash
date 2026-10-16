@@ -175,4 +175,4 @@ Kit: Kunai, Shuriken, Soco, Chute, Kawarimi, Defender, Concentrar e Itens (iguai
 - **Cura Médica** (12 de chakra): recupera 30 de vida; **Cura Intensiva** (30 de chakra, aprende com 4 pontos): recupera 65.
 - **Shannarō! Soco de Chakra** (14 de chakra, 3 pontos, nível 6): 28 de dano, onda de choque e rachaduras no chão.
 Afinidade: Terra (Yin). Tem árvore, nível, XP e equipamentos próprios. `js/20-sakura.js` guarda os golpes e efeitos dela.
-
+- **Passiva, Dissipação de Genjutsu (Kai):** a Sakura cancela na hora ilusões inimigas (Oiroke e Harem do Naruto nunca a deixam sem turno).
