@@ -596,7 +596,7 @@ if(USE_SPR){const mkS=(fn,pal,ax,ay)=>{const gr=fn(),c=document.createElement('c
  SPR.idle=mkS(sasukeIdle,SAS_PAL,27,75);SPR.guard=mkS(sasukeGuard,SAS2_PAL,27,75);SPR.punch=mkS(sasukePunch,SAS2_PAL,27,75);
  SPR.hit=mkS(sasukeHit,SAS2_PAL,25,75);SPR.down=mkS(sasukeDown,SAS2_PAL,40,45);SPR.kick=mkS(sasukeKick,SAS2_PAL,22,75);
  SPR.seal=mkS(sasukeSeal,SAS2_PAL,27,75);SPR.chidori=mkS(sasukeChidori,SAS2_PAL,27,75);SPR.katon=mkS(sasukeKaton,SAS2_PAL,27,75);SPR.block=mkS(sasukeBlock,SAS2_PAL,27,75);SPR.log=mkS(sasukeLog,SAS2_PAL,28,70);}
-const SPRN={};if(USE_SPR&&typeof naruGuard==='function'){const mkN=(fn,ax,ay)=>{const gr=fn(),c=document.createElement('canvas');gr.draw(c,NAR_PAL,1);return{c,w:gr.w,h:gr.h,ax,ay};};SPRN.guard=mkN(naruGuard,27,75);SPRN.punch=mkN(naruPunch,27,75);SPRN.hit=mkN(naruHit,25,75);SPRN.down=mkN(naruDown,40,45);SPRN.kick=mkN(naruKick,22,75);SPRN.seal=mkN(naruSeal,27,75);SPRN.block=mkN(naruBlock,27,75);}
+const SPRN={};if(USE_SPR&&typeof naruGuard==='function'){const mkN=(fn,ax,ay)=>{const gr=fn(),c=document.createElement('canvas');gr.draw(c,NAR_PAL,1);return{c,w:gr.w,h:gr.h,ax,ay};};SPRN.guard=mkN(naruGuard,27,75);SPRN.punch=mkN(naruPunch,27,75);SPRN.hit=mkN(naruHit,25,75);SPRN.down=mkN(naruDown,40,45);SPRN.kick=mkN(naruKick,22,75);SPRN.seal=mkN(naruSeal,27,75);SPRN.block=mkN(naruBlock,27,75);if(typeof naruCharge==='function')SPRN.charge=mkN(naruCharge,27,75);}
 /* poses de referencia: cada pose do jogo cai no sprite cuja referencia estiver mais perto */
 let SPR_REF=null;
 function sprRefs(){if(SPR_REF)return SPR_REF;const L=[];const add=(k,...ps)=>ps.forEach(p=>{if(p)L.push([k,p]);});
@@ -610,10 +610,10 @@ function sprRefs(){if(SPR_REF)return SPR_REF;const L=[];const add=(k,...ps)=>ps.
  add('down',S_DOWN);
  return SPR_REF=L;}
 let SPRN_REF=null;function sprRefsN(){if(SPRN_REF)return SPRN_REF;const L=[],add=(k,...ps)=>ps.forEach(p=>{if(p)L.push([k,p]);}),d=n=>typeof window[n]!=='undefined'?window[n]:null;
- add('guard',N_READY,N_GUARD,N_COIL,N_SURP,N_VICT,d('N_JUMP'),d('N_AIR'),d('N_AIR2'));add('block',d('N_GUARD'));add('seal',d('N_SEAL'));add('punch',N_DASHP,N_PUNCH,N_UPPER,d('N_RAS_WIND'),d('N_RAS_DASH'),d('N_RAS_HIT'));add('hit',N_HIT,N_STAG,N_HITB,N_BURN1,N_BURN2);add('down',N_DOWN);return SPRN_REF=L;}
+ add('guard',N_READY,N_GUARD,N_COIL,N_SURP,N_VICT,d('N_JUMP'),d('N_AIR'),d('N_AIR2'));add('block',d('N_GUARD'));add('seal',d('N_SEAL'));add('charge',d('N_RAS_WIND'));add('punch',N_DASHP,N_PUNCH,N_UPPER,d('N_RAS_WIND'),d('N_RAS_DASH'),d('N_RAS_HIT'));add('hit',N_HIT,N_STAG,N_HITB,N_BURN1,N_BURN2);add('down',N_DOWN);return SPRN_REF=L;}
 const SPR_W={hxF:1,hyF:1,hxB:.6,hyB:.6,ffx:.9,ffy:1.4,fbx:.6,fby:1,crouch:1.2,lean:.8,tilt:30,hr:6};
 function sprPick(P,refs){let best='guard',bd=1e9;for(const [k,R0] of (refs||sprRefs())){let d=0;for(const q in SPR_W){const v=(P[q]||0)-(R0[q]||0);d+=SPR_W[q]*v*v;}if(d<bd){bd=d;best=k;}}return best;}
-const sprTmp=document.createElement('canvas');sprTmp.width=96;sprTmp.height=96;const sprTx=sprTmp.getContext('2d');
+const sprTmp=document.createElement('canvas');sprTmp.width=96;sprTmp.height=96;const sprTx=sprTmp.getContext('2d',{willReadFrequently:true});
 function blitSprite(x,y,flip,P,time,o,isN){
  const key=sprPick(P,isN?sprRefsN():null),S=(isN?SPRN:SPR)[key],al=o.alpha==null?1:o.alpha;
  sprTx.setTransform(1,0,0,1,0,0);sprTx.globalCompositeOperation='source-over';sprTx.clearRect(0,0,96,96);sprTx.drawImage(S.c,0,0);
@@ -621,7 +621,27 @@ function blitSprite(x,y,flip,P,time,o,isN){
  if(o.light){const L=o.light;sprTx.globalAlpha=Math.min(.3,L.k*.25);sprTx.fillStyle=css(L.col,1,1);sprTx.fillRect(0,0,S.w,S.h);sprTx.globalAlpha=1;}
  if(o.tint){sprTx.fillStyle=css(o.tint,1,o.tk);sprTx.fillRect(0,0,S.w,S.h);}
  sprTx.globalCompositeOperation='source-over';
- const ys=key==='down'?0:0;
+ /* efeitos especiais em pixel art, aplicados direto nos pixels do sprite */
+ if(o.cracks>0||o.curse>0||o.hole||o.dissolve>0||P.torn||P.nohead){
+  const id=sprTx.getImageData(0,0,S.w,S.h),d=id.data,W2=S.w,H2=S.h,down=key==='down',hsh=(a,b)=>((a*73856093)^(b*19349663))>>>0;
+  const isSkin=i=>d[i]>200&&d[i+1]>130&&d[i+1]<215&&d[i+2]>80&&d[i+2]<190&&d[i]-d[i+2]>50;
+  const cx=down?30:28,cy=down?38:37; /* centro do peito no sprite */
+  for(let yy=0;yy<H2;yy++)for(let xx=0;xx<W2;xx++){const i=(yy*W2+xx)*4;if(d[i+3]===0)continue;const h=hsh(xx,yy)%1000/1000;
+   /* sem cabeca (decapitado): apaga tudo acima do pescoco */
+   if(P.nohead&&(down?xx<17:yy<25)){d[i+3]=0;continue;}
+   /* carbonizado: rachaduras incandescentes por cima da tinta escura */
+   if(o.cracks>0&&h<.09*o.cracks&&((xx+yy)%3===0)){d[i]=255;d[i+1]=110+(h*900|0)%80;d[i+2]=30;}
+   /* marcas do selo amaldicoado: riscos pretos so na pele */
+   if(o.curse>0&&isSkin(i)&&((hsh(xx>>1,yy)%7)<2)&&h<o.curse){d[i]=10;d[i+1]=6;d[i+2]=14;}
+   /* roupa rasgada no peito: pele com sangue */
+   if(P.torn){const dx=xx-cx,dy=yy-cy;if(dx*dx/30+dy*dy/22<1){d[i]=h<.25?150:236;d[i+1]=h<.25?16:178;d[i+2]=h<.25?24:140;}}
+   /* buraco do Chidori: furo irregular com borda vermelha */
+   if(o.hole){const dx=xx-cx,dy=yy-cy,rr=(dx*dx+dy*dy)/(2.6*o.hole*2.6*o.hole)*(.8+h*.4);if(rr<1){d[i+3]=0;continue;}if(rr<1.9){d[i]=rr<1.4?60:150;d[i+1]=rr<1.4?4:14;d[i+2]=rr<1.4?10:22;}}
+   /* virando cinzas: some de cima para baixo em pixels */
+   if(o.dissolve>0&&h<o.dissolve*1.55-(yy/H2)*.55){d[i+3]=0;continue;}
+  }
+  sprTx.putImageData(id,0,0);}
+ const ys=0;
  g.save();g.imageSmoothingEnabled=false;
  if(!o.noRefl&&!o.rot){g.save();g.translate(x,GY);g.scale(flip?-1:1,-.5);g.globalAlpha=.16*al;g.drawImage(sprTmp,0,0,S.w,S.h,-S.ax,-S.ay,S.w,S.h);g.restore();}
  if(o.vel&&!o.rot&&Math.abs(o.vel)>160){const dir=Math.sign(o.vel),va=Math.min(Math.abs(o.vel),900),ka=Math.min(1,(Math.abs(o.vel)-160)/220);for(let i=3;i>=1;i--){g.save();g.translate(x-dir*va*.011*i,y);g.scale(flip?-1:1,1);g.globalAlpha=al*(.34-.09*i)*ka;g.drawImage(sprTmp,0,0,S.w,S.h,-S.ax,-S.ay+ys,S.w,S.h);g.restore();}}
@@ -629,7 +649,7 @@ function blitSprite(x,y,flip,P,time,o,isN){
  g.drawImage(sprTmp,0,0,S.w,S.h,-S.ax,-S.ay+ys,S.w,S.h);
  g.restore();
  return rigW(P);}
-function blit(x,y,flip,d,P,time,o){o=o||{};if(USE_SPR&&(d===SASUKE||(d===NARUTO&&SPRN.guard))&&!(o.lv2>0||o.curse>0||o.cracks>0||o.hole||o.dissolve)&&!P.torn&&!P.nohead&&!(P.turn>0))return blitSprite(x,y,flip,P,time,o,d===NARUTO);if(o.lv2>0&&d.style==='s')d=lvDef(o.lv2);
+function blit(x,y,flip,d,P,time,o){o=o||{};if(USE_SPR&&(d===SASUKE||(d===NARUTO&&SPRN.guard))&&!(o.lv2>0))return blitSprite(x,y,flip,P,time,o,d===NARUTO);if(o.lv2>0&&d.style==='s')d=lvDef(o.lv2);
  const cq=clamp(P.crouch-3,-4,6),fast=(P.tilt||0)>.25?1:0,sxq=1+cq*.006+fast*.045,syq=1-cq*.007-fast*.025;
  sc.setTransform(1,0,0,1,0,0);sc.clearRect(0,0,spW,spH);sc.globalCompositeOperation='source-over';
  if(o.lv2>0)drawWings(sc,P,o.lv2h!=null?o.lv2h:o.lv2,time);sc.setTransform(SR,0,0,SR,OXU*SR,OYU*SR);const r=drawFig(sc,d,P,time);drawDecals(sc,d,P,time);
@@ -2060,7 +2080,11 @@ function gait(P,x,face,v,ground,time,idle,ph0,gs){
  else if(gs)gs.c=null;
  return o;}
 /* Fatality do Kawarimi: kunai, rastro do corte, fonte de sangue no pescoco, cabeca voando e caindo na agua. */
+let NHEAD_SPR=null;
 function drawFlyHead(g,x,y,rot,P,time){
+ if(USE_SPR&&typeof naruHead==='function'){ /* cabeca em pixel art, com o corte de sangue no pescoco */
+  if(!NHEAD_SPR){const gr=PixGrid(44,26);naruHead(gr,2,4,{shut:true});gr.outline('K');for(let x2=12;x2<32;x2++){if(gr.G[24]&&gr.G[24][x2]!=='.')gr.G[24][x2]='R';}const c=document.createElement('canvas');gr.draw(c,NAR_PAL,1);NHEAD_SPR=c;}
+  g.save();g.translate(x,y);g.rotate(rot);g.scale(-1,1);g.imageSmoothingEnabled=false;g.drawImage(NHEAD_SPR,-27,-14);g.restore();return;}
  g.save();g.translate(x,y);g.rotate(rot);g.scale(-BS,BS);
  const Pf=Object.assign({},P,{hr:0,hix:0,hiy:0,turn:0,nohead:0});drawHead(g,NARUTO,Pf,{C:[0,0]},time);
  g.fillStyle='rgba(135,8,16,.95)';g.beginPath();g.ellipse(.6,6.6,2.1,.9,0,0,TAU);g.fill();g.fillStyle='rgba(205,30,40,.9)';g.beginPath();g.ellipse(.6,6.5,1.1,.45,0,0,TAU);g.fill();
@@ -2350,9 +2374,10 @@ function logShape(c){const g1=c.createLinearGradient(-6,0,6,0);g1.addColorStop(0
  c.fillStyle='#d9a96a';c.beginPath();c.ellipse(0,-34,6,2.1,0,0,TAU);c.fill();c.strokeStyle='#7a4a24';c.lineWidth=.4;c.beginPath();c.ellipse(0,-34,3.6,1.2,0,0,TAU);c.stroke();c.beginPath();c.ellipse(0,-34,1.4,.5,0,0,TAU);c.stroke();
  c.strokeStyle='#d8c08a';c.lineWidth=1.4;c.beginPath();c.moveTo(-6,-22);c.lineTo(6,-20);c.moveTo(-6,-14);c.lineTo(6,-12);c.stroke();c.strokeStyle='#7a6030';c.lineWidth=.3;c.stroke();}
 function drawLog(c,x,t){const age=t-1.62;if(age<0)return;
- if(age<.16){c.save();c.translate(x+Math.sin(age*90)*1.3,GY);logShape(c);c.restore();return;}
+ const LS=USE_SPR&&SPR.log,logD=c=>{if(LS){c.imageSmoothingEnabled=false;c.drawImage(SPR.log.c,-SPR.log.ax,-SPR.log.ay);}else logShape(c);},cw=LS?16:12,ch=LS?80:40;
+ if(age<.16){c.save();c.translate(x+Math.sin(age*90)*1.3,GY);logD(c);c.restore();return;}
  const q=age-.16,al=clamp(1.2-q/1.0,0,1);if(al<=0)return;c.globalAlpha=al;
- for(const sd of [-1,1]){c.save();c.translate(x+sd*(2+q*46),GY-Math.sin(Math.min(1,q/.6)*Math.PI)*12*(1)+Math.max(0,q-.6)*0);c.rotate(sd*q*3.4);c.beginPath();if(sd<0)c.rect(-12,-40,12,44);else c.rect(0,-40,12,44);c.clip();logShape(c);c.restore();}
+ for(const sd of [-1,1]){c.save();c.translate(x+sd*(2+q*46),GY-Math.sin(Math.min(1,q/.6)*Math.PI)*12*(1)+Math.max(0,q-.6)*0);c.rotate(sd*q*3.4);c.beginPath();if(sd<0)c.rect(-cw,-ch,cw,ch+4);else c.rect(0,-ch,cw,ch+4);c.clip();logD(c);c.restore();}
  const r2=R(5);for(let i=0;i<16;i++){const an=-Math.PI/2+(r2()-.5)*2.6,sp=30+r2()*70,px=x+Math.cos(an)*sp*q,py=GY-16+Math.sin(an)*sp*q+140*q*q;if(py>GY+3)continue;c.save();c.translate(px,py);c.rotate(q*10+i);c.fillStyle=i%2?'#9a6a36':'#5a3414';c.fillRect(-1.2,-.6,2.4,1.2);c.restore();}
  c.globalAlpha=1;}
 function rasengan(c,x,y,r,time,fr,al){c.save();c.globalAlpha=al==null?1:al;c.globalCompositeOperation='lighter';
