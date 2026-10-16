@@ -377,12 +377,13 @@ const PORTRAIT_CACHE={};
 function portraitKind(id,d){return id==='ptG'?'demgozu':id==='ptM'?'demmeizu':id==='ptN'?((typeof nSkin==='function'&&nSkin())?'dem'+nSkin():'nar'):id==='ptK'?'sak':id==='ptKa'?'kak':id==='ptS0'?'sas':(d===SASUKE?({sakura:'sak',kakashi:'kak'}[heroS]||'sas'):'lv2');}
 function portrait(id,d,P){
  const cvp=$(id),c=cvp.getContext('2d'),kind=portraitKind(id,d);
+ if(!PORTRAIT_CACHE[kind]&&kind==='demlobo'){const gr=ninkenGrid('lobo','bite',0),src=document.createElement('canvas');gr.draw(src,Object.assign({},NINKEN_PAL,NINKEN_KIND.lobo),1);PORTRAIT_CACHE[kind]={src,x0:17,y0:0,w:19,h:16};}
  if(!PORTRAIT_CACHE[kind]){
   const g=PixGrid(60,48),ox=10,oy=14;
-  if(kind==='nar'||kind.slice(0,3)==='dem'){(kind==='nar'?naruHead:DEMON_SKIN[kind.slice(3)].head)(g,ox,oy,{});g.poly([[ox+8,oy+19],[ox+34,oy+19],[ox+40,oy+30],[ox+2,oy+30]],'O');g.poly([[ox+13,oy+18],[ox+29,oy+18],[ox+25,oy+24],[ox+17,oy+24]],'S');g.poly([[ox+8,oy+19],[ox+34,oy+19],[ox+34,oy+22],[ox+8,oy+22]],'N');}
+  if(kind==='nar'||kind.slice(0,3)==='dem'){(kind==='nar'?naruHead:Object.assign({},DEMON_SKIN,COMMON_SKIN)[kind.slice(3)].head)(g,ox,oy,{});g.poly([[ox+8,oy+19],[ox+34,oy+19],[ox+40,oy+30],[ox+2,oy+30]],'O');g.poly([[ox+13,oy+18],[ox+29,oy+18],[ox+25,oy+24],[ox+17,oy+24]],'S');g.poly([[ox+8,oy+19],[ox+34,oy+19],[ox+34,oy+22],[ox+8,oy+22]],'N');}
   else{(kind==='lv2'?lv2Head:kind==='sak'?sakuraHead:kind==='kak'?kakashiHead:putHead)(g,ox,oy,{});g.poly([[ox+8,oy+19],[ox+34,oy+19],[ox+40,oy+30],[ox+2,oy+30]],'C');g.poly([[ox+13,oy+18],[ox+29,oy+18],[ox+25,oy+24],[ox+17,oy+24]],'S');g.poly([[ox+8,oy+19],[ox+34,oy+19],[ox+34,oy+22],[ox+8,oy+22]],'c');}
   let x0=99,x1=0,y0=99,y1=0;for(let y=0;y<g.h;y++)for(let x=0;x<g.w;x++)if(g.G[y][x]!=='.'){if(x<x0)x0=x;if(x>x1)x1=x;if(y<y0)y0=y;if(y>y1)y1=y;}
-  const src=document.createElement('canvas');g.draw(src,kind.slice(0,3)==='dem'?DEMON_SKIN[kind.slice(3)].pal:kind==='nar'?NAR_PAL:kind==='lv2'?LV2_PAL:kind==='sak'?SAK_PAL:kind==='kak'?KAK_PAL:Object.assign({},SAS2_PAL,SHARI),1);
+  const src=document.createElement('canvas');g.draw(src,kind.slice(0,3)==='dem'?Object.assign({},DEMON_SKIN,COMMON_SKIN)[kind.slice(3)].pal:kind==='nar'?NAR_PAL:kind==='lv2'?LV2_PAL:kind==='sak'?SAK_PAL:kind==='kak'?KAK_PAL:Object.assign({},SAS2_PAL,SHARI),1);
   PORTRAIT_CACHE[kind]={src,x0,y0,w:x1-x0+1,h:y1-y0+1};}
  const p=PORTRAIT_CACHE[kind];c.clearRect(0,0,96,96);c.imageSmoothingEnabled=false;
  c.fillStyle=kind.slice(0,3)==='dem'?'#262e3c':kind==='nar'?'#3a2a14':kind==='sak'?'#3a1a2e':kind==='kak'?'#1c2a38':'#1b1a3a';c.fillRect(0,0,96,96);

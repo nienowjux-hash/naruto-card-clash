@@ -8,9 +8,10 @@ const NINKEN_KIND={
  pug:{T:'#b38a4c',t:'#8a6630',D:'#3a281a',L:'#e2cd9c'},
  shiba:{T:'#de8c30',t:'#b0601a',D:'#7a3e10',L:'#f6ecd8'},
  gray:{T:'#9a9aa2',t:'#70707a',D:'#40404a',L:'#dcdce2'},
+ lobo:{T:'#8a8e96',t:'#5c6068',D:'#2c2e34',L:'#d8dade'},
  pup:{T:'#c09254',t:'#966a34',D:'#5a3c1e',L:'#ecdcb2'}};
 function ninkenGrid(kind,pose,jaw){
- const g=PixGrid(36,24),bull=kind==='bull',pug=kind==='pug'||kind==='pup',shiba=kind==='shiba',leap=pose==='leap';
+ const g=PixGrid(36,24),bull=kind==='bull',pug=kind==='pug'||kind==='pup',shiba=kind==='shiba'||kind==='lobo',wolf=kind==='lobo',leap=pose==='leap';
  /* cauda */
  const tail=shiba||pug?[[4,10],[2,8],[3,5],[5,4]]:[[4,11],[2,8],[1,5]];
  for(let i=0;i<tail.length-1;i++){g.line(tail[i][0],tail[i][1],tail[i+1][0],tail[i+1][1],'T');g.line(tail[i][0]+1,tail[i][1],tail[i+1][0]+1,tail[i+1][1],'T');}
@@ -25,8 +26,9 @@ function ninkenGrid(kind,pose,jaw){
  if(!leap){g.put(6,22,'LLLL');g.put(11,22,'LLL');g.put(19,22,'LLL');g.put(23,22,'LLL');}else{g.put(2,19,'LL');g.put(33,18,'LL');g.put(30,20,'LL');g.put(5,21,'L');}
  g.shade([[4,14],[24,14],[24,20],[4,20]],['T'],'t');
  /* colete ninja azul com friso */
- g.poly([[16,7],[21,8],[21,16],[16,16]],'B');g.poly([[16,13],[21,13],[21,16],[16,16]],'b');g.line(16,7,21,8,'M');
- if(shiba){g.put(17,10,'MM');}
+ if(!wolf){g.poly([[16,7],[21,8],[21,16],[16,16]],'B');g.poly([[16,13],[21,13],[21,16],[16,16]],'b');g.line(16,7,21,8,'M');}
+ if(shiba&&!wolf){g.put(17,10,'MM');}
+ if(wolf){g.put(17,9,'LL');g.put(18,11,'LL');g.put(16,8,'tt');}
  /* pescoco e cabeca */
  g.ell(22,9,bull?5:4,bull?6:5,'T');
  g.ell(26.5,8,bull?5.4:4.7,bull?4.8:4.3,'T');
@@ -43,11 +45,11 @@ function ninkenGrid(kind,pose,jaw){
  g.put(jx-3,10,'W');g.put(jx-1,10,'W');
  if(j>0){g.put(jx-3,11+Math.round(dy*.9),'W');g.put(jx-1,11+Math.round(dy),'W');}
  /* orelha */
- if(shiba)g.poly([[23,5],[24,-1],[28,4]],'D');else g.poly([[22,3],[26,2],[27,7],[23,8]],'D');
+ if(wolf){g.poly([[22,5],[24,-3],[28,4]],'D');g.poly([[25,5],[27,-2],[30,5]],'t');}else if(shiba)g.poly([[23,5],[24,-1],[28,4]],'D');else g.poly([[22,3],[26,2],[27,7],[23,8]],'D');
  /* olho */
  g.put(29,6,'WE');g.put(29,7,'EE');if(bull)g.put(28,5,'KKK');
  /* testeira ninja: faixa azul com placa de metal */
- g.poly([[21,5],[30,4],[30,6],[21,7]],'B');g.line(21,7,30,6,'b');g.poly([[24,4],[27,4],[27,7],[24,7]],'M');g.line(24,7,27,7,'m');
+ if(!wolf){g.poly([[21,5],[30,4],[30,6],[21,7]],'B');g.line(21,7,30,6,'b');g.poly([[24,4],[27,4],[27,7],[24,7]],'M');g.line(24,7,27,7,'m');}
  /* coleira de espinhos (Bull) */
  if(bull){g.poly([[19,5],[23,5],[24,13],[20,14]],'S');for(const [x,y] of [[18,5],[18,8],[18,11],[19,13],[23,3],[22,2]])g.put(x,y,'s');}
  if(pug)g.put(31,5,'tt'.replace(/t/g,'D'));

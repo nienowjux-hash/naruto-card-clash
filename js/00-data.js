@@ -190,7 +190,8 @@ const TEST_UNLOCK_KAKASHI=false;
 try{if(localStorage.getItem('kakashiResetV')!=='1'){const d=progDefault().kakashi;PROG.kakashi=d;localStorage.setItem(PROG_KEY,JSON.stringify(PROG));localStorage.setItem('kakashiResetV','1');}}catch(e){}
 if(TEST_UNLOCK_KAKASHI){const P=PROG.kakashi;P.level=Math.max(P.level,25);for(const n of TREES.kakashi)if(!P.learned.includes(n.id))P.learned.push(n.id);}
 /* MODO TESTE: Gozu e Meizu jogaveis, ja no nivel 30 e com todos os golpes. Para voltar ao normal, ponha false. */
-const TEST_UNLOCK_DEMONS=true;
+const TEST_UNLOCK_DEMONS=false;
+try{if(localStorage.getItem('demonsResetV')!=='1'){for(const c of ['gozu','meizu'])PROG[c]=progDefault()[c];localStorage.setItem(PROG_KEY,JSON.stringify(PROG));localStorage.setItem('demonsResetV','1');}}catch(e){}
 if(TEST_UNLOCK_DEMONS)for(const c of ['gozu','meizu']){const P=PROG[c];P.level=Math.max(P.level,30);for(const n of TREES[c])if(!P.learned.includes(n.id))P.learned.push(n.id);}
 autoLearn();
 /* golpes com auto:1 (jutsus raros bloqueados por nivel) entram sozinhos quando o personagem chega no nivel deles */
@@ -273,11 +274,14 @@ const NODES={
  floresta:{name:'Floresta da Morte',kind:'luta',x:550,y:160,scene:'floresta',lvl:10,xp:55,ryo:90,enc:{name:'Ninja Perdido',afin:['agua']},d:'Mata densa e perigosa. Quem entra sem preparo raramente volta.'},
  deserto:{name:'Deserto do Vento',kind:'luta',x:540,y:480,scene:'deserto',lvl:15,xp:100,ryo:120,enc:{name:'Ninja da Areia',afin:['terra']},d:'Dunas sem fim e um calor que drena o chakra.'},
  neve:{name:'Passo Nevado',kind:'luta',x:810,y:500,scene:'neve',lvl:20,xp:160,ryo:160,enc:{name:'Guardião do Gelo',afin:['gelo']},d:'Um desfiladeiro congelado vigiado por um ninja de gelo.'},
- ondas:{name:'País das Ondas',kind:'luta',x:195,y:572,scene:'ondas',lvl:3,xp:22,ryo:50,enc:{name:'Gozu (Irmãos Demônios)',afin:['agua'],skin:'gozu'},d:'A primeira missão do Time 7: escoltar o construtor de pontes Tazuna. Dois ninjas renegados de Kirigakure emboscam o grupo na neblina, ligados por uma corrente com garras envenenadas. Este é o Gozu.'},
+ bosque:{name:'Trilha do Bosque',kind:'luta',x:150,y:410,scene:'floresta',lvl:1,xp:14,ryo:30,enc:{name:'Lobo Selvagem',afin:['terra'],skin:'lobo'},d:'O caminho para o País das Ondas começa por um bosque fechado. Lobos famintos rondam a trilha.'},
+ estrada:{name:'Estrada de Terra',kind:'luta',x:112,y:485,scene:'treino',lvl:2,xp:20,ryo:45,enc:{name:'Bandido da Estrada',afin:['terra'],skin:'bandido'},d:'Uma estrada deserta onde bandidos assaltam viajantes. Eles não são ninjas, mas lutam sujo.'},
+ acampamento:{name:'Acampamento Abandonado',kind:'luta',x:140,y:560,scene:'floresta',lvl:3,xp:26,ryo:60,enc:{name:'Ninja Renegado',afin:['vento'],skin:'renegado'},d:'Restos de fogueira e barracas rasgadas. Um ninja desertor se esconde ali, atrás de quem passa.'},
+ ondas:{name:'País das Ondas',kind:'luta',x:225,y:585,scene:'ondas',lvl:3,xp:22,ryo:50,enc:{name:'Gozu (Irmãos Demônios)',afin:['agua'],skin:'gozu'},d:'A primeira missão do Time 7: escoltar o construtor de pontes Tazuna. Dois ninjas renegados de Kirigakure emboscam o grupo na neblina, ligados por uma corrente com garras envenenadas. Este é o Gozu.'},
  ondas2:{name:'Estrada do Tazuna',kind:'luta',x:318,y:592,scene:'ondas',lvl:4,xp:30,ryo:60,enc:{name:'Meizu (Irmãos Demônios)',afin:['agua'],skin:'meizu'},d:'O outro Irmão Demônio, Meizu, avança com a manopla de garras envenenadas. Depois deles, só resta a Grande Ponte.'},
  ponte:{name:'Grande Ponte',kind:'chefe',x:428,y:588,scene:'ondas',lvl:8,xp:75,ryo:140,enc:{name:'Zabuza Momochi',afin:['agua']},d:'A ponte em construção coberta de neblina. O Demônio da Névoa de Kirigakure, Zabuza Momochi, espera com sua espada gigante.'},
  vale:{name:'Vale do Fim',kind:'chefe',x:985,y:285,scene:'vale',lvl:30,xp:315,ryo:300,enc:{name:'Rival Final',afin:null},d:'O local do confronto final, entre as estátuas e a cachoeira.'}};
-const EDGES=[['konoha','treino'],['konoha','ondas'],['ondas','ondas2'],['ondas2','ponte'],['treino','floresta'],['treino','deserto'],['floresta','vale'],['deserto','neve'],['neve','vale']];
+const EDGES=[['konoha','treino'],['konoha','bosque'],['bosque','estrada'],['estrada','acampamento'],['acampamento','ondas'],['ondas','ondas2'],['ondas2','ponte'],['treino','floresta'],['treino','deserto'],['floresta','vale'],['deserto','neve'],['neve','vale']];
 const CAMP_KEY='rpgCampV1';
 let CAMP={cleared:['konoha'],at:'konoha',active:null};
 try{const j=JSON.parse(localStorage.getItem(CAMP_KEY)||'null');if(j){CAMP.cleared=j.cleared||CAMP.cleared;CAMP.at=j.at||CAMP.at;CAMP.active=j.active||null;}}catch(e){}

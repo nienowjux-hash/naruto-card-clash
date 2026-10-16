@@ -215,3 +215,10 @@ O segundo irmão é desenhado por `blit(..., {skin})`; o corpo cortado usa a op�
 - **Manopla desenhada no corpo** (`pixel/kirigakure.js`, `demonGauntlet`): luva de aço com três garras venenosas (pontas verdes), no braço direito do Gozu (o de perto) e no esquerdo do Meizu (o de longe).
 - **Jogáveis no mapa** (botões Gozu e Meizu na equipe): jogam do lado da direita com a tela espelhada, como o Naruto, com menu próprio (`showDemonMenu` em `js/22-demonios.js`) com Kunai, Shuriken, Soco, Chute e os cinco golpes deles (cada um com seu fatality), Defender, Concentrar, itens e Kawarimi. O outro irmão aparece nos golpes de dupla. O adversário é o Sasuke (IA).
 - **Modo teste:** `TEST_UNLOCK_DEMONS=true` em `js/00-data.js` deixa os dois no nível 30 com todos os golpes; ponha `false` para voltar ao normal (depois o nível sobe jogando e os golpes liberam por nível: Shunshin 1, Garras 2, Suigakure 3, Kusari 5, Instinto 10).
+
+## Caminho para o País das Ondas (inimigos comuns)
+Konoha → Trilha do Bosque (Lobo Selvagem, Nv 1) → Estrada de Terra (Bandido, Nv 2) → Acampamento Abandonado (Ninja Renegado, Nv 3) → País das Ondas. Locais concluídos podem ser jogados de novo para juntar XP.
+- Bandido e Ninja Renegado: `pixel/comuns.js` (`COMMON_SKIN`, mesma técnica de skin dos Irmãos Demônios).
+- Lobo: sem pose humana; `SPRE.lobo` (js/03-sprites.js) troca o corpo por quadros do lobo de `pixel/ninken.js` (kind `lobo`).
+- Só Gozu/Meizu usam a IA `demonPick`; os outros usam a IA normal com o kit limitado pelo nível do local.
+- Gozu e Meizu voltaram ao nível 1 (reset único `demonsResetV`; `TEST_UNLOCK_DEMONS=false`).
