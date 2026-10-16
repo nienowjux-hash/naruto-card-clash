@@ -593,18 +593,19 @@ let USE_SPR=typeof PixGrid==='function';
 try{if(localStorage.getItem('sasukeSprites')==='0')USE_SPR=false;}catch(e){}
 const SPR={};
 if(USE_SPR){const mkS=(fn,pal,ax,ay)=>{const gr=fn(),c=document.createElement('canvas');gr.draw(c,pal,1);return{c,w:gr.w,h:gr.h,ax,ay};};
- SPR.idle=mkS(sasukeIdle,SAS_PAL,27,75);SPR.guard=mkS(sasukeGuard,SAS2_PAL,27,75);SPR.punch=mkS(sasukePunch,SAS2_PAL,27,75);if(typeof sasukePunchWind==='function')SPR.pw=mkS(sasukePunchWind,SAS2_PAL,27,75);
+ SPR.idle=mkS(sasukeIdle,SAS_PAL,27,75);SPR.guard=mkS(sasukeGuard,SAS2_PAL,27,75);SPR.punch=mkS(sasukePunch,SAS2_PAL,27,75);if(typeof sasukePunchWind==='function')SPR.pw=mkS(sasukePunchWind,SAS2_PAL,27,75);if(typeof sasukeKickWind==='function')SPR.kw=mkS(sasukeKickWind,SAS2_PAL,27,75);
  SPR.hit=mkS(sasukeHit,SAS2_PAL,25,75);SPR.down=mkS(sasukeDown,SAS2_PAL,40,45);SPR.kick=mkS(sasukeKick,SAS2_PAL,22,75);
  SPR.seal=mkS(sasukeSeal,SAS2_PAL,27,75);SPR.chidori=mkS(sasukeChidori,SAS2_PAL,27,75);SPR.katon=mkS(sasukeKaton,SAS2_PAL,27,75);SPR.block=mkS(sasukeBlock,SAS2_PAL,27,75);SPR.log=mkS(sasukeLog,SAS2_PAL,28,70);}
 const SPRN={};if(USE_SPR&&typeof naruGuard==='function'){const mkN=(fn,ax,ay)=>{const gr=fn(),c=document.createElement('canvas');gr.draw(c,NAR_PAL,1);return{c,w:gr.w,h:gr.h,ax,ay};};SPRN.guard=mkN(naruGuard,27,75);SPRN.punch=mkN(naruPunch,27,75);SPRN.hit=mkN(naruHit,25,75);SPRN.down=mkN(naruDown,40,45);SPRN.kick=mkN(naruKick,22,75);SPRN.seal=mkN(naruSeal,27,75);SPRN.block=mkN(naruBlock,27,75);if(typeof naruCharge==='function')SPRN.charge=mkN(naruCharge,27,75);}
 /* poses de referencia: cada pose do jogo cai no sprite cuja referencia estiver mais perto */
 let SPR_REF=null;
 function sprRefs(){if(SPR_REF)return SPR_REF;const L=[];const add=(k,...ps)=>ps.forEach(p=>{if(p)L.push([k,p]);});
- add('block',S_GUARD);add('katon',TIGER,INH,EXH);add('guard',READY,K_WIND,typeof KT_W!=='undefined'&&KT_W,typeof CK_W!=='undefined'&&CK_W,typeof SH_W!=='undefined'&&SH_W,typeof GZ!=='undefined'&&GZ,typeof GZ2!=='undefined'&&GZ2,typeof SEL_B!=='undefined'&&SEL_B);
+ add('block',S_GUARD);add('katon',TIGER,INH,EXH);add('guard',READY,K_WIND,typeof KT_W!=='undefined'&&KT_W,typeof SH_W!=='undefined'&&SH_W,typeof GZ!=='undefined'&&GZ,typeof GZ2!=='undefined'&&GZ2,typeof SEL_B!=='undefined'&&SEL_B);
  add('idle',VICTORY,AMA_A,AMA_A2,typeof FLICK!=='undefined'&&FLICK,typeof SEL_S!=='undefined'&&SEL_S,typeof PN_S!=='undefined'&&PN_S,typeof PN_R!=='undefined'&&PN_R);
  add('seal',SEAL_A,SEAL_B,SEAL_C,AMA_CLUTCH,typeof SEL_N!=='undefined'&&SEL_N,typeof SS_G!=='undefined'&&SS_G);
  add('chidori',PREP,CHARGE,COIL,typeof SEL_C!=='undefined'&&SEL_C,typeof RS_H!=='undefined'&&RS_H);
  if(SPR.pw)add('pw',PN_W);
+ if(SPR.kw&&typeof CK_W!=='undefined')add('kw',CK_W);
  add('punch',DASH,HIT,typeof CH_PULL!=='undefined'&&CH_PULL,typeof PN_D!=='undefined'&&PN_D,typeof PN_P!=='undefined'&&PN_P,typeof KT_T!=='undefined'&&KT_T,typeof KT_F!=='undefined'&&KT_F,typeof SS_T!=='undefined'&&SS_T,typeof SEL_D!=='undefined'&&SEL_D,typeof SEL_H!=='undefined'&&SEL_H,typeof RS_D!=='undefined'&&RS_D,typeof RS_P!=='undefined'&&RS_P,typeof SLASH!=='undefined'&&SLASH,typeof SH_A!=='undefined'&&SH_A,typeof SH_TOP!=='undefined'&&SH_TOP);
  add('kick',KICK,typeof CK_K!=='undefined'&&CK_K,typeof SH_UP!=='undefined'&&SH_UP,typeof SH_B!=='undefined'&&SH_B,typeof SH_HEEL!=='undefined'&&SH_HEEL);
  add('hit',S_HIT,S_FLINCH,S_STAG);add('guard',HOP);
