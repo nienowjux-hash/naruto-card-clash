@@ -56,7 +56,7 @@ function renderTree(){
    <div class="elx">${S.forte.length?`<span class="g">▲ Forte contra: ${S.forte.join(', ')}</span>`:''}${S.fraco.length?`<span class="r">▼ Fraco contra: ${S.fraco.join(', ')}</span>`:''}${!S.forte.length&&!S.fraco.length?'<span>Sem vantagem ou desvantagem elemental</span>':''}</div>
    <div class="req"><small>Requisitos</small><ul>${reqs}</ul></div>
    <div class="act">${got?'<span class="ok">✔ Já aprendido</span>':why?`<span class="why">${why}</span>`:`<button class="learn" id="learnbtn">Aprender · ${n.pt} ponto(s)</button>`}</div>`;}
- t.innerHTML=`<div class="tbox"><div class="thead"><div class="tabs">${Object.keys(TREES).map(c=>`<button class="tab${c===treeChar?' on':''}" data-c="${c}">${CHARS[c].name.split(' ')[0]}</button>`).join('')}</div>
+ t.innerHTML=`<div class="tbox"><div class="thead"><div class="tabs">${Object.keys(TREES).map(c=>`<button class="tab${c===treeChar?' on':''}" data-c="${c}">${CHARS[c].name.split(' ')[0]} ${charRar(c)}</button>`).join('')}</div>
   <div class="lvl"><b>Nível ${P.level}${P.level>=MAX_LEVEL?' (máx.)':''}</b><div class="xp"><i style="width:${pct}%"></i></div><small>${P.level>=MAX_LEVEL?'XP completo':P.xp+' / '+need+' XP'}</small></div>
   <div class="pts"><b>${P.pts}</b><small>pontos de habilidade</small></div><button class="x" id="treex">Fechar (Esc) ✕</button></div>
   <div class="tmain"><div class="tscroll"><div class="tcanvas" style="width:${W}px;height:${H}px"><svg width="${W}" height="${H}">${lines}</svg>${heads}${boxes}</div></div><aside class="tside">${side}</aside></div>

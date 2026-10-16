@@ -239,3 +239,5 @@ canvas#c{width:100%;height:auto}
 #app>.note{display:none}
 #tree .tbox,#inv .ibox,#map .mbox{width:calc(100vw - 24px);height:calc(100vh - 24px)}
 #map .mside,#tree .tside{width:420px}
+.crar{font-style:normal;font-size:10px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;color:var(--rc);border:1px solid var(--rc);border-radius:4px;padding:0 5px;margin-left:4px;vertical-align:middle;background:rgba(0,0,0,.3)}
+#map .hero .crar{display:inline-block;margin:3px 0 0}

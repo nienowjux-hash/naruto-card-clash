@@ -19,7 +19,7 @@ function applyHero(h){heroS=h==='sakura'?'sakura':'sasuke';ORIG_NAMES.s=heroS===
 function mapPanel(){
  if(!mapSel)return'<p class="hint">Clique em um local do mapa para ver os detalhes.</p>';
  const n=NODES[mapSel],st=nodeState(mapSel),stTxt={cleared:'Concluído',open:'Disponível',locked:'Bloqueado'}[st];
- const party=['sasuke','sakura','naruto'].map(h=>`<button class="hero${mapHero===h?' on':''}" data-h="${h}"><b>${CHARS[h].name.split(' ')[0]}</b><small>Nível ${PROG[h].level}</small></button>`).join('')+'<div class="hero empty"><b>Vazio</b><small>em breve</small></div>';
+ const party=['sasuke','sakura','naruto'].map(h=>`<button class="hero${mapHero===h?' on':''}" data-h="${h}"><b>${CHARS[h].name.split(' ')[0]}</b><small>Nível ${PROG[h].level}</small>${charRar(h)}</button>`).join('')+'<div class="hero empty"><b>Vazio</b><small>em breve</small></div>';
  let body='';
  if(n.kind==='vila'){body=`<p class="desc">${n.d}</p><div class="act"><button class="learn" id="mp-tree">Árvore de habilidades</button><button class="learn alt" id="mp-inv">Equipamentos</button></div>`;}
  else{const af=n.enc.afin||CHARS[enemyCharOf(mapHero)].afin,vant=['fogo','agua','terra','vento','raio'].filter(b=>elemMatch(b,af)>0).map(b=>ELEMENTS[b].name);

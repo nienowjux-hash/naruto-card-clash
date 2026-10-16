@@ -60,9 +60,11 @@ function moveByName(n){const id=MOVE_ALIAS[n];if(id)return MOVES[id];for(const k
 
 /* Fichas de personagem: atributos-base e elementos de afinidade. Nivel, XP e golpes aprendidos ficam em PROG (progresso salvo). */
 const CHARS={
- sasuke:{id:'sasuke',name:'Sasuke Uchiha',hp:100,ck:100,afin:['fogo','raio'],extras:['yin']},
- naruto:{id:'naruto',name:'Naruto Uzumaki',hp:100,ck:100,afin:['vento'],extras:['yang']},
- sakura:{id:'sakura',name:'Sakura Haruno',hp:100,ck:100,afin:['terra'],extras:['yin']}};
+ sasuke:{id:'sasuke',name:'Sasuke Uchiha',rar:2,hp:100,ck:100,afin:['fogo','raio'],extras:['yin']},
+ naruto:{id:'naruto',name:'Naruto Uzumaki',rar:2,hp:100,ck:100,afin:['vento'],extras:['yang']},
+ sakura:{id:'sakura',name:'Sakura Haruno',rar:1,hp:100,ck:100,afin:['terra'],extras:['yin']}};
+/* raridade do personagem: comum a lendario */
+function charRar(id){const r=RARITY[(CHARS[id]||{}).rar||1];return `<em class="crar" style="--rc:${r.col}">${r.name}</em>`;}
 function elemChip(m){if(!m||!m.elem||m.elem==='neutro')return '';const e=ELEMENTS[m.elem];return `<em class="el" style="--ec:${e.col}">${e.name}</em>`;}
 
 /* ---------- Vantagem entre elementos ----------
