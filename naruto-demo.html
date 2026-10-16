@@ -103,7 +103,7 @@ canvas#c{display:block;width:100%;height:auto}
 <div class="ctl"><button id="rst">Resetar luta</button><button id="mute">Som: ligado</button><button id="sprbtn">Sasuke: pixel art</button><button id="nmbtn">Jogar como: Sasuke</button></div>
 <div class="note">RPG de turno: escolha um comando no painel (ou tecle o número; Esc volta). Jutsu gasta chakra, Defender corta o próximo dano pela metade e Concentrar recupera chakra. Depois o Naruto contra-ataca. Quem zerar a vida do outro vence.</div>
 </div>
-<script src="pixel/pixgrid.js"></script><script src="pixel/sasuke.js"></script><script src="pixel/sasuke-guard.js"></script><script src="pixel/sasuke-poses.js"></script><script src="pixel/sasuke-between.js"></script><script src="pixel/naruto.js"></script><script src="pixel/gamabunta.js"></script><script src="pixel/sasuke-lv2.js"></script>
+<script src="pixel/pixgrid.js"></script><script src="pixel/sasuke.js"></script><script src="pixel/sasuke-guard.js"></script><script src="pixel/sasuke-poses.js"></script><script src="pixel/sasuke-idle.js"></script><script src="pixel/sasuke-between.js"></script><script src="pixel/naruto.js"></script><script src="pixel/gamabunta.js"></script><script src="pixel/sasuke-lv2.js"></script>
 <script>
 'use strict';
 const $=id=>document.getElementById(id);
@@ -615,7 +615,7 @@ const SPR={};
 /* Sharingan: mesma pose com a iris vermelha (selo nivel 1, genjutsu, copia...) */
 const SHARI={E:'#b8101e',e:'#ff4636'};
 if(USE_SPR){const mkS=(fn,pal,ax,ay)=>{const gr=fn(),c=document.createElement('canvas'),c2=document.createElement('canvas');gr.draw(c,pal,1);gr.draw(c2,Object.assign({},pal,SHARI),1);return{c,csh:c2,w:gr.w,h:gr.h,ax,ay};};
- SPR.idle=mkS(sasukeIdle,SAS2_PAL,27,75); /* mesma paleta das outras poses: a bermuda nao pisca de cor ao trocar de sprite */SPR.guard=mkS(sasukeGuard,SAS2_PAL,27,75);SPR.punch=mkS(sasukePunch,SAS2_PAL,27,75);if(typeof sasukePunchWind==='function')SPR.pw=mkS(sasukePunchWind,SAS2_PAL,27,75);if(typeof sasukeEyeHand==='function')SPR.eh=mkS(sasukeEyeHand,SAS2_PAL,27,75);if(typeof sasukeKickWind==='function')SPR.kw=mkS(sasukeKickWind,SAS2_PAL,27,75);
+ SPR.idle=mkS(sasukeIdle,SAS2_PAL,27,75);if(typeof sasukeIdleB==='function'){const gb=sasukeIdleB(1),cb=document.createElement('canvas'),cs=document.createElement('canvas');gb.draw(cb,SAS2_PAL,1);gb.draw(cs,Object.assign({},SAS2_PAL,SHARI),1);SPR.idle.cb=cb;SPR.idle.cbsh=cs;} /* mesma paleta das outras poses: a bermuda nao pisca de cor ao trocar de sprite */SPR.guard=mkS(sasukeGuard,SAS2_PAL,27,75);SPR.punch=mkS(sasukePunch,SAS2_PAL,27,75);if(typeof sasukePunchWind==='function')SPR.pw=mkS(sasukePunchWind,SAS2_PAL,27,75);if(typeof sasukeEyeHand==='function')SPR.eh=mkS(sasukeEyeHand,SAS2_PAL,27,75);if(typeof sasukeKickWind==='function')SPR.kw=mkS(sasukeKickWind,SAS2_PAL,27,75);
  SPR.hit=mkS(sasukeHit,SAS2_PAL,25,75);SPR.down=mkS(sasukeDown,SAS2_PAL,40,45);SPR.kick=mkS(sasukeKick,SAS2_PAL,22,75);
  SPR.seal=mkS(sasukeSeal,SAS2_PAL,27,75);SPR.chidori=mkS(sasukeChidori,SAS2_PAL,27,75);SPR.katon=mkS(sasukeKaton,SAS2_PAL,27,75);SPR.block=mkS(sasukeBlock,SAS2_PAL,27,75);SPR.log=mkS(sasukeLog,SAS2_PAL,28,70);}
 const SPRL2={};if(USE_SPR&&typeof LV2_POSES!=='undefined'){for(const k in LV2_POSES){const gr=lv2From(LV2_POSES[k])(),c=document.createElement('canvas');gr.draw(c,LV2_PAL,1);const S0=SPR[k];SPRL2[k]={c,w:gr.w,h:gr.h,ax:S0?S0.ax:27,ay:S0?S0.ay:75};}}
@@ -651,7 +651,7 @@ const sprTmp=document.createElement('canvas');sprTmp.width=96;sprTmp.height=96;c
 const sprBig=document.createElement('canvas');sprBig.width=384;sprBig.height=384;const sprBx=sprBig.getContext('2d');
 function blitSprite(x,y,flip,P,time,o,isN){
  const key=(isN&&o.four&&SPRN.four)?'four':(isN&&o.sexy&&SPRN.sexy)?'sexy':sprPick(P,isN?sprRefsN():null),S=(isN?SPRN:(o.lv2px>0?(SPRL2[key]?SPRL2:(SPRL2.guard&&key==='idle'?{idle:SPRL2.guard}:SPR)):SPR))[key],al=o.alpha==null?1:o.alpha;
- sprTx.setTransform(1,0,0,1,0,0);sprTx.globalCompositeOperation='source-over';sprTx.clearRect(0,0,96,96);sprTx.drawImage(o.sharingan&&S.csh?S.csh:S.c,0,0);
+ sprTx.setTransform(1,0,0,1,0,0);sprTx.globalCompositeOperation='source-over';sprTx.clearRect(0,0,96,96);{const br=!isN&&key==='idle'&&S.cb&&Math.floor(time*1.15)%2===1;sprTx.drawImage(o.sharingan&&S.csh?(br?S.cbsh:S.csh):(br?S.cb:S.c),0,0);}
  sprTx.globalCompositeOperation='source-atop';
  if(o.light){const L=o.light;sprTx.globalAlpha=Math.min(.3,L.k*.25);sprTx.fillStyle=css(L.col,1,1);sprTx.fillRect(0,0,S.w,S.h);sprTx.globalAlpha=1;}
  if(o.tint){sprTx.fillStyle=css(o.tint,1,o.tk);sprTx.fillRect(0,0,S.w,S.h);}
