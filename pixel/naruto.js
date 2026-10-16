@@ -6,49 +6,40 @@ const NAR_PAL=Object.assign({},SAS2_PAL,{
  O:'#f58a18',Q:'#ffb347',q:'#cf620e',m:'#8a380a',k:'#ffd27a',
  B:'#2f48aa',b:'#1a2a70',j:'#6a86e0',M:'#eef1f8',L:'#7c86a8',
  N:'#2e4ab0',n:'#1b2b72',v:'#5a78d8',
- W:'#ffffff',E:'#16102a',e:'#2c6ee8'});
+ W:'#ffffff',E:'#16102a',e:'#2c6ee8',j:'#7fb2ff',u:'#aab0c8'});
 const NAR_DARK=Object.assign({},SAS_DARK,{Y:'x',y:'x',X:'y',x:'x',O:'q',Q:'O',q:'m',m:'m',B:'b',j:'B'});
 
-/* ---------------- cabeca, linha por linha ---------------- */
-/* Rosto DE FRENTE e simetrico, centro em x=27 (igual ao centro do rosto do Sasuke). (ox,oy) = mesmo canto da cabeca do Sasuke.
-   Queixo em y=20, bandana em y=4..7, olhos em y=11..13, boca em y=17..19. */
+/* ---------------- cabeca, linha por linha ----------------
+   Feita sobre a MESMA grade da cabeca do Sasuke (40x21, mesmo rosto, mesma bandana, mesmo angulo):
+   o rosto e a bandana vem das linhas do Sasuke, o cabelo de cima e redesenhado pixel a pixel em espetos,
+   e olhos azuis, bigodes e o sorriso sao pintados por cima. */
+const NARU_HAIR_TOP=[
+ [[16,'K'],[22,'K']],
+ [[10,'K'],[15,'KXK'],[21,'KXK'],[27,'K']],
+ [[3,'K'],[9,'KXK'],[14,'KXYK'],[20,'KXYK'],[26,'KXK']],
+ [[3,'KXK'],[8,'KXYK'],[13,'KXYYK'],[19,'KXYYK'],[25,'KXYK'],[30,'K']],
+ [[3,'KXYK'],[7,'KXYYK'],[12,'KXYYYK'],[18,'KXYYYK'],[24,'KXYYK'],[29,'KXK']],
+ [[2,'KXYYKXYYYYKXYYYYYKXYYYYYKXYYYYK']],
+ [[1,'KyYYYYyYYYYYyYYYYYYyYYYYYYyYYYXK']]];
+function naruHeadRows(mod){
+ const rows=sasHeadRows(mod).map(r=>r.slice());
+ const tr={'1':'x','2':'y','3':'Y','4':'X','5':'X','m':'u','e':'j','E':'E'};
+ for(const r of rows)for(let i=0;i<r.length;i++){if(tr[r[i]])r[i]=tr[r[i]];}
+ for(let y=0;y<7;y++)for(let i=0;i<r0len(rows,y);i++)rows[y][i]='.';
+ NARU_HAIR_TOP.forEach((segs,y)=>segs.forEach(([x,s])=>{for(let i=0;i<s.length;i++)rows[y][x+i]=s[i];}));
+ const set=(y,x,s)=>{for(let i=0;i<s.length;i++)rows[y][x+i]=s[i];};
+ if(!(mod&&mod.shut)){set(13,16,'sWeEKSSSKEeWSK');set(14,16,'SSjeSSSSSejSSK');}
+ /* bigodes de raposa (3 em cada bochecha) */
+ set(15,16,'tt');set(15,27,'tt');set(16,16,'t');set(16,17,'t');set(16,26,'tt');set(17,17,'t');set(17,26,'t');
+ /* sorriso largo com dentes, ou boca aberta */
+ if(!(mod&&mod.mouth)){set(17,19,'oKKKKo');set(18,20,'WWWW');}
+ return rows;}
+function r0len(rows,y){return rows[y].length;}
 function naruHead(g,ox,oy,mod){
- const T=pts=>pts.map(p=>[p[0]+ox,p[1]+oy]),P=(x,y,s)=>g.put(x+ox,y+oy,s),L=(a,b,c,d,k,o)=>g.line(a+ox,b+oy,c+ox,d+oy,k,o);
- /* --- cabelo: massa + 5 espetos em cima + 2 espetos para tras --- */
- g.poly(T([[15,6],[17,0],[27,-2],[37,0],[39,6],[39,9],[15,9]]),'Y');
- for(const s of [[[15,4],[12,-1],[20,1]],[[19,0],[21,-4],[26,0]],[[25,-1],[28,-5],[31,-1]],[[30,0],[34,-4],[35,1]],[[34,2],[41,-1],[39,5]],
-                 [[16,5],[8,3],[16,9]],[[15,8],[6,10],[15,12]],[[15,11],[7,16],[16,14]]])g.poly(T(s),'Y');
- g.shade(T([[5,-8],[27,-8],[27,18],[5,18]]),['Y'],'y');g.shade(T([[5,8],[16,8],[16,18],[5,18]]),['y'],'x');
- g.shade(T([[21,-5],[24,-5],[23,0],[21,0]]),['Y','y'],'X');g.shade(T([[26,-6],[30,-6],[29,-1],[27,-1]]),['Y','y'],'X');g.shade(T([[31,-5],[34,-5],[34,0],[32,0]]),['Y'],'X');g.shade(T([[35,-2],[40,-2],[39,4],[36,4]]),['Y'],'X');g.shade(T([[13,-2],[16,-2],[17,3],[14,3]]),['Y','y'],'X');
- L(20,1,21,-3,'y',['Y','X']);L(25,0,27,-4,'y',['Y','X']);L(30,0,32,-4,'y',['Y','X']);L(34,2,37,-1,'y',['Y','X']);L(16,6,10,4,'x',['y','Y']);L(15,9,9,10,'x',['y']);L(16,12,9,14,'x',['y']);
- P(21,-3,'X');P(28,-4,'X');P(33,-3,'X');P(13,0,'X');P(40,0,'X');
- /* --- orelhas --- */
- g.ell(18+ox,12.5+oy,1.4,2.2,'S');g.ell(36+ox,12.5+oy,1.4,2.2,'S');P(18,12,'t');P(36,12,'s');P(18,13,'s');
- /* --- rosto: oval simetrico, sombra a esquerda, luz a direita --- */
- g.poly(T([[20,8],[34,8],[36,12],[35,16],[32,20],[22,20],[19,16],[18,12]]),'S');
- g.shade(T([[18,8],[22,8],[22,21],[18,21]]),['S'],'s');g.shade(T([[21,17],[33,17],[31,21],[23,21]]),['S'],'s');
- g.shade(T([[18,11],[20,11],[20,17],[18,17]]),['s'],'t');g.shade(T([[31,10],[35,10],[35,15],[32,15]]),['S'],'k');
- /* --- bandana: faixa, placa, nos --- */
- g.poly(T([[14,3.4],[40,3],[40,7.2],[14,7.8]]),'B');g.shade(T([[14,6],[40,5.6],[40,7.4],[14,8]]),['B'],'b');L(15,4.4,39,4,'j',['B']);
- g.poly(T([[23,3.6],[31,3.4],[31.4,7.2],[23.4,7.5]]),'M');g.edge(T([[23,3.6],[31,3.4],[31.4,7.2],[23.4,7.5]]),'L');g.shade(T([[23,6.4],[31,6.2],[31,7.2],[23,7.4]]),['M'],'L');
- P(25,5,'L');P(26,4,'LL');P(28,5,'L');P(27,6,'L');
- P(13,6,'bB');P(10,7,'bBBB');P(8,8,'bBBb');P(7,10,'bBBb');P(6,12,'bBb');P(7,14,'bB');P(10,9,'bB');P(9,16,'b');
- /* --- franja: mecha fina de cada lado --- */
- g.poly(T([[20,8],[23,8],[21,13]]),'Y');g.poly(T([[31,8],[34,8],[33,12]]),'Y');L(21,8,21,11,'y',['Y']);P(33,9,'X');
- /* --- sobrancelhas e olhos (4 px cada, olhando de frente) --- */
- const shut=mod&&mod.shut;
- if(shut){L(22,12,25,13,'K');L(29,13,32,12,'K');L(22,10,25,10,'x',['S','s']);L(29,10,32,10,'x',['S','s']);}
- else{L(22,10,25,10,'x',['S','s']);L(29,10,32,10,'x',['S','s']);
-  L(22,11,25,11,'K');L(29,11,32,11,'K');P(22,12,'WeEW');P(29,12,'WEeW');P(23,13,'ee');P(30,13,'ee');P(22,14,'ssss');P(29,14,'ssss');}
- /* --- nariz --- */
- P(27,14,'s');P(27,15,'t');P(28,15,'s');
- /* --- bigodes: 3 riscos em cada bochecha --- */
- L(20,13,23,14,'t',['S','s']);L(20,15,23,15,'t',['S','s']);L(21,17,24,16,'t',['S','s']);
- L(34,13,31,14,'t',['S','s']);L(34,15,31,15,'t',['S','s']);L(33,17,30,16,'t',['S','s']);
- /* --- boca: sorriso largo com dentes, ou aberta de dor --- */
- if(mod&&mod.mouth){g.ell(27+ox,18+oy,3,1.8,'K');L(25,18,29,18,'W');L(26,19,28,19,'o');}
- else{L(24,17,30,17,'K');P(23,16,'o');P(31,16,'o');L(25,18,29,18,'W');P(26,19,'sss');}
- L(24,20,30,20,'t',['S','s']);
+ naruHeadRows(mod).forEach((r,y)=>g.put(ox,y+oy,r.join('')));
+ const dx=ox-4,dy=oy-1,L=(a,b,c,d,k)=>g.line(a+dx,b+dy,c+dx,d+dy,k,['Y']);
+ L(33,7,24,6,'y');L(28,5,17,7,'y');L(21,6,11,9,'y');L(16,9,8,11,'y');
+ g.put(14+dx,10+dy,'b');g.put(12+dx,11+dy,'bBb');g.put(11+dx,12+dy,'bBB');g.put(10+dx,13+dy,'bB');g.put(10+dx,14+dy,'b');g.put(14+dx,13+dy,'Bb');g.put(15+dx,14+dy,'b');
 }/* cabeca deitada (rosto para cima) */
 function naruHeadLying(g,ox,oy,groundY,mod){
  const tmp=PixGrid(44,34);naruHead(tmp,0,6,mod);const rows=tmp.G,Wd=44;
