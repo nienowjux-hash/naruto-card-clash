@@ -41,32 +41,39 @@ ANIMS.suijinheki={dur:3.6,hold:1.5,hitT:1.5,dmg:0,cost:18,noLift:true,
 
 /* Dragao de Agua: espinha com onda lateral, corpo em fita (casca escura, miolo claro, barriga, escamas e nadadeiras), cabeca com chifres, bigodes e mandibula, coluna de agua na origem e onda que desaba no alvo */
 function dragonSpine(tauH,x0,x1,time,N,lag){const P=[];for(let i=0;i<=N;i++){const s=i/N,tau=Math.max(0,tauH-s*lag),e=tau*tau*(3-2*tau);
-  const x=x0+(x1-x0)*e,y=GY-22-Math.sin(tau*Math.PI)*50,w=Math.sin(s*11-time*8)*3.4*Math.min(1,s*6)*(1-.35*tau);P.push([x,y+w]);}return P;}
-function dragonR(s){return s<.1?5+s/.1*5.5:10.5*Math.pow(1-(s-.1)/.9,.75)+1.1;}
+  const x=x0+(x1-x0)*e,y=GY-22-Math.sin(tau*Math.PI)*50,w=Math.sin(s*9.5-time*7)*7.5*Math.min(1,s*5)*(1-.3*tau);P.push([x,y+w]);}return P;}
+function dragonR(s){return s<.08?7+s/.08*6:13.5*Math.pow(1-(s-.08)/.92,.6)+1.6;}
 function suiryudanFX(c){const {f,t,time,sx0,nx0}=c,x0=sx0+12,x1=nx0-8,hitAt=2.3;
  /* coluna de agua em espiral subindo no Kakashi */
  const col=scaleAt(0,1,.7,1.2,t)*(1-scaleAt(0,1,1.6,2.1,t));
  if(col>0){f.save();for(let r=0;r<6;r++){const ph=(time*1.1+r/6)%1,y=GY-ph*54,rw=(6+8*Math.sin(ph*Math.PI))*col;f.strokeStyle=`rgba(${120+r*14},${190+r*8},255,${(1-ph)*.85*col})`;f.lineWidth=1.3;f.beginPath();f.ellipse(x0,y,rw,rw*.28,0,0,TAU);f.stroke();}
   f.globalCompositeOperation='lighter';orb(f,x0,GY-26,22*col,[[0,'rgba(190,230,255,.45)'],[1,'rgba(30,110,230,0)']]);const r2=R(8);for(let i=0;i<26;i++){const a=r2()*TAU+time*3,rr=(4+r2()*20)*(1-col*.3);f.fillStyle=`rgba(170,220,255,${.7*col})`;f.fillRect(Math.round(x0+Math.cos(a)*rr),Math.round(GY-8-r2()*40+Math.sin(a)*3),1,1);}f.restore();}
  const tauH=scaleAt(0,1,1.15,hitAt,t);if(tauH<=0||t>3.7)return;
- const fade=1-scaleAt(0,1,hitAt+.05,hitAt+.55,t),N=64,P=dragonSpine(tauH,x0,x1,time,N,.5);if(fade<=0)return;
+ const fade=1-scaleAt(0,1,hitAt+.05,hitAt+.55,t),N=64,P=dragonSpine(tauH,x0,x1,time,N,.36);if(fade<=0)return;
  const grow=.45+.55*scaleAt(0,1,0,.25,tauH),sc=grow*(.4+.6*fade),nrm=[];
  for(let i=0;i<=N;i++){const a=P[Math.max(0,i-1)],b=P[Math.min(N,i+1)];let dx=b[0]-a[0],dy=b[1]-a[1];const L=Math.hypot(dx,dy)||1;let nx=-dy/L,ny=dx/L;if(ny>0){nx=-nx;ny=-ny;}nrm.push([nx,ny]);}
  const edge=(k0,k1,o)=>{const A=[],B=[];for(let i=0;i<=N;i++){const r=dragonR(i/N)*sc,[nx,ny]=nrm[i];A.push([P[i][0]+nx*r*k0,P[i][1]+ny*r*k0]);B.push([P[i][0]+nx*r*k1,P[i][1]+ny*r*k1]);}return A.concat(B.reverse());};
  const poly=(pts,fill,stroke)=>{f.beginPath();pts.forEach((q,i)=>i?f.lineTo(q[0],q[1]):f.moveTo(q[0],q[1]));f.closePath();f.fillStyle=fill;f.fill();if(stroke){f.strokeStyle=stroke;f.lineWidth=.8;f.stroke();}};
  f.save();f.globalAlpha=fade;
- /* nadadeiras dorsais (atras do corpo) */
- f.fillStyle='#1c5fb8';for(let i=6;i<N-4;i+=4){const r=dragonR(i/N)*sc,[nx,ny]=nrm[i],[px,py]=P[i];f.beginPath();f.moveTo(px+nx*r*.8-2,py+ny*r*.8);f.lineTo(px+nx*(r+5*sc)+2.5,py+ny*(r+5*sc)-1);f.lineTo(px+nx*r*.8+2.5,py+ny*r*.8+1);f.closePath();f.fill();}
+ /* crina de agua ao longo do pescoco e do dorso (atras do corpo) */
+ for(let i=2;i<N-6;i+=2){const r=dragonR(i/N)*sc,[nx,ny]=nrm[i],[px,py]=P[i],len=(15-i*.17)*sc,sw=Math.sin(time*6+i*.5)*1.6;f.fillStyle=i%4?'#2f86e6':'#8fd0ff';f.beginPath();f.moveTo(px+nx*r*.7-2.2,py+ny*r*.7);f.quadraticCurveTo(px+nx*(r+len*.6)-1+sw,py+ny*(r+len*.6)-1,px+nx*(r+len)-4.5+sw,py+ny*(r+len)+1);f.lineTo(px+nx*r*.7+2.2,py+ny*r*.7);f.closePath();f.fill();}
+ /* quatro patas com garras (duas na frente, duas atras), sempre do lado de baixo do corpo */
+ for(const [ix,far] of [[10,1],[11,0],[30,1],[31,0]]){const r=dragonR(ix/N)*sc,[nx,ny]=nrm[ix],[px,py]=P[ix],bx=px-nx*r*.6,by=py-ny*r*.6,sw=Math.sin(time*9+ix)*2,kx=bx-3+(far?4:0),ky=by+9*sc,fx=kx+4+sw,fy=ky+8*sc;
+  f.strokeStyle=far?'#164f9c':'#1d63bd';f.lineWidth=(far?3.2:4)*sc;f.lineCap='round';f.beginPath();f.moveTo(bx,by);f.lineTo(kx,ky);f.lineTo(fx,fy);f.stroke();
+  f.strokeStyle='#e8f6ff';f.lineWidth=1.1;for(let q=-1;q<=1;q++){f.beginPath();f.moveTo(fx,fy);f.lineTo(fx+3+q*1.2,fy+3+Math.abs(q)*.6);f.stroke();}f.lineCap='butt';}
+ /* ponta da cauda em penacho de agua */
+ {const [tx,ty]=P[N],[ux,uy]=nrm[N];f.fillStyle='#2f86e6';for(let q=-2;q<=2;q++){f.beginPath();f.moveTo(tx,ty);f.quadraticCurveTo(tx-8*sc+q*1.4,ty+q*5*sc-4,tx-17*sc+Math.sin(time*7+q)*2,ty+q*7*sc+Math.cos(time*6+q)*2);f.quadraticCurveTo(tx-8*sc,ty+q*3*sc+3,tx,ty);f.fill();}}
  poly(edge(1,-1),'#1d63bd','#0c3a80');
  poly(edge(.8,-.2),'#3392ee');
  poly(edge(-.25,-.85),'#9fd8ff');
  f.strokeStyle='rgba(230,248,255,.9)';f.lineWidth=.9;f.beginPath();for(let i=0;i<=N;i++){const r=dragonR(i/N)*sc*.72,[nx,ny]=nrm[i],x=P[i][0]+nx*r,y=P[i][1]+ny*r;i?f.lineTo(x,y):f.moveTo(x,y);}f.stroke();
  f.strokeStyle='rgba(235,250,255,.4)';f.lineWidth=.6;for(let i=5;i<N-2;i+=3){const r=dragonR(i/N)*sc,[nx,ny]=nrm[i],[px,py]=P[i];f.beginPath();f.moveTo(px+nx*r*.7,py+ny*r*.7);f.quadraticCurveTo(px+nx*r*.1+1.5,py+ny*r*.1,px-nx*r*.5,py-ny*r*.5);f.stroke();}
  /* cabeca */
- const hd=P[0],nk=P[3],ang=Math.atan2(hd[1]-nk[1],hd[0]-nk[0]),hr=13*sc,open=Math.max(0,(.55+.25*Math.sin(time*7))*(1-scaleAt(0,1,hitAt-.35,hitAt,t)));
+ const hd=P[0],nk=P[3],ang=Math.atan2(hd[1]-nk[1],hd[0]-nk[0]),hr=19*sc,open=Math.max(0,(.55+.25*Math.sin(time*7))*(1-scaleAt(0,1,hitAt-.35,hitAt,t)));
  f.translate(hd[0],hd[1]);f.rotate(ang);
  /* bigodes de agua */
- f.strokeStyle='rgba(190,232,255,.9)';f.lineWidth=.9;for(let w=0;w<2;w++){f.beginPath();f.moveTo(hr*.9,(w?1:-1)*hr*.12);f.bezierCurveTo(hr*1.6,(w?1:-1)*hr*(.8+Math.sin(time*6+w)*.2),hr*.4,(w?1:-1)*hr*1.5,-hr*1.2,(w?1:-1)*hr*(1.2+Math.sin(time*5+w)*.4));f.stroke();}
+ f.strokeStyle='rgba(190,232,255,.9)';f.lineWidth=.9;for(let w=0;w<2;w++){f.beginPath();f.moveTo(hr*1.3,(w?1:-1)*hr*.15);f.bezierCurveTo(hr*2.0,(w?1:-1)*hr*(.9+Math.sin(time*6+w)*.25),hr*.3,(w?1:-1)*hr*1.9,-hr*2.4,(w?1:-1)*hr*(1.5+Math.sin(time*5+w)*.5));f.stroke();}
+ f.strokeStyle='rgba(190,232,255,.8)';f.lineWidth=.8;f.beginPath();f.moveTo(hr*1.1,hr*.55);f.bezierCurveTo(hr*1.2,hr*1.3,hr*.6,hr*1.5,hr*.1,hr*1.9+Math.sin(time*6)*hr*.2);f.stroke();
  /* juba/espinhos */
  f.fillStyle='#8fd0ff';for(let q=0;q<5;q++){f.beginPath();f.moveTo(-hr*(.2+q*.28),-hr*.62);f.lineTo(-hr*(.7+q*.28),-hr*(1.05+q*.06));f.lineTo(-hr*(.45+q*.28),-hr*.5);f.closePath();f.fill();}
  /* mandibula de baixo, cranio e mandibula de cima */
@@ -77,9 +84,9 @@ function suiryudanFX(c){const {f,t,time,sx0,nx0}=c,x0=sx0+12,x1=nx0-8,hitAt=2.3;
  f.fillStyle='#fff';for(let q=0;q<4;q++){f.beginPath();f.moveTo(hr*(.7+q*.28),hr*.03);f.lineTo(hr*(.78+q*.28),hr*.3);f.lineTo(hr*(.86+q*.28),hr*.03);f.closePath();f.fill();}
  f.fillStyle='#0a2a5a';f.fillRect(Math.round(hr*1.7),Math.round(-hr*.18),2,1);
  /* chifres */
- f.strokeStyle='#cfeaff';f.lineWidth=1.3;f.beginPath();f.moveTo(-hr*.2,-hr*.7);f.quadraticCurveTo(-hr*.7,-hr*1.4,-hr*1.5,-hr*1.2);f.moveTo(hr*.2,-hr*.72);f.quadraticCurveTo(-hr*.2,-hr*1.6,-hr*.9,-hr*1.7);f.stroke();
+ f.strokeStyle='#e2f3ff';f.lineWidth=1.8;f.lineCap='round';f.beginPath();f.moveTo(-hr*.2,-hr*.7);f.quadraticCurveTo(-hr*.7,-hr*1.4,-hr*1.6,-hr*1.2);f.moveTo(-hr*.9,-hr*1.25);f.lineTo(-hr*1.2,-hr*1.75);f.moveTo(-hr*1.3,-hr*1.22);f.lineTo(-hr*1.9,-hr*1.55);f.moveTo(hr*.25,-hr*.74);f.quadraticCurveTo(-hr*.1,-hr*1.7,-hr*.9,-hr*1.9);f.moveTo(-hr*.2,-hr*1.4);f.lineTo(-hr*.55,-hr*2.05);f.stroke();f.lineCap='butt';f.fillStyle='#b8dcff';f.beginPath();f.moveTo(hr*1.75,-hr*.28);f.lineTo(hr*2.0,-hr*.32);f.lineTo(hr*1.85,-hr*.05);f.closePath();f.fill();f.fillStyle='#0a2a5a';f.fillRect(Math.round(hr*1.6),Math.round(-hr*.2),2,2);
  /* olho */
- f.fillStyle='#fff7c0';f.beginPath();f.ellipse(hr*.35,-hr*.38,hr*.2,hr*.14,-.25,0,TAU);f.fill();f.fillStyle='#0a2a5a';f.fillRect(Math.round(hr*.4),Math.round(-hr*.42),1.5,2);
+ f.fillStyle='#ffe66a';f.beginPath();f.ellipse(hr*.4,-hr*.4,hr*.24,hr*.15,-.3,0,TAU);f.fill();f.fillStyle='#7a1010';f.fillRect(Math.round(hr*.45),Math.round(-hr*.48),1.6,Math.max(2,Math.round(hr*.18)));f.strokeStyle='#0c3a80';f.lineWidth=1;f.beginPath();f.moveTo(hr*.1,-hr*.62);f.lineTo(hr*.75,-hr*.4);f.stroke();
  f.restore();
  /* espuma e gotas soltas pelo corpo */
  f.save();f.globalCompositeOperation='lighter';const r3=R(123);for(let i=0;i<46;i++){const k=Math.floor(r3()*N),[px,py]=P[k],ph=(time*1.4+r3())%1;f.fillStyle=`rgba(200,236,255,${(1-ph)*.8*fade})`;f.fillRect(Math.round(px-ph*10*(r3()+.3)),Math.round(py-ph*8+ph*ph*20+(r3()-.5)*8),1+(i%3===0?1:0),1);}f.restore();
