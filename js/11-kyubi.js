@@ -148,7 +148,7 @@ function aiSmart(){const a=CAMP.active;if(!a)return .5;const L=(NODES[a.node]||{
 function aiElemW(elem,target){const m=elemMult(elem,target);return Math.pow(m,1+aiSmart()*6);} /* vantagem 1.4 vira ate ~10x mais provavel; desvantagem quase some */
 function aiPickW(list,wf){const w=list.map(x=>[x,Math.max(0,wf(x))]),sum=w.reduce((a,b)=>a+b[1],0);if(sum<=0)return list[0];let r=Math.random()*sum;for(const [x,v] of w){r-=v;if(r<=0)return x;}return w[w.length-1][0];}
 /* golpes do Naruto inimigo: dano estimado no Sasuke (com elemento, bonus da ficha e a defesa do Sasuke) */
-function aiNaruDmg(j){const A=ANIMS[j];if(!A||!A.hits)return 0;const e=(MOVES[j]||{}).elem;return A.hits.reduce((a,h)=>a+h.dmg,0)*elemMult(e,sideChar('s'))*dmgMod('n','s',e)*(guard?.5:1)*(kyuT>0?KY_POW:1);}
+function aiNaruDmg(j){const A=ANIMS[j];if(!A||!A.hits)return 0;const e=(MOVES[j]||{}).elem;return A.hits.reduce((a,h)=>a+h.dmg,0)*elemMult(e,sideChar('s'))*dmgMod('n','s',e)*(wallS?.2:guard?.5:1)*(kyuT>0?KY_POW:1);}
 /* o Sasuke (IA): escolhe um golpe que consegue pagar; com a vida do Naruto baixa, vai no mais forte */
 function kitHasS(id){const K=enemyKitOf('sasuke');if(!K)return true;if(id==='cop_rasengan'||id==='cop_bunshin')id='copy';return K.has(id);}
 function aiSasuke(){if(outcome||anim)return;turnLock=false;
@@ -191,7 +191,7 @@ function enemyTurn(force){if(typeof force!=='string')force=null;if(outcome||anim
  if(type==='ndefend'){gdN=true;ck.n=Math.min(100,ck.n+10);skipEnemy('Naruto se defende: o próximo dano cai pela metade');return;}
  if(type==='nkawarimi'){ck.n=Math.max(0,ck.n-KAWARIMI_COST);kawN=true;kawUseN++;skipEnemy('Naruto se prepara...');return;} /* em segredo: nada indica que e o Kawarimi */
  const A=ANIMS[type];if(roleN&&!isToad){if(turnLock||ck.n<A.cost){if(!turnLock)toast('Chakra insuficiente para '+(type==='rasengan'?'o Rasengan':'o Kage Bunshin'));return;}turnLock=true;}if(type==='rasengan'||type==='bunshin')lastEnemy=type;ensureAudio();
- const em=isToad?1:elemMult((MOVES[type]||{}).elem,sideChar('s')),gm=(guard?.5:1)*(kyuT>0&&!isToad?KY_POW:1)*em*(isToad?1:dmgMod('n','s',(MOVES[type]||{}).elem));guard=false;const dodge=kawS&&A.hits.some(h=>h.dmg>0);if(dodge)kawS=false;let dm=dodge?(h=>0):(h=>Math.max(1,Math.round(h.dmg*gm)));
+ const em=isToad?1:elemMult((MOVES[type]||{}).elem,sideChar('s')),gm=(wallS?.2:guard?.5:1)*(kyuT>0&&!isToad?KY_POW:1)*em*(isToad?1:dmgMod('n','s',(MOVES[type]||{}).elem));guard=false;wallS=false;const dodge=kawS&&A.hits.some(h=>h.dmg>0);if(dodge)kawS=false;let dm=dodge?(h=>0):(h=>Math.max(1,Math.round(h.dmg*gm)));
  /* golpe final com o sapo em campo (ou na propria invocacao): quem mata e sempre o Gama Bunta, para o fatality dele acontecer */
  let chainKill=false;if((type==='kuchiyose'||type==='nkunai'||type==='nshuriken')&&hp.s-A.hits.reduce((a,h)=>a+dm(h),0)<=0){chainKill=true;let left=hp.s-1;const d0=dm;dm=h=>{const v=Math.min(d0(h),Math.max(0,left));left-=v;return v;};}
  const dmv=A.hits.map(h=>dm(h)),total=dmv.reduce((a,v)=>a+v,0),lethal=!chainKill&&hp.s-total<=0;

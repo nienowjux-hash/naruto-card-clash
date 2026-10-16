@@ -42,6 +42,8 @@ const MOVES={
  kawarimi:{name:'Kawarimi',elem:'neutro',tipo:'suporte',lvl:1,rar:1},
  /* Sakura */
  raikiri:{name:'Raikiri',elem:'raio',tipo:'ninjutsu',lvl:10,rar:3},
+ suijinheki:{name:'Suiton: Suijinheki',elem:'agua',tipo:'ninjutsu',lvl:15,rar:3},
+ suiryudan:{name:'Suiton: Suiryūdan no Jutsu',elem:'agua',tipo:'ninjutsu',lvl:25,rar:3},
  cura:{name:'Cura Médica',elem:'yin',tipo:'suporte',lvl:1,rar:1},
  cura2:{name:'Cura Intensiva',elem:'yin',tipo:'suporte',lvl:12,rar:3},
  shannaro:{name:'Shannarō! Soco de Chakra',elem:'terra',tipo:'taijutsu',lvl:6,rar:2},
@@ -134,7 +136,9 @@ const TREES={
   {id:'katon',x:3,y:0,req:[],pt:0,start:1,d:'Katon copiado com o Sharingan: bola de fogo que explode no alvo, causando queimadura.'},
   {id:'raikiri',x:4,y:0,req:[],pt:0,base:1,d:'Raikiri: relâmpagos na mão, a técnica que corta o raio. Dano alto e fatality.'},
   {id:'genjutsu',x:5,y:0,req:[],pt:0,base:1,d:'Prende o alvo numa ilusão do Sharingan: ele perde o próximo turno.'},
-  {id:'copy',x:5,y:1,req:['genjutsu'],pt:4,d:'Ninja Copiador: copia o jutsu do inimigo para usar uma vez (Rasengan e Kage Bunshin).'}]};
+  {id:'copy',x:5,y:1,req:['genjutsu'],pt:4,d:'Ninja Copiador: copia o jutsu do inimigo para usar uma vez (Rasengan e Kage Bunshin).'},
+  {id:'suijinheki',x:6,y:0,req:[],pt:0,auto:1,d:'Parede de Água: um escudo de água que absorve 80% do próximo dano. Libera sozinho no nível 15.'},
+  {id:'suiryudan',x:6,y:1,req:['suijinheki'],pt:0,auto:1,d:'Dragão de Água: molda a água em um dragão que devora o inimigo. Libera sozinho no nível 25.'}]};
 /* golpes guardados para personagens/fases futuras (nao aparecem na arvore nem no menu): o no pronto para recolocar */
 const TREES_FUTURO={naruto:[
   {id:'odama',x:1,y:3,req:['rasengan'],pt:4,rar:3,lvl:20,elem:'vento',d:'Rasengan Gigante: uma esfera enorme, mais dano e mais chakra.'},
@@ -146,7 +150,10 @@ let PROG=progDefault();
 try{const j=JSON.parse(localStorage.getItem(PROG_KEY)||'null');if(j)for(const c in PROG)if(j[c])Object.assign(PROG[c],j[c]);}catch(e){}
 /* golpes base novos entram sozinhos em progressos salvos antes */
 for(const c in PROG)for(const n of TREES[c])if(n.base&&!PROG[c].learned.includes(n.id))PROG[c].learned.push(n.id);
-function saveProg(){try{localStorage.setItem(PROG_KEY,JSON.stringify(PROG));}catch(e){}}
+autoLearn();
+/* golpes com auto:1 (jutsus raros bloqueados por nivel) entram sozinhos quando o personagem chega no nivel deles */
+function autoLearn(){let got=[];for(const c in TREES){const P=PROG[c];if(!P)continue;for(const n of TREES[c])if(n.auto&&!P.learned.includes(n.id)&&MOVES[n.id].lvl<=P.level&&n.req.every(r=>P.learned.includes(r))){P.learned.push(n.id);got.push(n.id);}}return got;}
+function saveProg(){const g=autoLearn();if(g.length&&typeof toast==='function')toast('Novo jutsu liberado: '+g.map(i=>MOVES[i].name).join(', '));try{localStorage.setItem(PROG_KEY,JSON.stringify(PROG));}catch(e){}}
 function treeNode(charId,id){return (TREES[charId]||[]).find(n=>n.id===id);}
 /* golpe liberado? Copias valem se 'copy' foi aprendido; golpes fora da arvore sao sempre livres */
 function moveUnlocked(charId,id){if(MOVES[id]&&MOVES[id].futuro)return false;const P=PROG[charId];if(!P)return true;if(id==='cop_rasengan'||id==='cop_bunshin')id='copy';return !treeNode(charId,id)||P.learned.includes(id);}
