@@ -78,3 +78,5 @@ const naruBlock=naruFrom(sasukeBlock,NAR_STD);
 const naruDown=naruFrom(sasukeDown,{collar:(x,y)=>(x<=22&&y>=33&&y<=44)?1:(x<=25&&y>=33&&y<=44)?2:0,waist:(x,y)=>x<=41,cover:(x,y)=>x>=44&&y>=22,folds:[[52,32,50,38,'m']]});
 /* carregando o Rasengan: base agachada do Chidori sem a bola (o jogo desenha a esfera na mao) */
 function naruCharge(){const g=naruFrom(sasukeChidori,NAR_STD)();for(let y=0;y<g.h;y++)for(let x=36;x<g.w;x++){if(y>=34&&'ZzR'.includes(g.G[y][x]))g.G[y][x]='.';}for(let y=34;y<g.h;y++)for(let x=36;x<g.w;x++){if(g.G[y][x]==='K'){const nb=[[1,0],[-1,0],[0,1],[0,-1]].some(([a,b])=>{const c=(g.G[y+b]||[])[x+a];return c&&c!=='.'&&c!=='K';});if(!nb)g.G[y][x]='.';}}return g;}
+/* quadros de transicao (derivados dos do Sasuke) */
+const naruPunchWind=typeof sasukePunchWind==='function'?naruFrom(sasukePunchWind,Object.assign({},NAR_STD,{folds:[[24,52,20,57,'m'],[14,62,10,67,'m'],[41,58,44,62,'m']]})):null;
