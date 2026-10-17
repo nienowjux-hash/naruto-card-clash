@@ -224,7 +224,7 @@ Konoha → Trilha do Bosque (Lobo Selvagem, Nv 1) → Estrada de Terra (Bandido,
 - Gozu e Meizu voltaram ao nível 1 (reset único `demonsResetV`; `TEST_UNLOCK_DEMONS=false`).
 
 ## Invocação (gacha) — js/23-gacha.js
-- Personagens iniciais: Sasuke, Naruto e Sakura. Kakashi (Raro), Gozu e Meizu (Incomuns) saem da invocação.
+- Personagens iniciais (Time 7): Sasuke, Naruto, Sakura e Kakashi. Gozu e Meizu (Incomuns) saem da invocação.
 - Pergaminhos: começa com 12 (teste); +1 por vitória, +2 na primeira vez no local, +3 em chefes.
 - Chances: Comum 50 · Incomum 30 · Raro 15 · Épico 4 · Lendário 1%. Raro+ garantido a cada 10; Lendário garantido na 60ª (chance sobe a partir da 40ª). Raridade sem personagem cai para a mais próxima abaixo.
 - Repetido vira fragmentos (Comum 6 … Lendário 70); 10/30/60/100/150 fragmentos = estrelas (+6 vida e +3% ataque cada).

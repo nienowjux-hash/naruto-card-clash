@@ -2,7 +2,7 @@
    Pergaminhos de Invocacao se ganham jogando (vitorias na campanha). Cada invocacao sorteia um personagem pela raridade.
    Garantias (pity): Raro ou melhor a cada 10 invocacoes; Lendario garantido na 60a, com a chance subindo a partir da 40a.
    Personagem repetido vira fragmentos, que dao estrelas (+vida e +ataque). Tudo vive em GACHA; para o modo online, so rollGacha() muda de lugar (vai para o servidor). */
-const GACHA_KEY='rpgGachaV1',GACHA_STARTERS=['sasuke','naruto','sakura'],GACHA_RATE={1:50,2:30,3:15,4:4,5:1},GACHA_PITY={rare:10,leg:60,soft:40},GACHA_DUPE={1:6,2:10,3:18,4:35,5:70},GACHA_STAR=[10,30,60,100,150];
+const GACHA_KEY='rpgGachaV1',GACHA_STARTERS=['sasuke','naruto','sakura','kakashi'],GACHA_RATE={1:50,2:30,3:15,4:4,5:1},GACHA_PITY={rare:10,leg:60,soft:40},GACHA_DUPE={1:6,2:10,3:18,4:35,5:70},GACHA_STAR=[10,30,60,100,150];
 let GACHA={scrolls:12,owned:[],frags:{},pityRare:0,pityLeg:0,pulls:0};
 try{const j=JSON.parse(localStorage.getItem(GACHA_KEY)||'null');if(j)Object.assign(GACHA,j);else for(const c in CHARS)if(!GACHA_STARTERS.includes(c)&&PROG[c]&&PROG[c].level>1)GACHA.owned.push(c);}catch(e){}
 function saveGacha(){try{localStorage.setItem(GACHA_KEY,JSON.stringify(GACHA));}catch(e){}}
