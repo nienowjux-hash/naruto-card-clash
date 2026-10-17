@@ -251,3 +251,6 @@ Konoha → Trilha do Bosque (Lobo Selvagem, Nv 1) → Estrada de Terra (Bandido,
 - Fora de um duelo o jogo fica na **vila** (cenário de Konoha, menu com Mapa / Árvore / Equipamentos / Invocação / Treino livre, sem HUD nem comandos de luta). O duelo só começa em "Lutar" dentro de uma fase; ao terminar, ou ao abandonar, volta para a vila.
 - **Abandonar luta** (botão da barra inferior, só aparece em luta): larga o duelo, guarda a vida/chakra atuais do herói na fase e o inimigo não é derrotado.
 - "Treino livre" abre o combate de teste antigo (Sasuke x Naruto) fora da campanha.
+
+## Reiniciar o jogo (`resetAll`, js/25-vila.js)
+"Reiniciar campanha" (botão vermelho no rodapé do mapa e item "Reiniciar o jogo" no menu da vila) apaga tudo: campanha e fase, níveis e habilidades (`PROG`), mochila, ryo e equipamentos (`INV`), pergaminhos, personagens obtidos, fragmentos e pity (`GACHA`). Gozu e Meizu voltam a ficar bloqueados e os itens iniciais voltam.

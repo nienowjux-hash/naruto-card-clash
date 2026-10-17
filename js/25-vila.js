@@ -11,6 +11,7 @@ function showHubMenu(){menuOpen='main';const h=$('hand');h.innerHTML='';setHead(
  add('技','Árvore de habilidades','Gaste pontos para aprender golpes.','#7fd4ff',()=>openTree());
  add('装','Equipamentos','Armas, roupas e acessórios da equipe.','#9fe0a0',()=>openInv());
  add('召','Invocação','Gaste pergaminhos para chamar novos ninjas.','#c090ff',()=>openGacha());
+ add('消','Reiniciar o jogo','Apaga campanha, níveis, itens e personagens obtidos.','#ff6a6a',()=>resetAll());
  add('練','Treino livre','Luta de teste, fora da campanha.','#ff9a6a',()=>{leaveHub();syncCtl();CAMP.active=null;setScene('vale');$('rst').onclick();showMenu('main');});
  syncCtl();}
 /* "Abandonar luta" so aparece com uma luta em andamento */
@@ -27,3 +28,12 @@ function abandonDuel(){
 const _showMenuBattle=showMenu;
 showMenu=function(m){if(hubMode){showHubMenu();return;}return _showMenuBattle.apply(this,arguments);};
 if(hubMode){document.body.classList.add('hub');setScene('vila');showHubMenu();}else syncCtl();
+
+/* Reiniciar: zera TUDO (campanha, niveis, habilidades, itens, ryo, pergaminhos, personagens obtidos e butim) */
+function resetAll(){
+ if(!confirm('REINICIAR O JOGO? Isso apaga TUDO: campanha, níveis, habilidades, itens, ryo, pergaminhos e os personagens obtidos na invocação (Gozu e Meizu voltam a ficar bloqueados).'))return;
+ resetCamp();resetProg();resetInv();
+ GACHA={scrolls:12,owned:[],frags:{},pityRare:0,pityLeg:0,pulls:0};saveGacha();
+ mapTeam=null;mapAssign=[];mapSel=null;mapTok=null;mapHero='sasuke';
+ try{syncHpMax(true);}catch(e){}
+ enterHub();renderMap();toast('Jogo reiniciado');}

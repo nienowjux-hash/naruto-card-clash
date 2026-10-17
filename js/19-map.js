@@ -41,7 +41,7 @@ function renderMap(){
  const gh=document.getElementById('mp-gacha');if(gh)gh.onclick=()=>{closeMap(true);openGacha();};
  const iv=document.getElementById('mp-inv');if(iv)iv.onclick=()=>{closeMap(true);openInv();};
  document.getElementById('mapx').onclick=()=>closeMap();
- document.getElementById('mprs').onclick=()=>{if(confirm('Reiniciar a campanha? (o nível, os itens e as habilidades continuam)')){resetCamp();mapSel=null;mapTok=null;renderMap();}};
+ document.getElementById('mprs').onclick=()=>resetAll();
  if(!mapRAF)mapRAF=requestAnimationFrame(mapDraw);}
 function openMap(){if(!mapSel)mapSel=CAMP.at;mapEl().hidden=false;renderMap();}
 function closeMap(keepMenu){mapEl().hidden=true;if(mapRAF){cancelAnimationFrame(mapRAF);mapRAF=null;}if(!keepMenu&&!anim&&!outcome&&!turnLock)showMenu('main');}
