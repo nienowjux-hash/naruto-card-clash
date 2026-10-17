@@ -131,7 +131,10 @@ function mapDraw(ts){
   mapPxText(c,NODE_GLYPH[id]||'?',cx,cy+2,"900 28px 'Yu Mincho','MS Mincho','Noto Serif JP',serif",st==='locked'?'#b8b8c8':'#fffbe8','#2a1a08');
   if(st==='cleared'&&n.kind!=='vila'){const bx=cx+r-4,by=cy-r+4;mapCircle(c,bx,by,16,'#140c06');mapCircle(c,bx,by,12,'#2c8a4c');c.fillStyle='#fff';c.fillRect(bx-6,by,4,4);c.fillRect(bx-2,by+4,4,4);c.fillRect(bx+2,by,4,4);c.fillRect(bx+6,by-4,4,4);}
   if(st==='locked'){const bx=cx+r-4,by=cy-r+4;c.fillStyle='#140c06';c.fillRect(bx-10,by-6,20,18);c.fillStyle='#e8b830';c.fillRect(bx-8,by-2,16,12);c.fillStyle='#8a6a14';c.fillRect(bx-8,by+6,16,4);c.fillStyle='#140c06';c.fillRect(bx-2,by+2,4,6);c.fillStyle='#bfc0d0';c.fillRect(bx-6,by-10,4,8);c.fillRect(bx+2,by-10,4,8);c.fillRect(bx-6,by-10,12,4);}
-  mapPxText(c,n.name.toUpperCase(),cx,cy+r+22,"700 16px Consolas,'Courier New',monospace",st==='locked'?'#b0b0c4':'#fff6d8');}
+  {const txt=n.name.toUpperCase(),fnt="700 16px Consolas,'Courier New',monospace";c.font=fnt;const w=c.measureText(txt).width,lp=n.lp||'b';
+   let lx=cx,ly=cy+r+22;if(lp==='t')ly=cy-r-16;else if(lp==='r'){lx=cx+r+14+w/2;ly=cy+2;}else if(lp==='l'){lx=cx-r-14-w/2;ly=cy+2;}
+   lx=Math.max(w/2+10,Math.min(MAP_W-w/2-10,lx));
+   mapPxText(c,txt,lx,ly,fnt,st==='locked'?'#b0b0c4':'#fff6d8');}}
  /* ficha da equipe: retrato num quadro dourado com seta, balancando */
  const tk=mapTok||{x:NODES[CAMP.at].x,y:NODES[CAMP.at].y},bob=Math.round(Math.sin(t*4)*1)*MAP_S/2,tx=mapSn(tk.x),ty=mapSn(tk.y-58)+bob;
  c.fillStyle='rgba(10,6,0,.4)';c.fillRect(tx-20,ty+28,44,8);
