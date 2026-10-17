@@ -24,12 +24,7 @@ function mapPanel(){
  let body='';
  if(n.kind==='vila'){body=`<p class="desc">${n.d}</p><div class="act"><button class="learn" id="mp-tree">Árvore de habilidades</button><button class="learn alt" id="mp-inv">Equipamentos</button><button class="learn alt" id="mp-gacha">Invocação</button></div>`;}
  else{const af=n.enc.afin||CHARS[enemyCharOf(mapHero)].afin,vant=['fogo','agua','terra','vento','raio'].filter(b=>elemMatch(b,af)>0).map(b=>ELEMENTS[b].name);
-  body=`<p class="desc">${n.d}</p><div class="enc"><small>Inimigo</small><h4>${n.enc.name} <span class="lvl">Nv ${n.lvl}</span></h4>
-  <div class="chips">${af.map(e=>`<em class="el" style="--ec:${ELEMENTS[e].col}">${ELEMENTS[e].name}</em>`).join('')}</div>
-  <div class="stats"><div><small>Nível</small><b>${n.lvl}</b></div><div><small>XP</small><b>${n.xp}</b></div><div><small>Ryo</small><b>${n.ryo}</b></div></div>
-  <p class="tip">${vant.length?'Dica: golpes de <b>'+vant.join(', ')+'</b> causam +40% de dano.':'Sem fraqueza elemental conhecida.'}</p></div>
-  <small class="lab">Equipe (escolha quem vai lutar)</small><div class="party">${party}</div>
-  <div class="act">${st==='locked'?'<span class="why">Vença um local vizinho para liberar.</span>':`<button class="learn" id="mp-go">${st==='cleared'?'Lutar de novo':'Partir para a batalha'} com ${CHARS[mapHero].name.split(' ')[0]}</button>`}</div>`;}
+  body=`<p class="desc">${n.d}</p>`+phasePanel(mapSel,st,n);}
  return`<h3>${n.name}</h3><span class="tag ${st}">${stTxt}</span>${body}`;}
 function renderMap(){
  const t=mapEl();
@@ -41,7 +36,7 @@ function renderMap(){
  cv.onmousemove=e=>{const h=hit(e);if(h!==mapHover){mapHover=h;cv.style.cursor=h?'pointer':'default';}};
  cv.onclick=e=>{const h=hit(e);if(h){mapSel=h;renderMap();}};
  t.querySelectorAll('.hero[data-h]').forEach(b=>b.onclick=()=>{mapHero=b.dataset.h;renderMap();});
- const go=document.getElementById('mp-go');if(go)go.onclick=()=>travelAndFight(mapSel);
+ const go=document.getElementById('mp-go');if(go)go.onclick=()=>travelAndFight(mapSel);if(typeof bindPhase==='function')bindPhase(t);
  const tr=document.getElementById('mp-tree');if(tr)tr.onclick=()=>{closeMap(true);openTree();};
  const gh=document.getElementById('mp-gacha');if(gh)gh.onclick=()=>{closeMap(true);openGacha();};
  const iv=document.getElementById('mp-inv');if(iv)iv.onclick=()=>{closeMap(true);openInv();};
@@ -55,17 +50,17 @@ function closeMap(keepMenu){mapEl().hidden=true;if(mapRAF){cancelAnimationFrame(
 function travelAndFight(id){
  if(mapMoving)return;const path=mapPath(CAMP.at,id);if(!path){toast('Sem caminho aberto até lá');return;}
  mapMoving=true;const pts=[];for(let i=0;i<path.length-1;i++){const e=edgePts(path[i],path[i+1]);for(let k=0;k<=24;k++)pts.push(bez(e,k/24));}
- let i=0;const step=()=>{if(i>=pts.length){mapTok=null;CAMP.at=id;saveCamp();mapMoving=false;startEncounter(id,mapHero);return;}mapTok={x:pts[i][0],y:pts[i][1]};i+=pts.length>30?1:1;setTimeout(step,16);};step();}
-function startEncounter(id,hero){
- const n=NODES[id];if(!n||!n.enc)return;
- CAMP.active={node:id,hero,afin:n.enc.afin,hp:1,atk:1,name:(hero==='gozu'||hero==='meizu')?'Genin Rival':n.enc.name};saveCamp();playSkin=(hero==='gozu'||hero==='meizu')?hero:null;applyHero(hero);
+ let i=0;const step=()=>{if(i>=pts.length){mapTok=null;CAMP.at=id;saveCamp();mapMoving=false;beginPhase(id);return;}mapTok={x:pts[i][0],y:pts[i][1]};i+=pts.length>30?1:1;setTimeout(step,16);};step();}
+function startEncounter(id,hero,foe){
+ const n=NODES[id];if(!n||!n.enc)return;const f=foe!=null?nodeFoes(id)[foe]:null;
+ CAMP.active={node:id,hero,afin:f?(f.afin||n.enc.afin):n.enc.afin,hp:1,atk:1,name:(hero==='gozu'||hero==='meizu')?'Genin Rival':(f?f.name:n.enc.name),skin:f?(f.skin||null):((n.enc||{}).skin||null),lvl:f?n.lvl+(f.dl||0):n.lvl,foe:f?foe:null};saveCamp();playSkin=(hero==='gozu'||hero==='meizu')?hero:null;applyHero(hero);
  if(NHEROES.includes(hero)!==roleN){try{localStorage.setItem('playNaruto',NHEROES.includes(hero)?'1':'0');}catch(e){}location.reload();return;}
  applyEncounter();}
 function setEnemyName(nm){const side=roleN?'s':'n',b=document.querySelector(side==='n'?'.pl.r b':'.pl b');if(b&&b.firstChild&&b.firstChild.nodeType===3)b.firstChild.nodeValue=(nm||ORIG_NAMES[side]).toUpperCase();}
 function applyEncounter(){
- const a=CAMP.active;if(!a)return;enemySkin=(NODES[a.node].enc||{}).skin||null;playSkin=(a.hero==='gozu'||a.hero==='meizu')?a.hero:null;portrait('ptN',NARUTO,mk({expr:5}));applyHero(a.hero);{const rb=document.querySelector('.pl.r b');if(rb&&rb.firstChild&&rb.firstChild.nodeType===3&&roleN)rb.firstChild.nodeValue=playSkin?HERO_NAME[playSkin]:'NARUTO UZUMAKI';}setScene(NODES[a.node].scene);setEnemyName(a.name);
+ const a=CAMP.active;if(!a)return;enemySkin=a.skin!==undefined?a.skin:((NODES[a.node].enc||{}).skin||null);playSkin=(a.hero==='gozu'||a.hero==='meizu')?a.hero:null;portrait('ptN',NARUTO,mk({expr:5}));applyHero(a.hero);{const rb=document.querySelector('.pl.r b');if(rb&&rb.firstChild&&rb.firstChild.nodeType===3&&roleN)rb.firstChild.nodeValue=playSkin?HERO_NAME[playSkin]:'NARUTO UZUMAKI';}setScene(NODES[a.node].scene);setEnemyName(a.name);
  mapEl().hidden=true;if(mapRAF){cancelAnimationFrame(mapRAF);mapRAF=null;}
- $('rst').onclick();toast(NODES[a.node].name+' — '+a.name);}
+ $('rst').onclick();if(typeof phaseCarry==='function')phaseCarry();toast(NODES[a.node].name+' — '+a.name);}
 /* fim de luta: marca o local, e volta ao mapa */
 function campaignResult(won){const a=CAMP.active;if(!a)return;
  if(won&&!CAMP.cleared.includes(a.node)){CAMP.cleared.push(a.node);}CAMP.at=a.node;saveCamp();

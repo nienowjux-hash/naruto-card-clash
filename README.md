@@ -229,3 +229,11 @@ Konoha → Trilha do Bosque (Lobo Selvagem, Nv 1) → Estrada de Terra (Bandido,
 - Chances: Comum 50 · Incomum 30 · Raro 15 · Épico 4 · Lendário 1%. Raro+ garantido a cada 10; Lendário garantido na 60ª (chance sobe a partir da 40ª). Raridade sem personagem cai para a mais próxima abaixo.
 - Repetido vira fragmentos (Comum 6 … Lendário 70); 10/30/60/100/150 fragmentos = estrelas (+6 vida e +3% ataque cada).
 - Estado em `GACHA` (localStorage `rpgGachaV1`). Para o online, só `rollGacha()` e `gachaReward()` vão para o servidor.
+
+## Fases em duelos 1x1 — js/24-fase.js
+- Cada local de luta é uma fase com 4 inimigos (`nodeFoes(id)`: `foes` do local ou 4 cópias do inimigo base; `dl` soma ao nível do local). O painel lista os inimigos (nome, nível, elemento) e um seletor para ligar um membro da equipe a cada um.
+- Equipe de até 4 (só personagens obtidos). Iniciar a fase cria `CAMP.phase`; cada inimigo tem botão "Lutar", na ordem que o jogador quiser.
+- Quem perde sai da fase; quem vence continua com a vida e o chakra que sobraram (`phaseCarry`). Todos voltam ao fim da fase.
+- Vitória = todos os inimigos derrotados: XP total (soma por inimigo) igual para todos que lutaram, ryo, item e pergaminhos. Derrota = equipe toda caída: 15% do XP, sem recompensa.
+- Trocar entre heróis do lado do Naruto (Naruto, Gozu, Meizu) e do Sasuke ainda recarrega a página; a fase continua pelo estado salvo.
+- A aparência do inimigo só aparece quando o herói está do lado do Sasuke (limitação antiga).

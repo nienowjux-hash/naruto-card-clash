@@ -71,6 +71,6 @@ function renderTree(){
 window.addEventListener('keydown',e=>{const t=document.getElementById('tree');if(e.key==='Escape'&&t&&!t.hidden){closeTree();e.stopImmediatePropagation();}},true);
 (function(){const b=document.createElement('button');b.id='treebtn';b.textContent='Árvore de habilidades';b.onclick=openTree;const c=document.querySelector('.ctl');if(c)c.insertBefore(b,c.firstChild);})();
 /* XP no fim da luta: quem o jogador controla ganha XP por vitoria (mais) ou derrota (menos) */
-function giveBattleXp(winner){const me=roleN?sideChar('n'):sideChar('s'),won=(winner==='N')===roleN,nd=CAMP.active?NODES[CAMP.active.node]:null,fx=nd?Math.min(1.3,Math.max(.1,1+(nd.lvl-PROG[me].level)*.08)):1,xp=Math.max(1,Math.round(((nd&&nd.xp)||8)*fx*(won?1:.15))),up=awardXp(me,xp);
+function giveBattleXp(winner){const me=roleN?sideChar('n'):sideChar('s'),won=(winner==='N')===roleN;if(CAMP.phase&&CAMP.active&&CAMP.active.foe!=null){phaseDuelEnd(me,won);return;}const nd=CAMP.active?NODES[CAMP.active.node]:null,fx=nd?Math.min(1.3,Math.max(.1,1+(actLvl()-PROG[me].level)*.08)):1,xp=Math.max(1,Math.round(((nd&&nd.xp)||8)*fx*(won?1:.15))),up=awardXp(me,xp);
  if(typeof giveBattleLoot==='function')giveBattleLoot(won);if(typeof campaignResult==='function')campaignResult(won);
  setTimeout(()=>toast(CHARS[me].name.split(' ')[0]+' ganhou '+xp+' XP'+(up?' · subiu para o nível '+PROG[me].level+'! (+'+up+' pt)':'')),2600);}

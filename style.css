@@ -266,3 +266,15 @@ canvas#c{width:100%;height:auto}
 #gacha .glist{display:flex;flex-wrap:wrap;gap:8px}
 #gacha .gr{width:96px;display:flex;flex-direction:column;align-items:center;padding:6px 3px;background:#14112a;border:1px solid var(--rc);border-radius:8px;font-size:11px;text-align:center}
 #gacha .gr.lk{opacity:.5;filter:grayscale(.7)}#gacha .gr b{color:#fff}#gacha .gr em{font-style:normal}#gacha .gr small{color:#c8c0a0}
+
+/* fases em duelos */
+#map .foes{display:flex;flex-direction:column;gap:6px;margin:8px 0}
+#map .foe{display:flex;align-items:center;gap:8px;background:#0e0c1e;border:1px solid #3a2f14;border-radius:8px;padding:6px 8px}
+#map .foe .fi{flex:1;min-width:0}#map .foe .fi b{display:block;color:#fff;font-size:13px}#map .foe .fi small{color:#a89a78;font-size:11px}
+#map .foe select{background:#1a1530;color:#ffe9b0;border:1px solid #6e5424;border-radius:6px;padding:4px;font-size:12px}
+#map .foe .learn{padding:5px 10px;font-size:12px}
+#map .foe.done{opacity:.5}#map .foe .ok{color:#7ad070;font-size:12px}
+#map .tm{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin:6px 0 12px}
+#map .tu{background:#0e0c1e;border:1px solid #3a2f14;border-radius:8px;padding:6px 8px}#map .tu b{color:#fff;font-size:13px;display:block}#map .tu small{color:#a89a78;font-size:11px}
+#map .tu .bar{height:6px;background:#201a30;border-radius:4px;overflow:hidden;margin-top:3px}#map .tu .bar i{display:block;height:100%;background:#7ad070}
+#map .tu.dead{opacity:.45;filter:grayscale(1)}

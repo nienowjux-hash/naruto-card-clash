@@ -144,7 +144,7 @@ function idleActN(t){if(anim||outcome||turnLock)return;battleOn=true;ensureAudio
    A esperteza cresce com o nivel do local (0 no Campo de Treino, 1 no Vale do Fim; 0.5 fora da campanha). Ela NAO muda status:
    so muda as escolhas. Quanto mais esperta: prefere golpes com vantagem elemental e evita os fracos, finaliza quando um golpe mata,
    guarda o Kawarimi para quando o jogador tem chakra para um golpe forte e se defende quando esta com pouca vida. */
-function aiSmart(){const a=CAMP.active;if(!a)return .5;const L=(NODES[a.node]||{}).lvl||1;return Math.max(0,Math.min(1,(L-1)/29));}
+function aiSmart(){const a=CAMP.active;if(!a)return .5;const L=actLvl();return Math.max(0,Math.min(1,(L-1)/29));}
 function aiElemW(elem,target){const m=elemMult(elem,target);return Math.pow(m,1+aiSmart()*6);} /* vantagem 1.4 vira ate ~10x mais provavel; desvantagem quase some */
 function aiPickW(list,wf){const w=list.map(x=>[x,Math.max(0,wf(x))]),sum=w.reduce((a,b)=>a+b[1],0);if(sum<=0)return list[0];let r=Math.random()*sum;for(const [x,v] of w){r-=v;if(r<=0)return x;}return w[w.length-1][0];}
 /* golpes do Naruto inimigo: dano estimado no Sasuke (com elemento, bonus da ficha e a defesa do Sasuke) */

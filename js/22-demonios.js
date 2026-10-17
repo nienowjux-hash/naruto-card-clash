@@ -239,7 +239,7 @@ function dmInstLethalFX(c){const {f,t,time}=c,tt=c.A?t:99;dmInstintoFX(c,true);
  if(tt>=2.55){const a=tt-2.55;if(a<1.6){bloodSpray(f,96,GY-60,a,560,18,-1);bloodSpray(f,96,GY-40,a,561,22,1);bloodSpray(f,96,GY-24,a,562,16,-1);}
   const pool=scaleAt(0,1,.6,3.0,a);f.save();f.fillStyle=`rgba(130,8,18,${.8*pool})`;f.beginPath();f.ellipse(92,GY+2,44*pool,3.8*pool,0,0,TAU);f.fill();f.restore();}}
 /* ---------------- IA dos Irmaos Demonios ---------------- */
-function demonPick(){if(enemySkin!=='gozu'&&enemySkin!=='meizu')return null;const a=CAMP.active,lvl=a?NODES[a.node].lvl:3,SM=aiSmart(),opts=[];if(dmKCd>0)dmKCd--;
+function demonPick(){if(enemySkin!=='gozu'&&enemySkin!=='meizu')return null;const a=CAMP.active,lvl=a?actLvl():3,SM=aiSmart(),opts=[];if(dmKCd>0)dmKCd--;
  const add=(id,w,min)=>{if(lvl>=min&&w>0&&ANIMS[id]&&ANIMS[id].cost<=ck.n)opts.push([id,w]);};
  add('nsoco',2.2,1);add('nchute',1.6,1);add('dmShunshin',2.4,1);add('dmGarras',poisonS>0?.5:2.8,2);add('dmSuigakure',2.4,3);add('dmKusari',dmKCd>0?0:2.8,3);add('dmInstinto',(!dmInstK&&hp.s<75)?3.4:0,4);
  if(!opts.length)return'concentrate';
