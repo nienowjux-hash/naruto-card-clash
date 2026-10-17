@@ -263,3 +263,6 @@ Konoha → Trilha do Bosque (Lobo Selvagem, Nv 1) → Estrada de Terra (Bandido,
 - A IA respeita o kit dos dois lados: `commonPick` (heróis Sasuke/Sakura/Kakashi) e `cmAiS` (heróis Naruto/Gozu/Meizu, o inimigo fica no lado do Sasuke com o corpo vestido via `SPRES`, retrato e nome corretos).
 - No lado esquerdo o golpe de vários acertos aplica o dano total de uma vez (os acertos extras são só visuais). Os Irmãos Demônios só usam os golpes de ninja básicos nesse lado; as habilidades deles continuam no lado direito.
 - **Nomes na tela**: o K.O. ("<NOME> VENCEU") e os avisos de luta usam o nome de quem está em cena (herói do jogador ou inimigo da fase), dos dois lados da tela (`koName`, `cmEnemyName`, js/26-comuns.js); o aviso antigo que dizia sempre "Naruto"/"Sasuke" é traduzido.
+
+## Vantagem elemental na escalação (js/24-fase.js)
+Cada inimigo mostra os elementos e quem da equipe tem **vantagem** (▲) ou **desvantagem** (▼) contra ele (`heroAdv`, usa `CHARS[..].afin` e `elemMatch`); abaixo da lista há a tabela "quem vence quem" (`ELEM_BEATS`) e o botão "Sugerir escalação pela vantagem elemental" (`suggestAssign`). O painel lateral do mapa usa fontes maiores (clamp por vw).

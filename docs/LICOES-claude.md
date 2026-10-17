@@ -65,3 +65,5 @@ Leia o `README.md` do jogo: ele documenta cada sistema. Atualize-o ao mudar algo
 | Heredoc/Python quebravam patches | aspas/escapes | Write + script `.py` com string crua |
 | Cartoes de comando esticados / HUD ilegivel | grid sem `align-content`, fontes pequenas | CSS com `clamp`/`cqw` |
 | Rotulos do mapa sobrepostos | todos abaixo do no | campo `lp` por no |
+| Texto aninhado em `<b>` ficou gigante no painel do mapa | regra `#map .foe .fi b` pegava o `<b>` interno | regra mais especifica `.adv b{font-size:inherit}` |
+| Vantagem elemental invisivel para o jogador | painel so mostrava o elemento do inimigo | linha `Vantagem:` por inimigo + tabela de elementos + botao de sugerir escalacao |

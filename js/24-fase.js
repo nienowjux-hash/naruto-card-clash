@@ -10,6 +10,12 @@ const phaseAt=id=>(CAMP.phase&&CAMP.phase.node===id)?CAMP.phase:null;
 const foeXp=(n,f)=>f.xp||Math.round((n.xp||8)/2);
 function autoAssign(team,nf,old){const a=[];for(let i=0;i<nf;i++)a.push(old&&team.includes(old[i])?old[i]:team[i%team.length]);return a;}
 function foeElems(f,n){return f.afin||n.enc.afin||[];}
+/* vantagem elemental de um membro da equipe contra um inimigo: 1 vantagem, -1 desvantagem, 0 neutro */
+function heroAdv(c,foeAf){if(!foeAf||!foeAf.length)return 0;const ms=(CHARS[c].afin||[]).map(e=>elemMatch(e,foeAf));if(ms.some(m=>m>0))return 1;if(ms.length&&ms.every(m=>m<0))return -1;return 0;}
+const firstName=c=>CHARS[c].name.split(' ')[0];
+/* sugere quem enfrenta quem: quem tem vantagem primeiro, sem sobrecarregar um so personagem */
+function suggestAssign(team,foes,n,alive){const live=team.filter(alive),load={},out=[];live.forEach(c=>load[c]=0);
+ foes.forEach((f,i)=>{if(!live.length){out.push(null);return;}const af=foeElems(f,n);const best=live.slice().sort((a,b)=>(heroAdv(b,af)-heroAdv(a,af))||(load[a]-load[b]))[0];load[best]++;out.push(best);});return out;}
 
 function beginPhase(id){const n=NODES[id],team=teamNow().slice(),foes=nodeFoes(id);
  const u={};team.forEach(c=>u[c]={hp:null,ck:100,alive:true,fought:false});
@@ -22,22 +28,25 @@ function phasePanel(id,st,n){
  if(!p)mapAssign=autoAssign(team,foes.length,mapAssign);
  const asg=p?p.assign:mapAssign;
  const total=foes.reduce((s,f)=>s+foeXp(n,f),0);
+ const advLine=(tm,af)=>{const ok=tm.filter(c=>heroAdv(c,af)>0).map(firstName),bad=tm.filter(c=>heroAdv(c,af)<0).map(firstName);return(ok.length?`<span class="adv up">▲ Vantagem: <b>${ok.join(', ')}</b></span>`:'')+(bad.length?`<span class="adv dn">▼ Desvantagem: ${bad.join(', ')}</span>`:'')+(!ok.length&&!bad.length?'<span class="adv">Sem vantagem de ninguém da equipe</span>':'');};
  const rows=foes.map((f,i)=>{const done=p&&p.foes[i].done,af=foeElems(f,n),lvl=n.lvl+(f.dl||0);
   const opts=team.filter(alive).map(c=>`<option value="${c}"${asg[i]===c?' selected':''}>${CHARS[c].name.split(' ')[0]}</option>`).join('');
-  return`<div class="foe${done?' done':''}"><div class="fi"><b>${f.name}</b><small>Nv ${lvl} · ${af.map(e=>ELEMENTS[e].name).join('/')||'—'}</small></div>
+  return`<div class="foe${done?' done':''}"><div class="fi"><b>${f.name}</b><small>Nv ${lvl} · ${af.map(e=>`<em class="el" style="--ec:${ELEMENTS[e].col}">${ELEMENTS[e].name}</em>`).join('')||'—'}</small>${done?'':advLine(team.filter(alive),af)}</div>
   ${done?'<span class="ok">✓ Derrotado</span>':`<select data-f="${i}">${opts}</select>${p?`<button class="learn" data-fight="${i}">Lutar</button>`:''}`}</div>`;}).join('');
  const teamHtml=p?`<div class="tm">${team.map(c=>{const u=p.u[c],mx=100+(statsOf(c).hp||0),pc=u.hp==null?100:Math.round(Math.max(0,u.hp)/mx*100);return`<div class="tu${u.alive?'':' dead'}"><b>${CHARS[c].name.split(' ')[0]}</b><small>${u.alive?pc+'% de vida':'Fora da fase'}</small><div class="bar"><i style="width:${u.alive?pc:0}%"></i></div></div>`;}).join('')}</div>`
   :`<small class="lab">Equipe (até ${PHASE_MAX_TEAM}) — clique para montar</small><div class="party">${ownedChars(['sasuke','sakura','kakashi','naruto','gozu','meizu']).map(h=>`<button class="hero${team.includes(h)?' on':''}" data-team="${h}"><b>${CHARS[h].name.split(' ')[0]}</b><small>Nível ${PROG[h].level}</small>${charRar(h)}</button>`).join('')}</div>`;
  const act=st==='locked'?'<span class="why">Vença um local vizinho para liberar.</span>':p?'<button class="learn alt" id="ph-quit">Desistir da fase</button>':`<button class="learn" id="mp-go">${st==='cleared'?'Jogar a fase de novo':'Iniciar a fase'} com ${team.length} ${team.length>1?'personagens':'personagem'}</button>`;
  const lootHtml=p&&p.loot&&(p.loot.ryo||Object.keys(p.loot.items).length)?`<p class="tip">Butim acumulado (pago ao concluir): <b>${p.loot.ryo} ryo</b> ${Object.keys(p.loot.items).map(i=>`<span class="lt">${icoImg(i,'sm')}${p.loot.items[i]>1?'×'+p.loot.items[i]:''}</span>`).join('')}</p>`:'';
  return`<div class="enc"><small>Inimigos da fase (${foes.length}) · recompensa ao concluir</small><div class="stats"><div><small>XP total</small><b>${total}</b></div><div><small>Ryo (+ bônus)</small><b>${Math.round(n.ryo*1.5)}</b></div><div><small>Pergaminhos</small><b>${n.kind==='chefe'?'4+':'1+'}</b></div></div>
- <div class="foes">${rows}</div><p class="tip">Escolha quem enfrenta cada inimigo. Quem perde sai da fase; quem vence segue com a vida que sobrou. Cada inimigo solta ryo e talvez um item (animais: pílulas; bandidos: armas e roupas; ninjas: qualquer item; líderes sempre soltam). O XP vai igual para todos que lutaram.</p></div>${lootHtml}${teamHtml}<div class="act">${act}</div>`;}
+ <div class="foes">${rows}</div>${p?'':'<button class="learn alt" id="ph-sug">Sugerir escalação pela vantagem elemental</button>'}
+ <div class="chart"><small>Quem vence quem (+40% de dano; em desvantagem, -25%)</small><div>${Object.keys(ELEM_BEATS).map(a=>`<span class="cc"><em class="el" style="--ec:${ELEMENTS[a].col}">${ELEMENTS[a].name}</em> vence <em class="el" style="--ec:${ELEMENTS[ELEM_BEATS[a]].col}">${ELEMENTS[ELEM_BEATS[a]].name}</em></span>`).join('')}</div></div><p class="tip">Escolha quem enfrenta cada inimigo. Quem perde sai da fase; quem vence segue com a vida que sobrou. Cada inimigo solta ryo e talvez um item (animais: pílulas; bandidos: armas e roupas; ninjas: qualquer item; líderes sempre soltam). O XP vai igual para todos que lutaram.</p></div>${lootHtml}${teamHtml}<div class="act">${act}</div>`;}
 
 function bindPhase(t){
  const p=CAMP.phase&&CAMP.phase.node===mapSel?CAMP.phase:null;
  t.querySelectorAll('[data-team]').forEach(b=>b.onclick=()=>{const c=b.dataset.team,tm=teamNow();const i=tm.indexOf(c);if(i>=0){if(tm.length>1)tm.splice(i,1);}else if(tm.length<PHASE_MAX_TEAM)tm.push(c);else{toast('Equipe cheia (máx. '+PHASE_MAX_TEAM+')');return;}mapTeam=tm;renderMap();});
  t.querySelectorAll('select[data-f]').forEach(s=>s.onchange=()=>{(p?p.assign:mapAssign)[+s.dataset.f]=s.value;if(p)saveCamp();});
  t.querySelectorAll('[data-fight]').forEach(b=>b.onclick=()=>{const i=+b.dataset.fight,h=p.assign[i];if(!h||!p.u[h]||!p.u[h].alive){toast('Escolha um personagem em pé');return;}startEncounter(p.node,h,i);});
+ const sg=document.getElementById('ph-sug');if(sg)sg.onclick=()=>{const n=NODES[mapSel],foes=nodeFoes(mapSel),tm=teamNow();mapAssign=suggestAssign(tm,foes,n,()=>true);renderMap();};
  const q=document.getElementById('ph-quit');if(q)q.onclick=()=>{if(confirm('Desistir da fase? Nenhum XP é ganho.'))abandonPhase();};}
 
 /* ---- butim: cada inimigo derrotado solta ryo e talvez um item; o butim vai para CAMP.phase.loot e so e pago no fim ---- */
