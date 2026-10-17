@@ -9,6 +9,7 @@ function showHubMenu(){menuOpen='main';const h=$('hand');h.innerHTML='';setHead(
  const add=(ic,name,desc,col,fn)=>{const b=document.createElement('button');b.className='cmd';b.style.setProperty('--cc',col);b.innerHTML=`<span class="ic">${ic}</span><span class="tx"><b>${name}</b><small>${desc}</small></span><span></span>`;b.onclick=fn;h.appendChild(b);};
  add('地','Mapa da campanha','Escolha o local, monte a equipe e parta para as fases.','#ffd97a',()=>openMap());
  add('技','Árvore de habilidades','Gaste pontos para aprender golpes.','#7fd4ff',()=>openTree());
+ add('道','Dojo','Compre treino (XP) e redistribua pontos de habilidade.','#8ad0ff',()=>openDojo());
  add('装','Equipamentos','Armas, roupas e acessórios da equipe.','#9fe0a0',()=>openInv());
  add('買','Loja do Armeiro','Compre e venda itens com ryo.','#ffd97a',()=>openShop());
  add('麺','Ichiraku Ramen','Um prato com bônus para a próxima fase.','#ffb070',()=>openRamen());

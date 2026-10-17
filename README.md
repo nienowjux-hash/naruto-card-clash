@@ -293,3 +293,7 @@ Cenário próprio da vila, pintado em pixel art (PixGrid 384x216, sem suavizaç�
 - **Loja do Armeiro** (prédio da vila): comprar e vender. Estoque: pílulas sempre + 8 equipamentos até Raro sorteados por `SHOP.rot` (gira a cada fase vencida) entre os permitidos pelo maior nível do grupo (`ITEM_LVL[rar] <= nível+6`). Preço por raridade (`shopPrice`: 45/130/380 e consumíveis); venda = 40%. Épico/Lendário não são vendidos.
 - **Ichiraku Ramen**: 3 pratos (Shoyu 60, Miso 130, Especial 280 ryo) com bônus de vida, ataque, XP e ryo **só na próxima fase**: o prato vira `CAMP.phase.ramen` ao iniciar a fase (`beginPhase`) e some quando ela acaba; `statsOf` soma vida/ataque, `phaseReward` multiplica XP e ryo.
 - Estado em `SHOP` (`rpgShopV1`), zerado por `resetAll`. Para o online, preços/estoque/compras vão para o servidor.
+
+## Dojo e Ferreiro (js/28-loja.js)
+- **Ferreiro** (aba na Loja do Armeiro): melhora um tipo de equipamento de +1 a +5 (todas as cópias; `INV.up[id]`), +20% dos atributos por nível, custo = 60% do preço × (nível+1). `statsOf` aplica; mochila e slots mostram o selo "+N" e os atributos já melhorados (`upTag`, `itemStatLines`).
+- **Dojo** (prédio da vila): *treino* compra XP (leve/médio/intenso = ¼/½/1 nível; preço por XP 0,6+0,15×nível) até o nível-limite `dojoCap()` = 4 + 2 × fases concluídas; *redistribuir pontos* devolve os pontos gastos em habilidades (não-básicas) por 25 × nível ryo.

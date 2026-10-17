@@ -247,9 +247,9 @@ const ITEMS={
  elixir_sabio:{name:'Elixir do Sábio',slot:'cons',rar:4,g:'丹',use:{hp:100,ck:50},d:'Recupera 100 de vida e 50 de chakra. Gasta o turno.'}};
 const RARITY={1:{name:'Comum',col:'#aab0c8'},2:{name:'Incomum',col:'#5cc878'},3:{name:'Raro',col:'#4aa8ff'},4:{name:'Épico',col:'#b070ff'},5:{name:'Lendário',col:'#ffa43a'}};
 const INV_KEY='rpgInvV1';
-function invDefault(){return{ryo:0,bag:{kunai_ferro:1,colete:1,bandana:1,pilula_vida:3,pilula_ck:3},eq:{sasuke:{},naruto:{},sakura:{},kakashi:{},gozu:{},meizu:{}}};}
+function invDefault(){return{up:{},ryo:0,bag:{kunai_ferro:1,colete:1,bandana:1,pilula_vida:3,pilula_ck:3},eq:{sasuke:{},naruto:{},sakura:{},kakashi:{},gozu:{},meizu:{}}};}
 let INV=invDefault();
-try{const j=JSON.parse(localStorage.getItem(INV_KEY)||'null');if(j){INV.ryo=j.ryo||0;INV.bag=j.bag||INV.bag;INV.eq=Object.assign({sasuke:{},naruto:{},sakura:{},kakashi:{},gozu:{},meizu:{}},j.eq||{});}}catch(e){}
+try{const j=JSON.parse(localStorage.getItem(INV_KEY)||'null');if(j){INV.up=j.up||{};INV.ryo=j.ryo||0;INV.bag=j.bag||INV.bag;INV.eq=Object.assign({sasuke:{},naruto:{},sakura:{},kakashi:{},gozu:{},meizu:{}},j.eq||{});}}catch(e){}
 function saveInv(){try{localStorage.setItem(INV_KEY,JSON.stringify(INV));}catch(e){}}
 function bagQty(id){return INV.bag[id]||0;}
 function addItem(id,n){INV.bag[id]=bagQty(id)+(n||1);saveInv();}
@@ -259,7 +259,7 @@ function canEquip(charId,id){return !equipBlock(charId,id);}
 function equipItem(charId,id){if(!canEquip(charId,id)||bagQty(id)<1)return false;const it=ITEMS[id],old=INV.eq[charId][it.slot];if(old)INV.bag[old]=bagQty(old)+1;INV.bag[id]--;if(INV.bag[id]<=0)delete INV.bag[id];INV.eq[charId][it.slot]=id;saveInv();return true;}
 function unequipItem(charId,slot){const id=INV.eq[charId][slot];if(!id)return false;addItem(id,1);delete INV.eq[charId][slot];saveInv();return true;}
 /* soma dos bonus do que o personagem veste */
-function statsOf(charId){const s={hp:0,atk:0,def:0,elem:{}};for(const slot in INV.eq[charId]||{}){const it=ITEMS[INV.eq[charId][slot]];if(!it||!it.stats)continue;const st=it.stats;s.hp+=st.hp||0;s.atk+=st.atk||0;s.def+=st.def||0;if(st.elem)s.elem[st.elem]=(s.elem[st.elem]||0)+(st.pct||0);}s.def=Math.min(.6,s.def);if(typeof CAMP!=='undefined'&&CAMP.phase&&CAMP.phase.ramen){s.hp+=CAMP.phase.ramen.hp||0;s.atk+=CAMP.phase.ramen.atk||0;}if(typeof starsOf==='function'){const st=starsOf(charId);s.hp+=st*6;s.atk+=st*.03;}return s;}
+function statsOf(charId){const s={hp:0,atk:0,def:0,elem:{}};for(const slot in INV.eq[charId]||{}){const it=ITEMS[INV.eq[charId][slot]];if(!it||!it.stats)continue;const st=it.stats,mu=1+.2*((INV.up||{})[INV.eq[charId][slot]]||0);s.hp+=Math.round((st.hp||0)*mu);s.atk+=(st.atk||0)*mu;s.def+=(st.def||0)*mu;if(st.elem)s.elem[st.elem]=(s.elem[st.elem]||0)+(st.pct||0)*mu;}s.def=Math.min(.6,s.def);if(typeof CAMP!=='undefined'&&CAMP.phase&&CAMP.phase.ramen){s.hp+=CAMP.phase.ramen.hp||0;s.atk+=CAMP.phase.ramen.atk||0;}if(typeof starsOf==='function'){const st=starsOf(charId);s.hp+=st*6;s.atk+=st*.03;}return s;}
 function resetInv(){INV=invDefault();saveInv();}
 /* sorteia um item de recompensa (pesos por raridade) */
 function rollDrop(nodeLvl){const w={1:55,2:28,3:12,4:4,5:1},lim=(nodeLvl||99)+8,ids=Object.keys(ITEMS).filter(i=>(ITEM_LVL[ITEMS[i].rar]||1)<=lim);let tot=0;const pool=ids.map(i=>{const x=w[ITEMS[i].rar]||1;tot+=x;return[i,x];});let r=Math.random()*tot;for(const[i,x]of pool){if((r-=x)<=0)return i;}return ids[0];}

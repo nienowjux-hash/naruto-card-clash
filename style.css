@@ -483,3 +483,10 @@ body.hub #stage{pointer-events:auto}
 .sbox .rgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:12px}
 .sbox .rc{background:#0e0c1e;border:2px solid #6e5424;border-radius:12px;padding:14px;text-align:center}.sbox .rc h4{margin:6px 0 2px;font:700 clamp(16px,1.3vw,21px) Georgia,serif;color:#ffe9b0}.sbox .rc small{color:#a89a78;font:clamp(12px,.95vw,15px) Georgia,serif}
 .sbox .rc .ico.big{float:none;margin:0 auto;width:72px;height:72px;display:block}
+
+.sbox .fup{font-style:normal;font-size:.8em;color:#ffd97a;background:#3a2a08;border:1px solid #b8924a;border-radius:8px;padding:0 6px;margin-left:4px}
+.sbox .dbar{height:10px;background:#201a30;border:1px solid #6e5424;border-radius:5px;overflow:hidden;margin:6px 0 10px}.sbox .dbar i{display:block;height:100%;background:linear-gradient(#ffd97a,#c8801e)}
+.sbox .sdet h5{margin:12px 0 4px;font:700 clamp(13px,1vw,16px) Georgia,serif;color:#ffe9b0;letter-spacing:.08em;text-transform:uppercase}
+.sbox .learn.alt{background:linear-gradient(#5a5a9a,#34346a);color:#fff;border-color:#9a9ad0}
+#dojo{position:fixed;inset:0;z-index:58;background:radial-gradient(#0a0a1acc,#020208f2);display:flex;align-items:center;justify-content:center;padding:12px}#dojo[hidden]{display:none}
+#inv .fup{font-style:normal;font-size:.8em;color:#ffd97a;background:#3a2a08;border:1px solid #b8924a;border-radius:8px;padding:0 6px;margin-left:4px}

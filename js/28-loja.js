@@ -40,6 +40,7 @@ function openShop(){shopTab='buy';shopPick=null;shopEl().hidden=false;renderShop
 function closeShop(){shopEl().hidden=true;if(!anim&&!outcome&&!turnLock)showMenu('main');}
 function shopRow(id,price,qty,sel){const it=ITEMS[id];return`<button class="sit${sel?' sel':''}" data-id="${id}" style="--rc:${RARITY[it.rar].col}"><span class="gi">${icoImg(id)}</span><span class="sn"><b>${it.name}</b><small>${RARITY[it.rar].name}${it.slot==='cons'?' · consumível':' · '+SLOTS[it.slot]}${qty?' · tem '+qty:''}</small></span><span class="sp">${price}<em>ryo</em></span></button>`;}
 function renderShop(){
+ if(shopTab==='forge')return renderForge();
  const t=shopEl(),buy=shopTab==='buy',ids=buy?shopStock():Object.keys(INV.bag).filter(id=>ITEMS[id]);
  if(shopPick&&!ids.includes(shopPick))shopPick=null;
  ids.sort((a,b)=>(ITEMS[a].slot==='cons'?9:0)-(ITEMS[b].slot==='cons'?9:0)||ITEMS[b].rar-ITEMS[a].rar);
@@ -49,7 +50,7 @@ function renderShop(){
   det=`<div class="sdet">${icoImg(shopPick,'big')}<h4 style="color:${RARITY[it.rar].col}">${it.name}</h4><small>${RARITY[it.rar].name} · ${it.slot==='cons'?'Consumível':SLOTS[it.slot]+' · nível '+(ITEM_LVL[it.rar]||1)}${it.only?' · só '+it.only.map(c=>CHARS[c].name.split(' ')[0]).join(', '):''}</small><p>${it.d}</p>
    <p class="eff">${it.slot==='cons'?Object.keys(it.use).map(k=>'+'+it.use[k]+(k==='hp'?' de vida':' de chakra')).join(' · '):statLines(it.stats).join('<br>')}</p>
    <button class="learn${can?'':' off'}" id="sact">${buy?'Comprar':'Vender'} por ${pr} ryo</button></div>`;}
- t.innerHTML=`<div class="sbox"><div class="thead"><h2>Loja do Armeiro</h2><div class="tabs"><button class="tab${buy?' on':''}" data-t="buy">Comprar</button><button class="tab${buy?'':' on'}" data-t="sell">Vender</button></div><div class="ryo"><b>${INV.ryo}</b><small>ryo</small></div><button class="x" id="sinv">Equipamentos</button><button class="x" id="sx">Fechar ✕</button></div>
+ t.innerHTML=`<div class="sbox"><div class="thead"><h2>Loja do Armeiro</h2><div class="tabs"><button class="tab${shopTab==='buy'?' on':''}" data-t="buy">Comprar</button><button class="tab${shopTab==='sell'?' on':''}" data-t="sell">Vender</button><button class="tab${shopTab==='forge'?' on':''}" data-t="forge">Ferreiro</button></div><div class="ryo"><b>${INV.ryo}</b><small>ryo</small></div><button class="x" id="sinv">Equipamentos</button><button class="x" id="sx">Fechar ✕</button></div>
   <div class="smain"><section class="slist">${buy?`<p class="hint">O estoque muda a cada fase concluída e melhora com o nível do grupo. Armas e armaduras Épicas e Lendárias não se compram: só caem em fases ou na invocação.</p>`:`<p class="hint">Venda itens repetidos ou que você não usa por ${Math.round(SHOP_SELL*100)}% do preço. Itens equipados não aparecem aqui.</p>`}<div class="sgrid">${rows}</div></section><aside class="sside">${det}</aside></div></div>`;
  t.querySelectorAll('.tab').forEach(b=>b.onclick=()=>{shopTab=b.dataset.t;shopPick=null;renderShop();});
  t.querySelectorAll('.sit').forEach(b=>b.onclick=()=>{shopPick=b.dataset.id;renderShop();});
@@ -70,3 +71,50 @@ function renderRamen(){
  document.getElementById('rx').onclick=closeRamen;
  t.querySelectorAll('[data-r]').forEach(b=>b.onclick=()=>{const r=RAMEN.find(x=>x.id===b.dataset.r);if(SHOP.ramen&&!confirm('Já existe um prato ativo ('+SHOP.ramen.name+'). Trocar por '+r.name+'?'))return;if(ramenBuy(r.id)){toast('Itadakimasu! '+r.name+' pronto para a próxima fase');renderRamen();}});}
 window.addEventListener('keydown',e=>{if(e.key!=='Escape')return;for(const [id,fn] of [['shop',closeShop],['ramen',closeRamen]]){const t=document.getElementById(id);if(t&&!t.hidden){fn();e.stopImmediatePropagation();return;}}},true);
+
+/* ---- Ferreiro: melhora o item (todas as copias daquele tipo) ate +5; cada nivel soma 20% dos atributos dele ---- */
+const FORGE_MAX=5;
+const forgeLevel=id=>(INV.up||{})[id]||0;
+const forgeCost=id=>Math.round(shopPrice(id)*.6*(forgeLevel(id)+1));
+function forgeOwned(){const ids=new Set(Object.keys(INV.bag).filter(id=>ITEMS[id]&&ITEMS[id].slot!=='cons'));for(const c in INV.eq)for(const sl in INV.eq[c])if(ITEMS[INV.eq[c][sl]])ids.add(INV.eq[c][sl]);return[...ids];}
+function forgeUp(id){const n=forgeLevel(id),c=forgeCost(id);if(n>=FORGE_MAX||INV.ryo<c)return false;INV.ryo-=c;(INV.up=INV.up||{})[id]=n+1;saveInv();try{syncHpMax(false);}catch(e){}return true;}
+function forgeStats(id,n){const st=ITEMS[id].stats||{},m=1+.2*n,pc=v=>String(Math.round(v*1000)/10).replace('.',','),L=[];if(st.hp)L.push('+'+Math.round(st.hp*m)+' de vida máxima');if(st.atk)L.push('+'+pc(st.atk*m)+'% de ataque');if(st.def)L.push('-'+pc(st.def*m)+'% de dano recebido');if(st.elem)L.push('+'+pc((st.pct||0)*m)+'% de dano de '+ELEMENTS[st.elem].name);return L;}
+function renderForge(){
+ const t=shopEl(),ids=forgeOwned().sort((a,b)=>ITEMS[b].rar-ITEMS[a].rar);if(shopPick&&!ids.includes(shopPick))shopPick=null;
+ const rows=ids.map(id=>{const it=ITEMS[id],n=forgeLevel(id);return`<button class="sit${shopPick===id?' sel':''}" data-id="${id}" style="--rc:${RARITY[it.rar].col}"><span class="gi">${icoImg(id)}</span><span class="sn"><b>${it.name}${n?' <i class="fup">+'+n+'</i>':''}</b><small>${RARITY[it.rar].name} · ${SLOTS[it.slot]}</small></span><span class="sp">${n>=FORGE_MAX?'MAX':forgeCost(id)}<em>${n>=FORGE_MAX?'':'ryo'}</em></span></button>`;}).join('')||'<p class="hint">Você ainda não tem equipamentos.</p>';
+ let det='<p class="hint">Escolha um equipamento para melhorar.</p>';
+ if(shopPick){const id=shopPick,it=ITEMS[id],n=forgeLevel(id),c=forgeCost(id),can=n<FORGE_MAX&&INV.ryo>=c;
+  det=`<div class="sdet">${icoImg(id,'big')}<h4 style="color:${RARITY[it.rar].col}">${it.name} ${n?'<i class="fup">+'+n+'</i>':''}</h4><small>Melhoria ${n}/${FORGE_MAX} · vale para todas as cópias</small>
+   <p class="eff"><b>Agora:</b><br>${forgeStats(id,n).join('<br>')||'—'}</p>${n<FORGE_MAX?`<p class="eff"><b>Depois:</b><br>${forgeStats(id,n+1).join('<br>')}</p><button class="learn${can?'':' off'}" id="fact">Melhorar para +${n+1} por ${c} ryo</button>`:'<p class="eff">Melhoria máxima!</p>'}</div>`;}
+ t.innerHTML=`<div class="sbox"><div class="thead"><h2>Loja do Armeiro</h2><div class="tabs"><button class="tab" data-t="buy">Comprar</button><button class="tab" data-t="sell">Vender</button><button class="tab on" data-t="forge">Ferreiro</button></div><div class="ryo"><b>${INV.ryo}</b><small>ryo</small></div><button class="x" id="sinv">Equipamentos</button><button class="x" id="sx">Fechar ✕</button></div>
+  <div class="smain"><section class="slist"><p class="hint">O ferreiro afia e reforça seus equipamentos: cada melhoria soma +20% dos atributos do item (até +5, o dobro no máximo). O custo sobe a cada nível.</p><div class="sgrid">${rows}</div></section><aside class="sside">${det}</aside></div></div>`;
+ t.querySelectorAll('.tab').forEach(b=>b.onclick=()=>{shopTab=b.dataset.t;shopPick=null;renderShop();});
+ t.querySelectorAll('.sit').forEach(b=>b.onclick=()=>{shopPick=b.dataset.id;renderShop();});
+ document.getElementById('sx').onclick=closeShop;document.getElementById('sinv').onclick=()=>{closeShop();openInv();};
+ const a=document.getElementById('fact');if(a)a.onclick=()=>{const id=shopPick;if(INV.ryo<forgeCost(id)){toast('Ryo insuficiente');return;}if(forgeUp(id))toast(ITEMS[id].name+' melhorado para +'+forgeLevel(id));renderShop();};}
+
+/* ---- Dojo: treino (compra de XP) e redistribuicao dos pontos de habilidade ---- */
+let dojoChar=null;
+function dojoCap(){return Math.min(MAX_LEVEL,4+2*Math.max(0,CAMP.cleared.length-1));} /* nivel maximo que o treino alcanca; cresce com a campanha */
+const dojoRate=lv=>.6+.15*lv;
+function dojoPacks(c){const P=PROG[c],need=xpNeed(P.level);return[['Treino leve',.25],['Treino médio',.5],['Treino intenso',1]].map(([n,f])=>{const xp=Math.max(1,Math.round(need*f));return{name:n,xp,cost:Math.round(xp*dojoRate(P.level))};});}
+function dojoTrain(c,pk){const P=PROG[c];if(P.level>=dojoCap()||P.level>=MAX_LEVEL){toast('Esse personagem já treinou o máximo por agora');return false;}if(INV.ryo<pk.cost){toast('Ryo insuficiente');return false;}INV.ryo-=pk.cost;saveInv();const lv0=P.level,up=awardXp(c,pk.xp);toast(firstName(c)+' treinou: +'+pk.xp+' XP'+(up?' · subiu para o nível '+P.level+'!':''));return true;}
+const dojoRespecCost=c=>25*PROG[c].level;
+function dojoRespec(c){const P=PROG[c];let refund=0;const keep=[];for(const id of P.learned){const n=treeNode(c,id);if(!n||n.base||n.start||n.auto)keep.push(id);else refund+=n.pt;}if(!refund)return -1;P.learned=keep;P.pts+=refund;autoLearn();saveProg();return refund;}
+function dojoEl(){let t=document.getElementById('dojo');if(t)return t;t=document.createElement('div');t.id='dojo';t.hidden=true;document.body.appendChild(t);return t;}
+function openDojo(){dojoChar=dojoChar&&gachaOwned(dojoChar)?dojoChar:ownedChars()[0];dojoEl().hidden=false;renderDojo();}
+function closeDojo(){dojoEl().hidden=true;if(!anim&&!outcome&&!turnLock)showMenu('main');}
+function renderDojo(){
+ const t=dojoEl(),own=ownedChars(),c=dojoChar,P=PROG[c],need=xpNeed(P.level),cap=dojoCap(),maxed=P.level>=cap||P.level>=MAX_LEVEL;
+ const list=own.map(id=>{const q=PROG[id];return`<button class="sit${id===c?' sel':''}" data-c="${id}" style="--rc:${RARITY[CHARS[id].rar||1].col}"><span class="sn"><b>${CHARS[id].name.split(' ')[0]}</b><small>Nível ${q.level} · ${q.pts} ponto${q.pts===1?'':'s'}</small></span><span class="sp">Nv ${q.level}</span></button>`;}).join('');
+ const packs=dojoPacks(c).map((k,i)=>`<button class="learn${(INV.ryo>=k.cost&&!maxed)?'':' off'}" data-p="${i}">${k.name}: +${k.xp} XP por ${k.cost} ryo</button>`).join('');
+ t.innerHTML=`<div class="sbox"><div class="thead"><h2>Dojo</h2><div class="ryo"><b>${INV.ryo}</b><small>ryo</small></div><button class="x" id="dtree">Árvore de habilidades</button><button class="x" id="dx">Fechar ✕</button></div>
+  <div class="smain"><section class="slist"><p class="hint">Escolha quem vai treinar. O treino compra XP; ele alcança até o nível <b>${cap}</b> e esse limite sobe conforme você avança na campanha.</p><div class="sgrid">${list}</div></section>
+  <aside class="sside"><div class="sdet"><h4>${CHARS[c].name}</h4><small>Nível ${P.level}${maxed?' (limite do treino: '+cap+')':''} · XP ${P.xp}/${need}</small><div class="dbar"><i style="width:${Math.min(100,P.xp/need*100)}%"></i></div>
+   <h5>Treino</h5>${maxed?'<p class="hint">Já treinou o máximo por agora. Avance na campanha para liberar mais.</p>':packs}
+   <h5>Redistribuir pontos</h5><p class="hint">Devolve os pontos gastos em habilidades (os golpes básicos ficam) para você escolher de novo.</p><button class="learn alt" id="drespec">Redistribuir por ${dojoRespecCost(c)} ryo</button></div></aside></div></div>`;
+ t.querySelectorAll('[data-c]').forEach(b=>b.onclick=()=>{dojoChar=b.dataset.c;renderDojo();});
+ t.querySelectorAll('[data-p]').forEach(b=>b.onclick=()=>{const pk=dojoPacks(c)[+b.dataset.p];if(pk.cost>=200&&!confirm('Treinar por '+pk.cost+' ryo?'))return;if(dojoTrain(c,pk))renderDojo();});
+ document.getElementById('dx').onclick=closeDojo;document.getElementById('dtree').onclick=()=>{closeDojo();treeChar=c;openTree();};
+ document.getElementById('drespec').onclick=()=>{const cost=dojoRespecCost(c);if(INV.ryo<cost){toast('Ryo insuficiente');return;}if(!confirm('Redistribuir os pontos de '+firstName(c)+' por '+cost+' ryo?'))return;const r=dojoRespec(c);if(r<0){toast('Nada para redistribuir ainda');return;}INV.ryo-=cost;saveInv();toast('Pontos devolvidos: '+r);renderDojo();};}
+window.addEventListener('keydown',e=>{if(e.key!=='Escape')return;const t=document.getElementById('dojo');if(t&&!t.hidden){closeDojo();e.stopImmediatePropagation();}},true);

@@ -7,7 +7,7 @@ const KON_SPOTS=[
  {id:'torre',x:60,y:92,name:'Torre do Hokage',sub:'Mapa da campanha',go:()=>openMap()},
  {id:'armeiro',x:146,y:124,name:'Armeiro',sub:'Loja de equipamentos',go:()=>openShop()},
  {id:'ramen',x:191,y:132,name:'Ichiraku Ramen',sub:'Pratos com bônus',go:()=>openRamen()},
- {id:'dojo',x:245,y:102,name:'Dojo',sub:'Árvore de habilidades',go:()=>openTree()},
+ {id:'dojo',x:245,y:102,name:'Dojo',sub:'Treino e habilidades',go:()=>openDojo()},
  {id:'templo',x:352,y:104,name:'Templo de Invocação',sub:'Invocar ninjas',go:()=>openGacha()}];
 let konStatic=null,konStaticN=null,konSprites=null;
 const konHash=(x,y)=>{let h=(x*374761393+y*668265263)|0;h=(h^(h>>>13))*1274126177|0;return((h^(h>>>16))>>>0)/4294967296;};
