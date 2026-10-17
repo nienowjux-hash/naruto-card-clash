@@ -74,3 +74,4 @@ Leia o `README.md` do jogo: ele documenta cada sistema. Atualize-o ao mudar algo
 | Imagem de teste parecia 'dar zoom' no cenario | a montagem era mais larga que a janela (645 px) e o screenshot cortava a direita | montar imagens de conferencia com largura <= a da janela (`innerWidth`) |
 | Cenario da vila com cores 'chapadas' e area do chao preta | pintura com muitas cores unicas estourou o pool de caracteres da paleta do PixGrid | gerar chave extra com `String.fromCharCode(0x100+n)` quando o pool acaba |
 | Rostos do monte Hokage coloridos | cabelo/chapeu com cores reais | estatuas = so tons de pedra (areia/marrom), cabelo e chapeu entalhados, referencia do usuario |
+| Mancha escura redonda no ceu da vila a noite | tentei esconder o sol da camada fixa pintando um circulo escuro por cima | construir duas camadas fixas (com sol e sem sol) e fazer fade entre elas; nunca tapar elemento pintado com overlay opaco |
