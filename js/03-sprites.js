@@ -161,7 +161,7 @@ function blitSprite(x,y,flip,P,time,o,isN){
  g.restore();
  return rigW(P);}
 const wingc=document.createElement('canvas');wingc.width=SW;wingc.height=SH;const wgx=wingc.getContext('2d',{willReadFrequently:true});
-function blit(x,y,flip,d,P,time,o){o=o||{};
+function blit(x,y,flip,d,P,time,o){o=o||{};if(typeof hubMode!=='undefined'&&hubMode)return; /* na vila nao ha lutadores em cena */
  if(USE_SPR&&d===SASUKE&&o.lv2>0){ /* Selo nivel 2 em pixel art: maos-asa por tras (vetor) e o sprite recolorido */
   sc.setTransform(1,0,0,1,0,0);sc.clearRect(0,0,spW,spH);sc.globalCompositeOperation='source-over';drawWings(sc,P,o.lv2h!=null?o.lv2h:o.lv2,time);
   /* as maos-asa viram pixel art: reduz para 1 pixel por unidade, corta a transparencia e poe contorno escuro */

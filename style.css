@@ -381,3 +381,5 @@ h1 small{font:600 11px Georgia,serif;color:#a89a78;letter-spacing:2px}
 body.hub #cmdhead span{display:none}
 #map #mprs{background:linear-gradient(#b0303a,#7a1a22);color:#fff;border:2px solid #ff8a8a;border-radius:6px;padding:8px 18px;font:700 14px Georgia,serif;cursor:pointer}#map #mprs:hover{filter:brightness(1.2)}
 #hand{align-content:start}
+/* vila: so o cenario de Konoha, com o nome do lugar */
+body.hub #stage::after{content:'KONOHA';position:absolute;left:0;right:0;top:42%;text-align:center;font:700 clamp(28px,6cqw,84px) Georgia,serif;letter-spacing:.3em;color:#ffe9b0;text-shadow:0 0 24px #b8924a,0 4px 0 #000;pointer-events:none}
