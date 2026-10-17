@@ -15,12 +15,12 @@ const prevKey=id=>treeChar+':'+id;
 async function buildPreview(id){
  const key=prevKey(id);if(PREV[key])return PREV[key];
  if(anim||frozen||turnLock||outcome||!ANIMS[id])return null;
- const cv=document.getElementById('c'),A=ANIMS[id],N=24,out=[],sv={r:roleN,h:heroS,p:playSkin,e:enemySkin},c=treeChar;
+ const cv=document.getElementById('c'),A=ANIMS[id],N=24,out=[],sv={r:roleN,h:heroS,p:playSkin,e:enemySkin,hub:hubMode},c=treeChar;hubMode=false; /* na vila os lutadores nao sao desenhados: a previa precisa deles */
  roleN=false;playSkin=null;enemySkin=(c==='gozu'||c==='meizu')?c:null;heroS=(c==='sakura'||c==='kakashi')?c:'sasuke';
  try{for(let i=0;i<N;i++){frozen={type:id,t:Math.max(.02,A.dur*.97*i/(N-1))};
    render(performance.now());if(i%4===3)await new Promise(r=>setTimeout(r,0)); /* desenha o quadro na hora (sem esperar o rAF) */
    const f=document.createElement('canvas');f.width=560;f.height=Math.round(560*cv.height/cv.width);f.getContext('2d').drawImage(cv,0,0,f.width,f.height);out.push(f);}}
- finally{frozen=null;roleN=sv.r;heroS=sv.h;playSkin=sv.p;enemySkin=sv.e;}
+ finally{frozen=null;roleN=sv.r;heroS=sv.h;playSkin=sv.p;enemySkin=sv.e;hubMode=sv.hub;}
  return PREV[key]={frames:out,dur:A.dur};}
 function stopPreview(){if(prevTimer){clearInterval(prevTimer);prevTimer=null;}prevToken++;}
 function playPreview(id){
