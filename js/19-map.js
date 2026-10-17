@@ -28,7 +28,7 @@ function mapPanel(){
  return`<h3>${n.name}</h3><span class="tag ${st}">${stTxt}</span>${body}`;}
 function renderMap(){
  const t=mapEl();
- t.innerHTML=`<div class="mbox"><div class="thead"><h2>Mapa da campanha</h2><div class="ryo"><b>${INV.ryo}</b><small>ryo</small></div><div class="ptl">${ownedChars(['sasuke','sakura','kakashi','naruto','gozu','meizu']).map(h=>`<span><b>${CHARS[h].name.split(' ')[0]}</b> Nv ${PROG[h].level}${PROG[h].pts?` · <i>${PROG[h].pts} pt</i>`:''}</span>`).join('')}</div><button class="x" id="mapx">Voltar à luta ✕</button></div>
+ t.innerHTML=`<div class="mbox"><div class="thead"><h2>Mapa da campanha</h2><div class="ryo"><b>${INV.ryo}</b><small>ryo</small></div><div class="ptl">${ownedChars(['sasuke','sakura','kakashi','naruto','gozu','meizu']).map(h=>`<span><b>${CHARS[h].name.split(' ')[0]}</b> Nv ${PROG[h].level}${PROG[h].pts?` · <i>${PROG[h].pts} pt</i>`:''}</span>`).join('')}</div><button class="x" id="mapx">${typeof hubMode!=='undefined'&&hubMode?'Fechar':'Voltar à luta'} ✕</button></div>
  <div class="mmain"><div class="mwrap"><canvas id="mapcv" width="${MAP_W}" height="${MAP_H}"></canvas></div><aside class="mside">${mapPanel()}</aside></div>
  <div class="tdev"><span class="lg"><i class="a"></i>Concluído <i class="b"></i>Disponível <i class="c"></i>Bloqueado</span><button id="mprs">Reiniciar campanha</button></div></div>`;
  const cv=document.getElementById('mapcv'),pos=e=>{const r=cv.getBoundingClientRect();return[(e.clientX-r.left)*MAP_W/r.width,(e.clientY-r.top)*MAP_H/r.height];};
@@ -58,14 +58,14 @@ function startEncounter(id,hero,foe){
  applyEncounter();}
 function setEnemyName(nm){const side=roleN?'s':'n',b=document.querySelector(side==='n'?'.pl.r b':'.pl b');if(b&&b.firstChild&&b.firstChild.nodeType===3)b.firstChild.nodeValue=(nm||ORIG_NAMES[side]).toUpperCase();}
 function applyEncounter(){
- const a=CAMP.active;if(!a)return;enemySkin=a.skin!==undefined?a.skin:((NODES[a.node].enc||{}).skin||null);playSkin=(a.hero==='gozu'||a.hero==='meizu')?a.hero:null;portrait('ptN',NARUTO,mk({expr:5}));applyHero(a.hero);{const rb=document.querySelector('.pl.r b');if(rb&&rb.firstChild&&rb.firstChild.nodeType===3&&roleN)rb.firstChild.nodeValue=playSkin?HERO_NAME[playSkin]:'NARUTO UZUMAKI';}setScene(NODES[a.node].scene);setEnemyName(a.name);
+ const a=CAMP.active;if(!a)return;if(typeof leaveHub==='function'){leaveHub();syncCtl();}enemySkin=a.skin!==undefined?a.skin:((NODES[a.node].enc||{}).skin||null);playSkin=(a.hero==='gozu'||a.hero==='meizu')?a.hero:null;portrait('ptN',NARUTO,mk({expr:5}));applyHero(a.hero);{const rb=document.querySelector('.pl.r b');if(rb&&rb.firstChild&&rb.firstChild.nodeType===3&&roleN)rb.firstChild.nodeValue=playSkin?HERO_NAME[playSkin]:'NARUTO UZUMAKI';}setScene(NODES[a.node].scene);setEnemyName(a.name);
  mapEl().hidden=true;if(mapRAF){cancelAnimationFrame(mapRAF);mapRAF=null;}
  $('rst').onclick();if(typeof phaseCarry==='function')phaseCarry();toast(NODES[a.node].name+' — '+a.name);}
 /* fim de luta: marca o local, e volta ao mapa */
 function campaignResult(won){const a=CAMP.active;if(!a)return;
  if(won&&!CAMP.cleared.includes(a.node)){CAMP.cleared.push(a.node);}CAMP.at=a.node;saveCamp();
- setTimeout(()=>{CAMP.active=null;saveCamp();enemySkin=null;portrait('ptN',NARUTO,mk({expr:5}));applyHero('sasuke');setEnemyName(null);setScene('vale');mapSel=a.node;openMap();},6200);}
+ setTimeout(()=>{CAMP.active=null;saveCamp();enemySkin=null;portrait('ptN',NARUTO,mk({expr:5}));applyHero('sasuke');setEnemyName(null);mapSel=a.node;if(typeof enterHub==='function')enterHub();else setScene('vale');openMap();},6200);}
 window.addEventListener('keydown',e=>{const t=document.getElementById('map');if(e.key==='Escape'&&t&&!t.hidden){closeMap();e.stopImmediatePropagation();}},true);
 (function(){const b=document.createElement('button');b.id='mapbtn';b.textContent='Mapa';b.onclick=openMap;const c=document.querySelector('.ctl');if(c)c.insertBefore(b,c.firstChild);})();
 /* ao carregar: continua a luta em andamento ou abre o mapa */
-if(CAMP.active&&(NHEROES.includes(CAMP.active.hero)===roleN))setTimeout(applyEncounter,50);else{CAMP.active=null;setTimeout(openMap,200);}
+if(CAMP.active&&(NHEROES.includes(CAMP.active.hero)===roleN))setTimeout(applyEncounter,50);else{CAMP.active=null;setTimeout(()=>{if(typeof enterHub==='function')enterHub();openMap();},200);}

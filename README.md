@@ -246,3 +246,8 @@ Konoha → Trilha do Bosque (Lobo Selvagem, Nv 1) → Estrada de Terra (Bandido,
 - `pixel/itens.js`: ícones pixel art (24x24) de todos os itens (`itemIcon(id)`, `icoImg(id,cls)`); aparecem na mochila, no detalhe do item e no butim da fase. Item novo = adicionar uma entrada em `ICON_DRAW` (sem entrada vira uma esfera cinza).
 - Invocação: pede confirmação antes de gastar (mostra quanto sobra), roda um efeito de círculo de selo/partículas/clarão na cor da melhor raridade (mais longo para Raro+, com raios em Épico/Lendário; "Pular" ou clique encerra) e revela as cartas uma a uma.
 - HUD de batalha, painel de comandos, botões e avisos usam o mesmo tema pergaminho dourado dos painéis; com o palco estreito as duas placas empilham.
+
+## Vila e abandonar luta — js/25-vila.js
+- Fora de um duelo o jogo fica na **vila** (cenário de Konoha, menu com Mapa / Árvore / Equipamentos / Invocação / Treino livre, sem HUD nem comandos de luta). O duelo só começa em "Lutar" dentro de uma fase; ao terminar, ou ao abandonar, volta para a vila.
+- **Abandonar luta** (botão da barra inferior, só aparece em luta): larga o duelo, guarda a vida/chakra atuais do herói na fase e o inimigo não é derrotado.
+- "Treino livre" abre o combate de teste antigo (Sasuke x Naruto) fora da campanha.

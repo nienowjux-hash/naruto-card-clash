@@ -378,3 +378,4 @@ h1 small{font:600 11px Georgia,serif;color:#a89a78;letter-spacing:2px}
 #gacha .gr b{font-size:clamp(14px,1.1vw,18px)}
 #gacha .learn{font-size:clamp(16px,1.3vw,21px);padding:14px 20px}#gacha .gact small{font-size:clamp(12px,.95vw,15px)}
 #gcf .gcfbox{max-width:min(520px,92vw);padding:28px 36px}#gcf h3{font-size:clamp(24px,2vw,32px)}#gcf p{font-size:clamp(15px,1.2vw,19px)}#gcf .sm{font-size:clamp(13px,1vw,16px)}
+body.hub #cmdhead span{display:none}
