@@ -43,6 +43,8 @@ Leia o `README.md` do jogo: ele documenta cada sistema. Atualize-o ao mudar algo
 - Rotulos do mapa: usar `lp` (`t|b|l|r`) no no do mapa para nao sobrepor; no precisa estar em cima da terra (mascara de blobs em `paintMap`).
 - Jogo em tela grande: o usuario reclama de texto pequeno com frequencia. Mirar fonte >= 15 px nos comandos e >= 13 px nos detalhes.
 
+- Estado novo (loja, ramen, etc.) tem que entrar em `resetAll` e ser salvo em chave propria do localStorage.
+
 ## 5. Antes de dizer "pronto" (checklist)
 1. `node --check` nos `.js` mexidos; `node tools/bump-cache.js`.
 2. Testei no navegador **nos dois lados** (heroi Sasuke e heroi Naruto/Gozu) quando mexi em luta?

@@ -5,7 +5,8 @@
    O Time 7 fica parado na rua e os predios sao botoes (KON_SPOTS, ver 25-vila.js). */
 const KON_SPOTS=[
  {id:'torre',x:60,y:92,name:'Torre do Hokage',sub:'Mapa da campanha',go:()=>openMap()},
- {id:'armeiro',x:146,y:124,name:'Armeiro',sub:'Equipamentos',go:()=>openInv()},
+ {id:'armeiro',x:146,y:124,name:'Armeiro',sub:'Loja de equipamentos',go:()=>openShop()},
+ {id:'ramen',x:191,y:132,name:'Ichiraku Ramen',sub:'Pratos com bônus',go:()=>openRamen()},
  {id:'dojo',x:245,y:102,name:'Dojo',sub:'Árvore de habilidades',go:()=>openTree()},
  {id:'templo',x:352,y:104,name:'Templo de Invocação',sub:'Invocar ninjas',go:()=>openGacha()}];
 let konStatic=null,konStaticN=null,konSprites=null;

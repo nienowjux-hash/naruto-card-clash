@@ -19,7 +19,7 @@ function suggestAssign(team,foes,n,alive){const live=team.filter(alive),load={},
 
 function beginPhase(id){const n=NODES[id],team=teamNow().slice(),foes=nodeFoes(id);
  const u={};team.forEach(c=>u[c]={hp:null,ck:100,alive:true,fought:false});
- CAMP.phase={node:id,team,u,foes:foes.map(()=>({done:false})),assign:autoAssign(team,foes.length,mapAssign),loot:{ryo:0,items:{}}};CAMP.at=id;saveCamp();mapSel=id;renderMap();}
+ CAMP.phase={node:id,team,u,foes:foes.map(()=>({done:false})),assign:autoAssign(team,foes.length,mapAssign),loot:{ryo:0,items:{}},ramen:(typeof SHOP!=='undefined'&&SHOP.ramen)?SHOP.ramen:null};if(typeof SHOP!=='undefined'&&SHOP.ramen){SHOP.ramen=null;saveShop();}CAMP.at=id;saveCamp();mapSel=id;renderMap();}
 function abandonPhase(){CAMP.phase=null;saveCamp();renderMap();}
 
 function phasePanel(id,st,n){
@@ -36,10 +36,11 @@ function phasePanel(id,st,n){
  const teamHtml=p?`<div class="tm">${team.map(c=>{const u=p.u[c],mx=100+(statsOf(c).hp||0),pc=u.hp==null?100:Math.round(Math.max(0,u.hp)/mx*100);return`<div class="tu${u.alive?'':' dead'}"><b>${CHARS[c].name.split(' ')[0]}</b><small>${u.alive?pc+'% de vida':'Fora da fase'}</small><div class="bar"><i style="width:${u.alive?pc:0}%"></i></div></div>`;}).join('')}</div>`
   :`<small class="lab">Equipe (até ${PHASE_MAX_TEAM}) — clique para montar</small><div class="party">${ownedChars(['sasuke','sakura','kakashi','naruto','gozu','meizu']).map(h=>`<button class="hero${team.includes(h)?' on':''}" data-team="${h}"><b>${CHARS[h].name.split(' ')[0]}</b><small>Nível ${PROG[h].level}</small>${charRar(h)}</button>`).join('')}</div>`;
  const act=st==='locked'?'<span class="why">Vença um local vizinho para liberar.</span>':p?'<button class="learn alt" id="ph-quit">Desistir da fase</button>':`<button class="learn" id="mp-go">${st==='cleared'?'Jogar a fase de novo':'Iniciar a fase'} com ${team.length} ${team.length>1?'personagens':'personagem'}</button>`;
+ const ramenHtml=(!p&&typeof SHOP!=='undefined'&&SHOP.ramen)?`<p class="tip">🍜 Ramen ativo: <b>${SHOP.ramen.name}</b> — ${ramenTxt(SHOP.ramen)} (vale nesta próxima fase)</p>`:'';
  const lootHtml=p&&p.loot&&(p.loot.ryo||Object.keys(p.loot.items).length)?`<p class="tip">Butim acumulado (pago ao concluir): <b>${p.loot.ryo} ryo</b> ${Object.keys(p.loot.items).map(i=>`<span class="lt">${icoImg(i,'sm')}${p.loot.items[i]>1?'×'+p.loot.items[i]:''}</span>`).join('')}</p>`:'';
  return`<div class="enc"><small>Inimigos da fase (${foes.length}) · recompensa ao concluir</small><div class="stats"><div><small>XP total</small><b>${total}</b></div><div><small>Ryo (+ bônus)</small><b>${Math.round(n.ryo*1.5)}</b></div><div><small>Pergaminhos</small><b>${n.kind==='chefe'?'4+':'1+'}</b></div></div>
  <div class="foes">${rows}</div>${p?'':'<button class="learn alt" id="ph-sug">Sugerir escalação pela vantagem elemental</button>'}
- <div class="chart"><small>Quem vence quem (+40% de dano; em desvantagem, -25%)</small><div>${Object.keys(ELEM_BEATS).map(a=>`<span class="cc"><em class="el" style="--ec:${ELEMENTS[a].col}">${ELEMENTS[a].name}</em> vence <em class="el" style="--ec:${ELEMENTS[ELEM_BEATS[a]].col}">${ELEMENTS[ELEM_BEATS[a]].name}</em></span>`).join('')}</div></div><p class="tip">Escolha quem enfrenta cada inimigo. Quem perde sai da fase; quem vence segue com a vida que sobrou. Cada inimigo solta ryo e talvez um item (animais: pílulas; bandidos: armas e roupas; ninjas: qualquer item; líderes sempre soltam). O XP vai igual para todos que lutaram.</p></div>${lootHtml}${teamHtml}<div class="act">${act}</div>`;}
+ <div class="chart"><small>Quem vence quem (+40% de dano; em desvantagem, -25%)</small><div>${Object.keys(ELEM_BEATS).map(a=>`<span class="cc"><em class="el" style="--ec:${ELEMENTS[a].col}">${ELEMENTS[a].name}</em> vence <em class="el" style="--ec:${ELEMENTS[ELEM_BEATS[a]].col}">${ELEMENTS[ELEM_BEATS[a]].name}</em></span>`).join('')}</div></div><p class="tip">Escolha quem enfrenta cada inimigo. Quem perde sai da fase; quem vence segue com a vida que sobrou. Cada inimigo solta ryo e talvez um item (animais: pílulas; bandidos: armas e roupas; ninjas: qualquer item; líderes sempre soltam). O XP vai igual para todos que lutaram.</p></div>${ramenHtml}${lootHtml}${teamHtml}<div class="act">${act}</div>`;}
 
 function bindPhase(t){
  const p=CAMP.phase&&CAMP.phase.node===mapSel?CAMP.phase:null;
@@ -92,10 +93,10 @@ function phaseReward(win){
  const p=CAMP.phase,n=NODES[p.node],foes=nodeFoes(p.node),tot=foes.reduce((s,f)=>s+foeXp(n,f),0);
  const sc=win?phaseScore(p,foes.length):Object.assign(phaseScore(p,foes.length),{score:0}),grade=win?gradeOf(sc.score):'E';
  const rep={win,grade,sc,node:n.name,xp:[],ryo:0,rm:1,items:[],lost:0,scrolls:0,log:(p.log||[]).slice()};
- Object.keys(p.u).filter(c=>p.u[c].fought).forEach(c=>{const fx=Math.min(1.3,Math.max(.1,1+(n.lvl-PROG[c].level)*.08)),xp=Math.max(1,Math.round(tot*fx*(win?1:.15))),lv0=PROG[c].level,up=awardXp(c,xp);rep.xp.push({id:c,xp,lv:PROG[c].level,up:PROG[c].level>lv0});});
+ Object.keys(p.u).filter(c=>p.u[c].fought).forEach(c=>{const fx=Math.min(1.3,Math.max(.1,1+(n.lvl-PROG[c].level)*.08)),xp=Math.max(1,Math.round(tot*fx*(1+((p.ramen&&p.ramen.xp)||0))*(win?1:.15))),lv0=PROG[c].level,up=awardXp(c,xp);rep.xp.push({id:c,xp,lv:PROG[c].level,up:PROG[c].level>lv0});});
  const L=p.loot||{ryo:0,items:{}};
  if(win){
-  rep.rm=GRADE_RYO[grade];rep.ryo=Math.round((L.ryo+Math.round(n.ryo*.5))*rep.rm);INV.ryo+=rep.ryo;
+  rep.rm=GRADE_RYO[grade]*(1+((p.ramen&&p.ramen.ryo)||0));rep.ramen=p.ramen||null;if(typeof SHOP!=='undefined'){SHOP.rot++;saveShop();}rep.ryo=Math.round((L.ryo+Math.round(n.ryo*.5))*rep.rm);INV.ryo+=rep.ryo;
   for(const id in L.items)for(let k=0;k<L.items[id];k++){if(Math.random()<GRADE_KEEP[grade])rep.items.push(id);else rep.lost++;}
   if(Math.random()<GRADE_BONUS[grade])rep.items.push(rollDropBy(n.lvl+4+GRADE_LVL[grade],it=>true));
   if(Math.random()<GRADE_EXTRA[grade])rep.items.push(rollDropBy(n.lvl+6+GRADE_LVL[grade],it=>true));
