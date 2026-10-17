@@ -278,3 +278,56 @@ canvas#c{width:100%;height:auto}
 #map .tu{background:#0e0c1e;border:1px solid #3a2f14;border-radius:8px;padding:6px 8px}#map .tu b{color:#fff;font-size:13px;display:block}#map .tu small{color:#a89a78;font-size:11px}
 #map .tu .bar{height:6px;background:#201a30;border-radius:4px;overflow:hidden;margin-top:3px}#map .tu .bar i{display:block;height:100%;background:#7ad070}
 #map .tu.dead{opacity:.45;filter:grayscale(1)}
+
+/* icones de itens */
+.ico{image-rendering:pixelated;width:100%;height:100%;object-fit:contain;display:block}
+.ico.sm{width:28px;height:28px;display:inline-block;vertical-align:middle}.ico.big{width:64px;height:64px;float:left;margin:0 12px 6px 0;background:radial-gradient(circle at 35% 30%,#3a3050,#0a0814);border:2px solid #6e5424;border-radius:10px;padding:4px}
+#inv .slot .si,#inv .it .gi{border-radius:10px;padding:5px;box-shadow:0 0 10px -2px var(--rc),inset 0 0 8px #000;font-size:22px}
+#inv .slot .si{width:50px;height:50px}#inv .it .gi{width:58px;height:58px}
+#map .lt{display:inline-flex;align-items:center;margin-left:6px;color:#ffd97a}
+
+/* confirmacao e efeito de invocacao */
+#gcf{position:absolute;inset:0;z-index:5;background:#000a;display:flex;align-items:center;justify-content:center}
+#gcf .gcfbox{background:linear-gradient(#241c3a,#120e22);border:2px solid #b8924a;border-radius:12px;padding:22px 28px;max-width:380px;text-align:center;color:#e8e0c8;box-shadow:0 0 0 3px #2a1d08,0 10px 40px #000;animation:gcin .25s both}
+#gcf h3{margin:0 0 10px;font:700 22px Georgia,serif;color:#ffe9b0}#gcf p{margin:6px 0;font-size:14px}#gcf .sm{font-size:12px;color:#a89f84}#gcf b{color:#ffd97a}
+#gcf .gcfact{display:flex;gap:10px;margin-top:16px}#gcf .gcfact button{flex:1}
+#gsum{position:absolute;inset:0;z-index:6;cursor:pointer;transition:opacity .4s}#gsum.out{opacity:0;pointer-events:none}#gsum canvas{width:100%;height:100%;display:block}
+#gsum button{position:absolute;right:18px;bottom:16px;background:#1a1530cc;color:#ffe9b0;border:1px solid #6e5424;border-radius:8px;padding:6px 14px;cursor:pointer}
+#gacha .gc{position:relative;overflow:visible}
+#gacha .gc .gb{position:absolute;inset:-14px;border-radius:50%;background:radial-gradient(circle,var(--rc),transparent 65%);opacity:0;pointer-events:none;animation:gcburst .9s ease-out both;animation-delay:var(--d);z-index:-1}
+@keyframes gcburst{0%{opacity:0;transform:scale(.3)}25%{opacity:.9}100%{opacity:0;transform:scale(1.9)}}
+#gacha .gc.r4{box-shadow:0 0 22px var(--rc),0 0 6px var(--rc) inset}#gacha .gc.r5{box-shadow:0 0 34px var(--rc),0 0 10px var(--rc) inset;animation:gcin .45s both,gcglow 1.4s ease-in-out infinite;animation-delay:var(--d),calc(var(--d) + .5s)}
+@keyframes gcglow{50%{filter:brightness(1.35)}}
+#gacha .gc.new small{color:#ffd97a;font-weight:700;animation:gcpulse 1s ease-in-out infinite}
+@keyframes gcpulse{50%{transform:scale(1.15)}}
+#gacha .learn{background:linear-gradient(#e0b860,#9a6e1e);color:#241606;border:2px solid #ffe9b0;border-radius:6px;padding:12px 18px;font:700 15px Georgia,serif;cursor:pointer;transition:transform .12s,filter .12s}
+#gacha .learn:hover:not(:disabled){transform:translateY(-1px);filter:brightness(1.12)}
+#gacha .learn.alt{background:linear-gradient(#5a5a9a,#34346a);color:#fff;border-color:#9a9ad0}
+/* ===== acabamento do HUD: tema pergaminho dourado, igual aos paineis (mapa, mochila, arvore, invocacao) ===== */
+h1{font:700 18px Georgia,'Times New Roman',serif;letter-spacing:6px;color:#ffe9b0;text-shadow:0 0 12px #b8924a66,0 2px 0 #000;border-bottom:1px solid #6e5424;padding-bottom:8px}
+h1 small{font:600 11px Georgia,serif;color:#a89a78;letter-spacing:2px}
+#stage{border:3px solid #b8924a;border-radius:12px;box-shadow:0 0 0 2px #2a1d08,0 0 0 5px #6e5424,0 8px 30px #000}
+.hud{background:linear-gradient(#2a2140,#14102a);border-bottom:2px solid #6e5424;padding:8px 12px}
+.pt{border:2px solid #e0b860;border-radius:8px;box-shadow:0 0 0 2px #2a1d08,0 0 12px #b8924a55}
+.pl.r .pt{border-color:#e08a4a;box-shadow:0 0 0 2px #2a1d08,0 0 12px #e08a4a66}
+.pl b{font:700 clamp(10px,1.2vw,13px) Georgia,serif;letter-spacing:2px;color:#ffe9b0;text-shadow:0 1px 0 #000}
+.bar{height:13px;background:#0a0814;border:1px solid #6e5424;border-radius:4px;box-shadow:inset 0 2px 4px #000a}
+.bar.ck,.bar.sm{height:7px}
+.bar i.v{background-image:linear-gradient(rgba(255,255,255,.3),rgba(255,255,255,0) 55%,rgba(0,0,0,.25))}
+.row label{color:#b8924a;font-family:Georgia,serif}
+.vs{font:700 14px Georgia,serif;color:#e0b860;text-shadow:0 0 8px #b8924a88}
+#panel{border:2px solid #b8924a;border-radius:12px;background:linear-gradient(#171230,#0d0b1c);box-shadow:0 0 0 2px #2a1d08,0 0 0 4px #6e5424}
+#cmdhead{background:linear-gradient(#2a2140,#14102a);border-bottom:2px solid #6e5424;font:700 13px Georgia,serif;color:#ffe9b0;letter-spacing:3px}
+#cmdhead span{color:#a89a78;font-family:Georgia,serif}
+#cmdhead .back{background:#2a1d08;border-color:#b8924a;color:#ffe9b0;font-family:Georgia,serif}
+#hand .cmd{background:linear-gradient(90deg,#1c1738,#14112a);border:1px solid #3a2f14;border-left:4px solid var(--cc,#e0b860)}
+#hand .cmd:hover:not(:disabled){background:linear-gradient(90deg,#2a2250,#1c1738);border-color:var(--cc,#e0b860);box-shadow:0 0 14px -4px var(--cc,#e0b860)}
+#hand .cmd .ic{background:radial-gradient(circle at 35% 30%,#3a3050,#0a0814);border:1px solid #6e5424;color:#ffe9b0;font-family:Georgia,serif;border-radius:50%;width:26px;height:26px}
+#hand .cmd .tx b{font-family:Georgia,serif;letter-spacing:.5px}
+#hand .cmd .cost{background:linear-gradient(#1a3a78,#12284e);border:1px solid #3a6ac0}
+.ctl button{background:linear-gradient(#2a2140,#14102a);color:#ffe9b0;border:1px solid #b8924a;border-radius:6px;font-family:Georgia,serif;letter-spacing:.5px}
+.ctl button:hover{background:linear-gradient(#3a2e5a,#1e1838);box-shadow:0 0 10px #b8924a55}
+#toast{background:linear-gradient(#241c3a,#120e22);border:1px solid #b8924a;color:#ffe9b0;font-family:Georgia,serif;box-shadow:0 4px 18px #000}
+/* palco estreito: as duas placas do HUD ficam uma sobre a outra, com as barras legiveis */
+#stage{container-type:inline-size}
+@container (max-width:460px){.hud,.roleN .hud{flex-direction:column;align-items:stretch;gap:6px}.pl,.roleN .pl,.roleN .pl.r,.pl.r{width:100%}.vs{display:none}.pt{width:34px;height:34px}.pl b{margin-bottom:1px}}
