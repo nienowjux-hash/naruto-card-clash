@@ -75,3 +75,4 @@ Leia o `README.md` do jogo: ele documenta cada sistema. Atualize-o ao mudar algo
 | Cenario da vila com cores 'chapadas' e area do chao preta | pintura com muitas cores unicas estourou o pool de caracteres da paleta do PixGrid | gerar chave extra com `String.fromCharCode(0x100+n)` quando o pool acaba |
 | Rostos do monte Hokage coloridos | cabelo/chapeu com cores reais | estatuas = so tons de pedra (areia/marrom), cabelo e chapeu entalhados, referencia do usuario |
 | Mancha escura redonda no ceu da vila a noite | tentei esconder o sol da camada fixa pintando um circulo escuro por cima | construir duas camadas fixas (com sol e sem sol) e fazer fade entre elas; nunca tapar elemento pintado com overlay opaco |
+| Raios de sol continuavam visiveis a noite | efeitos animados do sol nao dependiam da hora do dia | todo efeito de luz do sol multiplica por `(1 - tod.night)`; ao criar efeito diurno, checar tambem a versao noturna |
