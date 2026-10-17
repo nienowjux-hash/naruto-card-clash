@@ -37,3 +37,11 @@ function resetAll(){
  mapTeam=null;mapAssign=[];mapSel=null;mapTok=null;mapHero='sasuke';
  try{syncHpMax(true);}catch(e){}
  enterHub();renderMap();toast('Jogo reiniciado');}
+
+/* "Fugir da luta": ultimo comando do menu principal (em qualquer heroi). Mesmo efeito de Abandonar luta */
+function addFleeCmd(){if(hubMode||menuOpen!=='main')return;const h=$('hand');if(!h||h.querySelector('.cmd.flee'))return;
+ const b=document.createElement('button');b.className='cmd flee';b.style.setProperty('--cc','#ff6a6a');
+ b.innerHTML='<span class="ic">逃</span><span class="tx"><b>Fugir da luta</b><small>Larga o duelo e volta para a vila. O inimigo não é derrotado e a fase continua.</small></span><span></span>';
+ b.onclick=()=>{if(anim||turnLock||outcome)return;abandonDuel();};
+ if(anim||turnLock||outcome)b.disabled=true;h.appendChild(b);}
+for(const nm of ['showMenu','showNarutoMenu','showDemonMenu']){const fn=window[nm];if(typeof fn!=='function')continue;window[nm]=function(){const r=fn.apply(this,arguments);addFleeCmd();return r;};}

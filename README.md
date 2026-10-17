@@ -254,3 +254,5 @@ Konoha → Trilha do Bosque (Lobo Selvagem, Nv 1) → Estrada de Terra (Bandido,
 
 ## Reiniciar o jogo (`resetAll`, js/25-vila.js)
 "Reiniciar campanha" (botão vermelho no rodapé do mapa e item "Reiniciar o jogo" no menu da vila) apaga tudo: campanha e fase, níveis e habilidades (`PROG`), mochila, ryo e equipamentos (`INV`), pergaminhos, personagens obtidos, fragmentos e pity (`GACHA`). Gozu e Meizu voltam a ficar bloqueados e os itens iniciais voltam.
+
+- **Fugir da luta**: último comando do menu principal (todos os heróis, incluindo Naruto e Gozu/Meizu). Larga o duelo, volta para a vila e a fase continua; guarda a vida atual do herói.

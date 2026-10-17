@@ -380,3 +380,4 @@ h1 small{font:600 11px Georgia,serif;color:#a89a78;letter-spacing:2px}
 #gcf .gcfbox{max-width:min(520px,92vw);padding:28px 36px}#gcf h3{font-size:clamp(24px,2vw,32px)}#gcf p{font-size:clamp(15px,1.2vw,19px)}#gcf .sm{font-size:clamp(13px,1vw,16px)}
 body.hub #cmdhead span{display:none}
 #map #mprs{background:linear-gradient(#b0303a,#7a1a22);color:#fff;border:2px solid #ff8a8a;border-radius:6px;padding:8px 18px;font:700 14px Georgia,serif;cursor:pointer}#map #mprs:hover{filter:brightness(1.2)}
+#hand{align-content:start}
