@@ -45,3 +45,12 @@ function addFleeCmd(){if(hubMode||menuOpen!=='main')return;const h=$('hand');if(
  b.onclick=()=>{if(anim||turnLock||outcome)return;abandonDuel();};
  if(anim||turnLock||outcome)b.disabled=true;h.appendChild(b);}
 for(const nm of ['showMenu','showNarutoMenu','showDemonMenu']){const fn=window[nm];if(typeof fn!=='function')continue;window[nm]=function(){const r=fn.apply(this,arguments);addFleeCmd();return r;};}
+
+/* dano base de cada golpe, visivel antes de escolher (menu de jutsus/ataques de qualquer heroi) */
+const mvNorm=t=>String(t).toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g,'').replace(/\(.*?\)/g,'').replace(/ no jutsu/g,'').replace(/[^a-z0-9: ]/g,'').replace(/\s+/g,' ').trim();
+function moveIdByName(n){if(typeof MOVE_ALIAS!=='undefined'&&MOVE_ALIAS[n])return MOVE_ALIAS[n];for(const L of [typeof ATKS!=='undefined'?ATKS:[],typeof SASUKE_JUTSUS!=='undefined'?SASUKE_JUTSUS:[],typeof SAKURA_JUTSUS!=='undefined'?SAKURA_JUTSUS:[],typeof KAKASHI_JUTSUS!=='undefined'?KAKASHI_JUTSUS:[]]){const cd=L.find(c=>c.name===n);if(cd)return cd.id;}for(const k in MOVES)if(MOVES[k].name===n)return k;const q=mvNorm(n);for(const k in MOVES)if(mvNorm(MOVES[k].name)===q)return k;return null;}
+function baseDmg(id){const A=ANIMS[id];if(!A)return 0;if(A.dmg)return A.dmg;return A.hits?A.hits.reduce((s,h)=>s+(h.dmg||0),0):0;}
+function addDmgChips(){const h=$('hand');if(!h||hubMode)return;h.querySelectorAll('.cmd').forEach(b=>{if(b.querySelector('.dmgc')||b.classList.contains('flee'))return;const bb=b.querySelector('b');if(!bb||!bb.firstChild||bb.firstChild.nodeType!==3)return;
+ const id=moveIdByName(bb.firstChild.nodeValue.trim());if(!id)return;const d=baseDmg(id);if(!d)return;
+ const A=ANIMS[id],hits=A.hits&&A.hits.length>1?A.hits.length:0,i=document.createElement('i');i.className='dmgc';i.title='Dano base (antes de elemento, equipamentos e defesa)';i.textContent='⚔ '+d+(hits?' ('+hits+' golpes)':'');bb.appendChild(i);});}
+for(const nm of ['showMenu','showNarutoMenu','showDemonMenu']){const fn=window[nm];if(typeof fn!=='function')continue;window[nm]=function(){const r=fn.apply(this,arguments);addDmgChips();return r;};}

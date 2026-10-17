@@ -424,3 +424,4 @@ body.hub #stage::after{content:'KONOHA';position:absolute;left:0;right:0;top:42%
 #resbox .learn.alt{background:linear-gradient(#5a5a9a,#34346a);color:#fff;border-color:#9a9ad0}
 #resbox .learn:hover{filter:brightness(1.15)}
 body.hub #resbox{display:none}
+#hand .cmd .tx b .dmgc{font-style:normal;font:800 clamp(11px,.85vw,14px) 'Trebuchet MS',Arial,sans-serif;margin-left:8px;padding:2px 8px;border-radius:9px;color:#ffd0a0;background:#4a1c14;border:1px solid #c8603a;vertical-align:middle;white-space:nowrap}
