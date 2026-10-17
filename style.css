@@ -425,3 +425,25 @@ body.hub #stage::after{content:'KONOHA';position:absolute;left:0;right:0;top:42%
 #resbox .learn:hover{filter:brightness(1.15)}
 body.hub #resbox{display:none}
 #hand .cmd .tx b .dmgc{font-style:normal;font:800 clamp(11px,.85vw,14px) 'Trebuchet MS',Arial,sans-serif;margin-left:8px;padding:2px 8px;border-radius:9px;color:#ffd0a0;background:#4a1c14;border:1px solid #c8603a;vertical-align:middle;white-space:nowrap}
+
+/* painel de resultado completo: nota, recompensas e registro */
+#resbox .rb.big{width:min(1200px,94vw)}
+#resbox .rg{display:grid;grid-template-columns:minmax(150px,.8fr) 1.2fr 1.5fr;gap:clamp(12px,1.6vw,26px);text-align:left;margin:6px 0 20px}
+@media (max-width:900px){#resbox .rg{grid-template-columns:1fr}}
+#resbox .grade{text-align:center;border:3px solid var(--gc);border-radius:14px;padding:12px 8px;background:radial-gradient(circle at 50% 30%,#241c3a,#0d0b1c);box-shadow:0 0 28px -4px var(--gc)}
+#resbox .grade small{font:700 clamp(11px,.9vw,14px) Georgia,serif;letter-spacing:.3em;color:#a89a78}
+#resbox .grade b{display:block;font:900 clamp(64px,8vw,130px)/1 Georgia,serif;color:var(--gc);text-shadow:0 0 30px var(--gc),0 4px 0 #000}
+#resbox .grade span{font:600 clamp(12px,1vw,15px) Georgia,serif;color:#d8d0b8}
+#resbox .gbr{margin-top:10px;display:flex;flex-direction:column;gap:4px;font:clamp(12px,1vw,15px) Georgia,serif;color:#c8c0a8}
+#resbox .gbr b{color:#ffe9b0}#resbox .gnote{margin:6px 0 0;font:clamp(11px,.9vw,14px)/1.4 Georgia,serif;color:#a89f84}
+#resbox h4{margin:0 0 6px;font:700 clamp(14px,1.2vw,19px) Georgia,serif;color:#ffe9b0;letter-spacing:.08em;text-transform:uppercase}
+#resbox ul{list-style:none;margin:0 0 12px;padding:0}
+#resbox .rw li{padding:4px 0;border-bottom:1px solid #2a2240;font:clamp(14px,1.15vw,18px) Georgia,serif;color:#e8e0c8}
+#resbox .rw b{color:#ffe9b0}#resbox i.up{font-style:normal;color:#7ae08a;font-size:.85em}#resbox i.dn{font-style:normal;color:#ff9a8a;font-size:.85em}
+#resbox .rw li.it{display:flex;align-items:center;gap:8px;border-left:4px solid var(--rc);padding-left:8px}
+#resbox .blog{max-height:min(34vh,330px);overflow:auto;padding-right:6px}
+#resbox .blog li{padding:6px 8px;margin-bottom:5px;background:#0e0c1e;border-left:4px solid #3a2f14;border-radius:6px;font:clamp(13px,1.05vw,17px)/1.35 Georgia,serif;color:#d8d0b8}
+#resbox .blog li.w{border-left-color:#4cc35a}#resbox .blog li.l{border-left-color:#e05a4a}
+#resbox .blog li b{color:#fff}#resbox .blog small{display:block;color:#a89f84;font-size:.85em;margin-top:2px}
+#resbox .rg1{text-align:left;margin:0 0 14px}
+#resbox .rb{max-height:94vh;overflow:auto}

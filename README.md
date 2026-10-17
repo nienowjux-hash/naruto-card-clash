@@ -275,3 +275,9 @@ Ao fim de cada duelo da fase não volta mais sozinho: aparece o painel **Próxim
 - **Dano base nos comandos** (js/25-vila.js `addDmgChips`): cada golpe com dano mostra um selo "⚔ N" (e "(N golpes)" quando tem vários acertos) nos menus de Atacar/Jutsu de qualquer herói, antes de escolher. O valor é o dano base da animação (`ANIMS[id].dmg` ou soma de `hits`), sem elemento, equipamento nem defesa. Golpes sem dano (Kawarimi, curas, paredes) não mostram o selo.
 
 - **K.O. do herói**: o golpe fatal do herói agora chama `showKO('S')` (antes só acendia o texto): isso dá XP/butim da luta e abre o painel de resultado (aparece ~1,7 s depois do K.O.; Enter = Próxima luta). O balão de fala é posicionado em pixels sobre o canvas, com a ponta apontando para a cabeça.
+
+## Nota E→S, recompensas e registro de batalha (js/24-fase.js)
+Ao concluir ou perder a fase aparece um painel com: **nota** (E D C B A S), **recompensas** (ryo, pergaminhos, XP por herói com ▲ de nível, itens com ícone) e o **registro de batalha** (quem venceu/caiu, turnos, golpe final, vida restante, vantagem/desvantagem elemental).
+- Nota = 35% sobrevivência (heróis em pé) + 35% vida restante + 30% rapidez (menos turnos por inimigo); S ≥ 88, A ≥ 76, B ≥ 62, C ≥ 46, D ≥ 30. Derrota = E.
+- Quanto maior a nota: ryo ×0,6 (E) … ×2,2 (S); itens soltos pelos inimigos são mantidos com 50% (E) … 100% (B+); chance do item de bônus 30% (E) … 100% (B+); A/S ainda têm chance de um item extra e raridade maior.
+- Os turnos contam as ações do herói do jogador (`battleTurns`, via wrappers em `play`/`idleAct`/`enemyTurn`).
