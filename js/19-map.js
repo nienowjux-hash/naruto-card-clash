@@ -22,7 +22,7 @@ function mapPanel(){
  const n=NODES[mapSel],st=nodeState(mapSel),stTxt={cleared:'Concluído',open:'Disponível',locked:'Bloqueado'}[st];
  const party=ownedChars(['sasuke','sakura','kakashi','naruto','gozu','meizu']).map(h=>`<button class="hero${mapHero===h?' on':''}" data-h="${h}"><b>${CHARS[h].name.split(' ')[0]}</b><small>Nível ${PROG[h].level}</small>${charRar(h)}</button>`).join('')+'<div class="hero empty"><b>Vazio</b><small>em breve</small></div>';
  let body='';
- if(n.kind==='vila'){body=`<p class="desc">${n.d}</p><div class="act"><button class="learn" id="mp-tree">Árvore de habilidades</button><button class="learn alt" id="mp-inv">Equipamentos</button><button class="learn alt" id="mp-gacha">Invocação</button></div>`;}
+ if(n.kind==='vila'){body=`<p class="desc">${n.d}</p><div class="act"><button class="learn" id="mp-vila">Entrar na vila</button></div>`;}
  else{const af=n.enc.afin||CHARS[enemyCharOf(mapHero)].afin,vant=['fogo','agua','terra','vento','raio'].filter(b=>elemMatch(b,af)>0).map(b=>ELEMENTS[b].name);
   body=`<p class="desc">${n.d}</p>`+phasePanel(mapSel,st,n);}
  return`<h3>${n.name}</h3><span class="tag ${st}">${stTxt}</span>${body}`;}
@@ -34,11 +34,11 @@ function renderMap(){
  const cv=document.getElementById('mapcv'),pos=e=>{const r=cv.getBoundingClientRect();return[(e.clientX-r.left)*MAP_W/r.width,(e.clientY-r.top)*MAP_H/r.height];};
  const hit=e=>{const[x,y]=pos(e);for(const id in NODES)if(Math.hypot(x-NODES[id].x,y-NODES[id].y)<34)return id;return null;};
  cv.onmousemove=e=>{const h=hit(e);if(h!==mapHover){mapHover=h;cv.style.cursor=h?'pointer':'default';}};
- cv.onclick=e=>{const h=hit(e);if(h){mapSel=h;renderMap();}};
+ cv.onclick=e=>{const h=hit(e);if(h==='konoha'){mapSel=h;closeMap(true);enterHub();return;}if(h){mapSel=h;renderMap();}};
  t.querySelectorAll('.hero[data-h]').forEach(b=>b.onclick=()=>{mapHero=b.dataset.h;renderMap();});
  const go=document.getElementById('mp-go');if(go)go.onclick=()=>travelAndFight(mapSel);if(typeof bindPhase==='function')bindPhase(t);
  const tr=document.getElementById('mp-tree');if(tr)tr.onclick=()=>{closeMap(true);openTree();};
- const gh=document.getElementById('mp-gacha');if(gh)gh.onclick=()=>{closeMap(true);openGacha();};
+ const vl=document.getElementById('mp-vila');if(vl)vl.onclick=()=>{closeMap(true);enterHub();};
  const iv=document.getElementById('mp-inv');if(iv)iv.onclick=()=>{closeMap(true);openInv();};
  document.getElementById('mapx').onclick=()=>closeMap();
  document.getElementById('mprs').onclick=()=>resetAll();

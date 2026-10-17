@@ -72,3 +72,5 @@ Leia o `README.md` do jogo: ele documenta cada sistema. Atualize-o ao mudar algo
 | Balao de fala acima do personagem, mas deslocado na vertical | posicao em % do `#stage` (que inclui a faixa do HUD), nao do canvas | `speechSpot` usa `canvas.offsetLeft/Top/clientWidth/Height` em px e a ponta do balao (`--tl`) aponta para a cabeca |
 | Contagem de turnos errada em teste | o teste chamava `showKO` com o turno do inimigo ainda travando | em testes, esperar o fim da animacao antes do proximo duelo; contar turnos por wrappers que checam `anim/turnLock` |
 | Imagem de teste parecia 'dar zoom' no cenario | a montagem era mais larga que a janela (645 px) e o screenshot cortava a direita | montar imagens de conferencia com largura <= a da janela (`innerWidth`) |
+| Cenario da vila com cores 'chapadas' e area do chao preta | pintura com muitas cores unicas estourou o pool de caracteres da paleta do PixGrid | gerar chave extra com `String.fromCharCode(0x100+n)` quando o pool acaba |
+| Rostos do monte Hokage coloridos | cabelo/chapeu com cores reais | estatuas = so tons de pedra (areia/marrom), cabelo e chapeu entalhados, referencia do usuario |
