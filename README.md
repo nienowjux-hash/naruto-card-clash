@@ -281,3 +281,5 @@ Ao concluir ou perder a fase aparece um painel com: **nota** (E D C B A S), **re
 - Nota = 35% sobrevivência (heróis em pé) + 35% vida restante + 30% rapidez (menos turnos por inimigo); S ≥ 88, A ≥ 76, B ≥ 62, C ≥ 46, D ≥ 30. Derrota = E.
 - Quanto maior a nota: ryo ×0,6 (E) … ×2,2 (S); itens soltos pelos inimigos são mantidos com 50% (E) … 100% (B+); chance do item de bônus 30% (E) … 100% (B+); A/S ainda têm chance de um item extra e raridade maior.
 - Os turnos contam as ações do herói do jogador (`battleTurns`, via wrappers em `play`/`idleAct`/`enemyTurn`).
+
+- **Coreografia dos golpes comuns** (js/26-comuns.js `CM_DEF`): cada golpe tem movimento próprio — Lobo: *Mordida* (agacha, salta em arco de boca aberta, morde duas vezes sacudindo a presa e recua), *Arranhão* (corre baixo, levanta nas patas e rasga 3 vezes), *Investida* (recua, dispara e arremessa o alvo); Bandido/Renegado: *Facada* (duas talhadas), *Porretada* (salto com o porrete sobre a cabeça e pancada pesada), *Golpe de Kunai* (3 estocadas e um chute). Hits, câmera, reação da vítima e inclinação/achatamento do corpo (`mot`) saem da mesma tabela, nos dois lados da tela.

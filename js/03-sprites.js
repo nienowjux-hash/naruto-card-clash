@@ -51,9 +51,9 @@ if(USE_SPR&&typeof DEMON_SKIN!=='undefined'&&typeof naruGuard==='function'){for(
 if(USE_SPR&&typeof ninkenGrid==='function'){const mkW=(pose,jaw,flipV)=>{const gr=ninkenGrid('lobo',pose,jaw),sc=2,a=document.createElement('canvas');gr.draw(a,Object.assign({},NINKEN_PAL,NINKEN_KIND.lobo),sc);
   let c=a;if(flipV){c=document.createElement('canvas');c.width=a.width;c.height=a.height;const x=c.getContext('2d');x.translate(a.width/2,a.height/2);x.rotate(Math.PI);x.drawImage(a,-a.width/2,-a.height/2);}
   return{c,csh:c,w:a.width,h:a.height,ax:30,ay:flipV?a.height-2:46};};
- const st=mkW('bite',0),lp=mkW('leap',2),bt=mkW('bite',3),dn=mkW('bite',0,true),rn=[mkW('leap',1),mkW('bite',1),mkW('leap',1),mkW('bite',1)];
+ const st=mkW('bite',0),lp=mkW('leap',2),lw=mkW('leap',3),ll=mkW('leap',1),bt=mkW('bite',3),dn=mkW('bite',0,true),rn=[mkW('leap',1),mkW('bite',1),mkW('leap',1),mkW('bite',1)];
  const L={};for(const key in SPRN){const sp=SPRN[key];if(!sp||!sp.c)continue;L[key]=/^(punch|kick|pw|tt|te|tw|chidori|kw)/.test(key)?lp:key==='hit'?bt:key==='down'?dn:st;}
- L.guard=st;L.block=st;L.seal=st;L.charge=st;L.punch=lp;L.kick=lp;L.hit=bt;L.down=dn;L.run={c:rn[0].c,csh:rn[0].c,fr:rn.map(x=>({c:x.c,csh:x.c})),w:rn[0].w,h:rn[0].h,ax:30,ay:46};
+ L.guard=st;L.block=st;L.seal=st;L.charge=st;L.punch=ll;L.kick=lw;L.hit=bt;L.down=dn;L.run={c:rn[0].c,csh:rn[0].c,fr:rn.map(x=>({c:x.c,csh:x.c})),w:rn[0].w,h:rn[0].h,ax:30,ay:46};
  SPRE.lobo=L;}
 let playSkin=(typeof CAMP!=='undefined'&&CAMP.active&&(CAMP.active.hero==='gozu'||CAMP.active.hero==='meizu'))?CAMP.active.hero:null; /* heroi jogavel com a aparencia dos Irmaos Demonios */
 const nSkin=()=>(typeof roleN!=='undefined'&&roleN)?playSkin:enemySkin;
