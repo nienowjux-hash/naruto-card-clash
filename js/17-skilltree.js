@@ -10,25 +10,28 @@ const SKILL_GLYPH={chute:'蹴',kunai:'刃',kawarimi:'替',soco:'拳',shishi:'獅
 const TREE_BRANCH={sasuke:['Taijutsu','Armas','Fogo','Raio','Sharingan','Selo','Básico'],naruto:['Clones','Vento','Ilusão','Básico','Armas'],sakura:['Taijutsu','Armas','Suporte','Medicina','Chakra'],kakashi:['Taijutsu','Armas','Suporte','Fogo','Raio','Sharingan','Água','Terra'],gozu:['Taijutsu','Armas','Suporte','Jutsus','Dupla','Instinto'],meizu:['Taijutsu','Armas','Suporte','Jutsus','Dupla','Instinto']};
 /* ---- previa animada: grava quadros da propria animacao do golpe (o motor desenha o golpe congelado em cada instante) e toca em loop ---- */
 const PREV={};let prevTimer=null,prevToken=0;
+/* a previa mostra o dono do golpe: Sasuke/Sakura/Kakashi do lado esquerdo; Naruto e os Irmaos Demonios atacando com a propria aparencia */
+const prevKey=id=>treeChar+':'+id;
 async function buildPreview(id){
- if(PREV[id])return PREV[id];
+ const key=prevKey(id);if(PREV[key])return PREV[key];
  if(anim||frozen||turnLock||outcome||!ANIMS[id])return null;
- const cv=document.getElementById('c'),A=ANIMS[id],N=24,out=[];
+ const cv=document.getElementById('c'),A=ANIMS[id],N=24,out=[],sv={r:roleN,h:heroS,p:playSkin,e:enemySkin},c=treeChar;
+ roleN=false;playSkin=null;enemySkin=(c==='gozu'||c==='meizu')?c:null;heroS=(c==='sakura'||c==='kakashi')?c:'sasuke';
  try{for(let i=0;i<N;i++){frozen={type:id,t:Math.max(.02,A.dur*.97*i/(N-1))};
    render(performance.now());if(i%4===3)await new Promise(r=>setTimeout(r,0)); /* desenha o quadro na hora (sem esperar o rAF) */
    const f=document.createElement('canvas');f.width=560;f.height=Math.round(560*cv.height/cv.width);f.getContext('2d').drawImage(cv,0,0,f.width,f.height);out.push(f);}}
- finally{frozen=null;}
- PREV[id]={frames:out,dur:A.dur};return PREV[id];}
+ finally{frozen=null;roleN=sv.r;heroS=sv.h;playSkin=sv.p;enemySkin=sv.e;}
+ return PREV[key]={frames:out,dur:A.dur};}
 function stopPreview(){if(prevTimer){clearInterval(prevTimer);prevTimer=null;}prevToken++;}
 function playPreview(id){
  stopPreview();const tok=prevToken,box=document.getElementById('pvbox');if(!box)return;
  const show=async()=>{
-  const p=PREV[id]||await buildPreview(id);if(tok!==prevToken)return;
+  const p=PREV[prevKey(id)]||await buildPreview(id);if(tok!==prevToken)return;
   if(!p){box.innerHTML=ANIMS[id]?'<div class="pvmsg">Prévia indisponível durante uma luta.<br>Feche a árvore e termine o turno.</div>':'<div class="pvmsg">Golpe de defesa: sem prévia animada.<br>Na luta, o inimigo não vê quando você o usa.</div>';return;}
   const cv=document.createElement('canvas');cv.width=p.frames[0].width;cv.height=p.frames[0].height;box.innerHTML='';box.appendChild(cv);
   const g=cv.getContext('2d');let i=0,hold=0;const step=Math.max(60,p.dur*1000/p.frames.length);
   prevTimer=setInterval(()=>{if(hold>0){hold--;return;}g.drawImage(p.frames[i],0,0);i++;if(i>=p.frames.length){i=0;hold=Math.round(900/step);}},step);};
- if(!PREV[id])box.innerHTML='<div class="pvmsg">Gerando prévia…</div>';show();}
+ if(!PREV[prevKey(id)])box.innerHTML='<div class="pvmsg">Gerando prévia…</div>';show();}
 /* ---- texto explicativo gerado a partir dos numeros reais do jogo ---- */
 function skillStats(id){const A=ANIMS[id]||{},m=MOVES[id];
  const dmg=A.hits?A.hits.reduce((a,h)=>a+h.dmg,0):A.dmg||0;
