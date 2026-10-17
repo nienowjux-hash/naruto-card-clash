@@ -237,3 +237,7 @@ Konoha → Trilha do Bosque (Lobo Selvagem, Nv 1) → Estrada de Terra (Bandido,
 - Vitória = todos os inimigos derrotados: XP total (soma por inimigo) igual para todos que lutaram, ryo, item e pergaminhos. Derrota = equipe toda caída: 15% do XP, sem recompensa.
 - Trocar entre heróis do lado do Naruto (Naruto, Gozu, Meizu) e do Sasuke ainda recarrega a página; a fase continua pelo estado salvo.
 - A aparência do inimigo só aparece quando o herói está do lado do Sasuke (limitação antiga).
+
+## Butim (ryo e itens) — js/24-fase.js
+- Cada inimigo derrotado solta ryo (~¼ do ryo do local; bandidos ×1,4, animais ×0,6, líderes ×1,5) e talvez um item: animais soltam pílulas, bandidos armas/roupas/consumíveis, ninjas qualquer item, líderes (`dl≥1`) sempre soltam item melhor.
+- O butim fica em `CAMP.phase.loot` e só é pago ao concluir a fase, mais um bônus (50% do ryo do local + 1 item + pergaminhos). Na derrota o jogador fica com metade do ryo acumulado e nenhum item.

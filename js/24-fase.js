@@ -13,7 +13,7 @@ function foeElems(f,n){return f.afin||n.enc.afin||[];}
 
 function beginPhase(id){const n=NODES[id],team=teamNow().slice(),foes=nodeFoes(id);
  const u={};team.forEach(c=>u[c]={hp:null,ck:100,alive:true,fought:false});
- CAMP.phase={node:id,team,u,foes:foes.map(()=>({done:false})),assign:autoAssign(team,foes.length,mapAssign)};CAMP.at=id;saveCamp();mapSel=id;renderMap();}
+ CAMP.phase={node:id,team,u,foes:foes.map(()=>({done:false})),assign:autoAssign(team,foes.length,mapAssign),loot:{ryo:0,items:{}}};CAMP.at=id;saveCamp();mapSel=id;renderMap();}
 function abandonPhase(){CAMP.phase=null;saveCamp();renderMap();}
 
 function phasePanel(id,st,n){
@@ -29,8 +29,9 @@ function phasePanel(id,st,n){
  const teamHtml=p?`<div class="tm">${team.map(c=>{const u=p.u[c],mx=100+(statsOf(c).hp||0),pc=u.hp==null?100:Math.round(Math.max(0,u.hp)/mx*100);return`<div class="tu${u.alive?'':' dead'}"><b>${CHARS[c].name.split(' ')[0]}</b><small>${u.alive?pc+'% de vida':'Fora da fase'}</small><div class="bar"><i style="width:${u.alive?pc:0}%"></i></div></div>`;}).join('')}</div>`
   :`<small class="lab">Equipe (até ${PHASE_MAX_TEAM}) — clique para montar</small><div class="party">${ownedChars(['sasuke','sakura','kakashi','naruto','gozu','meizu']).map(h=>`<button class="hero${team.includes(h)?' on':''}" data-team="${h}"><b>${CHARS[h].name.split(' ')[0]}</b><small>Nível ${PROG[h].level}</small>${charRar(h)}</button>`).join('')}</div>`;
  const act=st==='locked'?'<span class="why">Vença um local vizinho para liberar.</span>':p?'<button class="learn alt" id="ph-quit">Desistir da fase</button>':`<button class="learn" id="mp-go">${st==='cleared'?'Jogar a fase de novo':'Iniciar a fase'} com ${team.length} ${team.length>1?'personagens':'personagem'}</button>`;
- return`<div class="enc"><small>Inimigos da fase (${foes.length}) · recompensa ao concluir</small><div class="stats"><div><small>XP total</small><b>${total}</b></div><div><small>Ryo</small><b>${n.ryo}</b></div><div><small>Pergaminhos</small><b>${n.kind==='chefe'?'4+':'1+'}</b></div></div>
- <div class="foes">${rows}</div><p class="tip">Escolha quem enfrenta cada inimigo. Quem perde sai da fase; quem vence segue com a vida que sobrou. O XP vai igual para todos que lutaram.</p></div>${teamHtml}<div class="act">${act}</div>`;}
+ const lootHtml=p&&p.loot&&(p.loot.ryo||Object.keys(p.loot.items).length)?`<p class="tip">Butim acumulado (pago ao concluir): <b>${lootTxt(p.loot)}</b></p>`:'';
+ return`<div class="enc"><small>Inimigos da fase (${foes.length}) · recompensa ao concluir</small><div class="stats"><div><small>XP total</small><b>${total}</b></div><div><small>Ryo (+ bônus)</small><b>${Math.round(n.ryo*1.5)}</b></div><div><small>Pergaminhos</small><b>${n.kind==='chefe'?'4+':'1+'}</b></div></div>
+ <div class="foes">${rows}</div><p class="tip">Escolha quem enfrenta cada inimigo. Quem perde sai da fase; quem vence segue com a vida que sobrou. Cada inimigo solta ryo e talvez um item (animais: pílulas; bandidos: armas e roupas; ninjas: qualquer item; líderes sempre soltam). O XP vai igual para todos que lutaram.</p></div>${lootHtml}${teamHtml}<div class="act">${act}</div>`;}
 
 function bindPhase(t){
  const p=CAMP.phase&&CAMP.phase.node===mapSel?CAMP.phase:null;
@@ -39,6 +40,20 @@ function bindPhase(t){
  t.querySelectorAll('[data-fight]').forEach(b=>b.onclick=()=>{const i=+b.dataset.fight,h=p.assign[i];if(!h||!p.u[h]||!p.u[h].alive){toast('Escolha um personagem em pé');return;}startEncounter(p.node,h,i);});
  const q=document.getElementById('ph-quit');if(q)q.onclick=()=>{if(confirm('Desistir da fase? Nenhum XP é ganho.'))abandonPhase();};}
 
+/* ---- butim: cada inimigo derrotado solta ryo e talvez um item; o butim vai para CAMP.phase.loot e so e pago no fim ---- */
+const DROP_KIND={lobo:'animal',bandido:'bandido'};
+const dropKind=f=>DROP_KIND[f.skin]||'ninja';
+/* sorteia item por raridade (como rollDrop), so entre os itens aceitos por ok(); max = nivel usado no teto de raridade */
+function rollDropBy(max,ok){const w={1:55,2:28,3:12,4:4,5:1},lim=(max||99)+8,ids=Object.keys(ITEMS).filter(i=>ok(ITEMS[i])&&(ITEM_LVL[ITEMS[i].rar]||1)<=lim);let tot=0;const pool=ids.map(i=>{const x=w[ITEMS[i].rar]||1;tot+=x;return[i,x];});let r=Math.random()*tot;for(const[i,x]of pool){if((r-=x)<=0)return i;}return ids[0];}
+function rollFoeDrop(f,n){const k=dropKind(f),boss=(f.dl||0)>=1,mult={animal:.6,bandido:1.4,ninja:1}[k],ryo=Math.max(1,Math.round(n.ryo/4*mult*(.8+Math.random()*.4)*(boss?1.5:1)));
+ const chance=boss?1:{animal:.45,bandido:.35,ninja:.4}[k];let item=null;
+ if(Math.random()<chance){const lv=n.lvl+(f.dl||0);
+  if(k==='animal'&&!boss)item=Math.random()<.7?'pilula_vida':'pilula_ck';
+  else if(k==='bandido'&&!boss)item=rollDropBy(lv,it=>it.slot==='arma'||it.slot==='corpo'||it.slot==='cons');
+  else item=rollDropBy(boss?lv+6:lv,it=>true);}
+ return{ryo,item};}
+const lootTxt=l=>(l.ryo?l.ryo+' ryo':'')+Object.keys(l.items||{}).map(i=>' · '+ITEMS[i].name+(l.items[i]>1?' ×'+l.items[i]:'')).join('');
+
 /* vida e chakra que o personagem levou do duelo anterior */
 function phaseCarry(){const a=CAMP.active,p=CAMP.phase;if(!a||!p||a.foe==null)return;const u=p.u[a.hero],m=roleN?'n':'s';if(u&&u.hp!=null){hp[m]=Math.max(1,Math.min(HPMAX[m],u.hp));ck[m]=Math.max(0,Math.min(100,u.ck));setBars();}}
 
@@ -46,14 +61,19 @@ function phaseCarry(){const a=CAMP.active,p=CAMP.phase;if(!a||!p||a.foe==null)re
 function phaseDuelEnd(me,won){
  const p=CAMP.phase,a=CAMP.active,m=roleN?'n':'s',u=p.u[me];if(!u)return;
  u.fought=true;u.ck=ck[m];
- if(won){u.hp=Math.max(1,hp[m]);p.foes[a.foe].done=true;}else{u.hp=0;u.alive=false;}
+ let drop=null;
+ if(won){u.hp=Math.max(1,hp[m]);p.foes[a.foe].done=true;p.loot=p.loot||{ryo:0,items:{}};drop=rollFoeDrop(nodeFoes(p.node)[a.foe],NODES[p.node]);p.loot.ryo+=drop.ryo;if(drop.item)p.loot.items[drop.item]=(p.loot.items[drop.item]||0)+1;}else{u.hp=0;u.alive=false;}
  const left=p.foes.filter(f=>!f.done).length,alive=Object.keys(p.u).filter(c=>p.u[c].alive).length,done=!left,fail=!done&&!alive;
  if(done||fail)phaseReward(done);
- else setTimeout(()=>toast(won?CHARS[me].name.split(' ')[0]+' venceu! Faltam '+left+' inimigo'+(left>1?'s':''):CHARS[me].name.split(' ')[0]+' caiu e sai da fase'),2600);
+ else setTimeout(()=>toast(won?CHARS[me].name.split(' ')[0]+' venceu! +'+drop.ryo+' ryo'+(drop.item?' · '+ITEMS[drop.item].name:'')+' · faltam '+left:CHARS[me].name.split(' ')[0]+' caiu e sai da fase'),2600);
  saveCamp();campaignResult(done);}
 function phaseReward(win){
  const p=CAMP.phase,n=NODES[p.node],tot=nodeFoes(p.node).reduce((s,f)=>s+foeXp(n,f),0),msgs=[];
  Object.keys(p.u).filter(c=>p.u[c].fought).forEach(c=>{const fx=Math.min(1.3,Math.max(.1,1+(n.lvl-PROG[c].level)*.08)),xp=Math.max(1,Math.round(tot*fx*(win?1:.15))),up=awardXp(c,xp);msgs.push(CHARS[c].name.split(' ')[0]+' +'+xp+(up?' (Nv '+PROG[c].level+')':''));});
- if(win&&typeof giveBattleLoot==='function')giveBattleLoot(true);
+ const L=p.loot||{ryo:0,items:{}};let sc=0,bonus='';
+ if(win){const bi=rollDropBy(n.lvl+4,it=>true),br=Math.round(n.ryo*.5);INV.ryo+=L.ryo+br;for(const i in L.items)addItem(i,L.items[i]);addItem(bi,1);sc=typeof gachaReward==='function'?gachaReward(true):0;bonus='Bônus da fase: '+br+' ryo · '+ITEMS[bi].name+(sc?' · +'+sc+' pergaminho'+(sc>1?'s':''):'');}
+ else INV.ryo+=Math.floor(L.ryo/2);
+ saveInv();
  setTimeout(()=>toast((win?'Fase concluída! ':'Fase perdida. ')+'XP: '+msgs.join(' · ')),2600);
+ setTimeout(()=>toast((win?'Butim: ':'Butim salvo (metade do ryo): ')+(win?lootTxt(L):Math.floor(L.ryo/2)+' ryo')+(bonus?' — '+bonus:'')),5200);
  CAMP.phase=null;}
