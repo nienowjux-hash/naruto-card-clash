@@ -35,14 +35,20 @@ function buildMenu(){showMenu('main');}
 function setCommands(on){[...$('hand').children].forEach(b=>{b.disabled=!on||(b._cost!=null&&(roleN?ck.n:ck.s)<b._cost)||(b._ok&&!b._ok());});}
 /* momento do acerto em milissegundos reais (considera lentidao e mapa de tempo do golpe) */
 function animHitMs(A){return (A.hitRaw!=null?A.hitRaw:A.hitT*(A.slow||1))*1000;}
+/* balao sobre a cabeca de quem fala (acompanha o zoom e o deslocamento da camera); fica o mais perto possivel da cabeca sem sair do palco */
+function speechSpot(who){const s=$('speech'),C=window.CAMNOW;if(!who||!C)return null;const cl=(v,a,b)=>Math.max(a,Math.min(b,v));
+ const wx=who==='s'?C.sx:C.nx;let sxp=((wx-C.cx)*C.z+192)/384*100;if(roleN)sxp=100-sxp;const syp=((GY-76-C.cy)*C.z+108)/216*100;
+ const sw=s.parentElement?s.parentElement.clientWidth:0,hw=sw?Math.min(46,s.offsetWidth/sw*50)+1.5:12;
+ return[cl(sxp,hw,100-hw)+'%',cl(syp-17,10,52)+'%'];}
+/* a cada quadro o balao acompanha a camera enquanto estiver na tela */
+function speechFollow(){if(!speak.who)return;const s=$('speech');if(!s||!s.classList.contains('on'))return;const sp=speechSpot(speak.who);if(sp){s.style.left=sp[0];s.style.top=sp[1];}}
 function speak(line,pos,who,nocam){const s=$('speech');s.textContent=line;let L=pos?pos[0]:'31%',T=pos?pos[1]:'18%';
  const cl=(v,a,b)=>Math.max(a,Math.min(b,v));
- if(who&&window.CAMNOW){ /* sobre a cabeca de quem fala, acompanhando a camera (zoom e deslocamento) */
-  const C=CAMNOW,wx=who==='s'?C.sx:C.nx;let sxp=((wx-C.cx)*C.z+192)/384*100;if(roleN)sxp=100-sxp;const syp=((GY-76-C.cy)*C.z+108)/216*100;
-  L=cl(sxp,24,76)+'%';T=cl(syp-17,12,52)+'%';}
+ const sp=speechSpot(who);speak.who=sp?who:null;
+ if(sp){L=sp[0];T=sp[1];}
  else{L=cl(parseFloat(L),24,76)+'%';T=cl(parseFloat(T),12,52)+'%';}
  s.style.left=L;s.style.top=T;s.classList.remove('on');void s.offsetWidth;s.classList.add('on');
- const dur=Math.min(4600,1900+line.length*70);clearTimeout(speak.h);speak.h=setTimeout(()=>s.classList.remove('on'),dur);
+ const dur=Math.min(4600,1900+line.length*70);clearTimeout(speak.h);speak.h=setTimeout(()=>{s.classList.remove('on');speak.who=null;},dur);
  window.SPEECHCAM=(who&&!nocam)?{who,t0:performance.now(),t1:performance.now()+dur}:null;}
 function sayN(line,pos){speak(line,pos,roleN?'s':'n');}
 function sayH(line,pos){speak(line,pos,roleN?'n':'s');}

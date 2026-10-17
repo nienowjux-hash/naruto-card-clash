@@ -269,3 +269,5 @@ Cada inimigo mostra os elementos e quem da equipe tem **vantagem** (▲) ou **de
 
 ## Resultado do duelo (js/24-fase.js)
 Ao fim de cada duelo da fase não volta mais sozinho: aparece o painel **Próxima luta ▶ / Voltar ao mapa / Sair para a vila** (`showResultPanel`). "Próxima luta" abre o primeiro inimigo ainda vivo com o personagem escalado (se ele caiu, assume quem tem mais vantagem elemental). Fase concluída ou perdida mostra só Voltar ao mapa / Sair. Recarregar a página não recomeça um duelo já resolvido.
+
+- **Balão de fala**: `speak(line,pos,who)` com `who` ('s'/'n') coloca o balão sobre a cabeça de quem fala e ele **acompanha a câmera a cada quadro** (`speechSpot`/`speechFollow`), sem o limite antigo de 24%/76%; só cai para a posição fixa quando não há `who`.

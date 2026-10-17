@@ -67,3 +67,4 @@ Leia o `README.md` do jogo: ele documenta cada sistema. Atualize-o ao mudar algo
 | Rotulos do mapa sobrepostos | todos abaixo do no | campo `lp` por no |
 | Texto aninhado em `<b>` ficou gigante no painel do mapa | regra `#map .foe .fi b` pegava o `<b>` interno | regra mais especifica `.adv b{font-size:inherit}` |
 | Vantagem elemental invisivel para o jogador | painel so mostrava o elemento do inimigo | linha `Vantagem:` por inimigo + tabela de elementos + botao de sugerir escalacao |
+| Balao de fala ('Queime!') longe do personagem | posicao calculada uma vez no inicio da fala e limitada a 24%; a camera se mexia depois | `speechSpot` + `speechFollow` (acompanha a camera a cada quadro, limite pela largura do balao) |
