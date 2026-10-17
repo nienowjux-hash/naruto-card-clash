@@ -273,3 +273,5 @@ Ao fim de cada duelo da fase não volta mais sozinho: aparece o painel **Próxim
 - **Balão de fala**: `speak(line,pos,who)` com `who` ('s'/'n') coloca o balão sobre a cabeça de quem fala e ele **acompanha a câmera a cada quadro** (`speechSpot`/`speechFollow`), sem o limite antigo de 24%/76%; só cai para a posição fixa quando não há `who`.
 
 - **Dano base nos comandos** (js/25-vila.js `addDmgChips`): cada golpe com dano mostra um selo "⚔ N" (e "(N golpes)" quando tem vários acertos) nos menus de Atacar/Jutsu de qualquer herói, antes de escolher. O valor é o dano base da animação (`ANIMS[id].dmg` ou soma de `hits`), sem elemento, equipamento nem defesa. Golpes sem dano (Kawarimi, curas, paredes) não mostram o selo.
+
+- **K.O. do herói**: o golpe fatal do herói agora chama `showKO('S')` (antes só acendia o texto): isso dá XP/butim da luta e abre o painel de resultado (aparece ~1,7 s depois do K.O.; Enter = Próxima luta). O balão de fala é posicionado em pixels sobre o canvas, com a ponta apontando para a cabeça.

@@ -36,10 +36,12 @@ function setCommands(on){[...$('hand').children].forEach(b=>{b.disabled=!on||(b.
 /* momento do acerto em milissegundos reais (considera lentidao e mapa de tempo do golpe) */
 function animHitMs(A){return (A.hitRaw!=null?A.hitRaw:A.hitT*(A.slow||1))*1000;}
 /* balao sobre a cabeca de quem fala (acompanha o zoom e o deslocamento da camera); fica o mais perto possivel da cabeca sem sair do palco */
-function speechSpot(who){const s=$('speech'),C=window.CAMNOW;if(!who||!C)return null;const cl=(v,a,b)=>Math.max(a,Math.min(b,v));
- const wx=who==='s'?C.sx:C.nx;let sxp=((wx-C.cx)*C.z+192)/384*100;if(roleN)sxp=100-sxp;const syp=((GY-76-C.cy)*C.z+108)/216*100;
- const sw=s.parentElement?s.parentElement.clientWidth:0,hw=sw?Math.min(46,s.offsetWidth/sw*50)+1.5:12;
- return[cl(sxp,hw,100-hw)+'%',cl(syp-17,10,52)+'%'];}
+function speechSpot(who){const s=$('speech'),C=window.CAMNOW,cv=document.getElementById('c');if(!who||!C||!cv)return null;const cl=(v,a,b)=>Math.max(a,Math.min(b,v));
+ const wx=who==='s'?C.sx:C.nx;let sx01=((wx-C.cx)*C.z+192)/384;if(roleN)sx01=1-sx01;const sy01=((GY-78-C.cy)*C.z+108)/216;
+ const ox=cv.offsetLeft,oy=cv.offsetTop,W=cv.clientWidth,H=cv.clientHeight,bw=s.offsetWidth,bh=s.offsetHeight;
+ const hx=ox+sx01*W,px=cl(hx,ox+bw/2+4,ox+W-bw/2-4),py=cl(oy+sy01*H-bh-16,oy-bh*.55,oy+H-bh-4);
+ s.style.setProperty('--tl',cl(hx-(px-bw/2),16,Math.max(16,bw-16))+'px'); /* a ponta do balao aponta para a cabeca mesmo quando o balao encosta na borda */
+ return[px+'px',py+'px'];}
 /* a cada quadro o balao acompanha a camera enquanto estiver na tela */
 function speechFollow(){if(!speak.who)return;const s=$('speech');if(!s||!s.classList.contains('on'))return;const sp=speechSpot(speak.who);if(sp){s.style.left=sp[0];s.style.top=sp[1];}}
 function speak(line,pos,who,nocam){const s=$('speech');s.textContent=line;let L=pos?pos[0]:'31%',T=pos?pos[1]:'18%';
@@ -66,7 +68,7 @@ function play(cd){
  if(dodge)later(animHitMs(A),()=>{missPop('N');toast('Naruto usou o Kawarimi e evitou o golpe!');sfxDodge();setBars();});
  if(cd.id==='amaterasu')later(1250,()=>{WOUNDS.s.push({k:'eyeBlood',part:'face',t0:performance.now()/1000,seed:1,r:1});});
  if(lethal&&A.L){if(A.L.line)later(A.L.speakAt*1000,()=>speak(A.L.line,A.L.speechPos,'s'));later(A.L.bannerAt*1000,()=>banner(...(A.L.banner||['死','FATALITY','Chidori','#e0102a'])));(A.L.sfxFn||sfxFatal)();}
- if(lethal)later(((A.L?A.L.koAt:A.hitT+1.3))*1000,()=>{outcome='S';outcomeT=performance.now()/1000;const k=$('ko');k.classList.remove('on');void k.offsetWidth;k.classList.add('on');setCommands(false);});
+ if(lethal)later(((A.L?A.L.koAt:A.hitT+1.3))*1000,()=>{outcome='S';outcomeT=performance.now()/1000;showKO('S');setCommands(false);}); /* showKO dá XP, butim e o painel de resultado */
 }
 window.addEventListener('keydown',e=>{if(e.key==='Escape'&&menuOpen!=='main'){showMenu('main');return;}const n=parseInt(e.key,10);if(!(n>=1))return;const b=$('hand').children[n-1];if(b&&!b.disabled)b.click();});
 $('rst').onclick=()=>{pending.forEach(clearTimeout);pending=[];gdN=false;poisonS=0;dmKCd=0;dmInstK=false;eFatalKind=null;senK=false;stoneT=0;stoneShow=false;stoneK=false;stoneBreakT=-9;tsHold=0;tsK=false;tsRelT=-9;wallS=false;wallShow=false;wallBreakT=-9;genK=false;rasKyu=false;rasKill=false;uzKill=false;kmKill=false;tpKill=false;stunS=0;immN=false;immS=false;toadUsed=false;kawS=false;kawN=false;kawUseS=0;kawUseN=0;kyuT=0;kyuUsed=false;bunta=null;buntaGone=0;chestHole=0;burnt=0;ashed=0;fatalKind=null;copied=null;lastEnemy=null;sealT=0;seal2T=0;stunN=false;$('speech').classList.remove('on');anim=null;outcome=null;burning=false;turnLock=false;guard=false;showMenu('main');WOUNDS.s.length=0;WOUNDS.n.length=0;$('ko').querySelector('span').textContent=HN().toUpperCase()+' VENCEU';$('ko').classList.remove('on');battleOn=false;syncHpMax(true);ck={s:100,n:100};setBars();setCommands(true);$('banner').classList.remove('on');$('dmg').classList.remove('on');};

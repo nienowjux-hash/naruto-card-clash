@@ -93,7 +93,8 @@ function nextFoeStart(){const p=CAMP.phase;if(!p)return;const foes=nodeFoes(p.no
  const i=p.foes.findIndex(f=>!f.done);if(i<0)return;let h=p.assign[i];
  if(!alive(h)){const af=foeElems(foes[i],n),live=p.team.filter(alive);h=live.slice().sort((a,b)=>heroAdv(b,af)-heroAdv(a,af))[0];p.assign[i]=h;saveCamp();toast(firstName(h)+' assume essa luta');}
  startEncounter(p.node,h,i);}
-function closeResult(){const e=document.getElementById('resbox');if(e)e.remove();}
+function closeResult(){const e=document.getElementById('resbox');if(e)e.remove();window.removeEventListener('keydown',resKey,true);}
+function resKey(e){if(e.key==='Enter'){const n=document.getElementById('rs-next')||document.getElementById('rs-map');if(n){e.stopImmediatePropagation();n.click();}}}
 function showResultPanel(a){
  closeResult();const stage=document.body;
  const p=CAMP.phase,end=PHASE_END;PHASE_END=null;
@@ -105,7 +106,7 @@ function showResultPanel(a){
   title=won?'VITÓRIA!':'DERROTA';sub=(won?'Inimigo derrotado.':'Seu personagem caiu e sai da fase.')+` Faltam ${left} inimigo${left===1?'':'s'}. Em pé: ${live.join(', ')||'ninguém'}.`;}
  const d=document.createElement('div');d.id='resbox';d.className=end==='fail'||(!end&&!won)?'bad':'good';
  d.innerHTML=`<div class="rb"><h3>${title}</h3><p>${sub}</p><div class="ra">${next?'<button class="learn" id="rs-next">Próxima luta ▶</button>':''}<button class="learn alt" id="rs-map">Voltar ao mapa</button><button class="learn alt" id="rs-out">Sair para a vila</button></div></div>`;
- stage.appendChild(d);
+ stage.appendChild(d);window.addEventListener('keydown',resKey,true);
  const n=document.getElementById('rs-next');if(n)n.onclick=()=>{closeResult();nextFoeStart();};
  document.getElementById('rs-map').onclick=()=>{closeResult();mapSel=a.node;enterHub();openMap();};
  document.getElementById('rs-out').onclick=()=>{closeResult();mapSel=a.node;enterHub();};}
