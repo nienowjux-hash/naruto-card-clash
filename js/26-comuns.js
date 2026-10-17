@@ -99,3 +99,13 @@ function cmAiS(){const kit=CM_KIT[enemySkin];if(!kit)return false;if(outcome||an
 /* ---- inimigo no lado esquerdo (heroi Naruto/Gozu/Meizu): usa os quadros do inimigo vestido, mapeados para as poses do Sasuke ---- */
 {const KEYMAP={idle:'guard',guard:'guard',block:'block',katon:'seal',seal:'seal',eh:'seal',chidori:'charge',pw:'pw',kw:'kick',punch:'punch',kick:'kick',hit:'hit',down:'down',run:'run',tw:'punch',tt:'punch',te:'punch'};
  for(const k in SPRE){const set=SPRE[k];if(!set||!set.guard)continue;const S2={};for(const key in SPR)S2[key]=set[KEYMAP[key]]||set.guard;SPRES[k]=S2;}}
+
+/* ---- nomes na tela: quem venceu e quem sofre o golpe aparecem com o nome certo (heroi do jogador ou o inimigo da fase) ---- */
+const cmShort=n=>String(n).replace(/\s*\(.*\)/,'');
+function cmEnemyName(){const a=(typeof hubMode!=='undefined'&&hubMode)?null:CAMP.active;if(a&&a.name)return cmShort(a.name);return roleN?'Sasuke':(nSkin()?nSkin().charAt(0).toUpperCase()+nSkin().slice(1):'Naruto');}
+function cmHeroName(){return roleN?NN():HN();}
+function koName(w){return String((w==='N')===roleN?cmHeroName():cmEnemyName()).toUpperCase();}
+/* avisos antigos falam sempre 'Naruto' ou 'Sasuke': troca pelo nome de quem esta em cena */
+{const _toast=toast;toast=function(msg){if(typeof msg==='string'&&CAMP.active&&!(typeof hubMode!=='undefined'&&hubMode)){const en=cmEnemyName(),he=cmHeroName();
+  msg=roleN?msg.replace(/Sasuke/g,en).replace(/Naruto/g,he):msg.replace(/Naruto/g,en);}
+  return _toast.call(this,msg);};}
