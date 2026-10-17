@@ -64,8 +64,10 @@ function applyEncounter(){
 /* fim de luta: marca o local, e volta ao mapa */
 function campaignResult(won){const a=CAMP.active;if(!a)return;
  if(won&&!CAMP.cleared.includes(a.node)){CAMP.cleared.push(a.node);}CAMP.at=a.node;saveCamp();
+ if(a.foe!=null&&typeof showResultPanel==='function'){setTimeout(()=>showResultPanel(a),3000);return;}
  setTimeout(()=>{CAMP.active=null;saveCamp();enemySkin=null;portrait('ptN',NARUTO,mk({expr:5}));applyHero('sasuke');setEnemyName(null);mapSel=a.node;if(typeof enterHub==='function')enterHub();else setScene('vale');openMap();},6200);}
 window.addEventListener('keydown',e=>{const t=document.getElementById('map');if(e.key==='Escape'&&t&&!t.hidden){closeMap();e.stopImmediatePropagation();}},true);
 (function(){const b=document.createElement('button');b.id='mapbtn';b.textContent='Mapa';b.onclick=openMap;const c=document.querySelector('.ctl');if(c)c.insertBefore(b,c.firstChild);})();
-/* ao carregar: continua a luta em andamento ou abre o mapa */
+/* ao carregar: continua a luta em andamento ou abre o mapa (duelo ja resolvido nao recomeca) */
+if(CAMP.active&&CAMP.phase&&CAMP.active.foe!=null){const f=CAMP.phase.foes[CAMP.active.foe],u=CAMP.phase.u[CAMP.active.hero];if(!f||f.done||!u||!u.alive){CAMP.active=null;saveCamp();}}
 if(CAMP.active&&(NHEROES.includes(CAMP.active.hero)===roleN))setTimeout(applyEncounter,50);else{CAMP.active=null;setTimeout(()=>{if(typeof enterHub==='function')enterHub();openMap();},200);}

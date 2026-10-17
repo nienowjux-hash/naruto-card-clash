@@ -3,7 +3,7 @@
    Quem perde sai da fase (volta no fim dela); quem ganha continua, levando a vida e o chakra que sobraram. A fase acaba quando todos os inimigos caem
    (vitoria) ou quando toda a equipe cai (derrota). O XP sai no fim e e o mesmo para todos que lutaram (15% na derrota). Estado em CAMP.phase:
    {node, team:[ids], u:{id:{hp,ck,alive,fought}}, foes:[{done}], assign:[ids]}   (hp null = vida cheia). */
-let mapTeam=null,mapAssign=[];
+let mapTeam=null,mapAssign=[],PHASE_END=null;
 const PHASE_MAX_TEAM=4;
 function teamNow(){if(!mapTeam||!mapTeam.length)mapTeam=ownedChars(['sasuke','sakura','kakashi','naruto','gozu','meizu']).slice(0,PHASE_MAX_TEAM);mapTeam=mapTeam.filter(gachaOwned);if(!mapTeam.length)mapTeam=['sasuke'];return mapTeam;}
 const phaseAt=id=>(CAMP.phase&&CAMP.phase.node===id)?CAMP.phase:null;
@@ -73,6 +73,7 @@ function phaseDuelEnd(me,won){
  let drop=null;
  if(won){u.hp=Math.max(1,hp[m]);p.foes[a.foe].done=true;p.loot=p.loot||{ryo:0,items:{}};drop=rollFoeDrop(nodeFoes(p.node)[a.foe],NODES[p.node]);p.loot.ryo+=drop.ryo;if(drop.item)p.loot.items[drop.item]=(p.loot.items[drop.item]||0)+1;}else{u.hp=0;u.alive=false;}
  const left=p.foes.filter(f=>!f.done).length,alive=Object.keys(p.u).filter(c=>p.u[c].alive).length,done=!left,fail=!done&&!alive;
+ PHASE_END=done?'win':fail?'fail':null;
  if(done||fail)phaseReward(done);
  else setTimeout(()=>toast(won?CHARS[me].name.split(' ')[0]+' venceu! +'+drop.ryo+' ryo'+(drop.item?' · '+ITEMS[drop.item].name:'')+' · faltam '+left:CHARS[me].name.split(' ')[0]+' caiu e sai da fase'),2600);
  saveCamp();campaignResult(done);}
@@ -86,3 +87,25 @@ function phaseReward(win){
  setTimeout(()=>toast((win?'Fase concluída! ':'Fase perdida. ')+'XP: '+msgs.join(' · ')),2600);
  setTimeout(()=>toast((win?'Butim: ':'Butim salvo (metade do ryo): ')+(win?lootTxt(L):Math.floor(L.ryo/2)+' ryo')+(bonus?' — '+bonus:'')),5200);
  CAMP.phase=null;}
+
+/* ---- painel de resultado depois de cada duelo: Proxima luta / Voltar ao mapa / Sair para a vila ---- */
+function nextFoeStart(){const p=CAMP.phase;if(!p)return;const foes=nodeFoes(p.node),n=NODES[p.node],alive=c=>p.u[c]&&p.u[c].alive;
+ const i=p.foes.findIndex(f=>!f.done);if(i<0)return;let h=p.assign[i];
+ if(!alive(h)){const af=foeElems(foes[i],n),live=p.team.filter(alive);h=live.slice().sort((a,b)=>heroAdv(b,af)-heroAdv(a,af))[0];p.assign[i]=h;saveCamp();toast(firstName(h)+' assume essa luta');}
+ startEncounter(p.node,h,i);}
+function closeResult(){const e=document.getElementById('resbox');if(e)e.remove();}
+function showResultPanel(a){
+ closeResult();const stage=document.body;
+ const p=CAMP.phase,end=PHASE_END;PHASE_END=null;
+ const won=p?p.foes[a.foe]&&p.foes[a.foe].done:end==='win'||NODES[a.node]&&CAMP.cleared.includes(a.node)&&end!=='fail';
+ let title,sub,next=false;
+ if(end==='win'){title='FASE CONCLUÍDA!';sub='Todos os inimigos foram derrotados. A recompensa foi para a mochila.';}
+ else if(end==='fail'){title='FASE PERDIDA';sub='Toda a equipe caiu. Monte uma equipe com vantagem elemental e tente de novo.';}
+ else{const left=p.foes.filter(f=>!f.done).length,live=Object.keys(p.u).filter(c=>p.u[c].alive).map(firstName);next=left>0&&live.length>0;
+  title=won?'VITÓRIA!':'DERROTA';sub=(won?'Inimigo derrotado.':'Seu personagem caiu e sai da fase.')+` Faltam ${left} inimigo${left===1?'':'s'}. Em pé: ${live.join(', ')||'ninguém'}.`;}
+ const d=document.createElement('div');d.id='resbox';d.className=end==='fail'||(!end&&!won)?'bad':'good';
+ d.innerHTML=`<div class="rb"><h3>${title}</h3><p>${sub}</p><div class="ra">${next?'<button class="learn" id="rs-next">Próxima luta ▶</button>':''}<button class="learn alt" id="rs-map">Voltar ao mapa</button><button class="learn alt" id="rs-out">Sair para a vila</button></div></div>`;
+ stage.appendChild(d);
+ const n=document.getElementById('rs-next');if(n)n.onclick=()=>{closeResult();nextFoeStart();};
+ document.getElementById('rs-map').onclick=()=>{closeResult();mapSel=a.node;enterHub();openMap();};
+ document.getElementById('rs-out').onclick=()=>{closeResult();mapSel=a.node;enterHub();};}

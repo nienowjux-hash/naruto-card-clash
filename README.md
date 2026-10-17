@@ -266,3 +266,6 @@ Konoha → Trilha do Bosque (Lobo Selvagem, Nv 1) → Estrada de Terra (Bandido,
 
 ## Vantagem elemental na escalação (js/24-fase.js)
 Cada inimigo mostra os elementos e quem da equipe tem **vantagem** (▲) ou **desvantagem** (▼) contra ele (`heroAdv`, usa `CHARS[..].afin` e `elemMatch`); abaixo da lista há a tabela "quem vence quem" (`ELEM_BEATS`) e o botão "Sugerir escalação pela vantagem elemental" (`suggestAssign`). O painel lateral do mapa usa fontes maiores (clamp por vw).
+
+## Resultado do duelo (js/24-fase.js)
+Ao fim de cada duelo da fase não volta mais sozinho: aparece o painel **Próxima luta ▶ / Voltar ao mapa / Sair para a vila** (`showResultPanel`). "Próxima luta" abre o primeiro inimigo ainda vivo com o personagem escalado (se ele caiu, assume quem tem mais vantagem elemental). Fase concluída ou perdida mostra só Voltar ao mapa / Sair. Recarregar a página não recomeça um duelo já resolvido.

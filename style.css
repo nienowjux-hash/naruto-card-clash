@@ -410,3 +410,17 @@ body.hub #stage::after{content:'KONOHA';position:absolute;left:0;right:0;top:42%
 #map .act .learn{font-size:clamp(15px,1.2vw,19px);padding:12px 18px;width:100%}
 #map .tm .tu b{font-size:clamp(14px,1.1vw,18px)}#map .tm .tu small{font-size:clamp(12px,.95vw,15px)}
 #map .foe .fi .adv b{display:inline;font-size:inherit}
+
+/* resultado do duelo */
+#resbox{position:fixed;inset:0;z-index:55;display:flex;align-items:center;justify-content:center;background:radial-gradient(#0008,#000c);animation:rbin .35s both}
+@keyframes rbin{from{opacity:0}to{opacity:1}}
+#resbox .rb{background:linear-gradient(#241c3a,#120e22);border:3px solid #b8924a;border-radius:14px;padding:clamp(18px,2.4vw,40px) clamp(24px,4vw,64px);text-align:center;max-width:90%;box-shadow:0 0 0 2px #2a1d08,0 0 0 5px #6e5424,0 12px 60px #000}
+#resbox.bad .rb{border-color:#c84a4a}
+#resbox h3{margin:0 0 8px;font:900 clamp(26px,4.6vw,64px) Georgia,serif;letter-spacing:.16em;color:#ffe9b0;text-shadow:0 0 20px #b8924a,0 3px 0 #000}
+#resbox.bad h3{color:#ff9a8a;text-shadow:0 0 20px #c84a4a,0 3px 0 #000}
+#resbox p{margin:0 0 18px;font:clamp(14px,1.6vw,22px)/1.5 Georgia,serif;color:#d8d0b8}
+#resbox .ra{display:flex;gap:12px;justify-content:center;flex-wrap:wrap}
+#resbox .learn{background:linear-gradient(#e0b860,#9a6e1e);color:#241606;border:2px solid #ffe9b0;border-radius:8px;padding:clamp(10px,1.2vw,18px) clamp(16px,2.2vw,34px);font:700 clamp(15px,1.7vw,24px) Georgia,serif;cursor:pointer;pointer-events:auto}
+#resbox .learn.alt{background:linear-gradient(#5a5a9a,#34346a);color:#fff;border-color:#9a9ad0}
+#resbox .learn:hover{filter:brightness(1.15)}
+body.hub #resbox{display:none}
