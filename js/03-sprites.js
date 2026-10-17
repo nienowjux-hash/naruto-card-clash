@@ -58,7 +58,8 @@ if(USE_SPR&&typeof ninkenGrid==='function'){const mkW=(pose,jaw,flipV)=>{const g
 let playSkin=(typeof CAMP!=='undefined'&&CAMP.active&&(CAMP.active.hero==='gozu'||CAMP.active.hero==='meizu'))?CAMP.active.hero:null; /* heroi jogavel com a aparencia dos Irmaos Demonios */
 const nSkin=()=>(typeof roleN!=='undefined'&&roleN)?playSkin:enemySkin;
 const SPRNX=o=>(o&&o.skin&&SPRE[o.skin])||(nSkin()&&SPRE[nSkin()])||SPRN;
-const SPRX=()=>heroS==='sakura'&&SPRK.guard?SPRK:heroS==='kakashi'&&SPRKA.guard?SPRKA:SPR;
+const SPRES={};
+const SPRX=()=>(typeof roleN!=='undefined'&&roleN&&enemySkin&&SPRES[enemySkin])?SPRES[enemySkin]:heroS==='sakura'&&SPRK.guard?SPRK:heroS==='kakashi'&&SPRKA.guard?SPRKA:SPR;
 /* Naruto de quatro (manto da Kyubi): quadros de agachar, galope e bote, escolhidos pela pose (fourKeyFor) */
 if(USE_SPR&&SPRN.four&&typeof naruFourCoil==='function'){const mkF=fn=>{const gr=fn(),a=document.createElement('canvas'),b=document.createElement('canvas');gr.draw(a,NAR_PAL,1);gr.draw(b,Object.assign({},NAR_PAL,KYU_EYES),1);return{c:a,csh:b,w:gr.w,h:gr.h,ax:48,ay:56};};
  SPRN.fourCoil=mkF(naruFourCoil);SPRN.fourRunA=mkF(naruFourRunA);SPRN.fourRunB=mkF(naruFourRunB);SPRN.fourLunge=mkF(naruFourLunge);}

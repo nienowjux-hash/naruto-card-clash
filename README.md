@@ -256,3 +256,9 @@ Konoha → Trilha do Bosque (Lobo Selvagem, Nv 1) → Estrada de Terra (Bandido,
 "Reiniciar campanha" (botão vermelho no rodapé do mapa e item "Reiniciar o jogo" no menu da vila) apaga tudo: campanha e fase, níveis e habilidades (`PROG`), mochila, ryo e equipamentos (`INV`), pergaminhos, personagens obtidos, fragmentos e pity (`GACHA`). Gozu e Meizu voltam a ficar bloqueados e os itens iniciais voltam.
 
 - **Fugir da luta**: último comando do menu principal (todos os heróis, incluindo Naruto e Gozu/Meizu). Larga o duelo, volta para a vila e a fase continua; guarda a vida atual do herói.
+
+## Inimigos comuns: kits e golpes próprios — js/26-comuns.js
+- Cada inimigo comum só tem golpes que combinam com ele (`CM_KIT`): **Lobo** = Mordida, Arranhão, Investida (nv 2); **Bandido** = Soco, Chute, Facada, Porretada (nv 2); **Ninja Renegado** = Soco, Chute, Kunai, Shuriken, Golpe de Kunai e Kawarimi. Nenhum usa jutsu de personagem (Chidori, Katon, Rasengan...).
+- Animações próprias (`cmMordida`, `cmArranhao`, `cmInvestida`, `cmFaca`, `cmPorrete`, `cmGolpeKunai`): presas, garras, poeira e onda de choque; facada, porrete e kunai são desenhados na mão do inimigo. Cada golpe existe dos dois lados (`ANIMS.<id>` e `ANIMS.n<id>`, espelhado).
+- A IA respeita o kit dos dois lados: `commonPick` (heróis Sasuke/Sakura/Kakashi) e `cmAiS` (heróis Naruto/Gozu/Meizu, o inimigo fica no lado do Sasuke com o corpo vestido via `SPRES`, retrato e nome corretos).
+- No lado esquerdo o golpe de vários acertos aplica o dano total de uma vez (os acertos extras são só visuais). Os Irmãos Demônios só usam os golpes de ninja básicos nesse lado; as habilidades deles continuam no lado direito.

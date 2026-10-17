@@ -151,7 +151,7 @@ function aiPickW(list,wf){const w=list.map(x=>[x,Math.max(0,wf(x))]),sum=w.reduc
 function aiNaruDmg(j){const A=ANIMS[j];if(!A||!A.hits)return 0;const e=(MOVES[j]||{}).elem;return A.hits.reduce((a,h)=>a+h.dmg,0)*elemMult(e,sideChar('s'))*dmgMod('n','s',e)*(wallS?.2:guard?.5:1)*(kyuT>0?KY_POW:1);}
 /* o Sasuke (IA): escolhe um golpe que consegue pagar; com a vida do Naruto baixa, vai no mais forte */
 function kitHasS(id){const K=enemyKitOf('sasuke');if(!K)return true;if(id==='cop_rasengan'||id==='cop_bunshin')id='copy';return K.has(id);}
-function aiSasuke(){if(outcome||anim)return;turnLock=false;
+function aiSasuke(){if(outcome||anim)return;if(typeof cmAiS==='function'&&cmAiS())return;turnLock=false;
  const pool=ATKS.concat(SASUKE_JUTSUS).filter(cd=>!(MOVES[cd.id]&&MOVES[cd.id].futuro)&&kitHasS(cd.id)&&cd.live&&ANIMS[cd.id]&&(!cd.show||cd.show())&&(!cd.ok||cd.ok())&&ck.s>=ANIMS[cd.id].cost);
  const SM=aiSmart();
  if(!kawS&&kawUseS<KAWARIMI_MAX&&ck.s>=KAWARIMI_COST&&hp.s<70+SM*10&&(SM<.3||ck.n>=25)&&Math.random()<Math.min(.5,(hp.s<45?.3:.12)*(1+SM*1.6))){ck.s=Math.max(0,ck.s-KAWARIMI_COST);kawS=true;kawUseS++;setBars();toast('Sasuke se prepara...');turnLock=true;setTimeout(()=>{turnLock=false;showMenu('main');setCommands(true);},1100);return;}

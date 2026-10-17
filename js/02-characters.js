@@ -374,7 +374,7 @@ function drawHead(c,d,P,r,time){
 }
 /* Retratos do HUD: a propria cabeca em pixel art dos sprites (mesmo desenho do jogo), recortada e ampliada sem suavizar */
 const PORTRAIT_CACHE={};
-function portraitKind(id,d){return id==='ptG'?'demgozu':id==='ptM'?'demmeizu':id==='ptN'?((typeof nSkin==='function'&&nSkin())?'dem'+nSkin():'nar'):id==='ptK'?'sak':id==='ptKa'?'kak':id==='ptS0'?'sas':(d===SASUKE?({sakura:'sak',kakashi:'kak'}[heroS]||'sas'):'lv2');}
+function portraitKind(id,d){return id==='ptG'?'demgozu':id==='ptM'?'demmeizu':id==='ptN'?((typeof nSkin==='function'&&nSkin())?'dem'+nSkin():'nar'):id==='ptK'?'sak':id==='ptKa'?'kak':id==='ptS0'?'sas':(d===SASUKE?((typeof roleN!=='undefined'&&roleN&&enemySkin)?'dem'+enemySkin:({sakura:'sak',kakashi:'kak'}[heroS]||'sas')):'lv2');}
 function portrait(id,d,P){
  const cvp=$(id),c=cvp.getContext('2d'),kind=portraitKind(id,d);
  if(!PORTRAIT_CACHE[kind]&&kind==='demlobo'){const gr=ninkenGrid('lobo','bite',0),src=document.createElement('canvas');gr.draw(src,Object.assign({},NINKEN_PAL,NINKEN_KIND.lobo),1);PORTRAIT_CACHE[kind]={src,x0:17,y0:0,w:19,h:16};}
