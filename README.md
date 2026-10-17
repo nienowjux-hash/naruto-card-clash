@@ -283,3 +283,6 @@ Ao concluir ou perder a fase aparece um painel com: **nota** (E D C B A S), **re
 - Os turnos contam as ações do herói do jogador (`battleTurns`, via wrappers em `play`/`idleAct`/`enemyTurn`).
 
 - **Coreografia dos golpes comuns** (js/26-comuns.js `CM_DEF`): cada golpe tem movimento próprio — Lobo: *Mordida* (agacha, salta em arco de boca aberta, morde duas vezes sacudindo a presa e recua), *Arranhão* (corre baixo, levanta nas patas e rasga 3 vezes), *Investida* (recua, dispara e arremessa o alvo); Bandido/Renegado: *Facada* (duas talhadas), *Porretada* (salto com o porrete sobre a cabeça e pancada pesada), *Golpe de Kunai* (3 estocadas e um chute). Hits, câmera, reação da vítima e inclinação/achatamento do corpo (`mot`) saem da mesma tabela, nos dois lados da tela.
+
+## Vila da Folha (js/27-konoha.js)
+Cenário próprio da vila (`drawKonoha`, usado em `drawEnv` quando `hubMode`): Monte Hokage com os 4 rostos, Torre do Hokage, Armeiro, Dojo, Templo de Invocação (torii), rua de pedra, nuvens, pássaros, fumaça, lanternas piscando e folhas. O Time 7 (primeiros 4 da equipe) fica parado na rua (escala 0,66). Os prédios são botões (`KON_SPOTS` + `konSpots()` em 25-vila.js): Torre = Mapa, Armeiro = Equipamentos, Dojo = Árvore de habilidades, Templo = Invocação. Para mudar/ajustar um prédio, edite `konBuildStatic` e as posições de `KON_SPOTS`.

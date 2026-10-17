@@ -54,3 +54,9 @@ function addDmgChips(){const h=$('hand');if(!h||hubMode)return;h.querySelectorAl
  const id=moveIdByName(bb.firstChild.nodeValue.trim());if(!id)return;const d=baseDmg(id);if(!d)return;
  const A=ANIMS[id],hits=A.hits&&A.hits.length>1?A.hits.length:0,i=document.createElement('i');i.className='dmgc';i.title='Dano base (antes de elemento, equipamentos e defesa)';i.textContent='⚔ '+d+(hits?' ('+hits+' golpes)':'');bb.appendChild(i);});}
 for(const nm of ['showMenu','showNarutoMenu','showDemonMenu']){const fn=window[nm];if(typeof fn!=='function')continue;window[nm]=function(){const r=fn.apply(this,arguments);addDmgChips();return r;};}
+
+/* predios clicaveis da vila: botoes sobre o canvas (posicao em % do mundo 384x216) */
+function konSpots(){document.querySelectorAll('.konhot').forEach(e=>e.remove());if(!hubMode)return;const st=document.getElementById('stage');if(!st||typeof KON_SPOTS==='undefined')return;
+ KON_SPOTS.forEach(s=>{const b=document.createElement('button');b.className='konhot';b.style.left=(s.x/384*100)+'%';b.style.top=(s.y/216*100)+'%';b.innerHTML=`<b>${s.name}</b><small>${s.sub}</small>`;b.onclick=s.go;st.appendChild(b);});}
+{const _enter=enterHub,_leave=leaveHub;enterHub=function(){const r=_enter.apply(this,arguments);konSpots();return r;};leaveHub=function(){const r=_leave.apply(this,arguments);konSpots();return r;};}
+konSpots();

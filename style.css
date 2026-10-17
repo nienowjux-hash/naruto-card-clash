@@ -447,3 +447,12 @@ body.hub #resbox{display:none}
 #resbox .blog li b{color:#fff}#resbox .blog small{display:block;color:#a89f84;font-size:.85em;margin-top:2px}
 #resbox .rg1{text-align:left;margin:0 0 14px}
 #resbox .rb{max-height:94vh;overflow:auto}
+
+/* vila: titulo discreto e predios clicaveis */
+body.hub #stage::after{content:'KONOHAGAKURE · VILA DA FOLHA';top:3%;font:700 clamp(12px,1.6cqw,22px) Georgia,serif;letter-spacing:.34em;color:#fff6d8;text-shadow:0 2px 0 #3a1c10,0 0 12px #b8924a}
+.konhot{position:absolute;transform:translate(-50%,-50%);z-index:6;background:linear-gradient(#2a2140ee,#14102aee);color:#ffe9b0;border:2px solid #b8924a;border-radius:10px;padding:clamp(4px,.6cqw,9px) clamp(8px,1.1cqw,16px);cursor:pointer;text-align:center;box-shadow:0 4px 16px #0009;transition:transform .12s,box-shadow .12s;pointer-events:auto}
+.konhot b{display:block;font:700 clamp(11px,1.35cqw,19px) Georgia,serif;white-space:nowrap}
+.konhot small{display:block;font:600 clamp(9px,.95cqw,13px) Georgia,serif;color:#c8b98e;white-space:nowrap}
+.konhot:hover{transform:translate(-50%,-56%) scale(1.07);box-shadow:0 8px 24px #000a,0 0 18px #b8924a88}
+body.hub #stage{pointer-events:auto}
+@container (max-width:460px){.konhot{padding:3px 6px}.konhot small{display:none}}

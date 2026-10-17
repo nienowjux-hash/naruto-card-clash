@@ -110,6 +110,7 @@ function setScene(t){if(!SCENE_FILTER[t])t='vale';curScene=t;
  x.drawImage(bgSky,0,(152-70)*RES,BW,70*RES,0,0,BW,70*RES);x.drawImage(bgFront,0,(152-70)*RES,BW,70*RES,0,0,BW,70*RES);bgRefl=rc;}
 function drawBird(c,x,y,s,ph){c.strokeStyle='rgba(14,6,30,.85)';c.lineWidth=.55*s;c.lineCap='round';const w=Math.sin(ph)*2.2*s;c.beginPath();c.moveTo(x-4*s,y-w*.6);c.quadraticCurveTo(x-2*s,y-w-1*s,x,y);c.quadraticCurveTo(x+2*s,y-w-1*s,x+4*s,y-w*.6);c.stroke();}
 function drawEnv(c,time,tint){
+ if(typeof hubMode!=='undefined'&&hubMode&&typeof drawKonoha==='function'){drawKonoha(c,time,tint);return;} /* na vila: cenario de Konoha */
  c.save();c.imageSmoothingEnabled=false;c.drawImage(bgSky,0,0,W,H);c.restore();
  // god rays
  c.globalCompositeOperation='lighter';for(let i=0;i<5;i++){const a=.04+.025*Math.sin(time*.6+i*1.7);const x0=192+(i-2)*10,x1=192+(i-2)*46;const gr=c.createLinearGradient(0,60,0,150);gr.addColorStop(0,`rgba(255,220,180,${a})`);gr.addColorStop(1,'rgba(255,220,180,0)');c.fillStyle=gr;c.beginPath();c.moveTo(x0-3,62);c.lineTo(x0+3,62);c.lineTo(x1+14,150);c.lineTo(x1-14,150);c.closePath();c.fill();}c.globalCompositeOperation='source-over';
@@ -149,6 +150,7 @@ function drawEnv(c,time,tint){
  if(tint){c.fillStyle=tint;c.fillRect(-20,-20,W+40,H+40);}
 }
 function shadowRipple(c,x,time,glow){
+ if(typeof hubMode!=='undefined'&&hubMode)return;
  c.fillStyle='rgba(2,6,20,.55)';c.beginPath();c.ellipse(x,GY+1,17,3.2,0,0,TAU);c.fill();
  for(let k=0;k<3;k++){const ph=(time*.5+k/3)%1,rx=8+ph*22;c.strokeStyle=glow?`rgba(140,210,255,${(1-ph)*.8})`:`rgba(200,225,255,${(1-ph)*.55})`;c.lineWidth=.45;c.beginPath();c.ellipse(x,GY+1,rx,rx*.24,0,0,TAU);c.stroke();}
 }
